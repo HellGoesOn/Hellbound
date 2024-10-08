@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HellTrail", "Hellbound\HellTrail.csproj", "{15B91BF8-352F-44BF-B14C-7F31BDB05095}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FNA.Core", "FNA\FNA.Core.csproj", "{5C266262-EB4C-497A-851E-146F297BBFB6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpriteFontPlus.FNA.Core", "SpriteFontPlus\src\SpriteFontPlus.FNA.Core.csproj", "{F5EE30D7-7D03-4937-8983-A997F97292D1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{15B91BF8-352F-44BF-B14C-7F31BDB05095}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15B91BF8-352F-44BF-B14C-7F31BDB05095}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15B91BF8-352F-44BF-B14C-7F31BDB05095}.Debug|x64.ActiveCfg = Debug|x64
+		{15B91BF8-352F-44BF-B14C-7F31BDB05095}.Debug|x64.Build.0 = Debug|x64
+		{15B91BF8-352F-44BF-B14C-7F31BDB05095}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15B91BF8-352F-44BF-B14C-7F31BDB05095}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15B91BF8-352F-44BF-B14C-7F31BDB05095}.Release|x64.ActiveCfg = Release|x64
+		{15B91BF8-352F-44BF-B14C-7F31BDB05095}.Release|x64.Build.0 = Release|x64
+		{5C266262-EB4C-497A-851E-146F297BBFB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C266262-EB4C-497A-851E-146F297BBFB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C266262-EB4C-497A-851E-146F297BBFB6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5C266262-EB4C-497A-851E-146F297BBFB6}.Debug|x64.Build.0 = Debug|Any CPU
+		{5C266262-EB4C-497A-851E-146F297BBFB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C266262-EB4C-497A-851E-146F297BBFB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C266262-EB4C-497A-851E-146F297BBFB6}.Release|x64.ActiveCfg = Release|Any CPU
+		{5C266262-EB4C-497A-851E-146F297BBFB6}.Release|x64.Build.0 = Release|Any CPU
+		{F5EE30D7-7D03-4937-8983-A997F97292D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5EE30D7-7D03-4937-8983-A997F97292D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5EE30D7-7D03-4937-8983-A997F97292D1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F5EE30D7-7D03-4937-8983-A997F97292D1}.Debug|x64.Build.0 = Debug|Any CPU
+		{F5EE30D7-7D03-4937-8983-A997F97292D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5EE30D7-7D03-4937-8983-A997F97292D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5EE30D7-7D03-4937-8983-A997F97292D1}.Release|x64.ActiveCfg = Release|Any CPU
+		{F5EE30D7-7D03-4937-8983-A997F97292D1}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {74B08D35-53EA-428C-8602-D58EAAC5C342}
+	EndGlobalSection
+EndGlobal

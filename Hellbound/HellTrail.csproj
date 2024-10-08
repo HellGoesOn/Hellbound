@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Content\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\**">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\Audio\Sounds\Death.wav" />
+    <None Remove="Assets\Audio\Sounds\WhatDaDogDoin.wav" />
+    <None Remove="Assets\retganon.ttf" />
+    <None Remove="Assets\Textures\Cursor.png" />
+    <None Remove="Assets\Textures\Cursor2.png" />
+    <None Remove="Assets\Textures\Cursor3.png" />
+    <None Remove="Assets\Textures\Doorkun.png" />
+    <None Remove="Assets\Textures\Elements.png" />
+    <None Remove="Assets\Textures\Elements2.png" />
+    <None Remove="Assets\Textures\PeasToDisturb3.png" />
+    <None Remove="Assets\Textures\Slime.png" />
+    <None Remove="Assets\Textures\Slime2.png" />
+    <None Remove="Assets\Textures\Slime3.png" />
+    <None Remove="Assets\Textures\Tomato.png" />
+    <None Remove="Assets\Textures\WhatDaDogDoin.png" />
+    <None Remove="Assets\Textures\WhatDaDogDoin2.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FNA\FNA.Core.csproj" />
+    <ProjectReference Include="..\SpriteFontPlus\src\SpriteFontPlus.FNA.Core.csproj" />
+  </ItemGroup>
+
+</Project>
