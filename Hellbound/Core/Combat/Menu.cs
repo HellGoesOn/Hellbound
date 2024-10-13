@@ -12,6 +12,7 @@ namespace HellTrail.Core.Combat
 {
     public class Menu
     {
+        private int oldOption;
         public int selectedOption;
         public int sideStep = 1;
         public bool active;
@@ -34,8 +35,10 @@ namespace HellTrail.Core.Combat
         {
             if (!active)
                 return;
+
             if(Input.PressedKey(Keys.S))
             {
+                oldOption = selectedOption;
                 ++selectedOption;
                 onChangeOption?.Invoke();
                 if (selectedOption >= items.Count)
@@ -46,6 +49,7 @@ namespace HellTrail.Core.Combat
 
             if (Input.PressedKey(Keys.W))
             {
+                oldOption = selectedOption;
                 --selectedOption;
                 onChangeOption?.Invoke();
                 if (selectedOption < 0)
@@ -55,6 +59,7 @@ namespace HellTrail.Core.Combat
 
             if (Input.PressedKey(Keys.D))
             {
+                oldOption = selectedOption;
                 selectedOption += sideStep;
                 onChangeOption?.Invoke();
                 if (selectedOption >= items.Count)
@@ -65,6 +70,7 @@ namespace HellTrail.Core.Combat
 
             if (Input.PressedKey(Keys.A))
             {
+                oldOption = selectedOption;
                 selectedOption -= sideStep;
                 onChangeOption?.Invoke();
                 if (selectedOption < 0)
@@ -81,7 +87,15 @@ namespace HellTrail.Core.Combat
 
             var tryMouse = items.FirstOrDefault(x => OptionContainsMouse(x));
             if (tryMouse != null)
+            {
                 selectedOption = tryMouse.index;
+
+                if(selectedOption != oldOption)
+                {
+                    onChangeOption?.Invoke();
+                    oldOption = selectedOption;
+                }
+            }
 
             if (items.Count <= 0)
                 selectedOption = 0;

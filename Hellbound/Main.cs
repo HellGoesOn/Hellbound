@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using HellTrail.Render;
 using Microsoft.Xna.Framework.Input;
 using HellTrail.Core.Combat;
+using HellTrail.Core;
 
 namespace HellTrail
 {
@@ -53,10 +54,11 @@ namespace HellTrail
             base.LoadContent();
             AssetManager.Load(this);
             Renderer.Load(GraphicsDevice);
+            CameraManager.Initialize();
 
             GlobalPlayer.Init();
             List<Unit> list = [];
-            for(int i = 0; i < 3; i++)
+            for(int i = 0; i < 5; i++)
             {
                 Unit slime = new()
                 {
@@ -65,7 +67,7 @@ namespace HellTrail
                 };
                 slime.abilities.Add(new Bite());
                 slime.abilities.Add(new Megidolaon());
-                slime.BattleStation = new Vector2(220 + i * 8 + ((i / 4) * 24), 40 + i * 32 - (i / 4 * 128));
+                slime.BattleStation = new Vector2(220 + i * 8 + ((i / 3) * 24), 60 + i * 32 - (i / 3 * 86));
                 list.Add(slime);
             }
 
@@ -108,6 +110,7 @@ namespace HellTrail
 
             Input.Update();
             SoundEngine.Update();
+            CameraManager.Update();
 
         }
 
@@ -118,7 +121,11 @@ namespace HellTrail
             GraphicsDevice.Clear(Color.DarkOliveGreen);
             base.Draw(gameTime);
 
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+            Camera cam = CameraManager.GetCamera;
+            if (cam != null)
+                spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, cam.transform);
+            else
+                spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
             battle?.DrawField(spriteBatch);
             //Vector2 mousePos = Input.MousePosition;
             //spriteBatch.Draw(AssetManager.Textures["Elements2"], new Vector2((int)(mousePos.X), (int)(mousePos.Y)), Color.White);

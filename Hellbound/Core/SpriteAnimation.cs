@@ -27,6 +27,7 @@ namespace HellTrail.Core
         public FrameData[] frameData;
 
         public Action? onAnimationPlay;
+        public Action? onAnimationEnd;
 
         public SpriteAnimation(string texture, FrameData[] frameData)
         {
@@ -46,7 +47,11 @@ namespace HellTrail.Core
                     if (looping)
                         currentFrame = 0;
                     else
+                    {
+                        if (!finished)
+                            onAnimationEnd?.Invoke();
                         finished = true;
+                    }
                 }
                 frameCounter = 0;
             }

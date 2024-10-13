@@ -1,4 +1,5 @@
 ﻿using HellTrail.Render;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace HellTrail.Core
             var momGetTheCamera = new Camera(new Viewport(0, 0, Renderer.PreferedWidth, Renderer.PreferedHeight));
             momGetTheCamera.zoom = 1f;
             momGetTheCamera.speed = 1f;
+            momGetTheCamera.centre = new Vector2(160, 90);
             cameras.Add(momGetTheCamera);
         }
 
@@ -30,6 +32,15 @@ namespace HellTrail.Core
             }
         }
 
-        public static Camera GetCamera => cameras[currentCamera];
+        public static Camera GetCamera
+        {
+            get
+            {
+                if(cameras.Count > 0)
+                    return cameras[currentCamera];
+
+                return null;
+            }
+        }
     }
 }

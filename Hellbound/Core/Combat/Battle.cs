@@ -29,7 +29,7 @@ namespace HellTrail.Core.Combat
 
         public string lastAction = "-";
 
-        public string backgroundTexture = "";
+        public BattleBackground bg;
 
         private BattleState state;
 
@@ -59,6 +59,7 @@ namespace HellTrail.Core.Combat
             units = [];
             unitsNoSpeedSort = [];
             State = BattleState.BeginTurn;
+            bg = new BattleBackground("TestBG");
         }
 
         public static Battle Create(List<Unit> enemies)
@@ -90,9 +91,8 @@ namespace HellTrail.Core.Combat
                 {
                     active = true
                 };
-                int baseTime = unit.team == Team.Enemy ? 180 : 60;
+                int baseTime = unit.team == Team.Enemy ? 90 : 60;
                 sequence.Add(new DelaySequence(baseTime + troll));
-                sequence.Add(new PlaySoundSequence("Summon", 0.25f));
                 sequence.Add(new MoveActorSequence(unit, unit.BattleStation, 0.22f));
 
                 troll += 6;
@@ -173,6 +173,11 @@ namespace HellTrail.Core.Combat
 
         public void DrawField(SpriteBatch spriteBatch)
         {
+            if(bg != null)
+            {
+                spriteBatch.Draw(AssetManager.Textures[bg.texture], Vector2.Zero, bg.color);
+            }
+
             foreach(Unit unit in units)
             {
                 Color clr = unit.Downed ? Color.Crimson : Color.White;
@@ -224,7 +229,7 @@ namespace HellTrail.Core.Combat
 
                         var boxPos = menu.position;
                         Vector2 boxSize = menu.GetSize;
-                        spriteBatch.Draw(AssetManager.Textures["Pixel"], boxPos - new Vector2(2), new Rectangle(0, 0, (int)boxSize.X + 16, (int)boxSize.Y * menu.Count + 16), Color.DarkGray);
+                        spriteBatch.Draw(AssetManager.Textures["Pixel"], boxPos - new Vector2(2), new Rectangle(0, 0, (int)boxSize.X + 16, (int)boxSize.Y * menu.Count + 16), Color.White);
                         spriteBatch.Draw(AssetManager.Textures["Pixel"], boxPos, new Rectangle(0, 0, (int)boxSize.X + 12, (int)boxSize.Y * menu.Count + 12), Color.DarkBlue);
                         for (int i = 0; i < menu.items.Count; i++)
                         {
@@ -238,13 +243,13 @@ namespace HellTrail.Core.Combat
                                 clr = Color.White;
                                 spriteBatch.Draw(AssetManager.Textures["Cursor3"], new Vector2(position.X - 40, 6+menu.position.Y + menu.GetSize.Y * option.index) + sway, null, Color.White, 0f, new Vector2(10, 0), 3f, SpriteEffects.None, 0f);
                             }
-                            spriteBatch.DrawString(AssetManager.CombatMenuFont, option.name, menu.position + new Vector2(4, 4+menu.GetSize.Y * option.index), clr, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
+                            spriteBatch.DrawString(AssetManager.CombatMenuFont, option.name, menu.position + new Vector2(8, 4+menu.GetSize.Y * option.index), clr, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
                             //Renderer.DrawRect(spriteBatch, menu.position + new Vector2(4, 4+menu.GetSize.Y * option.index), menu.GetSize, 1, Color.Orange * 0.75f);
                         }
                     }
                 }
 
-                Renderer.DrawRect(spriteBatch, new Vector2(12, Renderer.UIPreferedHeight - 80), new Vector2(Renderer.UIPreferedWidth-24, 64), 1, Color.Gray);
+                Renderer.DrawRect(spriteBatch, new Vector2(12, Renderer.UIPreferedHeight - 80), new Vector2(Renderer.UIPreferedWidth-24, 64), 1, Color.White);
                 Renderer.DrawRect(spriteBatch, new Vector2(14, Renderer.UIPreferedHeight - 78), new Vector2(Renderer.UIPreferedWidth-28, 60), 1, Color.DarkBlue);
                 // to-do: change to use lang
                 var actualPos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
@@ -303,7 +308,7 @@ namespace HellTrail.Core.Combat
                     parentMenu = playerMenu
                 };
 
-                submenuTest.AddOption("Attack", () => { });
+                submenuTest.AddOption("Attack ", () => { });
                 submenuTest.AddOption("Spells",
                     () =>
                     {
@@ -333,7 +338,7 @@ namespace HellTrail.Core.Combat
                                         parentMenu = attacks,
                                         active = true,
                                         visible = false,
-                                        sideStep = 4
+                                        sideStep = 3
                                     };
 
                                     fakeMenu.onSelectOption = () =>

@@ -45,6 +45,7 @@ namespace HellTrail.Core
                 * Matrix.CreateTranslation(new Vector3(view.Width * 0.5f, view.Height * 0.5f, 0f));
 
 #if DEBUG
+            /*
             if (Input.HeldKey(Keys.A))
                 centre.X -= speed;
             if (Input.HeldKey(Keys.D))
@@ -53,14 +54,14 @@ namespace HellTrail.Core
                 centre.Y -= speed;
             if (Input.HeldKey(Keys.S))
                 centre.Y += speed;
-            if (Input.HeldKey(Keys.OemPlus))
+            if (Input.HeldKey(Keys.LeftShift))
                 zoom += 0.02f;
-            if (Input.HeldKey(Keys.OemMinus))
+            if (Input.HeldKey(Keys.Space))
                 zoom -= 0.02f;
-            if (Input.HeldKey(Keys.D9))
+            if (Input.HeldKey(Keys.LeftControl))
                 rotation += 0.02f;
-            if (Input.HeldKey(Keys.D0))
-                rotation -= 0.02f;
+            if (Input.HeldKey(Keys.LeftAlt))
+                rotation -= 0.02f;*/
 
             if (zoom < 0.1f)
                 zoom = 0.1f;
