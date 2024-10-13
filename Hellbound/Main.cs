@@ -28,8 +28,6 @@ namespace HellTrail
         {
             instance = this;
             gdm = new GraphicsDeviceManager(this);
-            gdm.PreferredBackBufferWidth = GameOptions.ScreenWidth;
-            gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
             this.IsMouseVisible = true;
             this.IsFixedTimeStep = true;
             this.Window.Title = "Hell Trail";
@@ -43,6 +41,10 @@ namespace HellTrail
             rand = new Random();
             base.Initialize();
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            GameOptions.ResolutionMultiplier = 4;
+            gdm.PreferredBackBufferWidth = GameOptions.ScreenWidth;
+            gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
+            gdm.ApplyChanges();
         }
 
         protected override void LoadContent()
@@ -88,12 +90,25 @@ namespace HellTrail
             drunkness = 1f;
             battle?.Update();
 
-            if (Input.PressedKey(Keys.W))
-                cursorPos -= 44;
-            if(Input.PressedKey(Keys.S))
-                cursorPos += 44;
+            if (Input.PressedKey(Keys.OemPlus))
+            {
+                GameOptions.ResolutionMultiplier++;
+                gdm.PreferredBackBufferWidth = GameOptions.ScreenWidth;
+                gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
+                gdm.ApplyChanges();
+            }
+            if (Input.PressedKey(Keys.OemMinus))
+            {
+
+                GameOptions.ResolutionMultiplier--;
+                gdm.PreferredBackBufferWidth = GameOptions.ScreenWidth;
+                gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
+                gdm.ApplyChanges();
+            }
+
             Input.Update();
             SoundEngine.Update();
+
         }
 
         protected override void Draw(GameTime gameTime)

@@ -19,6 +19,7 @@ namespace HellTrail.Core.Combat
         public Team team;
         private Vector2 battleStation;
         public Vector2 position;
+        public Vector2 size = new Vector2(32);
         public BasicAI? ai = null;
         public List<Ability> abilities = [];
 
@@ -53,6 +54,21 @@ namespace HellTrail.Core.Combat
             {
                 position = battleStation = value;
             }
+        }
+
+        public bool ContainsMouse(Vector2 offset)
+        {
+            var rect = new Rectangle((int)position.X + (int)offset.X, (int)position.Y + (int)offset.Y, (int)size.X, (int)size.Y);
+            var mousePoint = new Point((int)Input.MousePosition.X, (int)Input.MousePosition.Y);
+            return rect.Contains(mousePoint);
+        }
+
+
+        public bool ContainsMouse()
+        {
+            var rect = new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y);
+            var mousePoint = new Point((int)Input.MousePosition.X, (int)Input.MousePosition.Y);
+            return rect.Contains(mousePoint);
         }
     }
 }

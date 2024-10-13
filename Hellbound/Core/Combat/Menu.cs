@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using HellTrail.Render;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -15,6 +16,8 @@ namespace HellTrail.Core.Combat
         public int sideStep = 1;
         public bool active;
         public bool visible = true;
+
+        public bool allowMouseClicks = true;
 
         public List<MenuOption> items = [];
 
@@ -69,18 +72,21 @@ namespace HellTrail.Core.Combat
 
             }
 
-            if (Input.PressedKey(Keys.E))
+            if (Input.PressedKey(Keys.E) || Input.LMBClicked)
             {
                 onSelectOption?.Invoke();
                 if (items.Count > 0)
                     items[selectedOption].onConfirmOption?.Invoke();
             }
 
+            var tryMouse = items.FirstOrDefault(x => OptionContainsMouse(x));
+            if (tryMouse != null)
+                selectedOption = tryMouse.index;
 
             if (items.Count <= 0)
                 selectedOption = 0;
 
-            if (Input.PressedKey(Keys.Q))
+            if (Input.PressedKey(Keys.Q) || Input.RMBClicked)
             {
                 onCancel?.Invoke();
                 if (parentMenu != null)
@@ -106,6 +112,7 @@ namespace HellTrail.Core.Combat
         {
             MenuOption option = new()
             {
+                index = items.Count,
                 name = name,
                 onConfirmOption = action
             };
@@ -117,10 +124,21 @@ namespace HellTrail.Core.Combat
 
         public int Count => items.Count;
 
-        public Vector2 GetSize => AssetManager.DefaultFont.MeasureString(OptionNames.Aggregate("", (max, cur) => max.Length > cur.Length ? max : cur));
+        public Vector2 GetSize => AssetManager.CombatMenuFont.MeasureString(OptionNames.Aggregate("", (max, cur) => max.Length > cur.Length ? max : cur));
+
+
+        public bool OptionContainsMouse(MenuOption option)
+        {
+            int height = (int)(GetSize.Y);
+            var rect = new Rectangle((int)position.X, (int)position.Y + height * option.index, (int)GetSize.X+4, height);
+            var mousePoint = new Point((int)Input.MousePosition.X * 4, (int)Input.MousePosition.Y *4);
+
+            return rect.Contains(mousePoint);
+        }
 
         public class MenuOption 
         {
+            public int index;
             public float scale;
             public float opacity;
             public string name = "???";

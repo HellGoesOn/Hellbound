@@ -148,6 +148,48 @@ namespace HellTrail.Core.Combat
         }
     }
 
+    public class OneActionSequence : ISequenceAction
+    {
+        public Action action;
+
+        public OneActionSequence(Action action)
+        {
+
+            this.action = action;
+        }
+
+        public bool IsFinished()
+        {
+            action?.Invoke();
+            return true;
+        }
+
+        public void Update(List<Unit> actors, Battle battle)
+        {
+        }
+    }
+
+    public class AddAnimationSequence : ISequenceAction
+    {
+        public bool oneUpdate;
+        public SpriteAnimation anim;
+        public AddAnimationSequence(SpriteAnimation animation)
+        {
+            anim = animation;
+        }
+
+        public bool IsFinished()
+        {
+            return oneUpdate;
+        }
+
+        public void Update(List<Unit> actors, Battle battle)
+        {
+            oneUpdate = true;
+            battle.fieldAnimations.Add(anim);
+        }
+    }
+
     public interface ISequenceAction
     {
         void Update(List<Unit> actors, Battle battle);

@@ -50,13 +50,15 @@ namespace HellTrail
                 }
             }
 
-            MediaPlayer.Volume = GameOptions.Volume;
+            MediaPlayer.Volume = GameOptions.MusicVolume;
         }
 
         public static SoundEffectInstance PlaySound(string name, float volume = -1f)
         {
             if (volume == -1f)
-                volume = GameOptions.Volume;
+                volume = GameOptions.GeneralVolume;
+            else
+                volume = GameOptions.GeneralVolume * volume;
 
             var fx = AssetManager.GetSound(name)?.CreateInstance();
 

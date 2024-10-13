@@ -6,6 +6,16 @@ using System.Threading.Tasks;
 
 namespace HellTrail.Core.Combat
 {
+    public enum Elem
+    {
+        None,
+        Phys,
+        Fire,
+        Ice,
+        Elec,
+        Wind
+    }
+
     public enum CostType
     {
         None,

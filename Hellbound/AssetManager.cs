@@ -18,6 +18,7 @@ namespace HellTrail
         private readonly static Dictionary<string, SoundEffect> _sounds = new Dictionary<string, SoundEffect>();
 
         public static SpriteFont DefaultFont;
+        public static SpriteFont CombatMenuFont;
 
         public static void Load(Main main)
         {
@@ -65,6 +66,21 @@ namespace HellTrail
             );
 
             DefaultFont = fontBakeResult.CreateSpriteFont(main.GraphicsDevice);
+
+            fontBakeResult = TtfFontBaker.Bake(File.ReadAllBytes(Environment.CurrentDirectory + "\\Assets\\retganon.ttf"),
+                30,
+                1024,
+                1024,
+                new[]
+                {
+                    CharacterRange.BasicLatin,
+                    CharacterRange.Latin1Supplement,
+                    CharacterRange.LatinExtendedA,
+                    CharacterRange.Cyrillic
+                }
+            );
+
+            CombatMenuFont = fontBakeResult.CreateSpriteFont(main.GraphicsDevice);
         }
 
         public static void Unload()

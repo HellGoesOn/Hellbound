@@ -23,6 +23,7 @@ namespace HellTrail.Core.Combat
             protag.abilities.Add(new GrandSeal());
             protag.abilities.Add(new Bite());
             protag.abilities.Add(new Megidolaon());
+            protag.abilities.Add(new Singularity());
 
             Unit sidekick = new()
             {

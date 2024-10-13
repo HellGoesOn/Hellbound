@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,24 @@ namespace HellTrail.Render
         {
             MainTarget.Dispose();
             UITarget.Dispose();
+        }
+
+        public static void DrawRect(SpriteBatch sb, Vector2 position, Vector2 size, int thickness, Color color, float depth = 0f)
+        {
+            var tex = AssetManager.Textures["Pixel"];
+            sb.Draw(tex, position, null, color, 0f, Vector2.Zero, size, SpriteEffects.None, depth);
+        }
+
+        public static (int, int) Multiplier
+        {
+            get
+            {
+                var gdm = Main.instance.gdm;
+                int multX = gdm.PreferredBackBufferWidth / PreferedWidth;
+                int multY = gdm.PreferredBackBufferHeight / PreferedHeight;
+
+                return (multX, multY);
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HellTrail.Render;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,23 @@ namespace HellTrail
 {
     public static class GameOptions
     {
-        public static int ScreenWidth { get; set; } = 1280;
-        public static int ScreenHeight { get; set; } = 720;
-        public static float Volume { get; set; } = 0.15f;
+        private static int resolutionMultiplier = 4;
+
+        public static int ResolutionMultiplier 
+        {
+            get => resolutionMultiplier;
+            set
+            {
+                resolutionMultiplier = value;
+                if(resolutionMultiplier <= 0)
+                    resolutionMultiplier = 1;
+                ScreenWidth = Renderer.PreferedWidth * resolutionMultiplier;
+                ScreenHeight = Renderer.PreferedHeight * resolutionMultiplier;
+            }
+        }
+        public static int ScreenWidth { get; set; } = 320;
+        public static int ScreenHeight { get; set; } = 180;
+        public static float GeneralVolume { get; set; } = 0.25f;
+        public static float MusicVolume { get; set; } = 0.05f;
     }
 }
