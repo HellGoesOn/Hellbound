@@ -23,6 +23,8 @@ namespace HellTrail.Core.Combat
 
         public int selectedTarget;
 
+        public bool weaknessHitLastRound;
+
         public bool battleEnded;
 
         public bool isPickingTarget;
@@ -52,6 +54,10 @@ namespace HellTrail.Core.Combat
         public List<Sequence> sequences = [];
 
         public List<SpriteAnimation> fieldAnimations = [];
+
+        public List<DamageNumber> damageNumbers = [];
+
+        public List<Unit> unitsHitLastRound = [];
 
         public Battle() 
         {
@@ -86,7 +92,7 @@ namespace HellTrail.Core.Combat
             int troll = 0;
             foreach (Unit unit in battle.units)
             {
-                unit.position = unit.BattleStation - new Vector2(0, 200);
+                unit.position = unit.BattleStation - new Vector2(200 * (unit.BattleStation.X > 160 ? -1 : 1), 0);
                 Sequence sequence = new(battle)
                 {
                     active = true
@@ -106,6 +112,13 @@ namespace HellTrail.Core.Combat
         {
             fieldAnimations.RemoveAll(x => x.finished);
 
+            damageNumbers.RemoveAll(x => x.timeLeft <= 0);
+
+            foreach(DamageNumber number in damageNumbers)
+            {
+                number.Update();
+            }
+
             foreach(SpriteAnimation animation in fieldAnimations)
             {
                 animation.Update();
@@ -122,7 +135,7 @@ namespace HellTrail.Core.Combat
                 return;
             }
 
-            if (sequences.Count > 0)
+            if (sequences.Count > 0 && state != BattleState.BeginAction)
             {
                 if (!sequences.Any(x => x.active))
                     sequences[0].active = true;
@@ -178,11 +191,19 @@ namespace HellTrail.Core.Combat
                 spriteBatch.Draw(AssetManager.Textures[bg.texture], Vector2.Zero, bg.color);
             }
 
-            foreach(Unit unit in units)
+            foreach (Unit unit in units)
             {
                 Color clr = unit.Downed ? Color.Crimson : Color.White;
-                spriteBatch.Draw(AssetManager.Textures[unit.sprite], new Vector2((int)(unit.position.X), (int)(unit.position.Y)), null, clr * unit.opacity, 0f, new Vector2(16), Vector2.One, SpriteEffects.None, 0f);
-                //Renderer.DrawRect(spriteBatch, unit.position-unit.size*0.5f, unit.size, 1, Color.Orange * 0.25f);
+                if (unit.animations.TryGetValue(unit.currentAnimation, out var anim))
+                {
+                    anim.position = unit.position;
+                    anim.Draw(spriteBatch);
+                } 
+                else
+                {
+                    spriteBatch.Draw(AssetManager.Textures[unit.sprite], new Vector2((int)(unit.position.X), (int)(unit.position.Y)), null, clr * unit.opacity, 0f, new Vector2(16), Vector2.One, SpriteEffects.None, unit.depth);
+                    //Renderer.DrawRect(spriteBatch, unit.position-unit.size*0.5f, unit.size, 1, Color.Orange * 0.25f);
+                }
             }
 
             foreach (SpriteAnimation animation in fieldAnimations)
@@ -200,8 +221,8 @@ namespace HellTrail.Core.Combat
                 Color clr = unit.Downed ? Color.Crimson : Color.White;
                 Vector2 adjPos = unit.position * 4;
                 Vector2 orig = AssetManager.DefaultFont.MeasureString($"[HP:{unit.HP}]") * 0.5f;
-                Vector2 finalPos = new Vector2((int)adjPos.X, (int)(adjPos.Y + 60));
-                spriteBatch.DrawString(AssetManager.DefaultFont, $"[HP:{unit.HP}]", finalPos, Color.White, 0f, orig, 1f, SpriteEffects.None, 0);
+                Vector2 finalPos = new Vector2((int)adjPos.X, (int)(adjPos.Y + 64));
+                //spriteBatch.DrawBorderedString(AssetManager.DefaultFont, $"[HP:{unit.HP}]", finalPos, Color.White, Color.Black, 0f, orig, Vector2.One, SpriteEffects.None, 0);
 
                 if (isPickingTarget)
                 {
@@ -218,7 +239,7 @@ namespace HellTrail.Core.Combat
             {
                 string text2 = $"Delay: {nextStateDelay} State: {state}";
                 Vector2 orig2 = AssetManager.DefaultFont.MeasureString(text2) * 0.5f;
-                spriteBatch.DrawString(AssetManager.DefaultFont, text2, new Vector2(640, 80), Color.White, 0f, orig2, Vector2.One, SpriteEffects.None, 0f);
+                spriteBatch.DrawBorderedString(AssetManager.DefaultFont, text2, new Vector2(640, 80), Color.White, Color.Black, 0f, orig2, Vector2.One, SpriteEffects.None, 0f);
 
                 if (menus.Count > 0)
                 {
@@ -248,17 +269,11 @@ namespace HellTrail.Core.Combat
                         }
                     }
                 }
+            }
 
-                Renderer.DrawRect(spriteBatch, new Vector2(12, Renderer.UIPreferedHeight - 80), new Vector2(Renderer.UIPreferedWidth-24, 64), 1, Color.White);
-                Renderer.DrawRect(spriteBatch, new Vector2(14, Renderer.UIPreferedHeight - 78), new Vector2(Renderer.UIPreferedWidth-28, 60), 1, Color.DarkBlue);
-                // to-do: change to use lang
-                var actualPos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
-                var inGamePos = Input.MousePosition*4;
-                var inGamePos2 = Input.UIMousePosition;
-                spriteBatch.DrawString(AssetManager.DefaultFont, $"[W][A][S][D] -> Navigate menu. [E] or [LMB] -> Confirm. [Q] or [RMB] -> Cancel", new Vector2(20, Renderer.UIPreferedHeight - 60), Color.White, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
-
-
-                Renderer.DrawRect(spriteBatch, Input.MousePosition*4, new Vector2(10), 1, Color.Lime);
+            foreach (DamageNumber number in damageNumbers)
+            {
+                number.Draw(spriteBatch);
             }
 
             if (battleEnded)
@@ -266,8 +281,8 @@ namespace HellTrail.Core.Combat
                 string text = $"Battle Result: {state} !";
                 Vector2 orig = AssetManager.DefaultFont.MeasureString(text) * 0.5f;
                 Color color = State == BattleState.Victory ? Color.Gold : State == BattleState.Loss ? Color.Red : Color.Crimson;
-                spriteBatch.DrawString(AssetManager.DefaultFont, text, new Vector2(GameOptions.ScreenWidth * 0.5f + 2, GameOptions.ScreenHeight * 0.25f + 2), Color.Black, 0f, new Vector2((int)orig.X, (int)orig.Y), Vector2.One, SpriteEffects.None, 0f);
-                spriteBatch.DrawString(AssetManager.DefaultFont, text, new Vector2(GameOptions.ScreenWidth * 0.5f, GameOptions.ScreenHeight * 0.25f), color, 0f, new Vector2((int)orig.X, (int)orig.Y), Vector2.One, SpriteEffects.None, 0f);
+                spriteBatch.DrawBorderedString(AssetManager.DefaultFont, text, new Vector2(640, 160), color, Color.Black, 0f, new Vector2((int)orig.X, (int)orig.Y), Vector2.One, SpriteEffects.None, 0f);
+                //spriteBatch.DrawString(AssetManager.DefaultFont, text, new Vector2(GameOptions.ScreenWidth * 0.5f, GameOptions.ScreenHeight * 0.25f), color, 0f, new Vector2((int)orig.X, (int)orig.Y), Vector2.One, SpriteEffects.None, 0f);
             }
         }
 
@@ -301,95 +316,72 @@ namespace HellTrail.Core.Combat
             playerMenu.AddOption("Attack", ()
                 =>
             {
-                var submenuTest = new Menu()
+                var attacks = new Menu()
                 {
-                    active = true,
                     position = playerMenu.position + new Vector2(playerMenu.GetSize.X + 8, 0),
+                    active = true,
                     parentMenu = playerMenu
                 };
 
-                submenuTest.AddOption("Attack ", () => { });
-                submenuTest.AddOption("Spells",
-                    () =>
-                    {
-                        var attacks = new Menu()
-                        {
-                            position = submenuTest.position + new Vector2(submenuTest.GetSize.X + 8, 0),
-                            active = true,
-                            parentMenu = submenuTest
-                        };
+                AddMenu(attacks);
 
-                        AddMenu(attacks);
-
-                        foreach (var ability in ActingUnit.abilities)
-                        {
-                            attacks.AddOption(ability.Name,
-                                () =>
-                                {
-                                    isPickingTarget = true;
-                                    selectedAbility = ability;
-                                    //ability.Use(ActingUnit, this, [ActingUnit]);
-                                    //ClearMenus();
-                                    //state = BattleState.BeginAction;
-
-                                    Menu fakeMenu = new()
-                                    {
-                                        position = attacks.position + new Vector2(attacks.GetSize.X + 8, 0),
-                                        parentMenu = attacks,
-                                        active = true,
-                                        visible = false,
-                                        sideStep = 3
-                                    };
-
-                                    fakeMenu.onSelectOption = () =>
-                                    {
-                                        ability.Use(ActingUnit, this, TryGetTargets(ability));
-                                        ClearMenus();
-                                        state = BattleState.BeginAction;
-                                        isPickingTarget = false;
-                                    };
-
-                                    fakeMenu.onCancel = () =>
-                                    {
-                                        foreach (var menu in menus)
-                                        {
-                                            menu.visible = true;
-                                        }
-                                        isPickingTarget = false;
-                                        RemoveMenu(fakeMenu);
-                                    };
-
-                                    fakeMenu.onChangeOption = () =>
-                                    {
-                                        selectedTarget += fakeMenu.selectedOption;
-                                    };
-
-                                    foreach (var menu in menus)
-                                    {
-                                        menu.visible = false;
-                                    }
-
-                                    AddMenu(fakeMenu);
-                                    attacks.active = false;
-                                });
-                        }
-
-                        attacks.onCancel = () =>
-                        {
-                            RemoveMenu(attacks);
-                        };
-
-                        submenuTest.active = false;
-                    }
-                    );
-
-                submenuTest.onCancel = () =>
+                foreach (var ability in ActingUnit.abilities)
                 {
-                    RemoveMenu(submenuTest);
+                    attacks.AddOption(ability.Name,
+                        () =>
+                        {
+                            isPickingTarget = true;
+                            selectedAbility = ability;
+                            //ability.Use(ActingUnit, this, [ActingUnit]);
+                            //ClearMenus();
+                            //state = BattleState.BeginAction;
+
+                            Menu fakeMenu = new()
+                            {
+                                position = attacks.position + new Vector2(attacks.GetSize.X + 8, 0),
+                                parentMenu = attacks,
+                                active = true,
+                                visible = false,
+                                sideStep = 3
+                            };
+
+                            fakeMenu.onSelectOption = () =>
+                            {
+                                ability.Use(ActingUnit, this, TryGetTargets(ability));
+                                ClearMenus();
+                                state = BattleState.BeginAction;
+                                isPickingTarget = false;
+                            };
+
+                            fakeMenu.onCancel = () =>
+                            {
+                                foreach (var menu in menus)
+                                {
+                                    menu.visible = true;
+                                }
+                                isPickingTarget = false;
+                                RemoveMenu(fakeMenu);
+                            };
+
+                            fakeMenu.onChangeOption = () =>
+                            {
+                                selectedTarget += fakeMenu.selectedOption;
+                            };
+
+                            foreach (var menu in menus)
+                            {
+                                menu.visible = false;
+                            }
+
+                            AddMenu(fakeMenu);
+                            attacks.active = false;
+                        });
+                }
+
+                attacks.onCancel = () =>
+                {
+                    RemoveMenu(attacks);
                 };
-
-                AddMenu(submenuTest);
-
 
                 playerMenu.active = false;
                 //subMenus
@@ -413,7 +405,7 @@ namespace HellTrail.Core.Combat
 
         public void BeginAction()
         {
-
+            ActingUnit.depth = 1;
             State = BattleState.DoAction;
         }
 
@@ -424,12 +416,20 @@ namespace HellTrail.Core.Combat
 
         public void TurnProgression()
         {
+            turnCount++;
+            State = BattleState.BeginTurn;
+            ActingUnit.depth = 0f;
+
+            if (weaknessHitLastRound)
+            {
+                weaknessHitLastRound = false;
+                return;
+            }
+
+            unitsHitLastRound.Clear();
             if (++actingUnit >= units.Count)
                 actingUnit = 0;
 
-            turnCount++;
-
-            State = BattleState.BeginTurn;
         }
 
         public void CheckInput()

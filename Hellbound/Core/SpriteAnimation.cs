@@ -59,6 +59,13 @@ namespace HellTrail.Core
             onAnimationPlay?.Invoke();
         }
 
+        public void Reset()
+        {
+            frameCounter = 0;
+            currentFrame = 0;
+            finished = false;
+        }
+
         public void Draw(SpriteBatch spriteBatch, Vector2 scale = default)
         {
             if (scale == default)

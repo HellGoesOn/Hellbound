@@ -23,6 +23,7 @@
     <None Remove="Assets\Audio\Sounds\Blip_Select.wav" />
     <None Remove="Assets\Audio\Sounds\Death.wav" />
     <None Remove="Assets\Audio\Sounds\WhatDaDogDoin.wav" />
+    <None Remove="Assets\Dumbass.png" />
     <None Remove="Assets\fffont.ttf" />
     <None Remove="Assets\retganon.ttf" />
     <None Remove="Assets\TestAnimation.png" />
@@ -33,6 +34,7 @@
     <None Remove="Assets\Textures\Doorkun.png" />
     <None Remove="Assets\Textures\Elements.png" />
     <None Remove="Assets\Textures\Elements2.png" />
+    <None Remove="Assets\Textures\FlipOff.png" />
     <None Remove="Assets\Textures\PeasToDisturb3.png" />
     <None Remove="Assets\Textures\Slime.png" />
     <None Remove="Assets\Textures\Slime2.png" />

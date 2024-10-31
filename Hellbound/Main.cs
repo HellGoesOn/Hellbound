@@ -9,6 +9,7 @@ using HellTrail.Render;
 using Microsoft.Xna.Framework.Input;
 using HellTrail.Core.Combat;
 using HellTrail.Core;
+using HellTrail.Core.UI;
 
 namespace HellTrail
 {
@@ -55,7 +56,7 @@ namespace HellTrail
             AssetManager.Load(this);
             Renderer.Load(GraphicsDevice);
             CameraManager.Initialize();
-
+            UIManager.Init();
             GlobalPlayer.Init();
             List<Unit> list = [];
             for(int i = 0; i < 5; i++)
@@ -65,8 +66,9 @@ namespace HellTrail
                     name = "Slime",
                     ai = new BasicAI()
                 };
+                slime.resistances[ElementalType.Phys] = 0.20f;
+                slime.resistances[ElementalType.Fire] = -0.20f;
                 slime.abilities.Add(new Bite());
-                slime.abilities.Add(new Megidolaon());
                 slime.BattleStation = new Vector2(220 + i * 8 + ((i / 3) * 24), 60 + i * 32 - (i / 3 * 86));
                 list.Add(slime);
             }
@@ -108,6 +110,7 @@ namespace HellTrail
                 gdm.ApplyChanges();
             }
 
+            UIManager.Update();
             Input.Update();
             SoundEngine.Update();
             CameraManager.Update();
@@ -121,11 +124,7 @@ namespace HellTrail
             GraphicsDevice.Clear(Color.DarkOliveGreen);
             base.Draw(gameTime);
 
-            Camera cam = CameraManager.GetCamera;
-            if (cam != null)
-                spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, cam.transform);
-            else
-                spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
+            Renderer.StartSpriteBatch(spriteBatch);
             battle?.DrawField(spriteBatch);
             //Vector2 mousePos = Input.MousePosition;
             //spriteBatch.Draw(AssetManager.Textures["Elements2"], new Vector2((int)(mousePos.X), (int)(mousePos.Y)), Color.White);
@@ -138,6 +137,7 @@ namespace HellTrail
             GraphicsDevice.Clear(Color.Transparent);
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
             battle?.DrawUI(spriteBatch);
+            UIManager.Draw(spriteBatch);
             //spriteBatch.Draw(AssetManager.Textures["Pixel"], new Vector2(110, 586), new Rectangle(0, 0, 66, 20), Color.Black, 0f, Vector2.Zero, new Vector2(4), SpriteEffects.None, 0f);
             //spriteBatch.Draw(AssetManager.Textures["Pixel"], new Vector2(114, 590), new Rectangle(0, 0, 64, 18), Color.Gray, 0f, Vector2.Zero, new Vector2(4), SpriteEffects.None, 0f);
             //spriteBatch.Draw(AssetManager.Textures["Elements2"], new Vector2(400, 590), null, Color.White, 0f, Vector2.Zero, new Vector2(4), SpriteEffects.None, 0f);

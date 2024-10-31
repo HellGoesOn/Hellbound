@@ -52,4 +52,14 @@ namespace HellTrail.Core.Combat
         Victory,
         Loss
     }
+
+    public enum ElementalType
+    {
+        Phys,
+        Fire,
+        Ice,
+        Elec,
+        Wind,
+        Almighty
+    }
 }

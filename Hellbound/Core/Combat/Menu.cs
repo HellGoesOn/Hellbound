@@ -31,6 +31,8 @@ namespace HellTrail.Core.Combat
 
         public MenuOption this[int index] => items[index];
 
+        public static bool mouseEnabled = false;
+
         public void Update()
         {
             if (!active)
@@ -78,29 +80,32 @@ namespace HellTrail.Core.Combat
 
             }
 
-            if (Input.PressedKey(Keys.E) || Input.LMBClicked)
+            if (Input.PressedKey(Keys.E) || (Input.LMBClicked && mouseEnabled))
             {
                 onSelectOption?.Invoke();
                 if (items.Count > 0)
                     items[selectedOption].onConfirmOption?.Invoke();
             }
 
-            var tryMouse = items.FirstOrDefault(x => OptionContainsMouse(x));
-            if (tryMouse != null)
+            if (mouseEnabled)
             {
-                selectedOption = tryMouse.index;
-
-                if(selectedOption != oldOption)
+                var tryMouse = items.FirstOrDefault(x => OptionContainsMouse(x));
+                if (tryMouse != null)
                 {
-                    onChangeOption?.Invoke();
-                    oldOption = selectedOption;
+                    selectedOption = tryMouse.index;
+
+                    if (selectedOption != oldOption)
+                    {
+                        onChangeOption?.Invoke();
+                        oldOption = selectedOption;
+                    }
                 }
             }
 
             if (items.Count <= 0)
                 selectedOption = 0;
 
-            if (Input.PressedKey(Keys.Q) || Input.RMBClicked)
+            if (Input.PressedKey(Keys.Q) || (Input.RMBClicked && mouseEnabled))
             {
                 onCancel?.Invoke();
                 if (parentMenu != null)

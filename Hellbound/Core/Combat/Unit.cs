@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,19 +15,28 @@ namespace HellTrail.Core.Combat
         public int SP;
         public int MaxSP;
         public float Speed;
+        public float depth;
+        public float shake;
         public string name;
         public string sprite;
+        public string currentAnimation = "";
+        public string defaultAnimation = "";
         public Team team;
         private Vector2 battleStation;
         public Vector2 position;
-        public Vector2 size = new Vector2(32);
+        public Vector2 size = new (32);
         public BasicAI? ai = null;
         public List<Ability> abilities = [];
+        public Dictionary<string, SpriteAnimation> animations = new Dictionary<string, SpriteAnimation>();
+        public ElementalResistances resistances;
 
         public float opacity;
 
         public Unit()
         {
+            defaultAnimation = "Idle";
+            resistances = new ElementalResistances();
+            depth = 0f;
             sprite = "Slime3";
             opacity = 1.25f;
             name = "???";
@@ -42,6 +52,27 @@ namespace HellTrail.Core.Combat
             if (Downed && opacity > 0)
             {
                 opacity -= 0.02f;
+            }
+
+            if (shake > 0)
+            {
+                position = BattleStation + new Vector2(shake * Main.rand.Next(2) % 2 == 0 ? 1 : -1, 0f);
+                shake -= 0.01f;
+            }
+
+            if(animations.TryGetValue(currentAnimation, out var anim))
+            {
+                anim.position = position;
+                anim.depth = depth;
+                anim.color = Downed ? Color.Crimson : Color.White;
+                anim.opacity = opacity;
+                anim.Update();
+
+                if (anim.finished)
+                {
+                    anim.Reset();
+                    currentAnimation = defaultAnimation;
+                }
             }
         }
 

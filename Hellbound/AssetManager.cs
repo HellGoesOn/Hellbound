@@ -51,8 +51,10 @@ namespace HellTrail
             pixel.SetData(new Color[1] { Color.White });
             Textures.Add("Pixel", pixel);
 
+            var fontName = "alphbeta";
+
             //var fontBakeResult = TtfFontBaker.Bake(File.ReadAllBytes(@"C:\\Windows\\Fonts\arial.ttf"),
-            var fontBakeResult = TtfFontBaker.Bake(File.ReadAllBytes(Environment.CurrentDirectory + "\\Assets\\retganon.ttf"),
+            var fontBakeResult = TtfFontBaker.Bake(File.ReadAllBytes(Environment.CurrentDirectory + $"\\Assets\\{fontName}.ttf"),
                 24,
                 1024,
                 1024,
@@ -66,8 +68,8 @@ namespace HellTrail
             );
 
             DefaultFont = fontBakeResult.CreateSpriteFont(main.GraphicsDevice);
-
-            fontBakeResult = TtfFontBaker.Bake(File.ReadAllBytes(Environment.CurrentDirectory + "\\Assets\\retganon.ttf"),
+            
+            fontBakeResult = TtfFontBaker.Bake(File.ReadAllBytes(Environment.CurrentDirectory + $"\\Assets\\{fontName}.ttf"),
                 30,
                 1024,
                 1024,

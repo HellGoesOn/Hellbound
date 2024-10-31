@@ -18,12 +18,13 @@ namespace HellTrail.Core.Combat
             Unit protag = new()
             {
                 name = "Doorkun",
-                sprite = "Doorkun"
+                sprite = "Dumbass"
             };
             protag.abilities.Add(new GrandSeal());
-            protag.abilities.Add(new Bite());
-            protag.abilities.Add(new Megidolaon());
+            protag.abilities.Add(new Agi());
             protag.abilities.Add(new Singularity());
+
+            ProtagAnimations(protag);
 
             Unit sidekick = new()
             {
@@ -44,6 +45,33 @@ namespace HellTrail.Core.Combat
                 unit.BattleStation = new Vector2(60 + 4 * i, 80 + 32 * i);
                 i++;
             }
+        }
+
+        // to do: create json file, pull from there instead
+        public static void ProtagAnimations(Unit mc)
+        {
+            SpriteAnimation idle = new("Dumbass", [new FrameData(0, 0, 32, 32)]);
+            SpriteAnimation flipOff = new("FlipOff",
+                [
+                new FrameData(0, 0, 32, 32),
+                new FrameData(0, 32, 32, 32),
+                new FrameData(0, 64, 32, 32),
+                new FrameData(0, 64, 32, 32),
+                new FrameData(0, 64, 32, 32),
+                new FrameData(0, 64, 32, 32),
+                new FrameData(0, 96, 32, 32),
+                new FrameData(0, 96, 32, 32),
+                new FrameData(0, 96, 32, 32),
+                new FrameData(0, 96, 32, 32),
+                new FrameData(0, 96, 32, 32),
+                new FrameData(0, 96, 32, 32),
+                new FrameData(0, 64, 32, 32),
+                ]);
+
+            flipOff.timePerFrame = 5;
+
+            mc.animations.Add("Idle", idle);
+            mc.animations.Add("Cast", flipOff);
         }
     }
 }

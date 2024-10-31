@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using HellTrail.Core;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -30,22 +31,38 @@ namespace HellTrail.Render
             UITarget.Dispose();
         }
 
-        public static void DrawRect(SpriteBatch sb, Vector2 position, Vector2 size, int thickness, Color color, float depth = 0f)
+        public static void DrawRect(SpriteBatch sb, Vector2 position, Vector2 size, int thickness, Color color, float depth = 0f, float rotation = 0f, Vector2 origin = default)
         {
             var tex = AssetManager.Textures["Pixel"];
-            sb.Draw(tex, position, null, color, 0f, Vector2.Zero, size, SpriteEffects.None, depth);
+            sb.Draw(tex, position, null, color, rotation, origin, size, SpriteEffects.None, depth);
         }
 
-        public static (int, int) Multiplier
+        public static void StartSpriteBatch(SpriteBatch spriteBatch, bool ignoreCam = false, BlendState? blend = null, DepthStencilState? stencil = null, SamplerState state = null)
         {
-            get
-            {
-                var gdm = Main.instance.gdm;
-                int multX = gdm.PreferredBackBufferWidth / PreferedWidth;
-                int multY = gdm.PreferredBackBufferHeight / PreferedHeight;
+            if (state == null)
+                state = SamplerState.PointClamp;
 
-                return (multX, multY);
-            }
+            if (stencil == null)
+                stencil = DepthStencilState.Default;
+
+            if(blend == null)
+                blend = BlendState.AlphaBlend;
+
+            Camera cam = CameraManager.GetCamera;
+
+            if (cam != null && !ignoreCam)
+                spriteBatch.Begin(SpriteSortMode.FrontToBack, blend, state, stencil, RasterizerState.CullNone, null, cam.transform);
+            else
+                spriteBatch.Begin(SpriteSortMode.FrontToBack, blend, state, stencil, RasterizerState.CullNone, null);
+        }
+
+        public static void DrawBorderedString(this SpriteBatch sb, SpriteFont font, string text, Vector2 position, Color color, Color borderColor, float rotation, Vector2 origin, Vector2 scale, SpriteEffects spriteEffects, float depth)
+        {
+            sb.DrawString(font, text, position + Vector2.UnitX * 2, borderColor, rotation, origin, scale, spriteEffects, depth);
+            sb.DrawString(font, text, position - Vector2.UnitX * 2, borderColor, rotation, origin, scale, spriteEffects, depth);
+            sb.DrawString(font, text, position - Vector2.UnitY * 2, borderColor, rotation, origin, scale, spriteEffects, depth);
+            sb.DrawString(font, text, position + Vector2.UnitY * 2, borderColor, rotation, origin, scale, spriteEffects, depth);
+            sb.DrawString(font, text, position, color, rotation, origin, scale, spriteEffects, depth);
         }
     }
 }
