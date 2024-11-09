@@ -14,16 +14,22 @@ namespace HellTrail.Core.UI
 
         public List<UIElement> children = [];
 
-        public void Update()
+        public virtual void Update()
         {
+            if (!active)
+                return;
+
             foreach (UIElement child in children)
             {
                 child.Update();
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
+            if (!visible)
+                return;
+
             foreach (UIElement child in children)
             {
                 child.Draw(spriteBatch);

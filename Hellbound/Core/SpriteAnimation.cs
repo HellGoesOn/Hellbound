@@ -20,14 +20,15 @@ namespace HellTrail.Core
         public float rotation;
         public float depth;
         public string texture;
+        public string nextAnimation;
 
         public Vector2 position;
         public Vector2 scale;
         public Color color;
         public FrameData[] frameData;
 
-        public Action? onAnimationPlay;
-        public Action? onAnimationEnd;
+        public Action onAnimationPlay;
+        public Action onAnimationEnd;
 
         public SpriteAnimation(string texture, FrameData[] frameData)
         {

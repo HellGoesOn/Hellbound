@@ -1,4 +1,5 @@
-﻿using HellTrail.Render;
+﻿using HellTrail.Core.UI.CombatUI;
+using HellTrail.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -11,24 +12,28 @@ namespace HellTrail.Core.UI
 {
     public static class UIManager
     {
-        public static List<UIState> UIStates = [];
+        public static readonly List<UIState> UIStates = [];
+
+        public static CombatUIState combatUI;
 
         public static void Init()
         {
+            combatUI = new CombatUIState();
+
             var panel = new UIPanel
             {
-                size = new Vector2(1000, 60),
-                Position = new Vector2(16, Renderer.UIPreferedHeight - 78),
+                size = new Vector2(280, 120),
+                Position = new Vector2(16, Renderer.UIPreferedHeight - 140),
             };
-            string text = "[W][A][S][D] -> Navigate menu. [E] or [LMB] -> Confirm. [Q] or [RMB] -> Cancel";
+            string text = "[W][A][S][D] Navigate\n[E] Confirm\n[Q] Cancel";
             var tutorialText = new UIBorderedText(text);
             tutorialText.Position = new Vector2(16);
             panel.Append(tutorialText);
             //panel.Rotation = -MathHelper.PiOver2;
-            var basePos = new Vector2(16, Renderer.UIPreferedHeight - 78);
-            var uiState = new UIState();
-            CreateState().Append(panel);
-            
+            var state = CreateState();
+            state.Append(panel);
+
+            UIStates.Add(combatUI);
         }
 
         public static void Update()

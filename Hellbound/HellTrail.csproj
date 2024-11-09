@@ -4,7 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
@@ -40,6 +40,7 @@
     <None Remove="Assets\Textures\Slime2.png" />
     <None Remove="Assets\Textures\Slime3.png" />
     <None Remove="Assets\Textures\Tomato.png" />
+    <None Remove="Assets\Textures\VictoryPose.png" />
     <None Remove="Assets\Textures\WhatDaDogDoin.png" />
     <None Remove="Assets\Textures\WhatDaDogDoin2.png" />
   </ItemGroup>

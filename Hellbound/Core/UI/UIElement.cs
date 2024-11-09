@@ -10,10 +10,10 @@ namespace HellTrail.Core.UI
 {
     public class UIElement
     {
-        public UIEventHandler? onUpdate;
+        public UIEventHandler onUpdate;
         public Vector2 size;
         public List<UIElement> children = [];
-        public UIElement? parent;
+        public UIElement parent;
 
         public void Update()
         {
@@ -44,7 +44,7 @@ namespace HellTrail.Core.UI
 
         public T MakeChild<T>() where T : UIElement
         {
-            T? result = default;
+            T result = default;
             result.parent = this;
 
             return result;

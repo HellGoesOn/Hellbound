@@ -1,4 +1,5 @@
-﻿using HellTrail.Render;
+﻿using HellTrail.Core.UI;
+using HellTrail.Render;
 using Microsoft.VisualBasic.FileIO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -37,7 +38,7 @@ namespace HellTrail.Core.Combat
 
         public Random rand;
 
-        public Ability? selectedAbility;
+        public Ability selectedAbility;
 
         public List<Unit> units;
 
@@ -264,7 +265,7 @@ namespace HellTrail.Core.Combat
                                 clr = Color.White;
                                 spriteBatch.Draw(AssetManager.Textures["Cursor3"], new Vector2(position.X - 40, 6+menu.position.Y + menu.GetSize.Y * option.index) + sway, null, Color.White, 0f, new Vector2(10, 0), 3f, SpriteEffects.None, 0f);
                             }
-                            spriteBatch.DrawString(AssetManager.CombatMenuFont, option.name, menu.position + new Vector2(8, 4+menu.GetSize.Y * option.index), clr, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
+                            spriteBatch.DrawBorderedString(AssetManager.CombatMenuFont, option.name, menu.position + new Vector2(8, 4+menu.GetSize.Y * option.index), clr, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
                             //Renderer.DrawRect(spriteBatch, menu.position + new Vector2(4, 4+menu.GetSize.Y * option.index), menu.GetSize, 1, Color.Orange * 0.75f);
                         }
                     }
@@ -420,8 +421,24 @@ namespace HellTrail.Core.Combat
             State = BattleState.BeginTurn;
             ActingUnit.depth = 0f;
 
+            foreach(var unit in units)
+            {
+                Sequence seq = new Sequence(this)
+                {
+                    active = true
+                };
+
+                seq.Add(new MoveActorSequence(unit, unit.BattleStation));
+
+                this.sequences.Add(seq);
+            }
+
             if (weaknessHitLastRound)
             {
+                Sequence seq = new(this);
+                seq.Add(new DelaySequence(45));
+                sequences.Add(seq);
+                UIManager.combatUI.isRunning = true;
                 weaknessHitLastRound = false;
                 return;
             }
@@ -471,7 +488,18 @@ namespace HellTrail.Core.Combat
                 SoundEngine.StartMusic("Victory", false);
                 // end Battle;
                 battleEnded = true;
-                state = BattleState.Victory;
+                state = BattleState.Victory; 
+                foreach (var unit in units)
+                {
+                    Sequence seq = new Sequence(this)
+                    {
+                        active = true
+                    };
+
+                    seq.Add(new SetActorAnimation(unit, "Victory"));
+
+                    this.sequences.Add(seq);
+                }
                 return;
             }
 
@@ -527,7 +555,7 @@ namespace HellTrail.Core.Combat
             }
 
             var tryMouse = targets.FirstOrDefault(x => x.ContainsMouse(-x.size * 0.5f));
-            if (tryMouse != null)
+            if (tryMouse != null && Menu.mouseEnabled)
                 selectedTarget = targets.IndexOf(tryMouse);
 
             if (selectedTarget < 0)

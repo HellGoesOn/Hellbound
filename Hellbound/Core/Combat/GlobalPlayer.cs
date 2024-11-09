@@ -20,6 +20,7 @@ namespace HellTrail.Core.Combat
                 name = "Doorkun",
                 sprite = "Dumbass"
             };
+            protag.resistances[ElementalType.Phys] = -0.5f;
             protag.abilities.Add(new GrandSeal());
             protag.abilities.Add(new Agi());
             protag.abilities.Add(new Singularity());
@@ -50,7 +51,21 @@ namespace HellTrail.Core.Combat
         // to do: create json file, pull from there instead
         public static void ProtagAnimations(Unit mc)
         {
-            SpriteAnimation idle = new("Dumbass", [new FrameData(0, 0, 32, 32)]);
+            SpriteAnimation idle = new("DumbassIdle", 
+                [
+                new FrameData(0, 0, 32, 32),
+                new FrameData(0, 32, 32, 32),
+                new FrameData(0, 64, 32, 32)
+                ]
+                );
+            idle.looping = true;
+            idle.timePerFrame = 20;
+            SpriteAnimation victoryPose = new("VictoryPose", [
+                new FrameData(0, 0, 32, 32),
+                new FrameData(0, 32, 32, 32),
+                ]);
+            victoryPose.looping = true;
+            victoryPose.timePerFrame = 10;
             SpriteAnimation flipOff = new("FlipOff",
                 [
                 new FrameData(0, 0, 32, 32),
@@ -66,12 +81,14 @@ namespace HellTrail.Core.Combat
                 new FrameData(0, 96, 32, 32),
                 new FrameData(0, 96, 32, 32),
                 new FrameData(0, 64, 32, 32),
-                ]);
-
-            flipOff.timePerFrame = 5;
-
+                ])
+            {
+                timePerFrame = 5,
+                nextAnimation = "Idle"
+            };
             mc.animations.Add("Idle", idle);
             mc.animations.Add("Cast", flipOff);
+            mc.animations.Add("Victory", victoryPose);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using HellTrail.Core.Combat.Status;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,7 @@ namespace HellTrail.Core.Combat
         public Vector2 size = new (32);
         public BasicAI? ai = null;
         public List<Ability> abilities = [];
+        public List<StatusEffect> statusEffects = [];
         public Dictionary<string, SpriteAnimation> animations = new Dictionary<string, SpriteAnimation>();
         public ElementalResistances resistances;
 
@@ -34,7 +36,7 @@ namespace HellTrail.Core.Combat
 
         public Unit()
         {
-            defaultAnimation = "Idle";
+            currentAnimation = defaultAnimation = "Idle";
             resistances = new ElementalResistances();
             depth = 0f;
             sprite = "Slime3";
@@ -56,7 +58,7 @@ namespace HellTrail.Core.Combat
 
             if (shake > 0)
             {
-                position = BattleStation + new Vector2(shake * Main.rand.Next(2) % 2 == 0 ? 1 : -1, 0f);
+                position += new Vector2(shake * Main.rand.Next(2) % 2 == 0 ? 1 : -1, 0f);
                 shake -= 0.01f;
             }
 
@@ -71,7 +73,7 @@ namespace HellTrail.Core.Combat
                 if (anim.finished)
                 {
                     anim.Reset();
-                    currentAnimation = defaultAnimation;
+                    currentAnimation = string.IsNullOrWhiteSpace(anim.nextAnimation) ? currentAnimation : anim.nextAnimation;
                 }
             }
         }

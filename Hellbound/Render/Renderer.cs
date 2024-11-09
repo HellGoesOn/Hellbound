@@ -37,7 +37,7 @@ namespace HellTrail.Render
             sb.Draw(tex, position, null, color, rotation, origin, size, SpriteEffects.None, depth);
         }
 
-        public static void StartSpriteBatch(SpriteBatch spriteBatch, bool ignoreCam = false, BlendState? blend = null, DepthStencilState? stencil = null, SamplerState state = null)
+        public static void StartSpriteBatch(SpriteBatch spriteBatch, bool ignoreCam = false, BlendState blend = null, DepthStencilState stencil = null, SamplerState state = null)
         {
             if (state == null)
                 state = SamplerState.PointClamp;
