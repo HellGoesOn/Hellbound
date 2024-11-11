@@ -71,6 +71,7 @@ namespace HellTrail
             foreach(Unit unit in GlobalPlayer.ActiveParty)
             {
                 unit.HP = unit.MaxHP;
+                unit.SP = unit.MaxSP;
                 unit.opacity = 1f;
             }
             List<Unit> list = [];
@@ -85,7 +86,6 @@ namespace HellTrail
                 slime.resistances[ElementalType.Fire] = -0.5f;
                 slime.abilities.Add(new Bite());
                 slime.abilities.Add(new Agi());
-                slime.abilities.Add(new Disturb());
                 slime.BattleStation = new Vector2(220 + i * 8 + ((i / 3) * 24), 60 + i * 32 - (i / 3 * 86));
                 list.Add(slime);
             }

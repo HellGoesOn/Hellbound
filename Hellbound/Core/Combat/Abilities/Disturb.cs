@@ -11,6 +11,7 @@ namespace HellTrail.Core.Combat.Abilities
     {
         public Disturb() : base("War Cry", "High chance of Fear to 1 foe")
         {
+            spCost = 3;
             aoe = false;
             canTarget = ValidTargets.Enemy;
         }

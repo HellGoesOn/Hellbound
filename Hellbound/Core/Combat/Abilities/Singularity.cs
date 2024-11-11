@@ -11,6 +11,7 @@ namespace HellTrail.Core.Combat.Abilities
     {
         public Singularity() : base("Singularity", "???")
         {
+            spCost = 100;
             canTarget = ValidTargets.AllButSelf;
             aoe = true;
         }

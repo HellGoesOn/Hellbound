@@ -12,7 +12,7 @@ namespace HellTrail.Core.Combat
 {
     public class Menu
     {
-        private int oldOption;
+        public int OldOption { private set; get; }
         public int selectedOption;
         public int sideStep = 1;
         public bool active;
@@ -40,7 +40,7 @@ namespace HellTrail.Core.Combat
 
             if(Input.PressedKey(Keys.S))
             {
-                oldOption = selectedOption;
+                OldOption = selectedOption;
                 ++selectedOption;
                 onChangeOption?.Invoke();
                 if (selectedOption >= items.Count)
@@ -51,7 +51,7 @@ namespace HellTrail.Core.Combat
 
             if (Input.PressedKey(Keys.W))
             {
-                oldOption = selectedOption;
+                OldOption = selectedOption;
                 --selectedOption;
                 onChangeOption?.Invoke();
                 if (selectedOption < 0)
@@ -61,7 +61,7 @@ namespace HellTrail.Core.Combat
 
             if (Input.PressedKey(Keys.D))
             {
-                oldOption = selectedOption;
+                OldOption = selectedOption;
                 selectedOption += sideStep;
                 onChangeOption?.Invoke();
                 if (selectedOption >= items.Count)
@@ -72,7 +72,7 @@ namespace HellTrail.Core.Combat
 
             if (Input.PressedKey(Keys.A))
             {
-                oldOption = selectedOption;
+                OldOption = selectedOption;
                 selectedOption -= sideStep;
                 onChangeOption?.Invoke();
                 if (selectedOption < 0)
@@ -80,7 +80,7 @@ namespace HellTrail.Core.Combat
 
             }
 
-            if (Input.PressedKey(Keys.E) || (Input.LMBClicked && mouseEnabled))
+            if ((Input.PressedKey(Keys.E) || (Input.LMBClicked && mouseEnabled)) && (items.Count <= 0 || items[selectedOption].canSelect))
             {
                 onSelectOption?.Invoke();
                 if (items.Count > 0)
@@ -94,10 +94,10 @@ namespace HellTrail.Core.Combat
                 {
                     selectedOption = tryMouse.index;
 
-                    if (selectedOption != oldOption)
+                    if (selectedOption != OldOption)
                     {
                         onChangeOption?.Invoke();
-                        oldOption = selectedOption;
+                        OldOption = selectedOption;
                     }
                 }
             }
@@ -158,6 +158,7 @@ namespace HellTrail.Core.Combat
         public class MenuOption 
         {
             public int index;
+            public bool canSelect = true;
             public float scale;
             public float opacity;
             public string name = "???";

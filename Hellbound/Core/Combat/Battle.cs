@@ -233,10 +233,10 @@ namespace HellTrail.Core.Combat
             foreach (Unit unit in units)
             {
                 //Color clr = unit.Downed ? Color.Crimson : Color.White;
-                //Vector2 adjPos = unit.position * 4;
-                //Vector2 orig = Assets.DefaultFont.MeasureString($"[HP:{unit.HP}]") * 0.5f;
-                //Vector2 finalPos = new Vector2((int)adjPos.X, (int)(adjPos.Y + 64));
-                //spriteBatch.DrawBorderedString(AssetManager.DefaultFont, $"[HP:{unit.HP}]", finalPos, Color.White, Color.Black, 0f, orig, Vector2.One, SpriteEffects.None, 0);
+                Vector2 adjPos = unit.position * 4;
+                Vector2 orig = Assets.SmallFont.MeasureString($"[HP:{unit.HP}]") * 0.5f;
+                Vector2 finalPos = new Vector2((int)adjPos.X, (int)(adjPos.Y + 64));
+                spriteBatch.DrawBorderedString(Assets.SmallFont, $"[HP:{unit.HP}]", finalPos, Color.White, Color.Black, 0f, orig, Vector2.One, SpriteEffects.None, 0);
 
                 if (isPickingTarget)
                 {
@@ -272,12 +272,12 @@ namespace HellTrail.Core.Combat
                             Vector2 size = Assets.DefaultFont.MeasureString(option.name);
                             Vector2 orig3 = size * 0.5f;
                             var position = new Vector2(boxPos.X + 4, boxPos.Y + 4 + i * size.Y);
-                            Color clr = Color.Gray;
+                            Color clr = option.color != Color.White ? option.color : menu.selectedOption == i ? Color.White : Color.Gray;
                             if (menu.selectedOption == i && menu.active)
                             {
-                                clr = Color.White;
                                 spriteBatch.Draw(Assets.Textures["Cursor3"], new Vector2(position.X - 40, 6+menu.position.Y + menu.GetSize.Y * option.index) + sway, null, Color.White, 0f, new Vector2(10, 0), 3f, SpriteEffects.None, 0f);
                             }
+
                             spriteBatch.DrawBorderedString(Assets.CombatMenuFont, option.name, menu.position + new Vector2(8, 4+menu.GetSize.Y * option.index), clr, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
                             //Renderer.DrawRect(spriteBatch, menu.position + new Vector2(4, 4+menu.GetSize.Y * option.index), menu.GetSize, 1, Color.Orange * 0.75f);
                         }
@@ -340,13 +340,15 @@ namespace HellTrail.Core.Combat
                 }; 
                 int option = attacks.selectedOption > ActingUnit.abilities.Count ? 0 : attacks.selectedOption < 0 ? ActingUnit.abilities.Count - 1 : attacks.selectedOption;
 
-                UIManager.combatUI.skillDescription.text = ActingUnit.abilities[option].Description;
+                var skill = ActingUnit.abilities[option];
+                UIManager.combatUI.skillDescription.text = skill.Description;
+                UIManager.combatUI.skillCost.text = $"{(skill.hpCost > 0 ? $"Consumes {skill.hpCost} HP" : "")}{(skill.spCost > 0 ? $"Consumes {skill.spCost} SP" : "")}";
 
                 AddMenu(attacks);
 
                 foreach (var ability in ActingUnit.abilities)
                 {
-                    attacks.AddOption(ability.Name,
+                    var attackOption = attacks.AddOption(ability.Name,
                         () =>
                         {
                             isPickingTarget = true;
@@ -381,7 +383,10 @@ namespace HellTrail.Core.Combat
                                 isPickingTarget = false;
                                 int option = attacks.selectedOption > ActingUnit.abilities.Count ? 0 : attacks.selectedOption < 0 ? ActingUnit.abilities.Count - 1 : attacks.selectedOption;
 
-                                UIManager.combatUI.skillDescription.text = ActingUnit.abilities[option].Description;
+                                Ability skill = ActingUnit.abilities[option];
+
+                                UIManager.combatUI.skillDescription.text = skill.Description;
+                                UIManager.combatUI.skillCost.text = $"{(skill.hpCost > 0 ? $"Consumes {skill.hpCost} HP" : "")}{(skill.spCost > 0 ? $"Consumes {skill.spCost} SP" : "")}";
                                 RemoveMenu(fakeMenu);
                             };
 
@@ -398,19 +403,29 @@ namespace HellTrail.Core.Combat
                             AddMenu(fakeMenu);
                             attacks.active = false;
                             UIManager.combatUI.skillDescription.text = "";
+                            UIManager.combatUI.skillCost.text = "";
                         });
-                }
 
+                    if (!ability.CanCast(ActingUnit))
+                    {
+                        attackOption.canSelect = false;
+                        attackOption.color = Color.DarkSlateGray;
+                    }
+                }
+                
                 attacks.onChangeOption = () =>
                 {
                     int option = attacks.selectedOption >= ActingUnit.abilities.Count ? 0 : attacks.selectedOption < 0 ? ActingUnit.abilities.Count - 1 : attacks.selectedOption;
-                    
-                    UIManager.combatUI.skillDescription.text = ActingUnit.abilities[option].Description;
+
+                    var skill = ActingUnit.abilities[option];
+                    UIManager.combatUI.skillDescription.text = skill.Description;
+                    UIManager.combatUI.skillCost.text = $"{(skill.hpCost > 0 ? $"Consumes {skill.hpCost} HP" : "")}{(skill.spCost > 0 ? $"Consumes {skill.spCost} SP" : "")}";
                 };
 
                 attacks.onCancel = () =>
                 {
                     UIManager.combatUI.skillDescription.text = "";
+                    UIManager.combatUI.skillCost.text = "";
                     RemoveMenu(attacks);
                 };
 

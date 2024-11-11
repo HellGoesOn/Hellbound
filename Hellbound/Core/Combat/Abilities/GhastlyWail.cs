@@ -11,6 +11,7 @@ namespace HellTrail.Core.Combat.Abilities
     {
         public GhastlyWail() : base("Ghastly Wail", "Kill all affected with Fear")
         {
+            spCost = 20;
             aoe = true;
             canTarget = ValidTargets.All;
         }
@@ -22,6 +23,7 @@ namespace HellTrail.Core.Combat.Abilities
                 seq.Add(new DoDamageSequence(caster, target, 99999, ElementalType.Almighty));
                 seq.Add(new PlaySoundSequence("Death"));
             }
+            seq.Add(new DelaySequence(0));
             battle.sequences.Add(seq);
         }
     }

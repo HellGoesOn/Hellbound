@@ -13,6 +13,7 @@ namespace HellTrail.Core.Combat.Abilities.Fire
     {
         public Maragi() : base("Maragi", "Light Fire damage to all foes.\nHigh chance of Burn")
         {
+            spCost = 9;
             aoe = true;
             canTarget = ValidTargets.Enemy;
         }
@@ -28,7 +29,7 @@ namespace HellTrail.Core.Combat.Abilities.Fire
             foreach (Unit target in targets)
             {
                 sequence.Add(new PlaySoundSequence("GunShot"));
-                sequence.Add(new DoDamageSequence(caster, target, 25, ElementalType.Fire));
+                sequence.Add(new DoDamageSequence(caster, target, 12, ElementalType.Fire));
                 sequence.Add(new ApplyEffectSequence(sequence, target, new Burning(), 95, true));
                 sequence.Add(new DelaySequence(5)); 
                 sequence.Add(new OneActionSequence(() =>

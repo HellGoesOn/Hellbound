@@ -19,6 +19,7 @@ namespace HellTrail
 
         public static SpriteFont DefaultFont;
         public static SpriteFont CombatMenuFont;
+        public static SpriteFont SmallFont;
 
         public static void Load(Main main)
         {
@@ -83,6 +84,21 @@ namespace HellTrail
             );
 
             CombatMenuFont = fontBakeResult.CreateSpriteFont(main.GraphicsDevice);
+
+            fontBakeResult = TtfFontBaker.Bake(File.ReadAllBytes(Environment.CurrentDirectory + $"\\Assets\\{fontName}.ttf"),
+                16,
+                1024,
+                1024,
+                new[]
+                {
+                    CharacterRange.BasicLatin,
+                    CharacterRange.Latin1Supplement,
+                    CharacterRange.LatinExtendedA,
+                    CharacterRange.Cyrillic
+                }
+            );
+
+            SmallFont = fontBakeResult.CreateSpriteFont(main.GraphicsDevice);
         }
 
         public static void Unload()

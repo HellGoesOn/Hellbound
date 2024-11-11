@@ -27,6 +27,7 @@ namespace HellTrail.Core.Combat.AI
                 {
                     currentAbility = 0;
                 }
+
             }
 
             battle.State = BattleState.DoAction;

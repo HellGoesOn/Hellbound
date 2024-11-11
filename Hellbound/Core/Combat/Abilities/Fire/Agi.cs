@@ -13,6 +13,7 @@ namespace HellTrail.Core.Combat.Abilities.Fire
     {
         public Agi() : base("Agi", "Light Fire damage to 1 foe.\nHigh chance of Burn")
         {
+            spCost = 3;
             aoe = false;
             canTarget = ValidTargets.Enemy;
         }
@@ -45,7 +46,7 @@ namespace HellTrail.Core.Combat.Abilities.Fire
                     }
                 }
             }));
-            sequence.Add(new DoDamageSequence(caster, targets[0], 25, ElementalType.Fire));
+            sequence.Add(new DoDamageSequence(caster, targets[0], 12, ElementalType.Fire));
             sequence.Add(new ApplyEffectSequence(sequence, targets[0], new Burning(), 95, true));
             sequence.Add(new DelaySequence(20));
             sequence.Add(new MoveActorSequence(caster, caster.BattleStation));

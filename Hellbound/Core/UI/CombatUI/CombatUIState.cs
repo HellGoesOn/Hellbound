@@ -21,6 +21,7 @@ namespace HellTrail.Core.UI.CombatUI
         public Vector2 basePosition;
 
         public UIBorderedText skillDescription;
+        public UIBorderedText skillCost;
         public UIPanel skillPanel;
         public UIBorderedText debug;
 
@@ -70,8 +71,11 @@ namespace HellTrail.Core.UI.CombatUI
             };
 
             skillDescription = new UIBorderedText("");
+            skillCost = new UIBorderedText("");
+            skillCost.Position = new Vector2(12, 100);
             skillDescription.Position = new Vector2(12);
             skillPanel.Append(skillDescription);
+            skillPanel.Append(skillCost);
 
             var panel = new UIPanel()
             {

@@ -11,6 +11,7 @@ namespace HellTrail.Core.Combat.Abilities
     {
         public Megidolaon() : base("Super Bite", "I BRING YOU: MEGIDOLAON")
         {
+            hpCost = 20;
             aoe = true;
             canTarget = ValidTargets.Enemy;
         }

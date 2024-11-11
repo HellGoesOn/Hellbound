@@ -79,6 +79,11 @@ namespace HellTrail.Core.Combat
                     currentAnimation = string.IsNullOrWhiteSpace(anim.nextAnimation) ? currentAnimation : anim.nextAnimation;
                 }
             }
+
+            foreach (Ability ability in abilities)
+            {
+                ability.AdjustCosts(this);
+            }
         }
 
         public bool Downed => HP <= 0;

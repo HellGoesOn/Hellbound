@@ -13,7 +13,8 @@ namespace HellTrail.Core.Combat
         {
             if (whoAmI.abilities.Count > 0)
             {
-                Ability abilityToUse = whoAmI.abilities[battle.rand.Next(whoAmI.abilities.Count)];
+                var updatedList = whoAmI.abilities.Where(x => x.CanCast(whoAmI)).ToList();
+                Ability abilityToUse = updatedList[battle.rand.Next(updatedList.Count)];
 
                 var getTargets = battle.units.Where(GetSelector(abilityToUse, whoAmI)).ToList();
 

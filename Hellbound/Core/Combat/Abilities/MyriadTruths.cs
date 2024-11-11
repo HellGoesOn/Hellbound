@@ -11,6 +11,7 @@ namespace HellTrail.Core.Combat.Abilities
     {
         public MyriadTruths() : base("Myriad Truths", "3x Heavy Damage to All")
         {
+            spCost = 40;
             canTarget = ValidTargets.Enemy;
             aoe = true;
         }
