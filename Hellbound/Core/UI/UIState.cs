@@ -30,7 +30,7 @@ namespace HellTrail.Core.UI
             if (!visible)
                 return;
 
-            foreach (UIElement child in children)
+            foreach (UIElement child in children.Where(x=>x.Visible))
             {
                 child.Draw(spriteBatch);
             }

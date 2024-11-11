@@ -12,7 +12,7 @@ namespace HellTrail.Core.Combat
 {
     public class DamageNumber
     {
-        public int damage;
+        public string damage;
         public int timeLeft;
         private int baseTimeLeft;
         private float y;
@@ -48,7 +48,7 @@ namespace HellTrail.Core.Combat
                         text = "BLOCK";
                         break;
                     case DamageType.Repelled:
-                        color = Color.DarkGray;
+                        color = Color.White;
                         text = "REPEL";
                         break;
                     default:
@@ -58,7 +58,7 @@ namespace HellTrail.Core.Combat
             }
         }
 
-        public DamageNumber(DamageType type, int damage, Vector2 position)
+        public DamageNumber(DamageType type, string damage, Vector2 position)
         {
             text = "";
             this.damage = damage;
@@ -89,8 +89,8 @@ namespace HellTrail.Core.Combat
 
         public void Draw(SpriteBatch sb)
         {
-            var orig = AssetManager.CombatMenuFont.MeasureString(text) * 0.5f;
-            sb.DrawBorderedString(AssetManager.CombatMenuFont, text, position + new Vector2(0, y), color, Color.Black, 0f, orig, Vector2.One, SpriteEffects.None, 0f);
+            var orig = Assets.CombatMenuFont.MeasureString(text) * 0.5f;
+            sb.DrawBorderedString(Assets.CombatMenuFont, text, position + new Vector2(0, y), color, Color.Black, 0f, orig, Vector2.One, SpriteEffects.None, 0f);
         }
     }
 

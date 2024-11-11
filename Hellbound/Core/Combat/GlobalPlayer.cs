@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using HellTrail.Core.Combat.Abilities;
+using HellTrail.Core.Combat.Abilities.Fire;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +13,7 @@ namespace HellTrail.Core.Combat
     {
         private static List<Unit> party = [];
 
-        public static List<Unit> Party { get => party; set => party = value; }
+        public static List<Unit> ActiveParty { get => party; set => party = value; }
 
         public static void Init()
         {
@@ -20,10 +22,16 @@ namespace HellTrail.Core.Combat
                 name = "Doorkun",
                 sprite = "Dumbass"
             };
-            protag.resistances[ElementalType.Phys] = -0.5f;
-            protag.abilities.Add(new GrandSeal());
+            protag.resistances[ElementalType.Phys] = 0.2f;
+            protag.resistances[ElementalType.Fire] = 0.8f;
+            protag.resistances[ElementalType.DoT] = 1f;
+            protag.abilities.Add(new MyriadTruths());
             protag.abilities.Add(new Agi());
+            protag.abilities.Add(new Maragi());
             protag.abilities.Add(new Singularity());
+            protag.abilities.Add(new Disturb());
+            protag.abilities.Add(new Bite());
+            protag.abilities.Add(new GhastlyWail());
 
             ProtagAnimations(protag);
 
@@ -33,13 +41,14 @@ namespace HellTrail.Core.Combat
                 sprite = "WhatDaDogDoin2",
                 ai = new BasicAI()
             };
+            sidekick.abilities.Add(new Agi());
             sidekick.abilities.Add(new Megidolaon());
 
-            Party.Add(protag);
-            Party.Add(sidekick);
+            ActiveParty.Add(protag);
+            ActiveParty.Add(sidekick);
 
             int i = 0;
-            foreach (Unit unit in Party)
+            foreach (Unit unit in ActiveParty)
             {
                 unit.team = Team.Player;
                 unit.Speed = 7;

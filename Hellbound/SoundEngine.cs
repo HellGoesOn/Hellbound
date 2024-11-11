@@ -33,7 +33,7 @@ namespace HellTrail
             {
                 _updatedSong = false;
                 MediaPlayer.Stop();
-                var song = AssetManager.GetSong(_currentSong);
+                var song = Assets.GetSong(_currentSong);
 
                 if (song != null)
                     MediaPlayer.Play(song);
@@ -43,7 +43,7 @@ namespace HellTrail
             {
                 if (_isLooping)
                 {
-                    var song = AssetManager.GetSong(_currentSong);
+                    var song = Assets.GetSong(_currentSong);
 
                     if (song != null)
                         MediaPlayer.Play(song);
@@ -60,7 +60,7 @@ namespace HellTrail
             else
                 volume = GameOptions.GeneralVolume * volume;
 
-            var fx = AssetManager.GetSound(name)?.CreateInstance();
+            var fx = Assets.GetSound(name)?.CreateInstance();
 
             if (fx != null)
             {

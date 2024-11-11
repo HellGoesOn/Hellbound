@@ -33,7 +33,7 @@ namespace HellTrail.Render
 
         public static void DrawRect(SpriteBatch sb, Vector2 position, Vector2 size, int thickness, Color color, float depth = 0f, float rotation = 0f, Vector2 origin = default)
         {
-            var tex = AssetManager.Textures["Pixel"];
+            var tex = Assets.Textures["Pixel"];
             sb.Draw(tex, position, null, color, rotation, origin, size, SpriteEffects.None, depth);
         }
 

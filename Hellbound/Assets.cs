@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace HellTrail
 {
-    public static class AssetManager
+    public static class Assets
     {
         public static Dictionary<string, Texture2D> Textures = new Dictionary<string, Texture2D>();
         private readonly static Dictionary<string, Song> _songs = new Dictionary<string, Song>();

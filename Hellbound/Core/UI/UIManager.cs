@@ -19,19 +19,9 @@ namespace HellTrail.Core.UI
         public static void Init()
         {
             combatUI = new CombatUIState();
-
-            var panel = new UIPanel
-            {
-                size = new Vector2(280, 120),
-                Position = new Vector2(16, Renderer.UIPreferedHeight - 140),
-            };
-            string text = "[W][A][S][D] Navigate\n[E] Confirm\n[Q] Cancel";
-            var tutorialText = new UIBorderedText(text);
-            tutorialText.Position = new Vector2(16);
-            panel.Append(tutorialText);
             //panel.Rotation = -MathHelper.PiOver2;
             var state = CreateState();
-            state.Append(panel);
+            //state.Append(panel);
 
             UIStates.Add(combatUI);
         }

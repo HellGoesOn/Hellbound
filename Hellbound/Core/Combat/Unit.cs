@@ -1,4 +1,5 @@
-﻿using HellTrail.Core.Combat.Status;
+﻿using HellTrail.Core.Combat.Abilities;
+using HellTrail.Core.Combat.Status;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace HellTrail.Core.Combat
         private Vector2 battleStation;
         public Vector2 position;
         public Vector2 size = new (32);
-        public BasicAI? ai = null;
+        public BasicAI ai = null;
         public List<Ability> abilities = [];
         public List<StatusEffect> statusEffects = [];
         public Dictionary<string, SpriteAnimation> animations = new Dictionary<string, SpriteAnimation>();
@@ -43,7 +44,7 @@ namespace HellTrail.Core.Combat
             opacity = 1.25f;
             name = "???";
             HP = MaxHP = 100;
-            SP = MaxSP = 27;
+            SP = MaxSP = 100;
             Speed = 6;
         }
 
@@ -58,8 +59,10 @@ namespace HellTrail.Core.Combat
 
             if (shake > 0)
             {
-                position += new Vector2(shake * Main.rand.Next(2) % 2 == 0 ? 1 : -1, 0f);
                 shake -= 0.01f;
+
+                if (shake <= 0)
+                    shake = 0;
             }
 
             if(animations.TryGetValue(currentAnimation, out var anim))
@@ -102,6 +105,28 @@ namespace HellTrail.Core.Combat
             var rect = new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y);
             var mousePoint = new Point((int)Input.MousePosition.X, (int)Input.MousePosition.Y);
             return rect.Contains(mousePoint);
+        }
+
+        public void AddEffect(StatusEffect effect)
+        {
+            statusEffects.Add(effect);
+            effect.OnApply(this);
+        }
+
+        public void RemoveEffect(StatusEffect effect)
+        {
+            statusEffects.Remove(effect);
+            effect.OnRemove(this);
+        }
+
+        public void RemoveAllEffects<T>() where T : StatusEffect
+        {
+            statusEffects.RemoveAll(x => x is T);
+        }
+
+        public bool HasStatus<T>() where T : StatusEffect
+        {
+            return statusEffects.Any(x => x is T);
         }
     }
 }

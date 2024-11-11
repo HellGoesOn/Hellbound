@@ -13,7 +13,7 @@ namespace HellTrail.Core.Combat
         /// Positive value -> resist
         /// Negative value -> weak
         /// </summary>
-        private readonly float[] values = [0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f];
+        private readonly float[] values = [0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f];
 
         public float this[ElementalType type]
         {

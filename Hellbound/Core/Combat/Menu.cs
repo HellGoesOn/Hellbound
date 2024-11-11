@@ -24,10 +24,10 @@ namespace HellTrail.Core.Combat
 
         public Vector2 position;
 
-        public Action? onSelectOption;
-        public Action? onCancel;
-        public Action? onChangeOption;
-        public Menu? parentMenu;
+        public Action onSelectOption;
+        public Action onCancel;
+        public Action onChangeOption;
+        public Menu parentMenu;
 
         public MenuOption this[int index] => items[index];
 
@@ -143,7 +143,7 @@ namespace HellTrail.Core.Combat
 
         public int Count => items.Count;
 
-        public Vector2 GetSize => AssetManager.CombatMenuFont.MeasureString(OptionNames.Aggregate("", (max, cur) => max.Length > cur.Length ? max : cur));
+        public Vector2 GetSize => Assets.CombatMenuFont.MeasureString(OptionNames.Aggregate("", (max, cur) => max.Length > cur.Length ? max : cur));
 
 
         public bool OptionContainsMouse(MenuOption option)
@@ -162,7 +162,7 @@ namespace HellTrail.Core.Combat
             public float opacity;
             public string name = "???";
             public Color color = Color.White;
-            public Action? onConfirmOption;
+            public Action onConfirmOption;
         }
     }
 }

@@ -44,8 +44,8 @@ namespace HellTrail.Core.Combat
     public enum BattleState
     {
         BeginTurn,
-        CheckInput,
         BeginAction,
+        CheckInput,
         DoAction,
         VictoryCheck,
         TurnProgression,
@@ -60,6 +60,7 @@ namespace HellTrail.Core.Combat
         Ice,
         Elec,
         Wind,
-        Almighty
+        Almighty,
+        DoT
     }
 }

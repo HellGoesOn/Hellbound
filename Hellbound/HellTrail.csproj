@@ -20,8 +20,8 @@
 
   <ItemGroup>
     <None Remove="Assets\Audio\Music\Victory.ogg" />
-    <None Remove="Assets\Audio\Sounds\Blip_Select.wav" />
     <None Remove="Assets\Audio\Sounds\Death.wav" />
+    <None Remove="Assets\Audio\Sounds\Dies.wav" />
     <None Remove="Assets\Audio\Sounds\WhatDaDogDoin.wav" />
     <None Remove="Assets\Dumbass.png" />
     <None Remove="Assets\fffont.ttf" />

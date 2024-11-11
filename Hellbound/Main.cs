@@ -10,6 +10,10 @@ using Microsoft.Xna.Framework.Input;
 using HellTrail.Core.Combat;
 using HellTrail.Core;
 using HellTrail.Core.UI;
+using HellTrail.Core.Combat.Abilities;
+using Treeline.Core.Graphics;
+using HellTrail.Core.Combat.Abilities.Fire;
+using HellTrail.Core.Combat.AI;
 
 namespace HellTrail
 {
@@ -53,13 +57,24 @@ namespace HellTrail
         {
             // Load textures, sounds, and so on in here...
             base.LoadContent();
-            AssetManager.Load(this);
+            Assets.Load(this);
             Renderer.Load(GraphicsDevice);
             CameraManager.Initialize();
             UIManager.Init();
             GlobalPlayer.Init();
+            ParticleManager.Initialize();
+            StartBattle();
+        }
+
+        private void StartBattle()
+        {
+            foreach(Unit unit in GlobalPlayer.ActiveParty)
+            {
+                unit.HP = unit.MaxHP;
+                unit.opacity = 1f;
+            }
             List<Unit> list = [];
-            for(int i = 0; i < 5; i++)
+            for (int i = 0; i < 5; i++)
             {
                 Unit slime = new()
                 {
@@ -67,8 +82,10 @@ namespace HellTrail
                     ai = new BasicAI()
                 };
                 slime.resistances[ElementalType.Phys] = 0.20f;
-                slime.resistances[ElementalType.Fire] = -0.20f;
+                slime.resistances[ElementalType.Fire] = -0.5f;
                 slime.abilities.Add(new Bite());
+                slime.abilities.Add(new Agi());
+                slime.abilities.Add(new Disturb());
                 slime.BattleStation = new Vector2(220 + i * 8 + ((i / 3) * 24), 60 + i * 32 - (i / 3 * 86));
                 list.Add(slime);
             }
@@ -81,7 +98,7 @@ namespace HellTrail
             // Clean up after yourself!
             base.UnloadContent();
 
-            AssetManager.Unload();
+            Assets.Unload();
             Renderer.Unload();
         }
 
@@ -93,6 +110,11 @@ namespace HellTrail
             panic = 1f;
             drunkness = 1f;
             battle?.Update();
+
+            if(Input.PressedKey(Keys.F1))
+            {
+                StartBattle();
+            }
 
             if (Input.PressedKey(Keys.OemPlus))
             {
@@ -114,6 +136,7 @@ namespace HellTrail
             Input.Update();
             SoundEngine.Update();
             CameraManager.Update();
+            ParticleManager.Update();
 
         }
 
@@ -126,6 +149,7 @@ namespace HellTrail
 
             Renderer.StartSpriteBatch(spriteBatch);
             battle?.DrawField(spriteBatch);
+            ParticleManager.Draw(spriteBatch);
             //Vector2 mousePos = Input.MousePosition;
             //spriteBatch.Draw(AssetManager.Textures["Elements2"], new Vector2((int)(mousePos.X), (int)(mousePos.Y)), Color.White);
             //CombatSystem.DrawInWorld(spriteBatch);

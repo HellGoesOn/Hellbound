@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,10 +11,8 @@ namespace HellTrail.Core.Combat.Status
     {
         public int turnsLeft;
 
-        public virtual void Update(Unit unit)
-        {
-
-        }
+        public string name = "???";
+        public string description = "???";
 
         public virtual void OnApply(Unit unit)
         {
@@ -23,14 +22,17 @@ namespace HellTrail.Core.Combat.Status
         {
         }
 
-        public virtual void OnTurnBegin(Unit unit)
+        public virtual void OnTurnBegin(Unit unit, Battle battle)
         {
         }
 
-        public virtual void OnTurnEnd(Unit unit)
+        public virtual void OnTurnEnd(Unit unit, Battle battle)
         {
+        }
+
+        public virtual void UpdateVisuals(SpriteBatch spriteBatch, Unit unit, Battle battle)
+        {
+
         }
     }
-
-    public delegate void EffectHandler(Unit unite);
 }

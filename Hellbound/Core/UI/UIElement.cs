@@ -14,6 +14,18 @@ namespace HellTrail.Core.UI
         public Vector2 size;
         public List<UIElement> children = [];
         public UIElement parent;
+        private bool visible = true;
+        public bool Visible
+        {
+            get => visible;
+            set
+            {
+                visible = value;
+
+                foreach (UIElement child in children)
+                    child.visible = visible;
+            }
+        }
 
         public void Update()
         {

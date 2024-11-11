@@ -19,7 +19,7 @@ namespace HellTrail.Core.UI
         public Color color = Color.White;
         public Color borderColor = Color.Black;
 
-        public SpriteFont font = AssetManager.DefaultFont;
+        public SpriteFont font = Assets.DefaultFont;
 
         public override void OnDraw(SpriteBatch spriteBatch)
         {
