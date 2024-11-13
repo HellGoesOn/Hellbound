@@ -86,9 +86,20 @@ namespace HellTrail
                 slime.resistances[ElementalType.Fire] = -0.5f;
                 slime.abilities.Add(new Bite());
                 slime.abilities.Add(new Agi());
+                slime.abilities.Add(new Dia());
                 slime.BattleStation = new Vector2(220 + i * 8 + ((i / 3) * 24), 60 + i * 32 - (i / 3 * 86));
                 list.Add(slime);
             }
+
+            Unit peas = new Unit()
+            {
+                sprite = "Peas",
+                name = "Peas",
+                ai = new BasicAI(),
+            };
+            peas.resistances = new ElementalResistances(1f, 1f, 1f, 1f, 1f, 0f);
+            peas.BattleStation = new Vector2(190, 90);
+            list.Add(peas);
 
             battle = Battle.Create(list);
         }

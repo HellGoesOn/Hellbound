@@ -23,7 +23,7 @@ namespace HellTrail.Core.UI.CombatUI
         public UIBorderedText skillDescription;
         public UIBorderedText skillCost;
         public UIPanel skillPanel;
-        public UIBorderedText debug;
+        //public UIBorderedText debug;
 
         public UIPanel teamStatus;
         public UIBorderedText teamNamesText;
@@ -59,10 +59,10 @@ namespace HellTrail.Core.UI.CombatUI
             usedAbilityPanel.Visible = false;
             usedAbilityPanel.Append(usedAbilityText);
 
-            debug = new("")
-            {
-                Position = new Vector2(16)
-            };
+            //debug = new("")
+            //{
+            //    Position = new Vector2(16)
+            //};
 
             skillPanel = new UIPanel()
             {
@@ -90,7 +90,7 @@ namespace HellTrail.Core.UI.CombatUI
             this.Append(panel);
             this.Append(skillPanel);
 
-            acceleration = 0.12f;
+            acceleration = 1;
             const string text = "1 MORE";
 
             oneMorePanel = new()
@@ -112,7 +112,7 @@ namespace HellTrail.Core.UI.CombatUI
             oneMorePanel.Append(textElement);
 
             Append(oneMorePanel);
-            Append(debug);
+            //Append(debug);
             Append(usedAbilityPanel);
             Append(teamStatus);
         }
@@ -122,7 +122,7 @@ namespace HellTrail.Core.UI.CombatUI
             base.Update();
 
 
-            debug.text = $"Particles: {ParticleManager.count}\nParticles Additive{ParticleManager.countAdditive}";
+            //debug.text = $"Particles: {ParticleManager.count}\nParticles Additive{ParticleManager.countAdditive}";
             string partyStatus = "";
             string partyHP = "";
             string partySP = "";
@@ -165,13 +165,14 @@ namespace HellTrail.Core.UI.CombatUI
 
                 float speed = (rescaled*rescaled)*30+acceleration;
 
-                acceleration *= 1.09f;
+                if(oneMorePanel.Position.X > xMax * 0.5f - 120)
+                    acceleration *= 1.2f;
                 oneMorePanel.Position += new Vector2(speed, 0);
 
                 if (oneMorePanel.Position.X >= Renderer.UIPreferedWidth)
                 {
                     oneMorePanel.Position = basePosition;
-                    acceleration = 0.12f;
+                    acceleration = 1f;
                     isRunning = false;
                 }
             }

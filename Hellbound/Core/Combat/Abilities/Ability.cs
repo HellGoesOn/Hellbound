@@ -36,6 +36,7 @@ namespace HellTrail.Core.Combat.Abilities
             UIManager.combatUI.usedAbilityPanel.Visible = true;
             UIManager.combatUI.usedAbilityText.text = Name;
             UseAbility(caster, battle, targets);
+            battle.lastUsedAbility = this;
 
             caster.HP -= hpCost;
             caster.SP -= spCost;

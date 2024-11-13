@@ -27,8 +27,8 @@ namespace HellTrail.Core
         public Color color;
         public FrameData[] frameData;
 
-        public Action onAnimationPlay;
-        public Action onAnimationEnd;
+        public AnimationEventHandler onAnimationPlay;
+        public AnimationEventHandler onAnimationEnd;
 
         public SpriteAnimation(string texture, FrameData[] frameData)
         {
@@ -50,14 +50,14 @@ namespace HellTrail.Core
                     else
                     {
                         if (!finished)
-                            onAnimationEnd?.Invoke();
+                            onAnimationEnd?.Invoke(this);
                         finished = true;
                     }
                 }
                 frameCounter = 0;
             }
 
-            onAnimationPlay?.Invoke();
+            onAnimationPlay?.Invoke(this);
         }
 
         public void Reset()
@@ -109,4 +109,6 @@ namespace HellTrail.Core
 
         public readonly Rectangle AsRect => new (x, y, width, height);
     }
+
+    public delegate void AnimationEventHandler(SpriteAnimation sender);
 }

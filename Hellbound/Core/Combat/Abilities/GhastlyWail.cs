@@ -1,4 +1,5 @@
-﻿using HellTrail.Core.Combat.Status.Debuffs;
+﻿using HellTrail.Core.Combat.Sequencer;
+using HellTrail.Core.Combat.Status.Debuffs;
 using System;
 using System.Collections.Generic;
 using System.Linq;

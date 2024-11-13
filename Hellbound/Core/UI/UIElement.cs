@@ -23,7 +23,7 @@ namespace HellTrail.Core.UI
                 visible = value;
 
                 foreach (UIElement child in children)
-                    child.visible = visible;
+                    child.Visible = visible;
             }
         }
 
@@ -38,10 +38,15 @@ namespace HellTrail.Core.UI
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            if (!visible)
+                return;
+
             OnDraw(spriteBatch);
 
-            foreach(UIElement child in children)
+            foreach (UIElement child in children)
+            {
                 child.Draw(spriteBatch);
+            }
         }
 
         public virtual void OnUpdate()
@@ -84,7 +89,7 @@ namespace HellTrail.Core.UI
         private Vector2 position;
         public Vector2 Position
         {
-            get => parent == null ? position : parent.position + position;
+            get => parent == null ? position : parent.Position + position;
             set => position = value;
         }
     }

@@ -1,5 +1,8 @@
 ﻿using HellTrail.Core.Combat.Abilities;
+using HellTrail.Core.Combat.Scripting;
+using HellTrail.Core.Combat.Sequencer;
 using HellTrail.Core.Combat.Status;
+using HellTrail.Core.DialogueSystem;
 using HellTrail.Core.UI;
 using HellTrail.Render;
 using Microsoft.VisualBasic.FileIO;
@@ -42,6 +45,8 @@ namespace HellTrail.Core.Combat
 
         public Ability selectedAbility;
 
+        public Ability lastUsedAbility;
+
         public List<Unit> units;
 
         public List<Unit> unitsNoSpeedSort;
@@ -61,6 +66,8 @@ namespace HellTrail.Core.Combat
         public List<DamageNumber> damageNumbers = [];
 
         public List<Unit> unitsHitLastRound = [];
+
+        public List<Script> scripts = [];
 
         public Battle() 
         {
@@ -86,7 +93,7 @@ namespace HellTrail.Core.Combat
             }
             battle.units.AddRange(enemies);
             battle.unitsNoSpeedSort.AddRange(battle.units);
-            battle.units = battle.units.OrderByDescending(x => x.Speed).ToList();
+            battle.units = [.. battle.units.OrderByDescending(x => x.Speed)];
 
             battle.winConditions.Add(x => !x.units.Any(x => !x.Downed && x.team == Team.Enemy));
 
@@ -107,6 +114,66 @@ namespace HellTrail.Core.Combat
                 troll += 6;
                 battle.sequences.Add(sequence);
             }
+            Script triedToHitThePeas = new()
+            {
+                condition = (b) =>
+                {
+                    Unit unit = b.unitsHitLastRound.FirstOrDefault(x => x.name == "Peas");
+                    return unit != null && unit.HP == unit.MaxHP && b.state == BattleState.VictoryCheck;
+                },
+                action = (b) =>
+                {
+                    Dialogue dialogue = new();
+                    DialoguePage page = new()
+                    {
+                        title = GlobalPlayer.ActiveParty[0].name,
+                        text = "Wait what"
+                    };
+                    DialoguePage page2 = new()
+                    {
+                        title = "Peas",
+                        text = "(Pea noises)"
+                    };
+                    dialogue.pages.AddRange([page, page2]);
+
+                    var pea = b.units.FirstOrDefault(x => x.name == "Peas");
+
+                    if (pea != null)
+                    {
+                        pea.abilities.Add(new Singularity());
+                        pea.ai = new BasicAI();
+                    }
+                    UIManager.dialogueUI.dialogues.Add(dialogue);
+                }
+            };
+
+            Script triedToHitThePeasTwice = new()
+            {
+                condition = (b) =>
+                {
+                    return b.units.Any(x=>x.name == "Peas") && b.lastUsedAbility is Singularity && b.sequences.Count > 0 && b.sequences[0].currentAction == 7;
+                },
+                action = (b) =>
+                {
+                    Dialogue dialogue = new();
+                    DialoguePage page = new()
+                    {
+                        title = GlobalPlayer.ActiveParty[0].name,
+                        text = "IT'S JUST A PEA SPROUT WHAT THE FUCK IS HAPPENING ?!?!"
+                    };
+                    DialoguePage page2 = new()
+                    {
+                        title = "Peas",
+                        text = "(Pea noises)"
+                    };
+                    dialogue.pages.AddRange([page, page2]);
+
+                    UIManager.dialogueUI.dialogues.Add(dialogue);
+                }
+            };
+
+            battle.scripts.Add(triedToHitThePeas);
+            battle.scripts.Add(triedToHitThePeasTwice);
 
             return battle;
         }
@@ -117,28 +184,36 @@ namespace HellTrail.Core.Combat
 
             damageNumbers.RemoveAll(x => x.timeLeft <= 0);
 
+            foreach(Script script in scripts)
+            {
+                script.TryRunScript(this);
+            }
+
+            scripts.RemoveAll(x => x.activated);
+
+
+            if (nextStateDelay > 0 || UIManager.dialogueUI.visible)
+            {
+                nextStateDelay--;
+                return;
+            }
+
+            foreach (SpriteAnimation animation in fieldAnimations)
+            {
+                animation.Update();
+            }
+
             foreach (DamageNumber number in damageNumbers)
             {
                 number.Update();
             }
 
-            foreach(SpriteAnimation animation in fieldAnimations)
-            {
-                animation.Update();
-            }
-
-            foreach(Unit unit in units)
+            foreach (Unit unit in units)
             {
                 unit.UpdateVisuals();
 
                 if (unit.Downed)
                     unit.statusEffects.Clear();
-            }
-
-            if (nextStateDelay > 0)
-            {
-                nextStateDelay--;
-                return;
             }
 
             if (sequences.Count > 0 && state != BattleState.CheckInput)
@@ -657,6 +732,13 @@ namespace HellTrail.Core.Combat
                 selectedTarget = 0;
 
             return [targets[selectedTarget]];
+        }
+
+        public Sequence CreateSequence()
+        {
+            Sequence seq = new Sequence(this);
+            sequences.Add(seq);
+            return seq;
         }
 
         public Unit ActingUnit => units[actingUnit];

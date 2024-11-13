@@ -27,5 +27,6 @@ namespace HellTrail
         public static int ScreenHeight { get; set; } = 180;
         public static float GeneralVolume { get; set; } = 0.25f;
         public static float MusicVolume { get; set; } = 0.05f;
+        public static float OldMusicVolume { get; set; } = 0.05f;
     }
 }

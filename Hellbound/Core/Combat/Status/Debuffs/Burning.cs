@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using HellTrail.Core.Combat.Sequencer;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace HellTrail.Core.Combat.Status.Debuffs
         }
 
         public override void UpdateVisuals(SpriteBatch spriteBatch, Unit unit, Battle battle)
-        {
+        {   
             Color[] clrs = { Color.Red, Color.Yellow, Color.Orange, Color.Crimson};
 
             int xx = Main.rand.Next((int)(unit.size.X));

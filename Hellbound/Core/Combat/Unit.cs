@@ -12,6 +12,7 @@ namespace HellTrail.Core.Combat
 {
     public class Unit
     {
+        public int level;
         public int HP;
         public int MaxHP;
         public int SP;

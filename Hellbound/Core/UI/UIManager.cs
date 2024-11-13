@@ -1,4 +1,5 @@
-﻿using HellTrail.Core.UI.CombatUI;
+﻿using HellTrail.Core.DialogueSystem;
+using HellTrail.Core.UI.CombatUI;
 using HellTrail.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,15 +16,18 @@ namespace HellTrail.Core.UI
         public static readonly List<UIState> UIStates = [];
 
         public static CombatUIState combatUI;
+        public static DialogueUIState dialogueUI;
 
         public static void Init()
         {
             combatUI = new CombatUIState();
+            dialogueUI = new DialogueUIState();
             //panel.Rotation = -MathHelper.PiOver2;
             var state = CreateState();
             //state.Append(panel);
 
             UIStates.Add(combatUI);
+            UIStates.Add(dialogueUI);
         }
 
         public static void Update()

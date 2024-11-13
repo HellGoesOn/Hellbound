@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using HellTrail.Core.Combat.Sequencer;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace HellTrail.Core.Combat.Abilities
             anim.position = caster.position;
             anim.color = Color.White;
             anim.rotation = -0.001f;
-            anim.onAnimationPlay += () =>
+            anim.onAnimationPlay += (_) =>
             {
                 anim.rotation *= 1.03f;
                 anim.position += (new Vector2(160, 90) - anim.position) * 0.01f;
@@ -47,13 +48,13 @@ namespace HellTrail.Core.Combat.Abilities
             whiteOut.timePerFrame = 460;
             whiteOut.color = Color.White;
             whiteOut.opacity = -1.0f;
-            whiteOut.onAnimationPlay += () =>
+            whiteOut.onAnimationPlay += (_) =>
             {
                 caster.opacity *= 0.965f;
                 battle.bg.color = Color.Lerp(battle.bg.color, Color.Black, 0.017f);
                 whiteOut.opacity += 0.0085f;
             };
-            whiteOut.onAnimationEnd += () =>
+            whiteOut.onAnimationEnd += (_) =>
             {
                 caster.opacity = 1.0f;
                 battle.bg.color = oldBgColor;
