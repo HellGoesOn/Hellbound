@@ -51,7 +51,7 @@ namespace HellTrail.Core.Combat.Abilities.Fire
             sequence.Add(new ApplyEffectSequence(sequence, targets[0], new Burning(), 95, true));
             sequence.Add(new DelaySequence(20));
             sequence.Add(new MoveActorSequence(caster, caster.BattleStation));
-            battle.sequences.Add(sequence);
+            battle.sequences.Add(sequence); 
         }
     }
 }

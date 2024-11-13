@@ -15,6 +15,7 @@ namespace HellTrail.Core.DialogueSystem
     {
         public List<Dialogue> dialogues = [];
 
+        public UIPanel darkeningPanel;
         public UIPanel dialoguePanel;
         public UIBorderedText dialogueText;
         public UIPanel speakerPanel;
@@ -22,6 +23,13 @@ namespace HellTrail.Core.DialogueSystem
 
         public DialogueUIState()
         {
+            darkeningPanel = new UIPanel()
+            {
+                size = new Vector2(Renderer.UIPreferedWidth, Renderer.UIPreferedHeight),
+                fillColor = Color.Black * 0.25f,
+                outlineColor = Color.Black * 0.25f
+            };
+            Append(darkeningPanel);
             dialoguePanel = new UIPanel()
             {
                 size = new Vector2(Renderer.UIPreferedWidth - 64, 180),

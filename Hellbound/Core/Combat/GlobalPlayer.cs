@@ -23,9 +23,6 @@ namespace HellTrail.Core.Combat
                 name = "Doorkun",
                 sprite = "Dumbass",
             };
-            protag.resistances[ElementalType.Phys] = 0.2f;
-            protag.resistances[ElementalType.Fire] = 0.8f;
-            protag.resistances[ElementalType.DoT] = 1f;
             protag.abilities.Add(new Agi());
             protag.abilities.Add(new Maragi());
             protag.abilities.Add(new Dia());
