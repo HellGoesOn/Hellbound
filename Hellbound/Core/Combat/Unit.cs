@@ -22,6 +22,7 @@ namespace HellTrail.Core.Combat
         private Vector2 battleStation;
         public Vector2 position;
         public Vector2 size = new (32);
+        public Vector2 scale = new (1);
         public BasicAI ai = null;
         public CombatStats stats;
         public CombatStats statsGrowth;
@@ -48,12 +49,13 @@ namespace HellTrail.Core.Combat
         {
             if (stats.EXP < stats.toNextLevel)
                 return;
+
             stats.level++;
             stats += statsGrowth;
             stats.HP = stats.MaxHP;
             stats.SP = stats.MaxSP;
             stats.EXP -= stats.toNextLevel;
-            stats.toNextLevel = (int)(stats.toNextLevel * 1.05f);
+            stats.toNextLevel = (int)(stats.toNextLevel * 1.25f);
             TryLevelUp();
         }
 
@@ -143,9 +145,26 @@ namespace HellTrail.Core.Combat
             effect.OnRemove(this);
         }
 
+        public void ClearEffects()
+        {
+            foreach(var effect in statusEffects)
+            {
+                effect.OnRemove(this);
+            }
+
+            statusEffects.Clear();
+        }
+
         public void RemoveAllEffects<T>() where T : StatusEffect
         {
-            statusEffects.RemoveAll(x => x is T);
+            for (int i = statusEffects.Count - 1; i >= 0; i--)
+            {
+                if (statusEffects[i] is T)
+                {
+                    statusEffects[i].OnRemove(this);
+                    statusEffects.RemoveAt(i);
+                }
+            }
         }
 
         public bool HasStatus<T>() where T : StatusEffect

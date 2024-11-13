@@ -121,7 +121,6 @@ namespace HellTrail.Core.UI.CombatUI
         {
             base.Update();
 
-
             //debug.text = $"Particles: {ParticleManager.count}\nParticles Additive{ParticleManager.countAdditive}";
             string partyStatus = "";
             string partyHP = "";
@@ -152,13 +151,6 @@ namespace HellTrail.Core.UI.CombatUI
 
             if(isRunning)
             {
-                //y = x * x + 0.12f;
-                // x = Renderer.UIPreferedWidth - 
-                // y = ax*x+bx+c
-                // y = 
-
-                // rescaled = -1 + 2 * (value - xMin) / (xMax - xMin)
-
                 float xMin = 0;
                 float xMax = Renderer.UIPreferedWidth;
                 float rescaled = -1 + 2 * (oneMorePanel.Position.X - xMin) / (xMax - xMin);

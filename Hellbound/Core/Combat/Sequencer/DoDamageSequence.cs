@@ -34,7 +34,7 @@ namespace HellTrail.Core.Combat.Sequencer
         public void Update(List<Unit> actors, Battle battle)
         {
             float guardFactor = target.HasStatus<GuardingEffect>() ? 0.75f : 1.0f;
-            int statBonus = type == ElementalType.DoT ? 0 : type == ElementalType.Phys ? (int)Math.Sqrt(caster.stats.strength) : (int)Math.Sqrt(caster.stats.magic);
+            int statBonus = type == ElementalType.DoT ? 1 : type == ElementalType.Phys ? (int)Math.Sqrt(caster.stats.strength) : (int)Math.Sqrt(caster.stats.magic);
             int damageTaken = (int)(damage*statBonus * (1 - target.resistances[type]) * guardFactor);
             DamageNumber damageNumber;
 

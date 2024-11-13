@@ -102,6 +102,7 @@ namespace HellTrail.Core.Combat
             int troll = 0;
             foreach (Unit unit in battle.units)
             {
+                unit.scale = Vector2.One;
                 unit.position = unit.BattleStation - new Vector2(200 * (unit.BattleStation.X > 160 ? -1 : 1), 0);
                 Sequence sequence = new(battle)
                 {
@@ -123,11 +124,29 @@ namespace HellTrail.Core.Combat
                 },
                 action = (b) =>
                 {
+                    var page1Portrait = new Portrait("EndLife", new FrameData(0, 0, 32, 32))
+                    {
+                        scale = new Vector2(-16, 16)
+                    };
+                    var page3Portrait = new Portrait("EndLife", new FrameData(0, 32, 32, 32))
+                    {
+                        scale = new Vector2(16, 16)
+                    };
+                    var page4Portrait = new Portrait("EndLife", new FrameData(0, 128, 32, 32))
+                    {
+                        scale = new Vector2(-16, 16),
+                    };
+                    var page5Portrait = new Portrait("EndLife", new FrameData(0, 32, 32, 32))
+                    {
+                        scale = new Vector2(-16, 16),
+                        rotation = MathHelper.PiOver2
+                    };
                     Dialogue dialogue = new();
                     DialoguePage page = new()
                     {
+                        portrait = page1Portrait,
                         title = GlobalPlayer.ActiveParty[0].name,
-                        text = "It's completely impervious to our attacks.."
+                        text = "Да ему вообще поебать на наши атаки.."//"It's completely impervious to our attacks.."
                     };
                     DialoguePage page2 = new()
                     {
@@ -136,15 +155,38 @@ namespace HellTrail.Core.Combat
                     }; 
                     DialoguePage page3 = new()
                     {
+                        portrait = page3Portrait,
                         title = GlobalPlayer.ActiveParty[0].name,
-                        text = "There's only one thing that could work.."
+                        text = "Видимо, есть только один единственный выход.."//"There's only one thing that could work.."
+                    }; 
+                    DialoguePage page4 = new()
+                    {
+                        portrait = page4Portrait,
+                        title = GlobalPlayer.ActiveParty[0].name,
+                        text = "В ПИЗДУ ЭТУ ЖИЗНЬ!",//"GOODBYE CRUEL WORLD",
+                        onPageEnd = (_) =>
+                        {
+                            SoundEngine.PlaySound("GunShot");
+                            SoundEngine.PlaySound("Death");
+                            GlobalPlayer.ActiveParty[0].stats.HP = 0;
+                            GlobalPlayer.ActiveParty[0].shake = 0.36f;
+                        }
                     };
-                    dialogue.pages.AddRange([page, page2, page3]);
+                    DialoguePage page5 = new()
+                    {
+                        portrait = page5Portrait,
+                        title = GlobalPlayer.ActiveParty[0].name,
+                        text = "(ded)"
+                    };
+                    //dialogue.pages.AddRange([page, page2, page3]);
+                    dialogue.pages.AddRange([page, page3, page4, page5]);
                     var disturb = new Disturb()
                     {
                         hpCost = GlobalPlayer.ActiveParty[0].stats.HP - 1,
                         spCost = 0
                     };
+
+                    GlobalPlayer.ActiveParty[0].ClearEffects();
                     GlobalPlayer.ActiveParty[0].abilities.Clear();
                     GlobalPlayer.ActiveParty[0].abilities.Add(disturb);
                     b.weaknessHitLastRound = true;
@@ -241,12 +283,19 @@ namespace HellTrail.Core.Combat
                     // progress turns;
                     TurnProgression();
                     break;
+                case BattleState.Victory:
+                    PlayVictory();
+                    break;
             }
+        }
+
+        public void PlayVictory()
+        {
         }
 
         public void DrawField(SpriteBatch spriteBatch)
         {
-            if(bg != null)
+            if (bg != null)
             {
                 spriteBatch.Draw(Assets.Textures[bg.texture], Vector2.Zero, bg.color);
             }
@@ -258,11 +307,10 @@ namespace HellTrail.Core.Combat
                 if (unit.animations.TryGetValue(unit.currentAnimation, out var anim))
                 {
                     anim.position = position;
-                    anim.Draw(spriteBatch);
-                } 
-                else
+                    anim.Draw(spriteBatch, unit.scale);
+                } else
                 {
-                    spriteBatch.Draw(Assets.Textures[unit.sprite], new Vector2((int)(position.X), (int)(position.Y)), null, clr * unit.opacity, 0f, new Vector2(16), Vector2.One, SpriteEffects.None, unit.depth);
+                    spriteBatch.Draw(Assets.Textures[unit.sprite], new Vector2((int)(position.X), (int)(position.Y)), null, clr * unit.opacity, 0f, new Vector2(16), unit.scale, SpriteEffects.None, unit.depth);
                     //Renderer.DrawRect(spriteBatch, unit.position-unit.size*0.5f, unit.size, 1, Color.Orange * 0.25f);
                 }
 
@@ -270,14 +318,14 @@ namespace HellTrail.Core.Combat
                 {
                     effect.UpdateVisuals(spriteBatch, unit, this);
                 }
-
-                if(unit == ActingUnit)
-                {
-                    clr = unit.team == Team.Player ? unit.ai != null ? Color.Yellow : Color.Lime : Color.Red;
-                    spriteBatch.Draw(Assets.Textures["Arrow"], new Vector2((int)(position.X), (int)(position.Y)-24+(float)Math.Cos(Main.totalTime)), null, clr * unit.opacity, 0f, new Vector2(5, 3.5f), new Vector2((float)Math.Sin(Main.totalTime*0.75f), 1f), SpriteEffects.None, 1f);
-                }
             }
 
+
+            if (ActingUnit != null)
+            {
+                Color clr = ActingUnit.team == Team.Player ? ActingUnit.ai != null ? Color.Yellow : Color.Lime : Color.Red;
+                spriteBatch.Draw(Assets.Textures["Arrow"], new Vector2((int)(ActingUnit.position.X), (int)(ActingUnit.position.Y) - 24 + (float)Math.Cos(Main.totalTime)), null, clr * ActingUnit.opacity, 0f, new Vector2(5, 3.5f), new Vector2((float)Math.Sin(Main.totalTime * 0.75f), 1f), SpriteEffects.None, 1f);
+            }
             foreach (SpriteAnimation animation in fieldAnimations)
             {
                 animation.Draw(spriteBatch);

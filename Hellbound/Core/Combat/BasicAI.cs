@@ -9,14 +9,17 @@ namespace HellTrail.Core.Combat
             if (whoAmI.abilities.Count > 0)
             {
                 var updatedList = whoAmI.abilities.Where(x => x.CanCast(whoAmI)).ToList();
-                Ability abilityToUse = updatedList[battle.rand.Next(updatedList.Count)];
+                if (updatedList.Count > 0)
+                {
+                    Ability abilityToUse = updatedList[battle.rand.Next(updatedList.Count)];
 
-                var getTargets = battle.units.Where(GetSelector(abilityToUse, whoAmI)).ToList();
+                    var getTargets = battle.units.Where(GetSelector(abilityToUse, whoAmI)).ToList();
 
-                if (!abilityToUse.aoe)
-                    getTargets = [getTargets[battle.rand.Next(getTargets.Count)]]; // pick random target if used skill isn't AoE
+                    if (!abilityToUse.aoe)
+                        getTargets = [getTargets[battle.rand.Next(getTargets.Count)]]; // pick random target if used skill isn't AoE
 
-                abilityToUse.Use(whoAmI, battle, getTargets);
+                    abilityToUse.Use(whoAmI, battle, getTargets);
+                }
             }
 
             battle.State = BattleState.DoAction;

@@ -92,7 +92,7 @@ namespace HellTrail
 
             Unit peas = new Unit()
             {
-                sprite = "Peas",
+                sprite = "Slime3",
                 name = "Peas",
                 ai = new BasicAI(),
             };

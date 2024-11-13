@@ -20,9 +20,13 @@ namespace HellTrail.Core.DialogueSystem
         public UIBorderedText dialogueText;
         public UIPanel speakerPanel;
         public UIBorderedText speakerText;
+        public UIPortrait portrait;
 
         public DialogueUIState()
         {
+            portrait = new UIPortrait(null);
+            portrait.Position = new Vector2(Renderer.UIPreferedWidth * 0.5f, Renderer.UIPreferedHeight-240);
+
             darkeningPanel = new UIPanel()
             {
                 size = new Vector2(Renderer.UIPreferedWidth, Renderer.UIPreferedHeight),
@@ -30,6 +34,7 @@ namespace HellTrail.Core.DialogueSystem
                 outlineColor = Color.Black * 0.25f
             };
             Append(darkeningPanel);
+            Append(portrait);
             dialoguePanel = new UIPanel()
             {
                 size = new Vector2(Renderer.UIPreferedWidth - 64, 180),
@@ -68,6 +73,8 @@ namespace HellTrail.Core.DialogueSystem
                 dialogueText.text = page.VisibleText.Splice(80);
 
                 speakerPanel.Visible = !string.IsNullOrWhiteSpace(speakerText.text);
+
+                portrait.portrait = page.portrait;
 
                 dialogues[0].Update();
 

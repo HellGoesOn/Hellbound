@@ -26,6 +26,7 @@ namespace HellTrail.Core.Combat
             protag.abilities.Add(new Agi());
             protag.abilities.Add(new Maragi());
             protag.abilities.Add(new Dia());
+            protag.stats.magic = 99;
             ProtagAnimations(protag);
 
             Unit sidekick = new()
@@ -67,6 +68,10 @@ namespace HellTrail.Core.Combat
                 new FrameData(0, 0, 32, 32),
                 new FrameData(0, 32, 32, 32),
                 ]);
+            //victoryPose.onAnimationPlay += (_) =>
+            //{
+            //    _.scale = new Vector2((float)Math.Sin(Main.totalTime * 2), 1f);
+            //};
             victoryPose.looping = true;
             victoryPose.timePerFrame = 10;
             SpriteAnimation flipOff = new("FlipOff",

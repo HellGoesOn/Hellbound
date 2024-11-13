@@ -14,6 +14,8 @@ namespace HellTrail.Core.DialogueSystem
 
         public int currentResponse;
         public List<Response> responses = [];
+        public Portrait portrait;
+        public ResponseDelegate onPageEnd;
 
         public DialoguePage()
         {
@@ -45,6 +47,7 @@ namespace HellTrail.Core.DialogueSystem
                 }
                 else
                 {
+                    onPageEnd?.Invoke(dialogue);
                     if(++dialogue.currentPage > dialogue.pages.Count-1)
                     {
                         dialogue.currentPage = dialogue.pages.Count-1;
