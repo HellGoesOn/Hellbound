@@ -89,11 +89,11 @@ namespace HellTrail.Core.Combat
             foreach (Unit unit in enemies)
             {
                 unit.team = Team.Enemy;
-                unit.Speed += battle.rand.Next(1, 10) * 0.01f;
+                unit.stats.speed += battle.rand.Next(1, 10) * 0.01f;
             }
             battle.units.AddRange(enemies);
             battle.unitsNoSpeedSort.AddRange(battle.units);
-            battle.units = [.. battle.units.OrderByDescending(x => x.Speed)];
+            battle.units = [.. battle.units.OrderByDescending(x => x.stats.speed)];
 
             battle.winConditions.Add(x => !x.units.Any(x => !x.Downed && x.team == Team.Enemy));
 
@@ -119,7 +119,7 @@ namespace HellTrail.Core.Combat
                 condition = (b) =>
                 {
                     Unit unit = b.unitsHitLastRound.FirstOrDefault(x => x.name == "Peas");
-                    return unit != null && unit.HP == unit.MaxHP && b.state == BattleState.VictoryCheck;
+                    return unit != null && unit.stats.HP == unit.stats.MaxHP && b.state == BattleState.VictoryCheck && b.units.Count(x => !x.Downed && x.team == Team.Enemy) == 1;
                 },
                 action = (b) =>
                 {
@@ -127,53 +127,32 @@ namespace HellTrail.Core.Combat
                     DialoguePage page = new()
                     {
                         title = GlobalPlayer.ActiveParty[0].name,
-                        text = "Wait what"
+                        text = "It's completely impervious to our attacks.."
                     };
                     DialoguePage page2 = new()
                     {
                         title = "Peas",
                         text = "(Pea noises)"
-                    };
-                    dialogue.pages.AddRange([page, page2]);
-
-                    var pea = b.units.FirstOrDefault(x => x.name == "Peas");
-
-                    if (pea != null)
-                    {
-                        pea.abilities.Add(new Singularity());
-                        pea.ai = new BasicAI();
-                    }
-                    UIManager.dialogueUI.dialogues.Add(dialogue);
-                }
-            };
-
-            Script triedToHitThePeasTwice = new()
-            {
-                condition = (b) =>
-                {
-                    return b.units.Any(x=>x.name == "Peas") && b.lastUsedAbility is Singularity && b.sequences.Count > 0 && b.sequences[0].currentAction == 7;
-                },
-                action = (b) =>
-                {
-                    Dialogue dialogue = new();
-                    DialoguePage page = new()
+                    }; 
+                    DialoguePage page3 = new()
                     {
                         title = GlobalPlayer.ActiveParty[0].name,
-                        text = "IT'S JUST A PEA SPROUT WHAT THE FUCK IS HAPPENING ?!?!"
+                        text = "There's only one thing that could work.."
                     };
-                    DialoguePage page2 = new()
+                    dialogue.pages.AddRange([page, page2, page3]);
+                    var disturb = new Disturb()
                     {
-                        title = "Peas",
-                        text = "(Pea noises)"
+                        hpCost = GlobalPlayer.ActiveParty[0].stats.HP - 1,
+                        spCost = 0
                     };
-                    dialogue.pages.AddRange([page, page2]);
-
+                    GlobalPlayer.ActiveParty[0].abilities.Clear();
+                    GlobalPlayer.ActiveParty[0].abilities.Add(disturb);
+                    b.weaknessHitLastRound = true;
                     UIManager.dialogueUI.dialogues.Add(dialogue);
                 }
             };
 
             battle.scripts.Add(triedToHitThePeas);
-            battle.scripts.Add(triedToHitThePeasTwice);
 
             return battle;
         }
@@ -291,6 +270,12 @@ namespace HellTrail.Core.Combat
                 {
                     effect.UpdateVisuals(spriteBatch, unit, this);
                 }
+
+                if(unit == ActingUnit)
+                {
+                    clr = unit.team == Team.Player ? unit.ai != null ? Color.Yellow : Color.Lime : Color.Red;
+                    spriteBatch.Draw(Assets.Textures["Arrow"], new Vector2((int)(position.X), (int)(position.Y)-24+(float)Math.Cos(Main.totalTime)), null, clr * unit.opacity, 0f, new Vector2(5, 3.5f), new Vector2((float)Math.Sin(Main.totalTime*0.75f), 1f), SpriteEffects.None, 1f);
+                }
             }
 
             foreach (SpriteAnimation animation in fieldAnimations)
@@ -309,9 +294,9 @@ namespace HellTrail.Core.Combat
             {
                 //Color clr = unit.Downed ? Color.Crimson : Color.White;
                 Vector2 adjPos = unit.position * 4;
-                Vector2 orig = Assets.SmallFont.MeasureString($"[HP:{unit.HP}]") * 0.5f;
+                Vector2 orig = Assets.SmallFont.MeasureString($"[HP:{unit.stats.HP}]") * 0.5f;
                 Vector2 finalPos = new Vector2((int)adjPos.X, (int)(adjPos.Y + 64));
-                spriteBatch.DrawBorderedString(Assets.SmallFont, $"[HP:{unit.HP}]", finalPos, Color.White, Color.Black, 0f, orig, Vector2.One, SpriteEffects.None, 0);
+                spriteBatch.DrawBorderedString(Assets.SmallFont, $"[HP:{unit.stats.HP}]", finalPos, Color.White, Color.Black, 0f, orig, Vector2.One, SpriteEffects.None, 0);
 
                 if (isPickingTarget)
                 {
@@ -655,9 +640,15 @@ namespace HellTrail.Core.Combat
                 SoundEngine.StartMusic("Victory", false);
                 // end Battle;
                 battleEnded = true;
-                state = BattleState.Victory; 
+                state = BattleState.Victory;
+                int expValue = 0;
                 foreach (var unit in units)
                 {
+                    if(unit.team == Team.Enemy)
+                    {
+                        expValue += unit.stats.value;
+                    }
+
                     Sequence seq = new Sequence(this)
                     {
                         active = true
@@ -667,6 +658,13 @@ namespace HellTrail.Core.Combat
 
                     this.sequences.Add(seq);
                 }
+
+                foreach(Unit unit in GlobalPlayer.ActiveParty)
+                {
+                    unit.stats.EXP += expValue;
+                    unit.TryLevelUp();
+                }
+
                 return;
             }
 

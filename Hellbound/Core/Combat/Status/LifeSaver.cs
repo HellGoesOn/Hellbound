@@ -22,7 +22,7 @@ namespace HellTrail.Core.Combat.Status
 
         public override void UpdateVisuals(SpriteBatch spriteBatch, Unit unit, Battle battle)
         {
-            unit.HP = Math.Max(8, unit.HP);
+            unit.stats.HP = Math.Max(8, unit.stats.HP);
         }
 
         public override void OnTurnEnd(Unit unit, Battle battle)

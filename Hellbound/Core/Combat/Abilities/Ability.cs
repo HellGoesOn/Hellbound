@@ -1,6 +1,7 @@
 ﻿using HellTrail.Core.UI;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -38,13 +39,13 @@ namespace HellTrail.Core.Combat.Abilities
             UseAbility(caster, battle, targets);
             battle.lastUsedAbility = this;
 
-            caster.HP -= hpCost;
-            caster.SP -= spCost;
+            caster.stats.HP -= hpCost;
+            caster.stats.SP -= spCost;
         }
 
         public bool CanCast(Unit caster)
         {
-            if ((hpCost > 0 && caster.HP <= hpCost) || (spCost > 0 && caster.SP < spCost))
+            if ((hpCost > 0 && caster.stats.HP <= hpCost) || (spCost > 0 && caster.stats.SP < spCost))
                 return false;
 
             return true;

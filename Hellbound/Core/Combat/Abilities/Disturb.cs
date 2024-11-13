@@ -32,7 +32,7 @@ namespace HellTrail.Core.Combat.Abilities
                 sequence.Add(new PlaySoundSequence("Exodia", 1));
                 sequence.Add(new PlaySoundSequence("FinalFlash", 1));
                 sequence.Add(new DelaySequence(90));
-                foreach(Unit unit in battle.units.Where(x=>x.team == Team.Enemy))
+                foreach(Unit unit in targets)
                 {
                     sequence.Delay(10);
                     sequence.DoDamage(caster, unit, 99999, ElementalType.Almighty);

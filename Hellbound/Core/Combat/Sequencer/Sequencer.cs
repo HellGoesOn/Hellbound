@@ -77,9 +77,9 @@ namespace HellTrail.Core.Combat.Sequencer
             Actions.Add(new SetActorAnimation(actor, animationNam));
         }
 
-        public void AddStatusEffect(Unit target, StatusEffect effect, int chance = 100, bool requiresDamageDealt = false)
+        public void AddStatusEffect(Unit target, StatusEffect effect, int chance = 100, bool requiresDamageDealt = false, bool canStack = false)
         {
-            Actions.Add(new ApplyEffectSequence(this, target, effect, chance, requiresDamageDealt));
+            Actions.Add(new ApplyEffectSequence(this, target, effect, chance, requiresDamageDealt, canStack));
         }
 
         public void CustomAction(Action action)

@@ -21,18 +21,14 @@ namespace HellTrail.Core.Combat
             Unit protag = new()
             {
                 name = "Doorkun",
-                sprite = "Dumbass"
+                sprite = "Dumbass",
             };
             protag.resistances[ElementalType.Phys] = 0.2f;
             protag.resistances[ElementalType.Fire] = 0.8f;
             protag.resistances[ElementalType.DoT] = 1f;
-            protag.abilities.Add(new Bite());
             protag.abilities.Add(new Agi());
+            protag.abilities.Add(new Maragi());
             protag.abilities.Add(new Dia());
-            protag.abilities.Add(new Maragi()); 
-            protag.abilities.Add(new Disturb()); 
-            protag.abilities.Add(new Singularity());
-
             ProtagAnimations(protag);
 
             Unit sidekick = new()
@@ -41,9 +37,9 @@ namespace HellTrail.Core.Combat
                 sprite = "WhatDaDogDoin2",
                 ai = new BasicAI()
             };
-            //sidekick.abilities.Add(new Agi());
+            sidekick.abilities.Add(new Agi());
+            sidekick.abilities.Add(new Maragi());
             sidekick.abilities.Add(new Dia());
-            //sidekick.abilities.Add(new Megidolaon());
 
             ActiveParty.Add(protag);
             ActiveParty.Add(sidekick);
@@ -52,7 +48,7 @@ namespace HellTrail.Core.Combat
             foreach (Unit unit in ActiveParty)
             {
                 unit.team = Team.Player;
-                unit.Speed = 7;
+                unit.stats.speed = 7;
                 unit.BattleStation = new Vector2(60 + 4 * i, 80 + 32 * i);
                 i++;
             }

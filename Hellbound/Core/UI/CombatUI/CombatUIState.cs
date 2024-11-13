@@ -129,8 +129,8 @@ namespace HellTrail.Core.UI.CombatUI
             foreach(Unit unit in GlobalPlayer.ActiveParty)
             {
                 partyStatus += $"{(unit.name)}\n";
-                partyHP += $"HP: {unit.HP}/{unit.MaxHP}\n";
-                partySP += $"SP: {unit.SP}/{unit.MaxSP}\n";
+                partyHP += $"HP: {unit.stats.HP}/{unit.stats.MaxHP}\n";
+                partySP += $"SP: {unit.stats.SP}/{unit.stats.MaxSP}\n";
             }
 
             teamNamesText.text = partyStatus;
@@ -163,7 +163,7 @@ namespace HellTrail.Core.UI.CombatUI
                 float xMax = Renderer.UIPreferedWidth;
                 float rescaled = -1 + 2 * (oneMorePanel.Position.X - xMin) / (xMax - xMin);
 
-                float speed = (rescaled*rescaled)*30+acceleration;
+                float speed = (rescaled*rescaled)*45+acceleration;
 
                 if(oneMorePanel.Position.X > xMax * 0.5f - 120)
                     acceleration *= 1.2f;

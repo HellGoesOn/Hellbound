@@ -32,7 +32,8 @@ namespace HellTrail.Core.Combat
         All,
         AllButSelf,
         Active,
-        Downed
+        DownedAlly,
+        DownedEnemy
     }
 
     public enum Team

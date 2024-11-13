@@ -23,9 +23,6 @@ namespace HellTrail
         internal GraphicsDeviceManager gdm;
         internal static Main instance;
         internal static double totalTime;
-        float panic = 1f;
-        float drunkness = 1f;
-        float cursorPos = 0f;
         internal static Random rand;
 
         public Battle battle;
@@ -70,9 +67,11 @@ namespace HellTrail
         {
             foreach(Unit unit in GlobalPlayer.ActiveParty)
             {
-                unit.HP = unit.MaxHP;
-                unit.SP = unit.MaxSP;
+                unit.stats.HP = unit.stats.MaxHP;
+                unit.stats.SP = unit.stats.MaxSP;
                 unit.opacity = 1f;
+                unit.abilities.Clear();
+                unit.abilities.AddRange([new Agi(), new Maragi(), new Dia()]);
             }
             List<Unit> list = [];
             for (int i = 0; i < 5; i++)
@@ -118,8 +117,6 @@ namespace HellTrail
             // Run game logic in here. Do NOT render anything here!
             base.Update(gameTime);
             totalTime += gameTime.ElapsedGameTime.TotalMilliseconds * 0.01f;
-            panic = 1f;
-            drunkness = 1f;
             battle?.Update();
 
             if(Input.PressedKey(Keys.F1))

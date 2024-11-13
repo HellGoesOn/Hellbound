@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HellTrail.Core.Combat.Abilities;
+﻿using HellTrail.Core.Combat.Abilities;
 
 namespace HellTrail.Core.Combat
 {
@@ -32,7 +27,7 @@ namespace HellTrail.Core.Combat
             Func<Unit, bool> selector = x => whoAmI.team != x.team && !x.Downed;
 
             if (abilityToUse.canTarget == ValidTargets.Ally)
-                selector = x => whoAmI.team == x.team;
+                selector = x => whoAmI.team == x.team && !x.Downed;
 
             if (abilityToUse.canTarget == ValidTargets.AllButSelf)
                 selector = x => x != whoAmI && !x.Downed;
@@ -40,8 +35,11 @@ namespace HellTrail.Core.Combat
             if (abilityToUse.canTarget == ValidTargets.All)
                 selector = x => !x.Downed;
 
-            if (abilityToUse.canTarget == ValidTargets.Downed)
-                selector = x => x.HP <= 0;
+            if (abilityToUse.canTarget == ValidTargets.DownedAlly)
+                selector = x => x.stats.HP <= 0 && x.team == whoAmI.team;
+
+            if (abilityToUse.canTarget == ValidTargets.DownedEnemy)
+                selector = x => x.stats.HP <= 0 && x.team != whoAmI.team;
 
             return selector;
         }

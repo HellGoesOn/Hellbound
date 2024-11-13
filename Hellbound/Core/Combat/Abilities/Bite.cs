@@ -19,7 +19,7 @@ namespace HellTrail.Core.Combat.Abilities
 
         public override void AdjustCosts(Unit caster)
         {
-            hpCost = (int)(caster.MaxHP * 0.08f);
+            hpCost = (int)(caster.stats.MaxHP * 0.08f);
         }
 
         protected override void UseAbility(Unit caster, Battle battle, List<Unit> targets)

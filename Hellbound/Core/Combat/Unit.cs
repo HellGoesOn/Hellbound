@@ -12,12 +12,6 @@ namespace HellTrail.Core.Combat
 {
     public class Unit
     {
-        public int level;
-        public int HP;
-        public int MaxHP;
-        public int SP;
-        public int MaxSP;
-        public float Speed;
         public float depth;
         public float shake;
         public string name;
@@ -29,24 +23,38 @@ namespace HellTrail.Core.Combat
         public Vector2 position;
         public Vector2 size = new (32);
         public BasicAI ai = null;
+        public CombatStats stats;
+        public CombatStats statsGrowth;
+        public ElementalResistances resistances;
         public List<Ability> abilities = [];
         public List<StatusEffect> statusEffects = [];
         public Dictionary<string, SpriteAnimation> animations = new Dictionary<string, SpriteAnimation>();
-        public ElementalResistances resistances;
 
         public float opacity;
 
         public Unit()
         {
+            stats = new CombatStats();
+            statsGrowth = new CombatStats(1, 1, 15, 5, 0.5f);
             currentAnimation = defaultAnimation = "Idle";
             resistances = new ElementalResistances();
             depth = 0f;
             sprite = "Slime3";
             opacity = 1.25f;
             name = "???";
-            HP = MaxHP = 100;
-            SP = MaxSP = 100;
-            Speed = 6;
+        }
+
+        public void TryLevelUp()
+        {
+            if (stats.EXP < stats.toNextLevel)
+                return;
+            stats.level++;
+            stats += statsGrowth;
+            stats.HP = stats.MaxHP;
+            stats.SP = stats.MaxSP;
+            stats.EXP -= stats.toNextLevel;
+            stats.toNextLevel = (int)(stats.toNextLevel * 1.05f);
+            TryLevelUp();
         }
 
         // unit should not be updating its own logic outside of combat system
@@ -87,7 +95,7 @@ namespace HellTrail.Core.Combat
             }
         }
 
-        public bool Downed => HP <= 0;
+        public bool Downed => stats.HP <= 0;
 
         public Vector2 BattleStation
         {
@@ -117,6 +125,16 @@ namespace HellTrail.Core.Combat
         {
             statusEffects.Add(effect);
             effect.OnApply(this);
+        }
+
+        public void AddReplaceEffect<T>(T effect) where T : StatusEffect
+        {
+            if (statusEffects.Any(x => x is T))
+            {
+                RemoveAllEffects<T>();
+            }
+
+            AddEffect(effect);
         }
 
         public void RemoveEffect(StatusEffect effect)
