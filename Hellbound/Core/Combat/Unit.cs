@@ -14,6 +14,7 @@ namespace HellTrail.Core.Combat
     {
         public float depth;
         public float shake;
+        public float rotation;
         public string name;
         public string sprite;
         public string currentAnimation = "";
@@ -82,6 +83,7 @@ namespace HellTrail.Core.Combat
                 anim.depth = depth;
                 anim.color = Downed ? Color.Crimson : Color.White;
                 anim.opacity = opacity;
+                anim.rotation = rotation;
                 anim.Update();
 
                 if (anim.finished)

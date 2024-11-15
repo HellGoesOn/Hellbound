@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HellTrail.Render;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,11 @@ namespace HellTrail
 {
     public static class GameStateManager
     {
-        public static GameState State { get; set; } = GameState.MainMenu;
+        public static GameState State { get; set; } = GameState.Combat;
 
-        public static void ChangeState(GameState newState)
+        public static void SetState(GameState newState, Transition transition = null)
         {
+            Main.instance.transitions.Add(transition ?? new(Renderer.SaveFrame()));
             State = newState;
             switch(State)
             {

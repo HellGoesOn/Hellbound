@@ -19,7 +19,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace HellTrail.Core.Combat
 {
-    public class Battle
+    public class Battle : IGameState
     {
         public int turnCount;
 
@@ -115,86 +115,6 @@ namespace HellTrail.Core.Combat
                 troll += 6;
                 battle.sequences.Add(sequence);
             }
-            Script triedToHitThePeas = new()
-            {
-                condition = (b) =>
-                {
-                    Unit unit = b.unitsHitLastRound.FirstOrDefault(x => x.name == "Peas");
-                    return unit != null && unit.stats.HP == unit.stats.MaxHP && b.state == BattleState.VictoryCheck && b.units.Count(x => !x.Downed && x.team == Team.Enemy) == 1;
-                },
-                action = (b) =>
-                {
-                    var page1Portrait = new Portrait("EndLife", new FrameData(0, 0, 32, 32))
-                    {
-                        scale = new Vector2(-16, 16)
-                    };
-                    var page3Portrait = new Portrait("EndLife", new FrameData(0, 32, 32, 32))
-                    {
-                        scale = new Vector2(16, 16)
-                    };
-                    var page4Portrait = new Portrait("EndLife", new FrameData(0, 128, 32, 32))
-                    {
-                        scale = new Vector2(-16, 16),
-                    };
-                    var page5Portrait = new Portrait("EndLife", new FrameData(0, 32, 32, 32))
-                    {
-                        scale = new Vector2(-16, 16),
-                        rotation = MathHelper.PiOver2
-                    };
-                    Dialogue dialogue = new();
-                    DialoguePage page = new()
-                    {
-                        portrait = page1Portrait,
-                        title = GlobalPlayer.ActiveParty[0].name,
-                        text = "Да ему вообще поебать на наши атаки.."//"It's completely impervious to our attacks.."
-                    };
-                    DialoguePage page2 = new()
-                    {
-                        title = "Peas",
-                        text = "(Pea noises)"
-                    }; 
-                    DialoguePage page3 = new()
-                    {
-                        portrait = page3Portrait,
-                        title = GlobalPlayer.ActiveParty[0].name,
-                        text = "Видимо, есть только один единственный выход.."//"There's only one thing that could work.."
-                    }; 
-                    DialoguePage page4 = new()
-                    {
-                        portrait = page4Portrait,
-                        title = GlobalPlayer.ActiveParty[0].name,
-                        text = "В ПИЗДУ ЭТУ ЖИЗНЬ!",//"GOODBYE CRUEL WORLD",
-                        onPageEnd = (_) =>
-                        {
-                            SoundEngine.PlaySound("GunShot");
-                            SoundEngine.PlaySound("Death");
-                            GlobalPlayer.ActiveParty[0].stats.HP = 0;
-                            GlobalPlayer.ActiveParty[0].shake = 0.36f;
-                        }
-                    };
-                    DialoguePage page5 = new()
-                    {
-                        portrait = page5Portrait,
-                        title = GlobalPlayer.ActiveParty[0].name,
-                        text = "(ded)"
-                    };
-                    //dialogue.pages.AddRange([page, page2, page3]);
-                    dialogue.pages.AddRange([page, page3, page4, page5]);
-                    var disturb = new Disturb()
-                    {
-                        hpCost = GlobalPlayer.ActiveParty[0].stats.HP - 1,
-                        spCost = 0
-                    };
-
-                    GlobalPlayer.ActiveParty[0].ClearEffects();
-                    GlobalPlayer.ActiveParty[0].abilities.Clear();
-                    GlobalPlayer.ActiveParty[0].abilities.Add(disturb);
-                    b.weaknessHitLastRound = true;
-                    UIManager.dialogueUI.dialogues.Add(dialogue);
-                }
-            };
-
-            battle.scripts.Add(triedToHitThePeas);
 
             return battle;
         }
@@ -291,6 +211,18 @@ namespace HellTrail.Core.Combat
 
         public void PlayVictory()
         {
+            if(Input.PressedKey([Keys.E, Keys.Enter]))
+            {
+                SoundEngine.StartMusic("SMT", true);
+                GameStateManager.SetState(GameState.Overworld, new SliceTransition(Renderer.SaveFrame()));
+                Main.instance.GetGameState().GetCamera().centre = GlobalPlayer.ActiveParty[0].position;
+                Main.instance.battle = null;
+            }
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            DrawField(spriteBatch);
         }
 
         public void DrawField(SpriteBatch spriteBatch)
@@ -329,82 +261,6 @@ namespace HellTrail.Core.Combat
             foreach (SpriteAnimation animation in fieldAnimations)
             {
                 animation.Draw(spriteBatch);
-            }
-        }
-
-        public void DrawUI(SpriteBatch spriteBatch)
-        {
-            Vector2 sway = new Vector2((float)Math.Sin(Main.totalTime), (float)Math.Cos(Main.totalTime));
-
-            UIManager.combatUI.skillPanel.Visible = menus.Count > 0 && !isPickingTarget;
-
-            foreach (Unit unit in units)
-            {
-                //Color clr = unit.Downed ? Color.Crimson : Color.White;
-                Vector2 adjPos = unit.position * 4;
-                Vector2 orig = Assets.SmallFont.MeasureString($"[HP:{unit.stats.HP}]") * 0.5f;
-                Vector2 finalPos = new Vector2((int)adjPos.X, (int)(adjPos.Y + 64));
-                spriteBatch.DrawBorderedString(Assets.SmallFont, $"[HP:{unit.stats.HP}]", finalPos, Color.White, Color.Black, 0f, orig, Vector2.One, SpriteEffects.None, 0);
-
-                if (isPickingTarget)
-                {
-                    var targets = TryGetTargets(selectedAbility);
-                    if (targets.Contains(unit))
-                    {
-                        var position = unit.position * 4;
-                        spriteBatch.Draw(Assets.Textures["Cursor3"], new Vector2(position.X - 40, position.Y) + sway, null, Color.White, 0f, new Vector2(10, 0), 3f, SpriteEffects.None, 0f);
-                    }
-                }
-            }
-
-            if (ActingUnit != null)
-            {
-            //    string text2 = $"Delay: {nextStateDelay} State: {state}";
-            //    Vector2 orig2 = Assets.DefaultFont.MeasureString(text2) * 0.5f;
-            //    spriteBatch.DrawBorderedString(Assets.DefaultFont, text2, new Vector2(640, 80), Color.White, Color.Black, 0f, orig2, Vector2.One, SpriteEffects.None, 0f);
-
-                if (menus.Count > 0)
-                {
-                    foreach (var menu in menus)
-                    {
-                        if (!menu.visible)
-                            continue;
-
-                        var boxPos = menu.position;
-                        Vector2 boxSize = menu.GetSize;
-                        spriteBatch.Draw(Assets.Textures["Pixel"], boxPos - new Vector2(2), new Rectangle(0, 0, (int)boxSize.X + 16, (int)boxSize.Y * menu.Count + 16), Color.White);
-                        spriteBatch.Draw(Assets.Textures["Pixel"], boxPos, new Rectangle(0, 0, (int)boxSize.X + 12, (int)boxSize.Y * menu.Count + 12), Color.DarkBlue);
-                        for (int i = 0; i < menu.items.Count; i++)
-                        {
-                            var option = menu[i];
-                            Vector2 size = Assets.DefaultFont.MeasureString(option.name);
-                            Vector2 orig3 = size * 0.5f;
-                            var position = new Vector2(boxPos.X + 4, boxPos.Y + 4 + i * size.Y);
-                            Color clr = option.color != Color.White ? option.color : menu.selectedOption == i ? Color.White : Color.Gray;
-                            if (menu.selectedOption == i && menu.active)
-                            {
-                                spriteBatch.Draw(Assets.Textures["Cursor3"], new Vector2(position.X - 40, 6+menu.position.Y + menu.GetSize.Y * option.index) + sway, null, Color.White, 0f, new Vector2(10, 0), 3f, SpriteEffects.None, 0f);
-                            }
-
-                            spriteBatch.DrawBorderedString(Assets.CombatMenuFont, option.name, menu.position + new Vector2(8, 4+menu.GetSize.Y * option.index), clr, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
-                            //Renderer.DrawRect(spriteBatch, menu.position + new Vector2(4, 4+menu.GetSize.Y * option.index), menu.GetSize, 1, Color.Orange * 0.75f);
-                        }
-                    }
-                }
-            }
-
-            foreach (DamageNumber number in damageNumbers)
-            {
-                number.Draw(spriteBatch);
-            }
-
-            if (battleEnded)
-            {
-                string text = $"Battle Result: {state} !";
-                Vector2 orig = Assets.DefaultFont.MeasureString(text) * 0.5f;
-                Color color = State == BattleState.Victory ? Color.Gold : State == BattleState.Loss ? Color.Red : Color.Crimson;
-                spriteBatch.DrawBorderedString(Assets.DefaultFont, text, new Vector2(640, 160), color, Color.Black, 0f, new Vector2((int)orig.X, (int)orig.Y), Vector2.One, SpriteEffects.None, 0f);
-                //spriteBatch.DrawString(AssetManager.DefaultFont, text, new Vector2(GameOptions.ScreenWidth * 0.5f, GameOptions.ScreenHeight * 0.25f), color, 0f, new Vector2((int)orig.X, (int)orig.Y), Vector2.One, SpriteEffects.None, 0f);
             }
         }
 
@@ -797,5 +653,7 @@ namespace HellTrail.Core.Combat
                 state = value; 
             } 
         }
+
+        public Camera GetCamera() => CameraManager.combatCamera;
     }
 }

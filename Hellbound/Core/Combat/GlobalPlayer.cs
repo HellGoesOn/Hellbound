@@ -127,11 +127,12 @@ namespace HellTrail.Core.Combat
 
                     for (int i = 0; i < 3; i++)
                     {
-                        int xx = Main.rand.Next((int)(mc.size.X*0.5f));
+                        int xx = Main.rand.Next((int)(mc.size.X * 0.5f));
                         int yy = Main.rand.Next((int)(mc.size.Y));
                         float velX = Main.rand.Next(60, 120) * 0.001f * (Main.rand.Next(2) == 0 ? -1 : 1);
                         float velY = -0.2f * (Main.rand.Next(20, 60) * 0.05f);
                         var particle = ParticleManager.NewParticleAdditive(new Vector3(mc.position + new Vector2(-mc.size.X * 0.25f + xx, mc.size.Y * 0.5f), 0), new Vector3(velX, 0, velY), 60);
+
                         particle.color = clrs[Main.rand.Next(clrs.Length)];
                         particle.endColor = Color.Black;
                         particle.degradeSpeed = 0.01f;

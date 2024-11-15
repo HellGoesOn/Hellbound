@@ -16,18 +16,37 @@ namespace HellTrail.Render
         public const int UIPreferedWidth = 1280;
         public const int UIPreferedHeight = 720;
 
+        public static RenderTarget2D WorldTarget { get; set; }
         public static RenderTarget2D MainTarget { get; set; }
         public static RenderTarget2D UITarget { get; set; }
 
         public static void Load(GraphicsDevice device)
         {
-            MainTarget = new RenderTarget2D(device, PreferedWidth, PreferedHeight);
+            MainTarget = new RenderTarget2D(device, UIPreferedWidth, UIPreferedHeight);
+            WorldTarget = new RenderTarget2D(device, PreferedWidth, PreferedHeight);
             UITarget = new RenderTarget2D(device, UIPreferedWidth, UIPreferedHeight);
+        }
+
+        public static RenderTarget2D SaveFrame(bool withInterface = false)
+        {
+            GraphicsDevice gd = Main.instance.GraphicsDevice;
+            GraphicsDeviceManager gdm = Main.instance.gdm;
+            RenderTarget2D renderTarget = new(gd, gdm.PreferredBackBufferWidth, gdm.PreferredBackBufferHeight);
+            SpriteBatch spriteBatch = Main.instance.spriteBatch;
+            gd.SetRenderTarget(renderTarget);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+            spriteBatch.Draw(WorldTarget, new Rectangle(0, 0, gdm.PreferredBackBufferWidth, gdm.PreferredBackBufferHeight), Color.White);
+            if(withInterface)
+                spriteBatch.Draw(UITarget, new Rectangle(0, 0, gdm.PreferredBackBufferWidth, gdm.PreferredBackBufferHeight), Color.White);
+            spriteBatch.End();
+
+            return renderTarget;
         }
 
         public static void Unload()
         {
             MainTarget.Dispose();
+            WorldTarget.Dispose();
             UITarget.Dispose();
         }
 
@@ -37,18 +56,15 @@ namespace HellTrail.Render
             sb.Draw(tex, position, null, color, rotation, origin, size, SpriteEffects.None, depth);
         }
 
-        public static void StartSpriteBatch(SpriteBatch spriteBatch, bool ignoreCam = false, BlendState blend = null, DepthStencilState stencil = null, SamplerState state = null)
+        public static void StartSpriteBatch(SpriteBatch spriteBatch, bool ignoreCam = false, BlendState blend = null, DepthStencilState stencil = null, SamplerState state = null, Camera overrideCamera = null)
         {
-            if (state == null)
-                state = SamplerState.PointClamp;
+            state ??= SamplerState.PointClamp;
 
-            if (stencil == null)
-                stencil = DepthStencilState.Default;
+            stencil ??= DepthStencilState.Default;
 
-            if(blend == null)
-                blend = BlendState.AlphaBlend;
+            blend ??= BlendState.AlphaBlend;
 
-            Camera cam = CameraManager.GetCamera;
+            Camera cam = Main.instance.GetGameState().GetCamera();
 
             if (cam != null && !ignoreCam)
                 spriteBatch.Begin(SpriteSortMode.FrontToBack, blend, state, stencil, RasterizerState.CullNone, null, cam.transform);

@@ -16,7 +16,7 @@ namespace HellTrail.Core.Combat.Status.Debuffs
         {
             name = "Burn";
             description = "Takes fire damage at the beginning of the turn";
-            turnsLeft = 4;
+            turnsLeft = 3;
         }
 
         public override void OnTurnBegin(Unit unit, Battle battle)

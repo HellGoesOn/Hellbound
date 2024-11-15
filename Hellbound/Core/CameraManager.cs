@@ -13,15 +13,24 @@ namespace HellTrail.Core
     {
         public static int currentCamera;
 
+        public static Camera combatCamera;
+        public static Camera overworldCamera;
+
         public static List<Camera> cameras = new List<Camera>();
 
         public static void Initialize()
         {
-            var momGetTheCamera = new Camera(new Viewport(0, 0, Renderer.PreferedWidth, Renderer.PreferedHeight));
-            momGetTheCamera.zoom = 1f;
-            momGetTheCamera.speed = 1f;
-            momGetTheCamera.centre = new Vector2(160, 90);
-            cameras.Add(momGetTheCamera);
+            combatCamera = new Camera(new Viewport(0, 0, Renderer.PreferedWidth, Renderer.PreferedHeight));
+            combatCamera.zoom = 1f;
+            combatCamera.speed = 1f;
+            combatCamera.centre = new Vector2(160, 90);
+            cameras.Add(combatCamera);
+            
+            overworldCamera = new Camera(new Viewport(0, 0, Renderer.PreferedWidth, Renderer.PreferedHeight));
+            overworldCamera.zoom = 1f;
+            overworldCamera.speed = 1f;
+            overworldCamera.centre = new Vector2(160, 90);
+            cameras.Add(overworldCamera);
         }
 
         public static void Update()

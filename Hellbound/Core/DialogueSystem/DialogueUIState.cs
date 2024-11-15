@@ -20,6 +20,7 @@ namespace HellTrail.Core.DialogueSystem
         public UIBorderedText dialogueText;
         public UIPanel speakerPanel;
         public UIBorderedText speakerText;
+        public UIBorderedText actionsText;
         public UIPortrait portrait;
 
         public DialogueUIState()
@@ -56,8 +57,13 @@ namespace HellTrail.Core.DialogueSystem
             {
                 Position = new Vector2(16, 8)
             };
+            actionsText = new("[E] Next")
+            {
+                Position = new Vector2(16, 140)
+            };
             speakerPanel.Append(speakerText);
             dialoguePanel.Append(speakerPanel);
+            dialoguePanel.Append(actionsText);
         }
 
         public override void Update()
@@ -70,11 +76,15 @@ namespace HellTrail.Core.DialogueSystem
 
                 DialoguePage page = dialogues[0].CurrentPage;
                 speakerText.text = page.title;
+                speakerText.color = page.speakerColor;
                 dialogueText.text = page.VisibleText.Splice(80);
+                dialogueText.color = page.textColor;
+                dialoguePanel.fillColor = page.fillColor;
+                dialoguePanel.outlineColor = page.borderColor;
 
                 speakerPanel.Visible = !string.IsNullOrWhiteSpace(speakerText.text);
 
-                portrait.portrait = page.portrait;
+                portrait.portrait = page.portraits;
 
                 dialogues[0].Update();
 

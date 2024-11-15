@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace HellTrail.Core.DialogueSystem
 {
@@ -7,18 +8,26 @@ namespace HellTrail.Core.DialogueSystem
         public int progress;
         public int elapsedTime;
         public int timePerLetter;
+        public int currentResponse;
         public bool active;
         public bool finishedScrolling;
         public string text;
         public string title;
 
-        public int currentResponse;
+        public Color textColor;
+        public Color speakerColor;
+        public Color borderColor;
+        public Color fillColor;
         public List<Response> responses = [];
-        public Portrait portrait;
+        public List<Portrait> portraits = [];
         public ResponseDelegate onPageEnd;
 
         public DialoguePage()
         {
+            textColor = Color.White;
+            speakerColor = Color.White;
+            borderColor = Color.White;
+            fillColor = Color.DarkBlue;
             text = "";
             title = "";
             timePerLetter = 0;

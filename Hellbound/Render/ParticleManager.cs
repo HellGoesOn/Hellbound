@@ -35,7 +35,16 @@ namespace Treeline.Core.Graphics
             if (++count >= particles.Length)
             {
                 count = particles.Length - 1;
-                return null;
+
+                var particle2 = particles[0];
+                particle2.SetDefaults();
+                particle2.position = position;
+                particle2.velocity = velocity;
+                particle2.castShadow = castShadow;
+                particle2.weight = weight;
+                particle2.timeLeft = timeLeft;
+                particle2.diesToGravity = false;
+                return particle2;
             }
 
             var particle = particles[count];
@@ -54,8 +63,16 @@ namespace Treeline.Core.Graphics
         {
             if (++countAdditive >= particlesAdditive.Length)
             {
-                countAdditive = particlesAdditive.Length - 1;
-                return null;
+                countAdditive = particlesAdditive.Length - 1; 
+                var particle2 = particlesAdditive[countAdditive];
+                particle2.SetDefaults();
+                particle2.position = position;
+                particle2.velocity = velocity;
+                particle2.castShadow = castShadow;
+                particle2.weight = weight;
+                particle2.timeLeft = timeLeft;
+                particle2.diesToGravity = false;
+                return particle2;
             }
 
             var particle = particlesAdditive[countAdditive];

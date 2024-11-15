@@ -1,4 +1,5 @@
-﻿using HellTrail.Render;
+﻿using HellTrail.Core;
+using HellTrail.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -41,9 +42,9 @@ namespace HellTrail
             {
                 MouseState state = Mouse.GetState();
                 var adjusted = new Vector2(state.X, state.Y) / Adjustment;
-                //var cam = CameraManager.GetCamera;
-                //Vector2 v = (adjusted + cam.Position) / cam.zoom;
-                return adjusted;
+                var cam = Main.instance.GetGameState().GetCamera();
+                Vector2 v = (adjusted + cam.Position) / cam.zoom;
+                return v;
             }
         }
 
@@ -62,6 +63,8 @@ namespace HellTrail
         }
 
         public static bool PressedKey(Keys key) => Keyboard.GetState().IsKeyDown(key) && _oldKBState.IsKeyUp(key) && IsWindowActive;
+
+        public static bool PressedKey(Keys[] key) => key.Any(PressedKey);
 
         public static bool HeldKey(Keys key) => Keyboard.GetState().IsKeyDown(key) && IsWindowActive;
 

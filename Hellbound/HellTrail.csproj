@@ -26,8 +26,6 @@
     <None Remove="Assets\Audio\Sounds\Dies.wav" />
     <None Remove="Assets\Audio\Sounds\WhatDaDogDoin.wav" />
     <None Remove="Assets\Dumbass.png" />
-    <None Remove="Assets\fffont.ttf" />
-    <None Remove="Assets\retganon.ttf" />
     <None Remove="Assets\TestAnimation.png" />
     <None Remove="Assets\Textures\Canvas.png" />
     <None Remove="Assets\Textures\Cursor.png" />
@@ -42,6 +40,9 @@
     <None Remove="Assets\Textures\Slime.png" />
     <None Remove="Assets\Textures\Slime2.png" />
     <None Remove="Assets\Textures\Slime3.png" />
+    <None Remove="Assets\Textures\TestBG2.png" />
+    <None Remove="Assets\Textures\TestBg3.png" />
+    <None Remove="Assets\Textures\Tileset.png" />
     <None Remove="Assets\Textures\Tomato.png" />
     <None Remove="Assets\Textures\VictoryPose.png" />
     <None Remove="Assets\Textures\WhatDaDogDoin.png" />

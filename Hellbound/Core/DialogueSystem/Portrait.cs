@@ -11,17 +11,18 @@ namespace HellTrail.Core.DialogueSystem
 {
     public class UIPortrait : UIElement
     {
-        public Portrait portrait;
+        public List<Portrait> portrait;
 
-        public UIPortrait(Portrait defaultPortrait)
+        public UIPortrait(List<Portrait> defaultPortrait)
         {
             portrait = defaultPortrait;
         }
 
         public override void OnDraw(SpriteBatch spriteBatch)
         {
-            if (portrait != null)
+            if (portrait != null && portrait.Count > 0)
             {
+                foreach(Portrait portrait in portrait)
                 spriteBatch.Draw(portrait.texture, this.Position + portrait.offset, portrait.frame.AsRect, portrait.tint, portrait.rotation, portrait.origin, portrait.scale, SpriteEffects.None, 0);
             }
         }
