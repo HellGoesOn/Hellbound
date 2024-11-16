@@ -69,6 +69,8 @@ namespace HellTrail.Core.Combat
 
         public List<Script> scripts = [];
 
+        public Action OnBattleEnd;
+
         public Battle() 
         {
             rand = new Random();
@@ -80,31 +82,39 @@ namespace HellTrail.Core.Combat
 
         public static Battle Create(List<Unit> enemies)
         {
+            SoundEngine.StartMusic("SMT", true);
             Battle battle = new()
             {
                 actingUnit = 0
             };
-            battle.units.AddRange(GlobalPlayer.ActiveParty);
+            battle.SetEnemies(enemies);
+
+            battle.winConditions.Add(x => !x.units.Any(x => !x.Downed && x.team == Team.Enemy));
+
+            return battle;
+        }
+
+        public void SetEnemies(List<Unit> enemies)
+        {
+            units.Clear();
+            unitsNoSpeedSort.Clear();
+            units.AddRange(GlobalPlayer.ActiveParty);
 
             foreach (Unit unit in enemies)
             {
                 unit.team = Team.Enemy;
-                unit.stats.speed += battle.rand.Next(1, 10) * 0.01f;
+                unit.stats.speed += rand.Next(1, 10) * 0.01f;
             }
-            battle.units.AddRange(enemies);
-            battle.unitsNoSpeedSort.AddRange(battle.units);
-            battle.units = [.. battle.units.OrderByDescending(x => x.stats.speed)];
-
-            battle.winConditions.Add(x => !x.units.Any(x => !x.Downed && x.team == Team.Enemy));
-
-            SoundEngine.StartMusic("SMT", true);
+            units.AddRange(enemies);
+            unitsNoSpeedSort.AddRange(units);
+            units = [.. units.OrderByDescending(x => x.stats.speed)];
 
             int troll = 0;
-            foreach (Unit unit in battle.units)
+            foreach (Unit unit in units)
             {
                 unit.scale = Vector2.One;
                 unit.position = unit.BattleStation - new Vector2(200 * (unit.BattleStation.X > 160 ? -1 : 1), 0);
-                Sequence sequence = new(battle)
+                Sequence sequence = new(this)
                 {
                     active = true
                 };
@@ -113,10 +123,8 @@ namespace HellTrail.Core.Combat
                 sequence.Add(new MoveActorSequence(unit, unit.BattleStation, 0.22f));
 
                 troll += 6;
-                battle.sequences.Add(sequence);
+                this.sequences.Add(sequence);
             }
-
-            return battle;
         }
 
         public void Update()
@@ -215,7 +223,7 @@ namespace HellTrail.Core.Combat
             {
                 SoundEngine.StartMusic("SMT", true);
                 GameStateManager.SetState(GameState.Overworld, new SliceTransition(Renderer.SaveFrame()));
-                Main.instance.GetGameState().GetCamera().centre = GlobalPlayer.ActiveParty[0].position;
+                OnBattleEnd?.Invoke();
                 Main.instance.battle = null;
             }
         }

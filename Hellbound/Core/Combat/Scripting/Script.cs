@@ -23,6 +23,4 @@ namespace HellTrail.Core.Combat.Scripting
             }
         }
     }
-
-    public delegate void Action(Battle battle);
 }

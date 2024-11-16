@@ -10,6 +10,13 @@ namespace HellTrail.Core.UI
 {
     public class UIElement
     {
+        public string id;
+
+        public UIElement()
+        {
+            id = string.Empty;
+        }
+
         public UIEventHandler onUpdate;
         public Vector2 size;
         public List<UIElement> children = [];

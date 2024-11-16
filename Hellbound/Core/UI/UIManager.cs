@@ -28,6 +28,17 @@ namespace HellTrail.Core.UI
 
             UIStates.Add(combatUI);
             UIStates.Add(dialogueUI);
+
+            UIState debugState = new()
+            {
+                id = "debugState"
+            };
+            debugState.Append(new UIBorderedText("")
+            {
+                id = "debugText",
+                Position = new Vector2(16),
+            });
+            UIStates.Add(debugState);
         }
 
         public static void Update()
@@ -46,11 +57,18 @@ namespace HellTrail.Core.UI
             }
         }
 
-        public static UIState CreateState()
+        public static UIState CreateState(string id = "")
         {
-            var uiState = new UIState();
+            var uiState = new UIState()
+            {
+                id = id
+            };
             UIStates.Add(uiState);
             return uiState;
         }
+
+        public static UIState GetState(Predicate<UIState> predicate) => UIStates.Find(predicate);
+
+        public static UIState GetStateByName(string name) => GetState(x=>x.id == name);
     }
 }

@@ -25,6 +25,7 @@ namespace HellTrail.Core.DialogueSystem
 
         public DialogueUIState()
         {
+            id = "dialogueUIState";
             portrait = new UIPortrait(null);
             portrait.Position = new Vector2(Renderer.UIPreferedWidth * 0.5f, Renderer.UIPreferedHeight-240);
 

@@ -17,6 +17,8 @@ using HellTrail.Core.Combat.AI;
 using HellTrail.Core.Overworld;
 using HellTrail.Core.DialogueSystem;
 using HellTrail.Core.Combat.Scripting;
+using HellTrail.Core.ECS;
+using HellTrail.Core.ECS.Components;
 
 namespace HellTrail
 {
@@ -56,7 +58,7 @@ namespace HellTrail
             gdm.ApplyChanges();
             GameStateManager.State = GameState.Overworld;
 
-            GetGameState().GetCamera().centre = GlobalPlayer.ActiveParty[0].position;
+            //GetGameState().GetCamera().centre = GlobalPlayer.ActiveParty[0].position;
         }
 
         protected override void LoadContent()
@@ -69,6 +71,7 @@ namespace HellTrail
             UIManager.Init();
             GlobalPlayer.Init();
             ParticleManager.Initialize();
+            Context.InitializeAll();
 
             activeWorld = new World();
 
@@ -110,7 +113,8 @@ namespace HellTrail
                 unit.abilities.AddRange([new Agi(), new Maragi(), new Dia()]);
             }
             List<Unit> list = [];
-            for (int i = 0; i < 5; i++)
+            var slimeList = activeWorld.context.entities.Where(x => x != null && x.enabled && x.HasComponent<TextureComponent>() && x.GetComponent<TextureComponent>().textureName == "Slime3");
+            for (int i = 0; i < slimeList.Count(); i++)
             {
                 Unit slime = new()
                 {
@@ -134,7 +138,6 @@ namespace HellTrail
             };
             peas.resistances = new ElementalResistances(1f, 1f, 1f, 1f, 1f, 0f);
             peas.BattleStation = new Vector2(190, 90);
-            //list.Add(peas);
 
             Vector2 pos = GlobalPlayer.ActiveParty[0].position;
 
@@ -143,10 +146,18 @@ namespace HellTrail
 
 
             battle = Battle.Create(list);
+            var endBattle = () =>
+            {
+                foreach (var item in slimeList)
+                {
+                    activeWorld.context.Destroy(item);
+                }
+            };
+            battle.OnBattleEnd = endBattle;
             if (activeWorld.tileMap.tiles[x, y] == 1)
             {
-                list.Add(peas);
-                battle = Battle.Create(list);
+                //list.Add(peas);
+                battle.SetEnemies(list);
                 Script triedToHitThePeas = new()
                 {
                     condition = (b) =>
@@ -220,16 +231,6 @@ namespace HellTrail
             {
                 GameStateManager.SetState(GameState.Combat, new TrippingBalls(Renderer.SaveFrame()));
                 StartBattle();
-            }
-
-            if (Input.LMBClicked)
-            {
-                if (activeWorld != null)
-                {
-                    int x = activeWorld.tileMap.width;
-                    int y = activeWorld.tileMap.height;
-                    activeWorld.tileMap.ChangeTile(1, (int)Input.MousePosition.X / TileMap.TILE_SIZE, (int)Input.MousePosition.Y / TileMap.TILE_SIZE);
-                }
             }
             
             if(Input.PressedKey(Keys.F2))

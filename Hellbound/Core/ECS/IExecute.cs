@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HellTrail
+namespace HellTrail.Core.ECS
 {
-    public class MenuSystem
+    public interface IExecute : ISystem
     {
-        public int optionCount;
-        public bool isActive;
+        void Execute(Context context);
     }
 }

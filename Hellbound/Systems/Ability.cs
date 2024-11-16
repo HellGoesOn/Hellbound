@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HellTrail.Systems
+namespace HellTrail
 {
 //{
 //    public class Ability

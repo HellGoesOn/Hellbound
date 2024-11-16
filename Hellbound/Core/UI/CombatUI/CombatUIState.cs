@@ -36,6 +36,7 @@ namespace HellTrail.Core.UI.CombatUI
 
         public CombatUIState()
         {
+            id = "combatUIState";
             teamStatus = new()
             {
                 //fillColor = Color.White * 0f,
@@ -48,8 +49,8 @@ namespace HellTrail.Core.UI.CombatUI
             teamSPText = new("");
 
             teamNamesText.Position = new Vector2(16);
-            teamHPText.Position = new Vector2(160, 16);
-            teamSPText.Position = new Vector2(340, 16);
+            teamHPText.Position = new Vector2(200, 16);
+            teamSPText.Position = new Vector2(360, 16);
 
             teamStatus.Append(teamNamesText);
             teamStatus.Append(teamHPText);
@@ -134,7 +135,7 @@ namespace HellTrail.Core.UI.CombatUI
             string partySP = "";
             foreach(Unit unit in GlobalPlayer.ActiveParty)
             {
-                partyStatus += $"{(unit.name)}\n";
+                partyStatus += $"[ {unit.stats.level} ]{(unit.name)}\n";
                 partyHP += $"HP: {unit.stats.HP}/{unit.stats.MaxHP}\n";
                 partySP += $"SP: {unit.stats.SP}/{unit.stats.MaxSP}\n";
             }

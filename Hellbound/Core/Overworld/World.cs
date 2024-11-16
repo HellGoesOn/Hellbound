@@ -1,6 +1,9 @@
 ﻿using HellTrail.Core.Combat;
 using HellTrail.Core.Combat.Scripting;
 using HellTrail.Core.Combat.Status;
+using HellTrail.Core.ECS;
+using HellTrail.Core.ECS.Components;
+using HellTrail.Core.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -14,6 +17,10 @@ namespace HellTrail.Core.Overworld
 {
     public class World : IGameState
     {
+        public Context context;
+
+        public Systems systems;
+
         public List<Trigger> triggers = [];
 
         public Texture2D mapTexture;
@@ -24,24 +31,27 @@ namespace HellTrail.Core.Overworld
 
         public World() 
         {
+            systems = new Systems();
+            context = new Context(1000);
             tileMap = new TileMap(20, 20);
-            GetCamera().centre = new Vector2(tileMap.width, tileMap.height) * 32 * 0.5f;
+            GetCamera().centre = new Vector2(tileMap.width, tileMap.height) * TileMap.TILE_SIZE * 0.5f;
             units.AddRange(GlobalPlayer.ActiveParty);
+
+            systems.AddSystem(new DrawSystem());
+            systems.AddSystem(new MoveSystem());
         }
 
         public void Update()
         {
+            var debugText = UIManager.GetStateByName("debugState").GetElementById("debugText") as UIBorderedText;
+            debugText.text = $"EC={context.entityCount}, CC={Context._maxComponents}";
+            
             foreach (var trigger in triggers)
             {
                 trigger.TryRunScript(this);
             }
 
-            foreach (Unit unit in units)
-            {
-                unit.UpdateVisuals();
-            }
-
-                triggers.RemoveAll(x => x.activated);
+            triggers.RemoveAll(x => x.activated);
 
             Camera cam = GetCamera();
             if (Input.HeldKey(Keys.A))
@@ -52,6 +62,40 @@ namespace HellTrail.Core.Overworld
                 cam.centre.Y -= cam.speed;
             if (Input.HeldKey(Keys.S))
                 cam.centre.Y += cam.speed;
+
+            systems.Execute(context);
+
+            if (Input.HeldKey(Keys.Delete))
+            {
+                int id = context.LastActiveEntity;
+                if(id >= 0)
+                context.Destroy(id);
+            }
+
+            if (Input.LMBClicked)
+            {
+                int x = tileMap.width;
+                int y = tileMap.height;
+                tileMap.ChangeTile(1, (int)Input.MousePosition.X / TileMap.TILE_SIZE, (int)Input.MousePosition.Y / TileMap.TILE_SIZE);
+
+            }
+
+            if (Input.RMBClicked)
+            {
+                if(context.entityCount < context.entities.Length)
+                {
+                    var e = context.Create();
+                    e.AddComponent(new TextureComponent("Slime3")
+                    {
+                        origin = new Vector2(16)
+                    });
+                    var xx = Main.rand.Next(-100, 101);
+                    var yy = Main.rand.Next(-100, 101);
+                    var off = new Vector2(xx, yy);
+                    e.AddComponent(new Transform(new Vector2((int)Input.MousePosition.X, (int)Input.MousePosition.Y)));
+                }    
+            }
+
             /*
             if (Input.HeldKey(Keys.LeftShift))
                 cam.zoom += 0.02f;
@@ -72,37 +116,9 @@ namespace HellTrail.Core.Overworld
                 spriteBatch.Draw(mapTexture, Vector2.Zero, Color.White);
             }
 
-            foreach (Unit unit in units)
-            {
-                Color clr = unit.Downed ? Color.Crimson : Color.White;
-                Vector2 position = unit.position + new Vector2(unit.shake * Main.rand.Next(2) % 2 == 0 ? 1 : -1, 0f);
-                if (unit.animations.TryGetValue(unit.currentAnimation, out var anim))
-                {
-                    anim.position = position;
-                    anim.Draw(spriteBatch, unit.scale);
-                } else
-                {
-                    spriteBatch.Draw(Assets.Textures[unit.sprite], new Vector2((int)(position.X), (int)(position.Y)), null, clr * unit.opacity, 0f, new Vector2(16), unit.scale, SpriteEffects.None, unit.depth);
-                    //Renderer.DrawRect(spriteBatch, unit.position-unit.size*0.5f, unit.size, 1, Color.Orange * 0.25f);
-                }
-            }
+            systems.Draw(context, spriteBatch);
         }
 
         public Camera GetCamera() => CameraManager.overworldCamera;
-    }
-
-    public class Actor
-    {
-        public List<SpriteAnimation> animations = [];
-
-        public Actor()
-        {
-
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-
-        }
     }
 }
