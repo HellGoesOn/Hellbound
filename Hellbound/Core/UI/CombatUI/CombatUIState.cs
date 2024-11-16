@@ -1,4 +1,5 @@
 ﻿using HellTrail.Core.Combat;
+using HellTrail.Core.Combat.Status;
 using HellTrail.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,6 +18,7 @@ namespace HellTrail.Core.UI.CombatUI
         private float acceleration;
 
         public bool isRunning;
+        public bool showLevelUps;
 
         public UIPanel oneMorePanel;
 
@@ -137,7 +139,7 @@ namespace HellTrail.Core.UI.CombatUI
                 return;
             }
 
-            if(levelUpElements.Count > 0)
+            if(levelUpElements.Count > 0 && showLevelUps)
             {
                 if(GetElementById("LevelUp") == null)
                 {
@@ -149,6 +151,9 @@ namespace HellTrail.Core.UI.CombatUI
                     Disown(levelUpElements[0]);
                     levelUpElements.RemoveAt(0);
                 }
+
+                if (levelUpElements.Count <= 0)
+                    showLevelUps = false;
             }
 
             base.Update();
@@ -222,11 +227,16 @@ namespace HellTrail.Core.UI.CombatUI
 
             foreach (Unit unit in activeBattle.units)
             {
-                //Color clr = unit.Downed ? Color.Crimson : Color.White;
-                //Vector2 adjPos = unit.position * 4;
-                //Vector2 orig = Assets.SmallFont.MeasureString($"[HP:{unit.stats.HP}]") * 0.5f;
-                //Vector2 finalPos = new Vector2((int)adjPos.X, (int)(adjPos.Y + 64));
-                //spriteBatch.DrawBorderedString(Assets.SmallFont, $"[HP:{unit.stats.HP}]", finalPos, Color.White, Color.Black, 0f, orig, Vector2.One, SpriteEffects.None, 0);
+                string buffs = "";
+
+                foreach (StatusEffect fx in unit.statusEffects)
+                    buffs += $"[{fx.name}]={fx.turnsLeft}\n";
+
+                Color clr = unit.Downed ? Color.Crimson : Color.White;
+                Vector2 adjPos = unit.position * 4;
+                Vector2 orig = Assets.SmallFont.MeasureString(buffs) * 0.5f;
+                Vector2 finalPos = new Vector2((int)adjPos.X, (int)(adjPos.Y + 64));
+                spriteBatch.DrawBorderedString(Assets.SmallFont, buffs, finalPos, Color.White, Color.Black, 0f, orig, Vector2.One, SpriteEffects.None, 0);
 
                 if (activeBattle.isPickingTarget)
                 {
@@ -288,6 +298,13 @@ namespace HellTrail.Core.UI.CombatUI
                 spriteBatch.DrawBorderedString(Assets.DefaultFont, text, new Vector2(640, 160), color, Color.Black, 0f, new Vector2((int)orig.X, (int)orig.Y), Vector2.One, SpriteEffects.None, 0f);
                 //spriteBatch.DrawString(AssetManager.DefaultFont, text, new Vector2(GameOptions.ScreenWidth * 0.5f, GameOptions.ScreenHeight * 0.25f), color, 0f, new Vector2((int)orig.X, (int)orig.Y), Vector2.One, SpriteEffects.None, 0f);
             }
+        }
+
+        public void SetAbilityUsed(string text, int duration = 90)
+        {
+            showUsedAbilityTime = duration;
+            usedAbilityText.text = text;
+            usedAbilityPanel.Visible = true;
         }
     }
 

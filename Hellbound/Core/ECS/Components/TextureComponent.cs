@@ -13,9 +13,11 @@ namespace HellTrail.Core.ECS.Components
         public readonly string textureName;
         public readonly Texture2D texture;
         public Vector2 origin;
+        public Vector2 scale;
 
         public TextureComponent(string texture) 
         {
+            scale = Vector2.One;
             this.textureName = texture;
             this.texture = Assets.Textures[textureName];
         }

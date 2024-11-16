@@ -51,38 +51,48 @@ namespace HellTrail.Core.Combat
 
         public List<Unit> unitsNoSpeedSort;
 
-        public List<Func<Battle, bool>> winConditions = [];
+        public List<Func<Battle, bool>> winConditions;
 
-        public List<Menu> menus = [];
+        public List<Menu> menus;
 
-        public List<Menu> menusToRemove = [];
+        public List<Menu> menusToRemove;
 
-        public List<Menu> menusToAdd = [];
+        public List<Menu> menusToAdd;
 
-        public List<Sequence> sequences = [];
+        public List<Sequence> sequences;
 
-        public List<SpriteAnimation> fieldAnimations = [];
+        public List<SpriteAnimation> fieldAnimations;
 
-        public List<DamageNumber> damageNumbers = [];
+        public List<DamageNumber> damageNumbers;
 
-        public List<Unit> unitsHitLastRound = [];
+        public List<Unit> unitsHitLastRound;
 
-        public List<Script> scripts = [];
+        public List<Script> scripts;
 
         public Action OnBattleEnd;
 
         public Battle() 
         {
             rand = new Random();
+            winConditions = [];
+            menus = [];
+            menusToRemove = [];
+            menusToAdd = [];
+            sequences = [];
+            fieldAnimations = [];
+            damageNumbers = [];
+            scripts = [];
             units = [];
             unitsNoSpeedSort = [];
+            unitsHitLastRound = [];
             State = BattleState.BeginTurn;
             bg = new BattleBackground("TestBG");
         }
 
         public static Battle Create(List<Unit> enemies)
         {
-            SoundEngine.StartMusic("SMT", true);
+            SoundEngine.StartMusic("BossMusic", true);
+            SoundEngine.PlaySound("Begin", 0.5f);
             Battle battle = new()
             {
                 actingUnit = 0
@@ -221,7 +231,7 @@ namespace HellTrail.Core.Combat
         {
             if(Input.PressedKey([Keys.E, Keys.Enter]) && UIManager.combatUI.levelUpElements.Count <= 0)
             {
-                SoundEngine.StartMusic("SMT", true);
+                SoundEngine.StartMusic("ChangingSeasons", true);
                 GameStateManager.SetState(GameState.Overworld, new SliceTransition(Renderer.SaveFrame()));
                 OnBattleEnd?.Invoke();
                 Main.instance.battle = null;
@@ -280,17 +290,21 @@ namespace HellTrail.Core.Combat
 
             State = BattleState.BeginAction;
 
-            for (int i = ActingUnit.statusEffects.Count - 1; i >= 0; i--)
+            if (!weaknessHitLastRound)
             {
-                var eff = ActingUnit.statusEffects[i];
-                if (eff.turnsLeft <= 0 || ActingUnit.Downed)
-                    ActingUnit.RemoveEffect(eff);
-            }
+                for (int i = ActingUnit.statusEffects.Count - 1; i >= 0; i--)
+                {
+                    var eff = ActingUnit.statusEffects[i];
+                    if (eff.turnsLeft <= 0 || ActingUnit.Downed)
+                        ActingUnit.RemoveEffect(eff);
+                }
 
-            foreach (StatusEffect effect in ActingUnit.statusEffects)
-            {
-                effect.OnTurnBegin(ActingUnit, this);
+                foreach (StatusEffect effect in ActingUnit.statusEffects)
+                {
+                    effect.OnTurnBegin(ActingUnit, this);
+                }
             }
+            weaknessHitLastRound = false;
         }
 
         private void HandleMenus()
@@ -502,7 +516,6 @@ namespace HellTrail.Core.Combat
                 seq.Add(new DelaySequence(45));
                 sequences.Add(seq);
                 UIManager.combatUI.isRunning = true;
-                weaknessHitLastRound = false;
                 return;
             }
 
@@ -571,10 +584,23 @@ namespace HellTrail.Core.Combat
                     this.sequences.Add(seq);
                 }
 
+                bool anyLevelUps = false;
                 foreach(Unit unit in GlobalPlayer.ActiveParty)
                 {
                     unit.stats.EXP += expValue;
+                    unit.ClearEffects();
+
+                    if (!anyLevelUps)
+                        anyLevelUps = unit.TryLevelUp();
+
                     unit.TryLevelUp();
+                }
+
+                if(anyLevelUps)
+                {
+                    Sequence delayLevelUps = CreateSequence();
+                    delayLevelUps.Delay(180);
+                    delayLevelUps.CustomAction(() => { UIManager.combatUI.showLevelUps = true; });
                 }
 
                 return;

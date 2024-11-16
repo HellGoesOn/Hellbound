@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HellTrail.Core.Combat.Status
 {
-    public class StatusEffect
+    public class StatusEffect : IStatus
     {
         public int turnsLeft;
 

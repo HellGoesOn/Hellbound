@@ -1,4 +1,5 @@
 ﻿using HellTrail.Core.Combat;
+using HellTrail.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -20,7 +21,7 @@ namespace HellTrail.Core.UI.CombatUI
             UIPanel panel = new()
             {
                 size = new Vector2(540, 260),
-                Position = new Vector2(32, 128)
+                Position = new Vector2(Renderer.UIPreferedWidth * 0.5f - 270, Renderer.UIPreferedHeight * 0.5f - 130)
             };
 
             UIBorderedText luckyGuy = new(name)

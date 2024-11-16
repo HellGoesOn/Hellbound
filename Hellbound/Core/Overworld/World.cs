@@ -39,6 +39,7 @@ namespace HellTrail.Core.Overworld
 
             systems.AddSystem(new DrawSystem());
             systems.AddSystem(new MoveSystem());
+            systems.AddSystem(new ObesitySystem());
         }
 
         public void Update()
@@ -87,12 +88,14 @@ namespace HellTrail.Core.Overworld
                     var e = context.Create();
                     e.AddComponent(new TextureComponent("Slime3")
                     {
-                        origin = new Vector2(16)
+                        origin = new Vector2(16),
+                        scale = new Vector2(1)
                     });
                     var xx = Main.rand.Next(-100, 101);
                     var yy = Main.rand.Next(-100, 101);
                     var off = new Vector2(xx, yy);
                     e.AddComponent(new Transform(new Vector2((int)Input.MousePosition.X, (int)Input.MousePosition.Y)));
+                    e.AddComponent(new ShawtyObese(-0.02f));
                 }    
             }
 

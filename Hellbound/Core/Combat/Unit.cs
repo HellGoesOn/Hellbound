@@ -3,6 +3,7 @@ using HellTrail.Core.Combat.Status;
 using HellTrail.Core.UI;
 using HellTrail.Core.UI.CombatUI;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,14 +31,16 @@ namespace HellTrail.Core.Combat
         public CombatStats stats;
         public CombatStats statsGrowth;
         public ElementalResistances resistances;
-        public List<Ability> abilities = [];
-        public List<StatusEffect> statusEffects = [];
+        public List<Ability> abilities;
+        public List<StatusEffect> statusEffects;
         public Dictionary<string, SpriteAnimation> animations = new Dictionary<string, SpriteAnimation>();
 
         public float opacity;
 
         public Unit()
         {
+            abilities = [];
+            statusEffects = [];
             stats = new CombatStats();
             statsGrowth = new CombatStats(1, 1, 15, 5, 0.5f);
             currentAnimation = defaultAnimation = "Idle";
@@ -48,10 +51,10 @@ namespace HellTrail.Core.Combat
             name = "???";
         }
 
-        public void TryLevelUp()
+        public bool TryLevelUp()
         {
             if (stats.EXP < stats.toNextLevel)
-                return;
+                return false;
 
             var oldStats = stats.GetCopy();
 
@@ -60,9 +63,11 @@ namespace HellTrail.Core.Combat
             stats.HP = stats.MaxHP;
             stats.SP = stats.MaxSP;
             stats.EXP -= stats.toNextLevel;
-            stats.toNextLevel = (int)(stats.toNextLevel * 1.25f);
+            stats.toNextLevel = (int)(stats.toNextLevel * 1.12f);
             UIManager.combatUI.CreateLevelUp(name, oldStats, stats);
             TryLevelUp();
+
+            return true;
         }
 
         // unit should not be updating its own logic outside of combat system
@@ -130,20 +135,20 @@ namespace HellTrail.Core.Combat
             return rect.Contains(mousePoint);
         }
 
-        public void AddEffect(StatusEffect effect)
+        public void AddEffect<T>(T effect) where T : StatusEffect
         {
-            statusEffects.Add(effect);
+            this.statusEffects.Add(effect);
             effect.OnApply(this);
         }
 
         public void AddReplaceEffect<T>(T effect) where T : StatusEffect
         {
-            if (statusEffects.Any(x => x is T))
+            if (this.HasStatus(effect.name))
             {
-                RemoveAllEffects<T>();
+                this.RemoveAllEffects(effect.name);
             }
 
-            AddEffect(effect);
+            this.AddEffect(effect);
         }
 
         public void RemoveEffect(StatusEffect effect)
@@ -174,9 +179,36 @@ namespace HellTrail.Core.Combat
             }
         }
 
+        public void RemoveAllEffects(string name)
+        {
+            for (int i = statusEffects.Count - 1; i >= 0; i--)
+            {
+                if (statusEffects[i].name == name)
+                {
+                    statusEffects[i].OnRemove(this);
+                    statusEffects.RemoveAt(i);
+                }
+            }
+        }
+
         public bool HasStatus<T>() where T : StatusEffect
         {
             return statusEffects.Any(x => x is T);
+        }
+
+        public bool HasStatus(Type type)
+        {
+            return statusEffects.Any(x => x.GetType() == type);
+        }
+
+        public bool HasStatus(string name)
+        {
+            return statusEffects.Any(x=>x.name == name);
+        }
+
+        public void ExtendEffect<T>(T effect) where T : StatusEffect
+        {
+            statusEffects.First(x => x.name == effect.name).turnsLeft += effect.turnsLeft;
         }
     }
 }

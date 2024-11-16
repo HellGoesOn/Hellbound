@@ -57,6 +57,7 @@ namespace HellTrail
             gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
             gdm.ApplyChanges();
             GameStateManager.State = GameState.Overworld;
+            SoundEngine.StartMusic("ChangingSeasons", true);
 
             //GetGameState().GetCamera().centre = GlobalPlayer.ActiveParty[0].position;
         }
@@ -104,13 +105,9 @@ namespace HellTrail
 
         private void StartBattle()
         {
-            foreach(Unit unit in GlobalPlayer.ActiveParty)
+            if(battle != null)
             {
-                unit.stats.HP = unit.stats.MaxHP;
-                unit.stats.SP = unit.stats.MaxSP;
-                unit.opacity = 1f;
-                unit.abilities.Clear();
-                unit.abilities.AddRange([new Agi(), new Maragi(), new Dia()]);
+                battle = null;
             }
             List<Unit> list = [];
             var slimeList = activeWorld.context.entities.Where(x => x != null && x.enabled && x.HasComponent<TextureComponent>() && x.GetComponent<TextureComponent>().textureName == "Slime3");
@@ -123,9 +120,12 @@ namespace HellTrail
                 };
                 slime.resistances[ElementalType.Phys] = 0.20f;
                 slime.resistances[ElementalType.Fire] = -0.5f;
-                slime.abilities.Add(new Bite());
-                slime.abilities.Add(new Agi());
-                slime.abilities.Add(new Dia());
+                var ooze = new BasicAttack()
+                {
+                    Name = "Ooze",
+                    baseDamage = 10
+                };
+                slime.abilities.Add(ooze);
                 slime.BattleStation = new Vector2(220 + i * 8 + ((i / 3) * 24), 60 + i * 32 - (i / 3 * 86));
                 list.Add(slime);
             }

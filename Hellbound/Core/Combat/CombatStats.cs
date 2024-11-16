@@ -5,11 +5,13 @@ namespace HellTrail.Core.Combat
     public class CombatStats
     {
         public int HP;
+        public float accuracy;
+        public float evasion;
         public int MaxHP;
         public int SP;
         public int MaxSP;
-        public int strength;
-        public int magic;
+        public float strength;
+        public float magic;
         public int EXP;
         public int toNextLevel;
         public int value;
@@ -18,6 +20,8 @@ namespace HellTrail.Core.Combat
 
         public CombatStats()
         {
+            accuracy = 1f;
+            evasion = 0f;
             value = 20;
             EXP = 0;
             toNextLevel = 100;
@@ -29,9 +33,11 @@ namespace HellTrail.Core.Combat
             speed = 6.0f;
         }
 
-        public CombatStats(int attack, int magic, int maxHP, int maxSP, float speed)
+        public CombatStats(float attack, float magic, int maxHP, int maxSP, float speed)
         {
+            evasion = 1f;
             EXP = 0;
+            value = 20;
             toNextLevel = 100;
             level = 1;
             this.strength = attack;
@@ -39,6 +45,7 @@ namespace HellTrail.Core.Combat
             this.speed = speed;
             this.MaxHP = maxHP;
             this.MaxSP = maxSP;
+            accuracy = 1f;
         }
 
         public static CombatStats operator +(CombatStats a, CombatStats b)
@@ -77,9 +84,9 @@ namespace HellTrail.Core.Combat
             sb.AppendLine($"EXP: {EXP} / {toNextLevel}");
             sb.AppendLine($"HP: {HP} / {MaxHP}");
             sb.AppendLine($"SP: {SP} / {MaxSP}");
-            sb.AppendLine($"STR: {strength}");
-            sb.AppendLine($"MA: {magic}");
-            sb.AppendLine($"SPD: {speed}");
+            sb.AppendLine($"STR: {(int)strength}");
+            sb.AppendLine($"MA: {(int)magic}");
+            sb.AppendLine($"SPD: {Math.Round(speed, 1)}");
             return sb.ToString();
         }
     }
