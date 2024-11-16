@@ -1,4 +1,6 @@
-﻿namespace HellTrail.Core.Combat
+﻿using System.Text;
+
+namespace HellTrail.Core.Combat
 {
     public class CombatStats
     {
@@ -50,9 +52,35 @@
             return a;
         }
 
-        public override string ToString()
+        public CombatStats GetCopy()
         {
-            return $"STR{strength} MA{magic} SPD{speed}";
+            return new CombatStats()
+            {
+                HP = this.HP,
+                SP = this.SP,
+                MaxHP = this.MaxHP,
+                MaxSP = this.MaxSP,
+                EXP = this.EXP,
+                strength = this.strength,
+                magic = this.magic,
+                speed = this.speed,
+                toNextLevel = this.toNextLevel,
+                value = this.value,
+                level = this.level,
+            };
+        }
+
+        public string ListStats()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"LVL: {level}");
+            sb.AppendLine($"EXP: {EXP} / {toNextLevel}");
+            sb.AppendLine($"HP: {HP} / {MaxHP}");
+            sb.AppendLine($"SP: {SP} / {MaxSP}");
+            sb.AppendLine($"STR: {strength}");
+            sb.AppendLine($"MA: {magic}");
+            sb.AppendLine($"SPD: {speed}");
+            return sb.ToString();
         }
     }
 }

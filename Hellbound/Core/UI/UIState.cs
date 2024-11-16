@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HellTrail.Core.UI
 {
-    public class UIState
+    public class UIState : IUIElement
     {
         public string id;
 
@@ -15,6 +15,7 @@ namespace HellTrail.Core.UI
         public bool visible = true;
 
         public List<UIElement> children = [];
+        private List<UIElement> _childrenToRemove = [];
 
         public UIStateEventHandler OnUpdate;
 
@@ -34,6 +35,13 @@ namespace HellTrail.Core.UI
             {
                 child.Update();
             }
+
+            foreach(UIElement child in _childrenToRemove)
+            {
+                children.Remove(child);
+            }
+
+            _childrenToRemove.Clear();
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
@@ -47,10 +55,19 @@ namespace HellTrail.Core.UI
             }
         }
 
-        public void Append(UIElement child)
+        public void Append(IUIElement child)
         {
-            children.Add(child);
+            var newChild = (UIElement)child;
+            newChild.parent = this;
+            children.Add(newChild);
         }
+
+        public void Disown(IUIElement child)
+        {
+            _childrenToRemove.Add((UIElement)child);
+            (child as UIElement).parent = null;
+        }
+
 
         public UIElement GetElement(Predicate<UIElement> predicate)
         {

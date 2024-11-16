@@ -2,6 +2,7 @@
 using HellTrail.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,8 +35,11 @@ namespace HellTrail.Core.UI.CombatUI
         public UIBorderedText usedAbilityText;
         public int showUsedAbilityTime = 0;
 
+        public List<LevelUpElement> levelUpElements;
+
         public CombatUIState()
         {
+            levelUpElements = [];
             id = "combatUIState";
             teamStatus = new()
             {
@@ -119,6 +123,11 @@ namespace HellTrail.Core.UI.CombatUI
             Append(teamStatus);
         }
 
+        public void CreateLevelUp(string forWho, CombatStats oldStats, CombatStats newStats)
+        {
+            levelUpElements.Add(new LevelUpElement(forWho, oldStats, newStats));
+        }
+
         public override void Update()
         {
             visible = active = Main.instance.GetGameState() is Battle;
@@ -126,6 +135,20 @@ namespace HellTrail.Core.UI.CombatUI
             if(!active)
             {
                 return;
+            }
+
+            if(levelUpElements.Count > 0)
+            {
+                if(GetElementById("LevelUp") == null)
+                {
+                    Append(levelUpElements[0]);
+                }
+
+                if(Input.PressedKey([Keys.E, Keys.Enter]))
+                {
+                    Disown(levelUpElements[0]);
+                    levelUpElements.RemoveAt(0);
+                }
             }
 
             base.Update();

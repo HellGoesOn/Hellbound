@@ -1,5 +1,7 @@
 ﻿using HellTrail.Core.Combat.Abilities;
 using HellTrail.Core.Combat.Status;
+using HellTrail.Core.UI;
+using HellTrail.Core.UI.CombatUI;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -51,12 +53,15 @@ namespace HellTrail.Core.Combat
             if (stats.EXP < stats.toNextLevel)
                 return;
 
+            var oldStats = stats.GetCopy();
+
             stats.level++;
             stats += statsGrowth;
             stats.HP = stats.MaxHP;
             stats.SP = stats.MaxSP;
             stats.EXP -= stats.toNextLevel;
             stats.toNextLevel = (int)(stats.toNextLevel * 1.25f);
+            UIManager.combatUI.CreateLevelUp(name, oldStats, stats);
             TryLevelUp();
         }
 

@@ -219,7 +219,7 @@ namespace HellTrail.Core.Combat
 
         public void PlayVictory()
         {
-            if(Input.PressedKey([Keys.E, Keys.Enter]))
+            if(Input.PressedKey([Keys.E, Keys.Enter]) && UIManager.combatUI.levelUpElements.Count <= 0)
             {
                 SoundEngine.StartMusic("SMT", true);
                 GameStateManager.SetState(GameState.Overworld, new SliceTransition(Renderer.SaveFrame()));
