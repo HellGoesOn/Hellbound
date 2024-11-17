@@ -12,8 +12,8 @@ namespace Treeline.Core.Graphics
 {
     public static class ParticleManager
     {
-        public static Particle[] particles = new Particle[10000];
-        public static Particle[] particlesAdditive = new Particle[10000];
+        public static Particle[] particles = new Particle[100000];
+        public static Particle[] particlesAdditive = new Particle[100000];
 
         public static int count;
         public static int countAdditive;

@@ -30,7 +30,7 @@ namespace HellTrail.Core.Overworld
         public World() 
         {
             systems = new Systems();
-            context = new Context(50);
+            context = new Context(500);
             tileMap = new TileMap(20, 20);
             GetCamera().centre = new Vector2(tileMap.width, tileMap.height) * TileMap.TILE_SIZE * 0.5f;
 
@@ -60,11 +60,6 @@ namespace HellTrail.Core.Overworld
             systems.Execute(context);
             var debugText = UIManager.GetStateByName("debugState").GetElementById("debugText") as UIBorderedText;
             debugText.text = $"EC={context.entityCount}, CC={Context._maxComponents}\n";
-
-            foreach(var group in context._groups)
-            {
-                debugText.text += $"{group.Value.matcher}={group.Value.Entities.Count}\n";
-            }
             
             foreach (var trigger in triggers)
             {
