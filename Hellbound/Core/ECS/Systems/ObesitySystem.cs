@@ -10,11 +10,18 @@ namespace HellTrail.Core.ECS
 {
     public class ObesitySystem : IExecute
     {
+        readonly Group<Entity> _group;
+
+        public ObesitySystem(Context context)
+        {
+            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(ShawtyObese), typeof(TextureComponent)));
+        }
+
         public void Execute(Context context)
         {
-            var entities = context.entities.Where(x => x != null && x.enabled && x.HasComponent<ShawtyObese>() && x.HasComponent<TextureComponent>()).ToArray();
+            var entities = _group.Entities;
 
-            for (int i = 0; i < entities.Length; i++)
+            for (int i = 0; i < entities.Count; i++)
             {
                 var entity = entities[i];
                 TextureComponent tex = entity.GetComponent<TextureComponent>();

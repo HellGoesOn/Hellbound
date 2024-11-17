@@ -8,13 +8,19 @@ using System.Threading.Tasks;
 namespace HellTrail.Core.ECS
 {
     public class MoveSystem : IExecute
-
     {
+        readonly Group<Entity> _group;
+
+        public MoveSystem(Context context)
+        {
+            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(Transform), typeof(Velocity)));
+        }
+
         public void Execute(Context context)
         {
-            var entities = context.entities.Where(x => x != null && x.enabled && x.HasComponent<Velocity>() && x.HasComponent<Transform>()).ToArray();
+            var entities = _group.Entities;
 
-            for (int i = 0; i < entities.Length; i++)
+            for (int i = 0; i < entities.Count; i++)
             {
                 var entity = entities[i];
                 

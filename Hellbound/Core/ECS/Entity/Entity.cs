@@ -15,6 +15,12 @@ namespace HellTrail.Core.ECS
         IComponent[] _components;
         Context context;
 
+        public EntityChangedHandler OnComponentRemoved;
+        public EntityChangedHandler OnComponentChanged;
+        public EntityChangedHandler OnComponentAdded;
+
+        public event EntityDestroyEvent OnDestroy;
+
         public Entity(int id, int maxComponents, Context context)
         {
             this.id = id;
@@ -47,9 +53,24 @@ namespace HellTrail.Core.ECS
             return _components[id] != null;
         }
 
+        public bool HasComponents(params int[] indexes)
+        {
+            for (int i = 0; i < indexes.Length; i++)
+            {
+                int index = indexes[i];
+                if (_components[index] == null)
+                    return false;
+            }
+
+            return true;
+        }
+
+        public bool HasAnyComponent() => _components != null && _components.Any(x=>x != null);
+
         public void AddComponent(IComponent component)
         {
             HandleComponent(component);
+            OnComponentAdded?.Invoke(this, component);
         }
 
         public void RemoveComponent<T>() where T : IComponent
@@ -60,9 +81,15 @@ namespace HellTrail.Core.ECS
         void HandleComponent(IComponent component)
         {
             int id = Context.ComponentId[component.GetType()];
-            if (_components[id] != null)
+            var previousComponent = _components[id];
+            if (previousComponent != null)
             {
-                context.componentPools[id].Push(_components[id]);
+                context.componentPools[id].Push(previousComponent);
+                OnComponentAdded?.Invoke(this, previousComponent);
+            }
+            else
+            {
+                OnComponentRemoved?.Invoke(this, previousComponent);
             }
 
             _components[id] = component;
@@ -73,16 +100,28 @@ namespace HellTrail.Core.ECS
             enabled = false;
             if (_components != null)
             {
-                foreach (var component in _components)
+                for(int i = 0; i < _maxComponents; i++)
                 {
+                    var component = _components[i];
                     if (component == null)
                         continue;
 
                     GetComponentPool(Context.ComponentId[component.GetType()]).Push(component);
+                    component = null;
                 }
             }
 
+            OnDestroy?.Invoke(this);
+        }
+
+        internal void InternalDestroy()
+        {
+            OnComponentAdded = null;
+            OnComponentChanged = null;
+            OnComponentRemoved = null;
+
             _components = null;
+            OnDestroy = null;
         }
 
         public TComponent CreateComponent<TComponent>() where TComponent : IComponent, new()
@@ -101,4 +140,8 @@ namespace HellTrail.Core.ECS
             return $"Entity_{id}, A={enabled}, CC={string.Join(",", _components.Where(x=> x!=null).Select(x=> x.ToString()))}";
         }
     }
+
+    public delegate void EntityChangedHandler(Entity entity, IComponent component);
+
+    public delegate void EntityDestroyEvent(Entity entity);
 }

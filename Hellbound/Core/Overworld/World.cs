@@ -27,25 +27,44 @@ namespace HellTrail.Core.Overworld
 
         public TileMap tileMap;
 
-        public List<Unit> units = [];
-
         public World() 
         {
             systems = new Systems();
-            context = new Context(1000);
+            context = new Context(50);
             tileMap = new TileMap(20, 20);
             GetCamera().centre = new Vector2(tileMap.width, tileMap.height) * TileMap.TILE_SIZE * 0.5f;
-            units.AddRange(GlobalPlayer.ActiveParty);
 
-            systems.AddSystem(new DrawSystem());
-            systems.AddSystem(new MoveSystem());
-            systems.AddSystem(new ObesitySystem());
+            systems.AddSystem(new DrawSystem(context));
+            systems.AddSystem(new MoveSystem(context));
+            systems.AddSystem(new ObesitySystem(context));
+
+            for(int i = 0; i < context.entities.Length; i++)
+            {
+                var e = context.Create();
+                e.AddComponent(new TextureComponent("Slime3")
+                {
+                    origin = new Vector2(16),
+                    scale = new Vector2(1)
+                });
+                var xx = Main.rand.Next(-100, 101);
+                var yy = Main.rand.Next(-100, 101);
+                var off = new Vector2(xx, yy);
+                e.AddComponent(new Transform(tileMap.width * TileMap.TILE_SIZE * 0.5f +xx, tileMap.height * TileMap.TILE_SIZE * 0.5f + yy));
+                e.AddComponent(new ShawtyObese(-0.02f));
+               // e.AddComponent(new Velocity(-xx * 0.001f, -yy * 0.001f));
+            }
         }
 
         public void Update()
         {
+            systems.Execute(context);
             var debugText = UIManager.GetStateByName("debugState").GetElementById("debugText") as UIBorderedText;
-            debugText.text = $"EC={context.entityCount}, CC={Context._maxComponents}";
+            debugText.text = $"EC={context.entityCount}, CC={Context._maxComponents}\n";
+
+            foreach(var group in context._groups)
+            {
+                debugText.text += $"{group.Value.matcher}={group.Value.Entities.Count}\n";
+            }
             
             foreach (var trigger in triggers)
             {
@@ -63,8 +82,6 @@ namespace HellTrail.Core.Overworld
                 cam.centre.Y -= cam.speed;
             if (Input.HeldKey(Keys.S))
                 cam.centre.Y += cam.speed;
-
-            systems.Execute(context);
 
             if (Input.HeldKey(Keys.Delete))
             {
