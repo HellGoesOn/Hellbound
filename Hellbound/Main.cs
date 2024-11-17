@@ -101,14 +101,44 @@ namespace HellTrail
         };
             dialogue.pages.AddRange(pages);
 
+
+            var mc = activeWorld.context.Create();
+            mc.AddComponent(new TextureComponent("Dumbass")
+            {
+                origin = new Vector2(16)
+            });
+            mc.AddComponent(new Transform(32, 32));
+            mc.AddComponent(new CollisionBox(32, 32));
+            mc.AddComponent(new Velocity(0, 0));
+            mc.AddComponent(new CameraMarker(activeWorld.GetCamera()));
+            mc.AddComponent(new PlayerMarker(
+                (entity, context) =>
+                {
+                    Velocity vel = entity.GetComponent<Velocity>();
+                    vel.X = vel.Y = 0;
+                    if (Input.HeldKey(Keys.A)) vel.X -= 1f;
+                    if (Input.HeldKey(Keys.W)) vel.Y -= 1f;
+                    if (Input.HeldKey(Keys.S)) vel.Y += 1f;
+                    if (Input.HeldKey(Keys.D)) vel.X += 1f;
+
+                    if (vel.X != 0)
+                    {
+                        if (vel.X < 0)
+                            mc.GetComponent<TextureComponent>().scale.X = -1;
+                        else
+                            mc.GetComponent<TextureComponent>().scale.X = 1;
+                    }
+                }
+                ));
         }
 
-        private void StartBattle()
+        internal void StartBattle(bool onStone = false)
         {
             if(battle != null)
             {
                 battle = null;
             }
+            GameStateManager.SetState(GameState.Combat, new TrippingBalls(Renderer.SaveFrame()));
             List<Unit> list = [];
             var slimeList = activeWorld.context.entities.Where(x => x != null && x.enabled && x.HasComponent<TextureComponent>() && x.GetComponent<TextureComponent>().textureName == "Slime3");
             for (int i = 0; i < slimeList.Count(); i++)
@@ -154,7 +184,7 @@ namespace HellTrail
                 }
             };
             battle.OnBattleEnd = endBattle;
-            if (activeWorld.tileMap.tiles[x, y] == 1)
+            if (onStone)
             {
                 //list.Add(peas);
                 battle.SetEnemies(list);

@@ -130,7 +130,7 @@ namespace HellTrail.Core.ECS
             return componentPool.Count > 0 ? (TComponent)componentPool.Pop() : new TComponent();
         }
 
-        public Stack<IComponent> GetComponentPool(int id)
+        protected Stack<IComponent> GetComponentPool(int id)
         {
             return context.componentPools[id];
         }

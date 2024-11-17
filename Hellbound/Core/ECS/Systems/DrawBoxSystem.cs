@@ -1,5 +1,6 @@
 ﻿using HellTrail.Core.Combat;
 using HellTrail.Core.ECS.Components;
+using HellTrail.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -11,13 +12,13 @@ using Treeline.Core.Graphics;
 
 namespace HellTrail.Core.ECS
 {
-    public class DrawSystem : IDraw
+    public class DrawBoxSystem : IDraw
     {
         readonly Group<Entity> _group;
 
-        public DrawSystem(Context context)
+        public DrawBoxSystem(Context context)
         {
-            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(Transform), typeof(TextureComponent)));
+            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(Transform), typeof(CollisionBox)));
         }
 
 
@@ -28,10 +29,10 @@ namespace HellTrail.Core.ECS
             for(int i = 0; i < entities.Count; i++)
             {
                 var entity = entities[i];
-                TextureComponent tex = entity.GetComponent<TextureComponent>();
+                var tex = entity.GetComponent<CollisionBox>();
                 Transform transform = entity.GetComponent<Transform>();
 
-                spriteBatch.Draw(tex.texture, transform.position, null, Color.White, 0f, tex.origin, tex.scale, SpriteEffects.None, 0f);
+                Renderer.DrawRect(spriteBatch, transform.position - tex.origin, new Vector2(tex.width, tex.height), 1, Color.Red * 0.15f);
             }
         }
     }

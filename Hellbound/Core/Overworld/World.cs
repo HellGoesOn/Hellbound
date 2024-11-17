@@ -31,28 +31,17 @@ namespace HellTrail.Core.Overworld
         {
             systems = new Systems();
             context = new Context(500);
-            tileMap = new TileMap(20, 20);
+            tileMap = new TileMap(30, 30);
             GetCamera().centre = new Vector2(tileMap.width, tileMap.height) * TileMap.TILE_SIZE * 0.5f;
 
-            systems.AddSystem(new DrawSystem(context));
-            systems.AddSystem(new MoveSystem(context));
             systems.AddSystem(new ObesitySystem(context));
-
-            for(int i = 0; i < context.entities.Length; i++)
-            {
-                var e = context.Create();
-                e.AddComponent(new TextureComponent("Slime3")
-                {
-                    origin = new Vector2(16),
-                    scale = new Vector2(1)
-                });
-                var xx = Main.rand.Next(-100, 101);
-                var yy = Main.rand.Next(-100, 101);
-                var off = new Vector2(xx, yy);
-                e.AddComponent(new Transform(tileMap.width * TileMap.TILE_SIZE * 0.5f +xx, tileMap.height * TileMap.TILE_SIZE * 0.5f + yy));
-                e.AddComponent(new ShawtyObese(-0.02f));
-               // e.AddComponent(new Velocity(-xx * 0.001f, -yy * 0.001f));
-            }
+            systems.AddSystem(new MoveSystem(context));
+            systems.AddSystem(new DrawSystem(context));
+            //systems.AddSystem(new DrawBoxSystem(context));
+            systems.AddSystem(new MoveCameraSystem(context));
+            systems.AddSystem(new ReadPlayerInputSystem(context));
+            systems.AddSystem(new BoxCollisionSystem(context));
+            GetCamera().speed = 0.12f;
         }
 
         public void Update()
@@ -69,14 +58,15 @@ namespace HellTrail.Core.Overworld
             triggers.RemoveAll(x => x.activated);
 
             Camera cam = GetCamera();
+            
             if (Input.HeldKey(Keys.A))
-                cam.centre.X -= cam.speed;
+                cam.centre.X -= cam.speed * 16;
             if (Input.HeldKey(Keys.D))
-                cam.centre.X += cam.speed;
+                cam.centre.X += cam.speed * 16;
             if (Input.HeldKey(Keys.W))
-                cam.centre.Y -= cam.speed;
+                cam.centre.Y -= cam.speed * 16;
             if (Input.HeldKey(Keys.S))
-                cam.centre.Y += cam.speed;
+                cam.centre.Y += cam.speed * 16;
 
             if (Input.HeldKey(Keys.Delete))
             {
@@ -106,8 +96,24 @@ namespace HellTrail.Core.Overworld
                     var xx = Main.rand.Next(-100, 101);
                     var yy = Main.rand.Next(-100, 101);
                     var off = new Vector2(xx, yy);
-                    e.AddComponent(new Transform(new Vector2((int)Input.MousePosition.X, (int)Input.MousePosition.Y)));
+                    e.AddComponent(new Transform(Input.MousePosition));
                     e.AddComponent(new ShawtyObese(-0.02f));
+                    e.AddComponent(new Velocity(xx * 0.005f, yy * 0.005f));
+                    e.AddComponent(new CollisionBox(32, 32)
+                    {
+                        onCollide = (me, other) =>
+                        {
+                            if (other.HasComponent<PlayerMarker>())
+                            {
+                                Vector2 pos = me.GetComponent<Transform>().position;
+
+                                int x = Math.Max(0, (int)pos.X) / TileMap.TILE_SIZE;
+                                int y = Math.Max(0, (int)pos.Y) / TileMap.TILE_SIZE;
+                                Main.instance.StartBattle(tileMap[x, y] == 1);
+                                me.GetComponent<CollisionBox>().onCollide = null;
+                            }
+                        }
+                    });
                 }    
             }
 

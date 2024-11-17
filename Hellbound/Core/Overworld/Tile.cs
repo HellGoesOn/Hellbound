@@ -21,6 +21,8 @@ namespace HellTrail.Core.Overworld
 
         public RenderTarget2D texture;
 
+        public int this[int x, int y] => tiles[x, y];
+
         public TileMap(int width, int height)
         {
             this.width = width;
