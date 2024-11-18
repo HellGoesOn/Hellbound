@@ -4,6 +4,8 @@
     {
         public bool activated;
 
+        public string id;
+
         public Func<World, bool> condition;
 
         public Action<World> action;
@@ -15,6 +17,12 @@
                 activated = true;
                 action?.Invoke(world);
             }
+        }
+
+        public void Activate(World world)
+        {
+            activated = true;
+            action?.Invoke(world);
         }
     }
 

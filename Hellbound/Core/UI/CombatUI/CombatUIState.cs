@@ -132,7 +132,8 @@ namespace HellTrail.Core.UI.CombatUI
 
         public override void Update()
         {
-            visible = active = Main.instance.GetGameState() is Battle;
+            var state = Main.instance.GetGameState();
+            visible = active =  state is Battle;
 
             if(!active)
             {
@@ -161,7 +162,7 @@ namespace HellTrail.Core.UI.CombatUI
             string partyStatus = "";
             string partyHP = "";
             string partySP = "";
-            foreach(Unit unit in GlobalPlayer.ActiveParty)
+            foreach(Unit unit in (state as Battle).playerParty)
             {
                 partyStatus += $"[ {unit.stats.level} ]{(unit.name)}\n";
                 partyHP += $"HP: {unit.stats.HP}/{unit.stats.MaxHP}\n";

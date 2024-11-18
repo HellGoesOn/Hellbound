@@ -33,5 +33,20 @@ namespace HellTrail.Core.Combat
             this.values[4] = wind;
             this.values[5] = almighty;
         }
+
+        public ElementalResistances GetCopy()
+        {
+            return new ElementalResistances()
+            {
+                [ElementalType.Phys] = this[ElementalType.Phys],
+                [ElementalType.Fire] = this[ElementalType.Fire],
+                [ElementalType.Ice] = this[ElementalType.Ice],
+                [ElementalType.Elec] = this[ElementalType.Elec],
+                [ElementalType.Wind] = this[ElementalType.Wind],
+                [ElementalType.Almighty] = this[ElementalType.Almighty],
+                [ElementalType.DoT] = this[ElementalType.DoT]
+
+            };
+        }
     }
 }

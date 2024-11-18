@@ -34,13 +34,13 @@ namespace HellTrail.Core.Overworld
             tileMap = new TileMap(30, 30);
             GetCamera().centre = new Vector2(tileMap.width, tileMap.height) * TileMap.TILE_SIZE * 0.5f;
 
-            systems.AddSystem(new ObesitySystem(context));
-            systems.AddSystem(new MoveSystem(context));
             systems.AddSystem(new DrawSystem(context));
+            systems.AddSystem(new MoveSystem(context));
+            systems.AddSystem(new ObesitySystem(context));
             //systems.AddSystem(new DrawBoxSystem(context));
+            systems.AddSystem(new BoxCollisionSystem(context));
             systems.AddSystem(new MoveCameraSystem(context));
             systems.AddSystem(new ReadPlayerInputSystem(context));
-            systems.AddSystem(new BoxCollisionSystem(context));
             GetCamera().speed = 0.12f;
         }
 
@@ -68,13 +68,6 @@ namespace HellTrail.Core.Overworld
             if (Input.HeldKey(Keys.S))
                 cam.centre.Y += cam.speed * 16;
 
-            if (Input.HeldKey(Keys.Delete))
-            {
-                int id = context.LastActiveEntity;
-                if(id >= 0)
-                context.Destroy(id);
-            }
-
             if (Input.LMBClicked)
             {
                 int x = tileMap.width;
@@ -87,33 +80,11 @@ namespace HellTrail.Core.Overworld
             {
                 if(context.entityCount < context.entities.Length)
                 {
-                    var e = context.Create();
-                    e.AddComponent(new TextureComponent("Slime3")
-                    {
-                        origin = new Vector2(16),
-                        scale = new Vector2(1)
-                    });
+                    var entity = context.CopyFrom(Main.instance.prefabContext.entities[0]);
+                    entity.AddComponent(new Transform(Input.MousePosition));
                     var xx = Main.rand.Next(-100, 101);
                     var yy = Main.rand.Next(-100, 101);
-                    var off = new Vector2(xx, yy);
-                    e.AddComponent(new Transform(Input.MousePosition));
-                    e.AddComponent(new ShawtyObese(-0.02f));
-                    e.AddComponent(new Velocity(xx * 0.005f, yy * 0.005f));
-                    e.AddComponent(new CollisionBox(32, 32)
-                    {
-                        onCollide = (me, other) =>
-                        {
-                            if (other.HasComponent<PlayerMarker>())
-                            {
-                                Vector2 pos = me.GetComponent<Transform>().position;
-
-                                int x = Math.Max(0, (int)pos.X) / TileMap.TILE_SIZE;
-                                int y = Math.Max(0, (int)pos.Y) / TileMap.TILE_SIZE;
-                                Main.instance.StartBattle(tileMap[x, y] == 1);
-                                me.GetComponent<CollisionBox>().onCollide = null;
-                            }
-                        }
-                    });
+                    entity.AddComponent(new Velocity(xx * 0.005f, yy * 0.005f));
                 }    
             }
 

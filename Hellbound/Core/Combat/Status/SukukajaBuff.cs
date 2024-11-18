@@ -1,8 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using HellTrail.Core.UI;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,19 +27,34 @@ namespace HellTrail.Core.Combat.Status
 
         public override void OnTurnBegin(Unit unit, Battle battle)
         {
-            turnsLeft--;
         }
 
         public override void UpdateVisuals(SpriteBatch spriteBatch, Unit unit, Battle battle)
         {
-            spriteBatch.Draw(Assets.Textures["Arrow"], unit.position - new Vector2(10, 12), null, Color.Lime, 0f, Vector2.Zero, -0.5f, SpriteEffects.None, 1f);
-            spriteBatch.Draw(Assets.Textures["Arrow"], unit.position - new Vector2(10, 16), null, Color.Lime, 0f, Vector2.Zero, -0.5f, SpriteEffects.None, 1f);
+            var offset = new Vector2((float)Math.Sin(Main.totalTime), (float)Math.Cos(Main.totalTime));
+            if (unit.animations.TryGetValue(unit.currentAnimation, out var anim))
+            {
+                anim.Draw(spriteBatch, unit.position + offset*2, Color.Blue * 0.15f, unit.rotation, unit.scale, unit.depth - 0.01f);
+                anim.Draw(spriteBatch, unit.position - offset*2, Color.Blue * 0.15f, unit.rotation, unit.scale, unit.depth - 0.01f);
+
+            } else
+            {
+                spriteBatch.Draw(Assets.Textures[unit.sprite], new Vector2((int)(unit.position.X), (int)(unit.position.Y)) + offset, null, Color.Blue * 0.25f, 0f, new Vector2(16), unit.scale, SpriteEffects.None, unit.depth);
+                //Renderer.DrawRect(spriteBatch, unit.position-unit.size*0.5f, unit.size, 1, Color.Orange * 0.25f);
+            }
+        }
+
+        public override void OnTurnEnd(Unit unit, Battle battle)
+        {
+            turnsLeft--;
         }
 
         public override void OnRemove(Unit unit)
         {
             unit.stats.accuracy -= 0.5f;
             unit.stats.evasion -= 0.5f;
+
+            UIManager.combatUI.SetAbilityUsed("Agility increase reverted!");
         }
     }
 }

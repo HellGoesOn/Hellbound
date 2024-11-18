@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HellTrail
+namespace HellTrail.Core.ECS.Attributes
 {
-    public class MenuSystem
+    public class IgnoreAttribute : Attribute
     {
-        public int optionCount;
-        public bool isActive;
     }
 }

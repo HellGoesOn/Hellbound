@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
@@ -210,5 +211,36 @@ namespace HellTrail.Core.Combat
         {
             statusEffects.First(x => x.name == effect.name).turnsLeft += effect.turnsLeft;
         }
+
+        public Unit GetCopy()
+        {
+            Unit copy = new Unit();
+            copy.name = name;
+            copy.sprite = sprite;
+            copy.ai = ai;
+            copy.animations = [];
+            copy.stats = stats.GetCopy();
+            copy.statsGrowth = statsGrowth.GetCopy();
+            copy.resistances = resistances.GetCopy();
+
+            foreach (var anim in animations)
+            {
+                copy.animations.Add(anim.Key, anim.Value.GetCopy());
+            }
+
+            foreach (var ab in abilities)
+            {
+                FieldInfo[] fields = ab.GetType().GetFields();
+                Ability finalAbility = (Ability)Activator.CreateInstance(ab.GetType());
+                foreach (var field in fields)
+                {
+                    field.SetValue(finalAbility, field.GetValue(ab));
+                }
+                copy.abilities.Add(finalAbility);
+            }
+
+            return copy;
+        }
+
     }
 }

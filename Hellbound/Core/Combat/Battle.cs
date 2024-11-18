@@ -15,7 +15,6 @@ using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace HellTrail.Core.Combat
 {
@@ -23,7 +22,7 @@ namespace HellTrail.Core.Combat
     {
         public int turnCount;
 
-        public int actingUnit;
+        public int _actingUnit;
 
         public int nextStateDelay;
 
@@ -65,9 +64,12 @@ namespace HellTrail.Core.Combat
 
         public List<DamageNumber> damageNumbers;
 
+        public List<Unit> playerParty;
+
         public List<Unit> unitsHitLastRound;
 
         public List<Script> scripts;
+
 
         public Action OnBattleEnd;
 
@@ -89,33 +91,45 @@ namespace HellTrail.Core.Combat
             bg = new BattleBackground("TestBG");
         }
 
-        public static Battle Create(List<Unit> enemies)
+        public static Battle Create(List<Unit> enemies, List<Unit> trialCharacters = null)
         {
             SoundEngine.StartMusic("BossMusic", true);
             SoundEngine.PlaySound("Begin", 0.5f);
+
             Battle battle = new()
             {
-                actingUnit = 0
+                _actingUnit = 0
             };
-            battle.SetEnemies(enemies);
+            battle.SetUnits(enemies, trialCharacters);
 
-            battle.winConditions.Add(x => !x.units.Any(x => !x.Downed && x.team == Team.Enemy));
+            battle.winConditions.Add(x => !x.units.Any(x => !x.Downed && x.team == Team.Enemy)); 
+            
 
             return battle;
         }
 
-        public void SetEnemies(List<Unit> enemies)
+        public void SetUnits(List<Unit> enemies, List<Unit> trialCharacters = null)
         {
             units.Clear();
-            unitsNoSpeedSort.Clear();
-            units.AddRange(GlobalPlayer.ActiveParty);
+            unitsNoSpeedSort.Clear(); 
+            if (trialCharacters != null)
+            {
+                playerParty = trialCharacters;
+                units.AddRange(trialCharacters);
+            } else
+            {
+                playerParty = GlobalPlayer.ActiveParty;
+                units.AddRange(GlobalPlayer.ActiveParty);
+            }
 
             foreach (Unit unit in enemies)
             {
                 unit.team = Team.Enemy;
                 unit.stats.speed += rand.Next(1, 10) * 0.01f;
             }
+            
             units.AddRange(enemies);
+
             unitsNoSpeedSort.AddRange(units);
             units = [.. units.OrderByDescending(x => x.stats.speed)];
 
@@ -235,6 +249,7 @@ namespace HellTrail.Core.Combat
                 GameStateManager.SetState(GameState.Overworld, new SliceTransition(Renderer.SaveFrame()));
                 OnBattleEnd?.Invoke();
                 Main.instance.battle = null;
+                playerParty = null;
             }
         }
 
@@ -257,7 +272,9 @@ namespace HellTrail.Core.Combat
                 if (unit.animations.TryGetValue(unit.currentAnimation, out var anim))
                 {
                     anim.position = position;
+
                     anim.Draw(spriteBatch, unit.scale);
+
                 } else
                 {
                     spriteBatch.Draw(Assets.Textures[unit.sprite], new Vector2((int)(position.X), (int)(position.Y)), null, clr * unit.opacity, 0f, new Vector2(16), unit.scale, SpriteEffects.None, unit.depth);
@@ -496,7 +513,7 @@ namespace HellTrail.Core.Combat
 
             turnCount++;
             State = BattleState.BeginTurn;
-            ActingUnit.depth = 0f;
+            ActingUnit.depth = 0.01f;
 
             foreach(var unit in units)
             {
@@ -520,8 +537,8 @@ namespace HellTrail.Core.Combat
             }
 
             unitsHitLastRound.Clear();
-            if (++actingUnit >= units.Count)
-                actingUnit = 0;
+            if (++_actingUnit >= units.Count)
+                _actingUnit = 0;
 
         }
 
@@ -560,7 +577,7 @@ namespace HellTrail.Core.Combat
 
         public void VictoryCheck()
         {
-            if(winConditions.All(x=> x?.Invoke(this) == true))
+            if (winConditions.All(x=> x?.Invoke(this) == true))
             {
                 SoundEngine.StartMusic("Victory", false);
                 // end Battle;
@@ -677,7 +694,7 @@ namespace HellTrail.Core.Combat
             return seq;
         }
 
-        public Unit ActingUnit => units[actingUnit];
+        public Unit ActingUnit => units[_actingUnit];
 
         public BattleState State 
         { 

@@ -30,6 +30,7 @@ namespace HellTrail.Core.Combat
             protag.abilities.Add(new Sukukaja());
             protag.abilities.Add(new Sukunda());
             protag.statsGrowth = new CombatStats(0.5f, 1.5f, 10, 7, 0.15f);
+            protag.stats.magic = 100;
             ProtagAnimations(protag);
 
             Unit sidekick = new()

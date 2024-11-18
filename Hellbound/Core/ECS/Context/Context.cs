@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,6 +15,7 @@ namespace HellTrail.Core.ECS
         public static readonly Dictionary<Type, int> ComponentId = [];
         public static readonly Dictionary<string, int> ComponentIdByName = [];
         public static readonly Dictionary<int, string> ComponentNameById = [];
+        public static readonly Dictionary<Type, string> ComponentNameByType = [];
         public static void InitializeAll()
         {
             IEnumerable<Type> types = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsClass && x.GetInterface("IComponent") != null);
@@ -23,6 +26,7 @@ namespace HellTrail.Core.ECS
                 ComponentId.Add(type, id);
                 ComponentIdByName.Add(type.Name, id);
                 ComponentNameById.Add(id, type.Name);
+                ComponentNameByType.Add(type, type.Name);
                 id++;
             }
         }
@@ -110,6 +114,36 @@ namespace HellTrail.Core.ECS
             activeEntityIds.Push(entity.id);
             entityCount++;
             return entities[entity.id];
+        }
+
+        public Entity CopyFrom(Entity entity)
+        {
+            Entity e = Create();
+            IComponent[] components = entity.GetAllComponents();
+
+            foreach (IComponent component in components)
+            {
+                Type type = component.GetType();
+                FieldInfo[] infos = type.GetFields();
+
+                object[] ctorParams = new object[infos.Length];
+
+                for(int i = 0; i < infos.Length; i++)
+                {
+                    ctorParams[i] = infos[i].GetValue(component);
+                }
+
+                IComponent componentCopy = (IComponent)RuntimeHelpers.GetUninitializedObject(type);
+
+                for (int i = 0; i < infos.Length; i++)
+                {
+                    infos[i].SetValue(componentCopy, ctorParams[i]);
+                }
+
+                e.AddComponent(componentCopy);
+            }
+
+            return e;
         }
 
         public void Destroy(int id)

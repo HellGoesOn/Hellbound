@@ -69,30 +69,34 @@ namespace HellTrail.Core.ECS
 
         public void AddComponent(IComponent component)
         {
-            HandleComponent(component);
+            HandleComponent(component.GetType(), component);
             OnComponentAdded?.Invoke(this, component);
         }
 
         public void RemoveComponent<T>() where T : IComponent
         {
-            HandleComponent(null);
+            HandleComponent(typeof(T), null);
         }
 
-        void HandleComponent(IComponent component)
+        void HandleComponent(Type type, IComponent component)
         {
-            int id = Context.ComponentId[component.GetType()];
+            int id = Context.ComponentId[type];
             var previousComponent = _components[id];
             if (previousComponent != null)
             {
                 context.componentPools[id].Push(previousComponent);
-                OnComponentAdded?.Invoke(this, previousComponent);
+                OnComponentChanged?.Invoke(this, component);
             }
             else
             {
-                OnComponentRemoved?.Invoke(this, previousComponent);
+                OnComponentAdded?.Invoke(this, component);
             }
 
             _components[id] = component;
+            if (_components[id] == null)
+            {
+                OnComponentRemoved?.Invoke(this, previousComponent);
+            }
         }
 
         public void Destroy(Context context)
@@ -135,9 +139,11 @@ namespace HellTrail.Core.ECS
             return context.componentPools[id];
         }
 
+        public IComponent[] GetAllComponents() => _components.Where(x=>x !=null).ToArray();
+
         public override string ToString()
         {
-            return $"Entity_{id}, A={enabled}, CC={string.Join(",", _components.Where(x=> x!=null).Select(x=> x.ToString()))}";
+            return $"Entity_{id}";
         }
     }
 

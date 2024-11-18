@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using HellTrail.Core.UI;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -23,21 +24,22 @@ namespace HellTrail.Core.Combat.Status
             unit.stats.evasion -= 0.5f;
         }
 
-        public override void OnTurnBegin(Unit unit, Battle battle)
-        {
-            turnsLeft--;
-        }
-
         public override void UpdateVisuals(SpriteBatch spriteBatch, Unit unit, Battle battle)
         {
             spriteBatch.Draw(Assets.Textures["Arrow"], unit.position - new Vector2(10, 16), null, Color.Crimson, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 1f);
             spriteBatch.Draw(Assets.Textures["Arrow"], unit.position - new Vector2(10, 20), null, Color.Crimson, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 1f);
         }
 
+        public override void OnTurnEnd(Unit unit, Battle battle)
+        {
+            turnsLeft--;
+        }
+
         public override void OnRemove(Unit unit)
         {
             unit.stats.accuracy += 0.5f;
             unit.stats.evasion += 0.5f;
+            UIManager.combatUI.SetAbilityUsed("Agility decrease reverted!");
         }
     }
 }

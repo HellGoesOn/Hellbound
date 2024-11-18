@@ -33,10 +33,13 @@ namespace HellTrail
         public Battle battle;
         public World activeWorld;
 
+        public Context prefabContext;
+
         internal List<Transition> transitions = [];
 
         public Main()
         {
+            prefabContext = new Context();
             instance = this;
             gdm = new GraphicsDeviceManager(this);
             this.IsMouseVisible = true;
@@ -60,6 +63,31 @@ namespace HellTrail
             SoundEngine.StartMusic("ChangingSeasons", true);
 
             //GetGameState().GetCamera().centre = GlobalPlayer.ActiveParty[0].position;
+
+            var e = prefabContext.Create();
+            e.AddComponent(new TextureComponent("Slime3")
+            {
+                origin = new Vector2(16),
+                scale = new Vector2(1)
+            });
+            e.AddComponent(new Transform(0, 0));
+            e.AddComponent(new ShawtyObese(-0.02f));
+            e.AddComponent(new Velocity(0, 0));
+            e.AddComponent(new CollisionBox(32, 32)
+            {
+                onCollide = (me, other) =>
+                {
+                    if (other.HasComponent<PlayerMarker>())
+                    {
+                        Vector2 pos = me.GetComponent<Transform>().position;
+
+                        int x = Math.Max(0, (int)pos.X) / TileMap.TILE_SIZE;
+                        int y = Math.Max(0, (int)pos.Y) / TileMap.TILE_SIZE;
+                        instance.StartBattle(activeWorld.tileMap[x, y] == 1);
+                        me.GetComponent<CollisionBox>().onCollide = null;
+                    }
+                }
+            });
         }
 
         protected override void LoadContent()
@@ -73,6 +101,7 @@ namespace HellTrail
             GlobalPlayer.Init();
             ParticleManager.Initialize();
             Context.InitializeAll();
+            EnemyDefinitions.DefineEnemies();
 
             activeWorld = new World();
 
@@ -128,6 +157,21 @@ namespace HellTrail
                         else
                             mc.GetComponent<TextureComponent>().scale.X = 1;
                     }
+
+                    if (Input.PressedKey(Keys.Space))
+                    {
+                        GlobalPlayer.ActiveParty[0].abilities.Add(new Singularity()
+                        {
+                            spCost = 25
+                        });
+                        var newUnit = context.CopyFrom(entity);
+                        newUnit.AddComponent(new Transform(60, 60));
+                        newUnit.RemoveComponent<PlayerMarker>();
+                        newUnit.RemoveComponent<CameraMarker>();
+                        newUnit.RemoveComponent<Velocity>();
+
+                        activeWorld.GetCamera().centre = newUnit.GetComponent<Transform>().position;
+                    }
                 }
                 ));
         }
@@ -143,19 +187,7 @@ namespace HellTrail
             var slimeList = activeWorld.context.entities.Where(x => x != null && x.enabled && x.HasComponent<TextureComponent>() && x.GetComponent<TextureComponent>().textureName == "Slime3");
             for (int i = 0; i < slimeList.Count(); i++)
             {
-                Unit slime = new()
-                {
-                    name = "Slime",
-                    ai = new BasicAI()
-                };
-                slime.resistances[ElementalType.Phys] = 0.20f;
-                slime.resistances[ElementalType.Fire] = -0.5f;
-                var ooze = new BasicAttack()
-                {
-                    Name = "Ooze",
-                    baseDamage = 10
-                };
-                slime.abilities.Add(ooze);
+                Unit slime = EnemyDefinitions.GetDefinedEnemy("Slime");
                 slime.BattleStation = new Vector2(220 + i * 8 + ((i / 3) * 24), 60 + i * 32 - (i / 3 * 86));
                 list.Add(slime);
             }
@@ -164,10 +196,10 @@ namespace HellTrail
             {
                 sprite = "Peas",
                 name = "Peas",
-                ai = new BasicAI(),
+                //ai = new BasicAI(),
             };
             peas.resistances = new ElementalResistances(1f, 1f, 1f, 1f, 1f, 0f);
-            peas.BattleStation = new Vector2(190, 90);
+            peas.BattleStation = new Vector2(90, 90);
 
             Vector2 pos = GlobalPlayer.ActiveParty[0].position;
 
@@ -187,13 +219,13 @@ namespace HellTrail
             if (onStone)
             {
                 //list.Add(peas);
-                battle.SetEnemies(list);
+                battle.SetUnits(list, [peas]);
                 Script triedToHitThePeas = new()
                 {
                     condition = (b) =>
                     {
                         Unit unit = b.unitsHitLastRound.FirstOrDefault(x => x.name == "Peas");
-                        return unit != null && unit.stats.HP == unit.stats.MaxHP && b.State == BattleState.VictoryCheck && b.units.Count(x => !x.Downed && x.team == Team.Enemy) == 1;
+                        return unit != null && unit.stats.HP == unit.stats.MaxHP && b.State == BattleState.VictoryCheck;
                     },
                     action = (b) =>
                     {
@@ -209,7 +241,7 @@ namespace HellTrail
                         DialoguePage page = new()
                         {
                             portraits = [page1Portrait],
-                            title = GlobalPlayer.ActiveParty[0].name,
+                            title = battle.playerParty[0].name,
                             text = "It's completely impervious to our attacks.."
                         };
                         DialoguePage page2 = new()
@@ -220,19 +252,20 @@ namespace HellTrail
                         DialoguePage page3 = new()
                         {
                             portraits = [page3Portrait],
-                            title = GlobalPlayer.ActiveParty[0].name,
+                            title = battle.playerParty[0].name,
                             text = "There's only one thing that could work.."
                         };
                         dialogue.pages.AddRange([page, page2, page3]);
                         var disturb = new Disturb()
                         {
-                            hpCost = GlobalPlayer.ActiveParty[0].stats.HP - 1,
-                            spCost = 0
+                            hpCost = battle.playerParty[0].stats.HP - 1,
+                            spCost = 0,
+                            canTarget = ValidTargets.All
                         };
 
-                        GlobalPlayer.ActiveParty[0].ClearEffects();
-                        GlobalPlayer.ActiveParty[0].abilities.Clear();
-                        GlobalPlayer.ActiveParty[0].abilities.Add(disturb);
+                        battle.playerParty[0].ClearEffects();
+                        battle.playerParty[0].abilities.Clear();
+                        battle.playerParty[0].abilities.Add(disturb);
                         b.weaknessHitLastRound = true;
                     }
                 };
@@ -266,6 +299,12 @@ namespace HellTrail
             if(Input.PressedKey(Keys.F2))
             {
                 GameState state = GameStateManager.State == GameState.Combat ? GameState.Overworld : GameState.Combat;
+                GameStateManager.SetState(state);
+            }
+            
+            if(Input.PressedKey(Keys.F3))
+            {
+                GameState state = GameStateManager.State == GameState.Overworld ? GameState.MainMenu : GameState.Overworld;
                 GameStateManager.SetState(state);
             }
 

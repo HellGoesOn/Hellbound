@@ -78,6 +78,19 @@ namespace HellTrail.Core
             spriteBatch.Draw(tex, position, frameData[currentFrame].AsRect, color * opacity, rotation, origin, frameData[currentFrame].scale * scale, SpriteEffects.None, depth);
         }
 
+        public void Draw(SpriteBatch spriteBatch, Vector2 position, Color color, float rotation, Vector2 scale = default, float? depth = null)
+        {
+            depth ??= this.depth;
+
+            if (scale == default)
+                scale = Vector2.One;
+
+            Texture2D tex = Assets.Textures[texture];
+            Vector2 origin = new Vector2(frameData[currentFrame].width, frameData[0].height) * 0.5f;
+
+            spriteBatch.Draw(tex, position, frameData[currentFrame].AsRect, color * opacity, rotation, origin, frameData[currentFrame].scale * scale, SpriteEffects.None, (float)depth);
+        }
+
         public SpriteAnimation GetCopy()
         {
             SpriteAnimation anim = new(texture, frameData)
