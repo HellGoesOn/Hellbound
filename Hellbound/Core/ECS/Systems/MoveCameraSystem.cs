@@ -1,4 +1,6 @@
 ﻿using HellTrail.Core.ECS.Components;
+using HellTrail.Core.Overworld;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,9 +28,13 @@ namespace HellTrail.Core.ECS
 
                 var transform = entity.GetComponent<Transform>();
                 var cameraMarker = entity.GetComponent<CameraMarker>();
-                Camera cam = Main.instance.activeWorld.GetCamera();
-
+                World world = Main.instance.activeWorld;
+                Camera cam = world.GetCamera();
                 cam.centre += (transform.position - cam.centre) * cam.speed;
+                var minX = Math.Clamp(cam.centre.X, cam.view.Width * 0.5f, world.tileMap.width * 32 - cam.view.Width * 0.5f);
+                var minY = Math.Clamp(cam.centre.Y, cam.view.Height * 0.5f, world.tileMap.height * 32 - cam.view.Height * 0.5f);
+
+                cam.centre = new Vector2(minX, minY);
             }
         }
     }

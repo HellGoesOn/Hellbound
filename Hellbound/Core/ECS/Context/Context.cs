@@ -160,11 +160,17 @@ namespace HellTrail.Core.ECS
         public void Armaggedon()
         {
             int oldEntityCount = entityCount;
+            List<Entity> entityList = entities.Where(x => x != null && x.enabled).ToList();
+            for(int i = 0; i < entityList.Count; i++)
+            {
+                Destroy(entityList[i]);
+            }
+            /*
             for (int i = 0; i < oldEntityCount; i++)
             {
                 Entity entity = entities[i];
                 Destroy(entity);
-            }
+            }*/
         }
 
         public void Destroy(int id)

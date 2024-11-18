@@ -60,6 +60,7 @@ namespace HellTrail.Core.Combat.Abilities
                 battle.bg.color = oldBgColor;
                 CameraManager.GetCamera.centre = new Vector2(160, 90);
             };
+            whiteOut.depth = 1f;
 
 
             Sequence seq = new Sequence(battle);

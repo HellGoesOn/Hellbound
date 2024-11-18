@@ -38,6 +38,7 @@ namespace HellTrail.Core.Combat
                 Name = "Ooze",
                 baseDamage = 10
             };
+            slime.stats.value = 3000;
             slime.abilities.Add(ooze);
         }
 

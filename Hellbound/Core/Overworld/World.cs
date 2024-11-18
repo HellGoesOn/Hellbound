@@ -61,17 +61,6 @@ namespace HellTrail.Core.Overworld
 
             triggers.RemoveAll(x => x.activated);
 
-            Camera cam = GetCamera();
-            
-            if (Input.HeldKey(Keys.A))
-                cam.centre.X -= cam.speed * 16;
-            if (Input.HeldKey(Keys.D))
-                cam.centre.X += cam.speed * 16;
-            if (Input.HeldKey(Keys.W))
-                cam.centre.Y -= cam.speed * 16;
-            if (Input.HeldKey(Keys.S))
-                cam.centre.Y += cam.speed * 16;
-
             if (Input.LMBClicked)
             {
                 int x = tileMap.width;
@@ -205,8 +194,6 @@ namespace HellTrail.Core.Overworld
                     e.AddComponent(ComponentIO.DeserializeComponent(components[componentIndex]));
                 }
             }
-
-            bool shit = true;
         }
 
         public Camera GetCamera() => CameraManager.overworldCamera;
