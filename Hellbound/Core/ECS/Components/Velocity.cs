@@ -22,7 +22,7 @@ namespace HellTrail.Core.ECS.Components
 
         public override string ToString()
         {
-            return $"[{value}]";
+            return $"Velocity:[{value}]";
         }
     }
 }

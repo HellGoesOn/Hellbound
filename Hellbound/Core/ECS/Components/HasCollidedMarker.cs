@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace HellTrail.Core.ECS.Components
 {
-    public class ShawtyObese : IComponent
+    public class HasCollidedMarker : IComponent
     {
-        public float obesityFactor;
-        public ShawtyObese(float obesityFactor) 
+        public int otherId;
+
+        public HasCollidedMarker(int otherId)
         {
-            this.obesityFactor = obesityFactor;
+            this.otherId = otherId;
         }
     }
 }

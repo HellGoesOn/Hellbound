@@ -143,7 +143,7 @@ namespace HellTrail.Core.ECS
 
         public override string ToString()
         {
-            return $"Entity_{id}";
+            return $"Entity_{id} \n{string.Join("\n", GetAllComponents().Select(x=>x.ToString()))}";
         }
     }
 

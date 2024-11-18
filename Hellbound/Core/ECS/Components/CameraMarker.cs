@@ -9,11 +9,8 @@ namespace HellTrail.Core.ECS.Components
 {
     public class CameraMarker : IComponent
     {
-        public Camera attachedCamera;
-
-        public CameraMarker(Camera attachedCamera)
+        public CameraMarker()
         {
-            this.attachedCamera = attachedCamera;
         }
     }
 }

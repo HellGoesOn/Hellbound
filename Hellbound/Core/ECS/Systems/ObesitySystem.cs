@@ -14,7 +14,7 @@ namespace HellTrail.Core.ECS
 
         public ObesitySystem(Context context)
         {
-            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(ShawtyObese), typeof(TextureComponent)));
+            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(Obesity), typeof(TextureComponent)));
         }
 
         public void Execute(Context context)
@@ -25,7 +25,7 @@ namespace HellTrail.Core.ECS
             {
                 var entity = entities[i];
                 TextureComponent tex = entity.GetComponent<TextureComponent>();
-                ShawtyObese transform = entity.GetComponent<ShawtyObese>();
+                Obesity transform = entity.GetComponent<Obesity>();
 
                 tex.scale.Y = (float)Math.Max(1, 0.5f+ Math.Abs(Math.Sin(Main.totalTime * 0.5f)));
                 tex.scale.X = (float)Math.Cos(Main.totalTime * 0.5f);

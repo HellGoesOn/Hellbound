@@ -12,6 +12,10 @@ namespace HellTrail.Core.ECS
         public List<TEntity> Entities => _entities;
         public IMatcher<TEntity> matcher;
 
+        public int Count => _entities.Count;
+
+        public TEntity this[int index] => _entities[index];
+
         public Group(IMatcher<TEntity> matcher)
         {
             this.matcher = matcher;

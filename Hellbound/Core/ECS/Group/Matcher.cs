@@ -8,33 +8,46 @@ namespace HellTrail.Core.ECS
 {
     public class Matcher<TEntity> : IMatcher<TEntity> where TEntity : Entity
     {
-        readonly int[] _indexes;
+        int[] _indexes;
+        int[] _noneOfIndexes;
 
-        public Matcher(params int[] requiredComponents)
+        public Matcher()
         {
-            _indexes = requiredComponents;
         }
 
         public bool Matches(TEntity entity)
         {
-            return entity.HasComponents(_indexes);
-        }
-
-        public static Matcher<Entity> AllOf(params int[] ids)
-        {
-            return new Matcher<Entity>(ids);
+            return (_indexes == null || entity.HasComponents(_indexes)) 
+                && (_noneOfIndexes == null || !entity.HasComponents(_noneOfIndexes));
         }
 
         public static Matcher<Entity> AllOf(params Type[] ids)
         {
+            Matcher<Entity> builder = new();
             int[] realIds = new int[ids.Length];
 
             for(int i = 0; i < realIds.Length; i++)
             {
                 realIds[i] = Context.ComponentId[ids[i]];
             }
+            builder._indexes = realIds;
 
-            return new Matcher<Entity>(realIds);
+            return builder;
+        }
+
+        public Matcher<Entity> NoneOf(params Type[] ids)
+        {
+            Matcher<Entity> builder = new();
+
+            builder._indexes = _indexes;
+
+            int[] realIds = new int[ids.Length];
+            for (int i = 0; i < realIds.Length; i++)
+            {
+                realIds[i] = Context.ComponentId[ids[i]];
+            }
+            builder._noneOfIndexes = realIds;
+            return builder;
         }
 
         public override string ToString()

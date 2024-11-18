@@ -1,4 +1,5 @@
 ﻿using HellTrail.Core.DialogueSystem;
+using HellTrail.Core.Overworld;
 using HellTrail.Core.UI.CombatUI;
 using HellTrail.Render;
 using Microsoft.Xna.Framework;
@@ -17,11 +18,13 @@ namespace HellTrail.Core.UI
 
         public static CombatUIState combatUI;
         public static DialogueUIState dialogueUI;
+        public static OverworldUIState overworldUI;
 
         public static void Init()
         {
             combatUI = new CombatUIState();
             dialogueUI = new DialogueUIState();
+            overworldUI = new OverworldUIState();
             //panel.Rotation = -MathHelper.PiOver2;
             var state = CreateState();
             //state.Append(panel);
@@ -39,6 +42,7 @@ namespace HellTrail.Core.UI
                 Position = new Vector2(16),
             });
             UIStates.Add(debugState);
+            UIStates.Add(overworldUI);
         }
 
         public static void Update()

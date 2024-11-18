@@ -31,7 +31,7 @@ namespace HellTrail.Core.ECS
                 TextureComponent tex = entity.GetComponent<TextureComponent>();
                 Transform transform = entity.GetComponent<Transform>();
 
-                spriteBatch.Draw(tex.texture, transform.position, null, Color.White, 0f, tex.origin, tex.scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(Assets.Textures[tex.textureName], transform.position, null, Color.White, 0f, tex.origin, tex.scale, SpriteEffects.None, 0f);
             }
         }
     }

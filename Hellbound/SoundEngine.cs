@@ -29,6 +29,7 @@ namespace HellTrail
 
         public static void Update()
         {
+            MediaPlayer.Volume = GameOptions.MusicVolume;
             if (_updatedSong)
             {
                 _updatedSong = false;
@@ -49,8 +50,6 @@ namespace HellTrail
                         MediaPlayer.Play(song);
                 }
             }
-
-            MediaPlayer.Volume = GameOptions.MusicVolume;
         }
 
         public static SoundEffectInstance PlaySound(string name, float volume = -1f)

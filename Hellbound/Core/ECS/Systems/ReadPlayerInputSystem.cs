@@ -1,4 +1,6 @@
-﻿using HellTrail.Core.ECS.Components;
+﻿using HellTrail.Core.Combat;
+using HellTrail.Core.ECS.Components;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +15,7 @@ namespace HellTrail.Core.ECS
 
         public ReadPlayerInputSystem(Context context)
         {
-            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(PlayerMarker)));
+            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(PlayerMarker), typeof(Velocity), typeof(TextureComponent)));
         }
 
         public void Execute(Context context)
@@ -23,7 +25,20 @@ namespace HellTrail.Core.ECS
             for (int i = 0; i < entities.Count; i++)
             {
                 var entity = entities[i];
-                entity.GetComponent<PlayerMarker>().onInput?.Invoke(entity, context);
+                Velocity vel = entity.GetComponent<Velocity>();
+                vel.X = vel.Y = 0;
+                if (Input.HeldKey(Keys.A)) vel.X -= 1f;
+                if (Input.HeldKey(Keys.W)) vel.Y -= 1f;
+                if (Input.HeldKey(Keys.S)) vel.Y += 1f;
+                if (Input.HeldKey(Keys.D)) vel.X += 1f;
+
+                if (vel.X != 0)
+                {
+                    if (vel.X < 0)
+                        entity.GetComponent<TextureComponent>().scale.X = -1;
+                    else
+                        entity.GetComponent<TextureComponent>().scale.X = 1;
+                }
             }
         }
     }

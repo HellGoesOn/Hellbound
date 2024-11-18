@@ -10,11 +10,11 @@ namespace HellTrail.Core.ECS.Components
 {
     public class PlayerMarker : IComponent
     {
-        public InputHandler onInput;
+        //public InputHandler onInput;
 
-        public PlayerMarker(InputHandler onInput)
+        public PlayerMarker()
         {
-            this.onInput = onInput;
+            //this.onInput = onInput;
         }
     }
 

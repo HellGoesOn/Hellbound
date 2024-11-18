@@ -71,23 +71,10 @@ namespace HellTrail
                 scale = new Vector2(1)
             });
             e.AddComponent(new Transform(0, 0));
-            e.AddComponent(new ShawtyObese(-0.02f));
+            e.AddComponent(new Obesity(-0.02f));
             e.AddComponent(new Velocity(0, 0));
-            e.AddComponent(new CollisionBox(32, 32)
-            {
-                onCollide = (me, other) =>
-                {
-                    if (other.HasComponent<PlayerMarker>())
-                    {
-                        Vector2 pos = me.GetComponent<Transform>().position;
-
-                        int x = Math.Max(0, (int)pos.X) / TileMap.TILE_SIZE;
-                        int y = Math.Max(0, (int)pos.Y) / TileMap.TILE_SIZE;
-                        instance.StartBattle(activeWorld.tileMap[x, y] == 1);
-                        me.GetComponent<CollisionBox>().onCollide = null;
-                    }
-                }
-            });
+            e.AddComponent(new CreateBattleOnContact(["Slime", "Slime"], null));
+            e.AddComponent(new CollisionBox(32, 32));
         }
 
         protected override void LoadContent()
@@ -129,49 +116,6 @@ namespace HellTrail
                 }
         };
             dialogue.pages.AddRange(pages);
-
-
-            var mc = activeWorld.context.Create();
-            mc.AddComponent(new TextureComponent("Dumbass")
-            {
-                origin = new Vector2(16)
-            });
-            mc.AddComponent(new Transform(32, 32));
-            mc.AddComponent(new CollisionBox(32, 32));
-            mc.AddComponent(new Velocity(0, 0));
-            mc.AddComponent(new CameraMarker(activeWorld.GetCamera()));
-            mc.AddComponent(new PlayerMarker(
-                (entity, context) =>
-                {
-                    Velocity vel = entity.GetComponent<Velocity>();
-                    vel.X = vel.Y = 0;
-                    if (Input.HeldKey(Keys.A)) vel.X -= 1f;
-                    if (Input.HeldKey(Keys.W)) vel.Y -= 1f;
-                    if (Input.HeldKey(Keys.S)) vel.Y += 1f;
-                    if (Input.HeldKey(Keys.D)) vel.X += 1f;
-
-                    if (vel.X != 0)
-                    {
-                        if (vel.X < 0)
-                            mc.GetComponent<TextureComponent>().scale.X = -1;
-                        else
-                            mc.GetComponent<TextureComponent>().scale.X = 1;
-                    }
-
-                    if (Input.PressedKey(Keys.Space))
-                    {
-                        var newUnit = context.CopyFrom(entity);
-                        newUnit.AddComponent(new Transform(60, 60));
-                        newUnit.RemoveComponent<PlayerMarker>();
-                        newUnit.RemoveComponent<CameraMarker>();
-                        newUnit.RemoveComponent<Velocity>();
-
-
-                        GlobalPlayer.AddPartyMember(UnitDefinitions.Get("Doorkun"));
-                        activeWorld.GetCamera().centre = newUnit.GetComponent<Transform>().position;
-                    }
-                }
-                ));
         }
 
         internal void StartBattle(bool onStone = false)
@@ -280,6 +224,7 @@ namespace HellTrail
 
             Assets.Unload();
             Renderer.Unload();
+            Context.Unload();
         }
 
         protected override void Update(GameTime gameTime)

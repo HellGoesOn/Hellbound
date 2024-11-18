@@ -21,7 +21,11 @@ namespace HellTrail.Core.Overworld
 
         public RenderTarget2D texture;
 
-        public int this[int x, int y] => tiles[x, y];
+        public int this[int x, int y]
+        {
+            get => tiles[x, y];
+            set => tiles[x, y] = value;
+        }
 
         public TileMap(int width, int height)
         {

@@ -1,117 +1,108 @@
-﻿//using HellTrail.Core.ECS.Attributes;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Reflection;
-//using System.Text;
-//using System.Text.Json;
-//using System.Text.RegularExpressions;
-//using System.Threading.Tasks;
+﻿using HellTrail.Extensions;
+using Microsoft.Xna.Framework;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Text.RegularExpressions;
 
-//namespace HellTrail.Core.ECS
-//{
-//    public static class ComponentIO
-//    {
-//        public static string WriteComponent(IComponent component)
-//        {
-//            StringBuilder sb = new StringBuilder();
+namespace HellTrail.Core.ECS
+{
+    public static class ComponentIO
+    {
+        public static string SerializeComponent(IComponent component)
+        {
+            StringBuilder sb = new StringBuilder();
+            Type type = component.GetType();
+            sb.Append($"{type.Name}");
 
-//            string jsonString = JsonSerializer.Serialize(component);
+            FieldInfo[] fields = type.GetFields();
 
-//            sb.AppendLine(jsonString);
+            if (fields.Length > 0)
+                sb.Append(":\n\t\t\t[");
+            else
+                sb.Append(";");
 
-//            return sb.ToString();
-//        }
+            for(int i = 0; i < fields.Length; i++)
+            {
+                FieldInfo field = fields[i];
+                if (field.FieldType.IsArray)
+                {
+                    object[] values = (object[])field.GetValue(component);
 
-//        public static string WriteComponent(IComponent component, Context context)
-//        {
-//            FieldInfo[] infos = component.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
+                    if (values != null)
+                    {
+                        sb.Append('{');
+                        for (int index = 0; index < values.Length; index++)
+                        {
+                            sb.Append($"\"{values[index]}\"{(index == values.Length - 1 ? "" : ", ")}");
+                        }
+                        sb.Append($"}}{(i == fields.Length - 1 ? "" : ", ")}");
+                    }
 
-//            StringBuilder sb = new StringBuilder();
+                } else
+                {
+                    sb.Append($"\"{field.GetValue(component)}\"{(i == fields.Length - 1 ? "" : ", ")}");
+                }
+            }
 
-//            sb.AppendLine(Context.ComponentNameByType[component.GetType()]);
-//            sb.AppendLine($"\t[");
+            if (fields.Length > 0)
+                sb.Append("];");
 
-//            foreach (FieldInfo info in infos)
-//            {
-//                if (info.GetCustomAttribute<IgnoreAttribute>() != null)
-//                    continue;
 
-//                string value = null;
+            return sb.ToString();
+        }
 
-//                SaveCustomAttribute data = info.GetCustomAttribute<SaveCustomAttribute>();
-//                if (data != null)
-//                {
-//                    value = data.onSave?.Invoke(component);
-//                } else
-//                {
-//                    object obj = info.GetValue(component);
-//                    value ??= obj != null ? obj.ToString() : "";
-//                }
-//                sb.AppendLine($"\t\t{info.Name}={value};");
-//            }
+        public static IComponent DeserializeComponent(string component)
+        {
+            string trimmed = component.TrimStart();
 
-//            sb.AppendLine("\t];");
+            string name = Regex.Match(trimmed, $"^[^:{Environment.NewLine}]*", RegexOptions.Singleline).Value;
 
-//            return sb.ToString();
-//        }
+            var value = Regex.Match(trimmed, @"\[(.*)\]", RegexOptions.Singleline).Groups[1].Value;
 
-//        public static void WritePreFab(Entity entity, Context context)
-//        {       
-//            StringBuilder sb = new StringBuilder();
+            string[] values = value.Split(", ");
 
-//            foreach(IComponent component in entity._components.Where(x=>x != null))
-//            {
-//                sb.AppendLine(WriteComponent(component));
-//            }
+            Type type = Context.ComponentTypeByName[name];
 
-//            string path = Environment.CurrentDirectory + "\\Prefabs\\";
-//            if (!Directory.Exists(path))
-//                Directory.CreateDirectory(path);
-//            File.WriteAllText(path + $"{entity}.fab", sb.ToString());
-//        }
+            FieldInfo[] fields = type.GetFields();
 
-//        /// <summary>
-//        /// 
-//        /// </summary>
-//        /// <param name="path">Starts at [Current Directory]/Prefabs/</param>
-//        /// <param name="context"></param>
-//        public static void LoadFromFab(string path, Context context, string componentPath = "HellTrail.Core.ECS.Components.")
-//        {
-//            var entity = context.Create();
+            IComponent instance = (IComponent)RuntimeHelpers.GetUninitializedObject(type);
 
-//            string str = File.ReadAllText(Environment.CurrentDirectory + "\\Prefabs\\" + path + ".fab");
-//            str = Regex.Replace(str, "\n", "").Replace("\t", "").Replace("\r", "");
-//            string[] components = Regex.Split(str, @"(?<=];)");
+            for(int i= 0; i < fields.Length;i++)
+            {
+                string noQuotes = Regex.Replace(values[i], @"[{""}]", "");
+                if (fields[i].FieldType.IsArray)
+                {
+                    Type elementType = fields[i].FieldType.GetElementType();
+                    MatchCollection coll = Regex.Matches(value, @"\{([^{}]*)\}");
 
-//            foreach (var component in components)
-//            {
-//                if (string.IsNullOrWhiteSpace(component))
-//                    continue;
+                    for (int index = 0; index < coll.Count; index++)
+                    {
+                        string val = coll[index].Value;
+                        string[] elements = Regex.Replace(val, @"[{""}]", "").Split(", ");
+                        var arr = Array.CreateInstance(elementType, elements.Length);
 
-//                string pattern = "^[^[]*";
+                        for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
+                        {
+                            arr.SetValue(Convert.ChangeType(elements[elementIndex], elementType), elementIndex);
+                        }
 
-//                string componentName = Regex.Match(component, pattern).Value;
-//                string componentValue = Regex.Match(component, "=(.*)").Value;
+                        fields[index].SetValue(instance, Convert.ChangeType(arr, fields[i].FieldType));
+                    }
+                } 
+                else
+                {
+                    if (noQuotes.TryVector2(out Vector2 vector))
+                    {
+                        fields[i].SetValue(instance, vector);
+                    } else
+                    {
+                        fields[i].SetValue(instance, Convert.ChangeType(noQuotes, fields[i].FieldType));
+                    }
+                }
+            }
 
-//                Type com = Assembly.GetExecutingAssembly().GetType(componentPath + componentName, true);
-
-//                FieldInfo[] fields = com.GetFields();
-
-//                foreach (var item in fields)
-//                {
-//                    LoadCustomAttribute attr = item.GetCustomAttribute<LoadCustomAttribute>();
-//                    if (attr != null)
-//                    {
-//                        //attr.onLoad.Invoke(component, componentValue);
-//                    }
-//                }
-
-//                //entity.AddComponent((IComponent)Activator.CreateInstance(com));
-
-//                bool shit = true;
-//            }
-
-//        }
-//    }
-//}
+            return instance;
+        }
+    }
+}

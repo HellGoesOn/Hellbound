@@ -14,6 +14,7 @@ namespace HellTrail.Core.ECS
         internal static int _maxComponents;
         public static readonly Dictionary<Type, int> ComponentId = [];
         public static readonly Dictionary<string, int> ComponentIdByName = [];
+        public static readonly Dictionary<string, Type> ComponentTypeByName = [];
         public static readonly Dictionary<int, string> ComponentNameById = [];
         public static readonly Dictionary<Type, string> ComponentNameByType = [];
         public static void InitializeAll()
@@ -27,8 +28,18 @@ namespace HellTrail.Core.ECS
                 ComponentIdByName.Add(type.Name, id);
                 ComponentNameById.Add(id, type.Name);
                 ComponentNameByType.Add(type, type.Name);
+                ComponentTypeByName.Add(type.Name, type);
                 id++;
             }
+        }
+
+        public static void Unload()
+        {
+            ComponentId.Clear();
+            ComponentIdByName.Clear();
+            ComponentTypeByName.Clear();
+            ComponentNameById.Clear();
+            ComponentNameByType.Clear();
         }
 
         public static int GetComponentId<T>() where T : IComponent => ComponentId[typeof(T)];
@@ -146,9 +157,18 @@ namespace HellTrail.Core.ECS
             return e;
         }
 
+        public void Armaggedon()
+        {
+            int oldEntityCount = entityCount;
+            for (int i = 0; i < oldEntityCount; i++)
+            {
+                Entity entity = entities[i];
+                Destroy(entity);
+            }
+        }
+
         public void Destroy(int id)
         {
-            entityCount--;
             Entity e = entities[id];
             if (!e.enabled)
                 return;
@@ -160,6 +180,7 @@ namespace HellTrail.Core.ECS
             e.Destroy(this);
             activeEntityIds.Pop();
             _entityPool.Push(e);
+            entityCount--;
         }
 
         public string ListEntities()

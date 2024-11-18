@@ -12,20 +12,19 @@ namespace HellTrail.Core.ECS.Components
     public class TextureComponent : IComponent
     {
         public readonly string textureName;
-        public readonly Texture2D texture;
         public Vector2 origin;
         public Vector2 scale;
 
-        public TextureComponent(string texture) 
+        public TextureComponent(string texture, Vector2? origin = null, Vector2? scale = null) 
         {
-            scale = Vector2.One;
+            this.scale = scale ?? Vector2.One;
+            this.origin = origin ?? Vector2.Zero;
             this.textureName = texture;
-            this.texture = Assets.Textures[textureName];
         }
 
         public override string ToString()
         {
-            return $"[{textureName}]";
+            return $"Texture:[\"{textureName}\", {origin}, {scale}]";
         }
     }
 }

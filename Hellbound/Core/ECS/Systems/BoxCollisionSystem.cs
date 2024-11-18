@@ -38,8 +38,8 @@ namespace HellTrail.Core.ECS
 
                     if (CheckCollision(transform1.position - box1.origin, box1, transform2.position - box1.origin, box2))
                     {
-                        box1.onCollide?.Invoke(entity, entity2);
-                        box2.onCollide?.Invoke(entity2, entity);
+                        entity.AddComponent(new HasCollidedMarker(entity2.id));
+                        entity2.AddComponent(new HasCollidedMarker(entity.id));
                     }
                 }
             }

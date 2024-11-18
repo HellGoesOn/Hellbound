@@ -26,9 +26,9 @@ namespace HellTrail.Core.ECS
 
                 var transform = entity.GetComponent<Transform>();
                 var cameraMarker = entity.GetComponent<CameraMarker>();
-                Camera cam = cameraMarker.attachedCamera;
+                Camera cam = Main.instance.activeWorld.GetCamera();
 
-                cam.centre += (transform.position - cameraMarker.attachedCamera.centre) * cam.speed;
+                cam.centre += (transform.position - cam.centre) * cam.speed;
             }
         }
     }
