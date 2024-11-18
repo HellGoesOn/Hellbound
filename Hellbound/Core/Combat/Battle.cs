@@ -4,6 +4,7 @@ using HellTrail.Core.Combat.Sequencer;
 using HellTrail.Core.Combat.Status;
 using HellTrail.Core.DialogueSystem;
 using HellTrail.Core.UI;
+using HellTrail.Extensions;
 using HellTrail.Render;
 using Microsoft.VisualBasic.FileIO;
 using Microsoft.Xna.Framework;
@@ -340,12 +341,11 @@ namespace HellTrail.Core.Combat
                     position = playerMenu.position + new Vector2(playerMenu.GetSize.X + 8, 0),
                     active = true,
                     parentMenu = playerMenu
-                }; 
+                };
                 int option = attacks.selectedOption > ActingUnit.abilities.Count ? 0 : attacks.selectedOption < 0 ? ActingUnit.abilities.Count - 1 : attacks.selectedOption;
 
                 var skill = ActingUnit.abilities[option];
-                UIManager.combatUI.skillDescription.text = skill.Description;
-                UIManager.combatUI.skillCost.text = $"{(skill.hpCost > 0 ? $"Consumes {skill.hpCost} HP" : "")}{(skill.spCost > 0 ? $"Consumes {skill.spCost} SP" : "")}";
+                SetSkillDesc(skill);
 
                 AddMenu(attacks);
 
@@ -388,8 +388,7 @@ namespace HellTrail.Core.Combat
 
                                 Ability skill = ActingUnit.abilities[option];
 
-                                UIManager.combatUI.skillDescription.text = skill.Description;
-                                UIManager.combatUI.skillCost.text = $"{(skill.hpCost > 0 ? $"Consumes {skill.hpCost} HP" : "")}{(skill.spCost > 0 ? $"Consumes {skill.spCost} SP" : "")}";
+                                SetSkillDesc(skill);
                                 RemoveMenu(fakeMenu);
                             };
 
@@ -415,14 +414,13 @@ namespace HellTrail.Core.Combat
                         attackOption.color = Color.DarkSlateGray;
                     }
                 }
-                
+
                 attacks.onChangeOption = () =>
                 {
                     int option = attacks.selectedOption >= ActingUnit.abilities.Count ? 0 : attacks.selectedOption < 0 ? ActingUnit.abilities.Count - 1 : attacks.selectedOption;
 
                     var skill = ActingUnit.abilities[option];
-                    UIManager.combatUI.skillDescription.text = skill.Description;
-                    UIManager.combatUI.skillCost.text = $"{(skill.hpCost > 0 ? $"Consumes {skill.hpCost} HP" : "")}{(skill.spCost > 0 ? $"Consumes {skill.spCost} SP" : "")}";
+                    SetSkillDesc(skill);
                 };
 
                 attacks.onCancel = () =>
@@ -474,6 +472,12 @@ namespace HellTrail.Core.Combat
             };
 
             menus.Add(playerMenu);
+        }
+
+        private static void SetSkillDesc(Ability skill)
+        {
+            UIManager.combatUI.skillDescription.text = skill.Description.Splice(24);
+            UIManager.combatUI.skillCost.text = $"{(skill.hpCost > 0 ? $"Consumes {skill.hpCost} HP" : "")}{(skill.spCost > 0 ? $"Consumes {skill.spCost} SP" : "")}";
         }
 
         public void BeginAction()

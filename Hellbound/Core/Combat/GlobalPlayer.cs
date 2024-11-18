@@ -18,20 +18,10 @@ namespace HellTrail.Core.Combat
 
         public static void Init()
         {
-            Unit protag = new()
-            {
-                name = "Doorkun",
-                sprite = "Dumbass",
-            };
-            protag.abilities.Add(new BasicAttack());
-            protag.abilities.Add(new Agi());
-            protag.abilities.Add(new Maragi());
-            protag.abilities.Add(new Dia());
-            protag.abilities.Add(new Sukukaja());
-            protag.abilities.Add(new Sukunda());
-            protag.statsGrowth = new CombatStats(0.5f, 1.5f, 10, 7, 0.15f);
-            protag.stats.magic = 100;
-            ProtagAnimations(protag);
+            Unit protag = UnitDefinitions.Get("Doorkun");
+            protag.abilities.Add(new Singularity());
+            protag.abilities.Add(new Masukukaja());
+            protag.abilities.Add(new Masukunda());
 
             Unit sidekick = new()
             {
@@ -48,16 +38,24 @@ namespace HellTrail.Core.Combat
             sidekick.abilities.Add(new Maragi());
             sidekick.abilities.Add(new Dia());
 
-            ActiveParty.Add(protag);
+            AddPartyMember(protag);
             //ActiveParty.Add(sidekick);
+        }
 
+        public static void AddPartyMember(Unit newUnit)
+        {
+            ActiveParty.Add(newUnit);
+            DefaultBattleStations();
+        }
+
+        public static void DefaultBattleStations()
+        {
             int i = 0;
-            foreach (Unit unit in ActiveParty)
+            for(i = ActiveParty.Count-1; i >= 0; i--)
             {
+                Unit unit = ActiveParty[ActiveParty.Count-1-i];
                 unit.team = Team.Player;
-                unit.stats.speed = 7;
-                unit.BattleStation = new Vector2(60 + 4 * i, 80 + 32 * i);
-                i++;
+                unit.BattleStation = new Vector2(60 + 4 * i + 32 * (i % 2), 70 + 16 * i - 24 * (i % 2));
             }
         }
 

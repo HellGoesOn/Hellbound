@@ -39,8 +39,8 @@ namespace HellTrail.Core.Combat.Status
 
             } else
             {
-                spriteBatch.Draw(Assets.Textures[unit.sprite], new Vector2((int)(unit.position.X), (int)(unit.position.Y)) + offset, null, Color.Blue * 0.25f, 0f, new Vector2(16), unit.scale, SpriteEffects.None, unit.depth);
-                //Renderer.DrawRect(spriteBatch, unit.position-unit.size*0.5f, unit.size, 1, Color.Orange * 0.25f);
+                spriteBatch.Draw(Assets.Textures[unit.sprite], new Vector2((int)(unit.position.X), (int)(unit.position.Y)) + offset*2, null, Color.Blue * 0.25f, 0f, new Vector2(16), unit.scale, SpriteEffects.None, unit.depth - 0.01f);
+                spriteBatch.Draw(Assets.Textures[unit.sprite], new Vector2((int)(unit.position.X), (int)(unit.position.Y)) - offset*2, null, Color.Blue * 0.25f, 0f, new Vector2(16), unit.scale, SpriteEffects.None, unit.depth - 0.01f);
             }
         }
 

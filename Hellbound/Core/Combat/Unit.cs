@@ -46,7 +46,7 @@ namespace HellTrail.Core.Combat
             statsGrowth = new CombatStats(1, 1, 15, 5, 0.5f);
             currentAnimation = defaultAnimation = "Idle";
             resistances = new ElementalResistances();
-            depth = 0f;
+            depth = 0.01f;
             sprite = "Slime3";
             opacity = 1.25f;
             name = "???";
@@ -79,6 +79,10 @@ namespace HellTrail.Core.Combat
             {
                 opacity -= 0.02f;
             }
+            else if(opacity < 1.2f)
+            {
+                opacity += 0.02f;
+            }    
 
             if (shake > 0)
             {
@@ -222,6 +226,8 @@ namespace HellTrail.Core.Combat
             copy.stats = stats.GetCopy();
             copy.statsGrowth = statsGrowth.GetCopy();
             copy.resistances = resistances.GetCopy();
+            copy.currentAnimation = currentAnimation;
+            copy.defaultAnimation = defaultAnimation;
 
             foreach (var anim in animations)
             {

@@ -228,16 +228,16 @@ namespace HellTrail.Core.UI.CombatUI
 
             foreach (Unit unit in activeBattle.units)
             {
-                string buffs = "";
+            //    string buffs = "";
 
-                foreach (StatusEffect fx in unit.statusEffects)
-                    buffs += $"[{fx.name}]={fx.turnsLeft}\n";
+            //    foreach (StatusEffect fx in unit.statusEffects)
+            //        buffs += $"[{fx.name}]={fx.turnsLeft}\n";
 
-                Color clr = unit.Downed ? Color.Crimson : Color.White;
-                Vector2 adjPos = unit.position * 4;
-                Vector2 orig = Assets.SmallFont.MeasureString(buffs) * 0.5f;
-                Vector2 finalPos = new Vector2((int)adjPos.X, (int)(adjPos.Y + 64));
-                spriteBatch.DrawBorderedString(Assets.SmallFont, buffs, finalPos, Color.White, Color.Black, 0f, orig, Vector2.One, SpriteEffects.None, 0);
+            //    Color clr = unit.Downed ? Color.Crimson : Color.White;
+            //    Vector2 adjPos = unit.position * 4;
+            //    Vector2 orig = Assets.SmallFont.MeasureString(buffs) * 0.5f;
+            //    Vector2 finalPos = new Vector2((int)adjPos.X, (int)(adjPos.Y + 64));
+            //    spriteBatch.DrawBorderedString(Assets.SmallFont, buffs, finalPos, Color.White, Color.Black, 0f, orig, Vector2.One, SpriteEffects.None, 0);
 
                 if (activeBattle.isPickingTarget)
                 {

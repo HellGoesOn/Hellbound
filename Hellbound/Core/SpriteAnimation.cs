@@ -95,7 +95,13 @@ namespace HellTrail.Core
         {
             SpriteAnimation anim = new(texture, frameData)
             {
-                timePerFrame = this.timePerFrame
+                timePerFrame = this.timePerFrame,
+                nextAnimation = this.nextAnimation,
+                looping = this.looping,
+                opacity = this.opacity,
+                scale = this.scale,
+                onAnimationEnd = this.onAnimationEnd,
+                onAnimationPlay = this.onAnimationPlay,
             };
             return anim;
         }

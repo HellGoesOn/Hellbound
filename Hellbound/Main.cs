@@ -98,10 +98,10 @@ namespace HellTrail
             Renderer.Load(GraphicsDevice);
             CameraManager.Initialize();
             UIManager.Init();
+            UnitDefinitions.DefineUnits();
             GlobalPlayer.Init();
             ParticleManager.Initialize();
             Context.InitializeAll();
-            EnemyDefinitions.DefineEnemies();
 
             activeWorld = new World();
 
@@ -160,16 +160,14 @@ namespace HellTrail
 
                     if (Input.PressedKey(Keys.Space))
                     {
-                        GlobalPlayer.ActiveParty[0].abilities.Add(new Singularity()
-                        {
-                            spCost = 25
-                        });
                         var newUnit = context.CopyFrom(entity);
                         newUnit.AddComponent(new Transform(60, 60));
                         newUnit.RemoveComponent<PlayerMarker>();
                         newUnit.RemoveComponent<CameraMarker>();
                         newUnit.RemoveComponent<Velocity>();
 
+
+                        GlobalPlayer.AddPartyMember(UnitDefinitions.Get("Doorkun"));
                         activeWorld.GetCamera().centre = newUnit.GetComponent<Transform>().position;
                     }
                 }
@@ -187,7 +185,7 @@ namespace HellTrail
             var slimeList = activeWorld.context.entities.Where(x => x != null && x.enabled && x.HasComponent<TextureComponent>() && x.GetComponent<TextureComponent>().textureName == "Slime3");
             for (int i = 0; i < slimeList.Count(); i++)
             {
-                Unit slime = EnemyDefinitions.GetDefinedEnemy("Slime");
+                Unit slime = UnitDefinitions.Get("Slime");
                 slime.BattleStation = new Vector2(220 + i * 8 + ((i / 3) * 24), 60 + i * 32 - (i / 3 * 86));
                 list.Add(slime);
             }
