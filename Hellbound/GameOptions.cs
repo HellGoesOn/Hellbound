@@ -1,4 +1,5 @@
 ﻿using HellTrail.Render;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,5 +29,7 @@ namespace HellTrail
         public static float GeneralVolume { get; set; } = 0.25f;
         public static float MusicVolume { get; set; } = 0.05f;
         public static float OldMusicVolume { get; set; } = 0.05f;
+
+        public static Vector2 Resolution => new Vector2(ScreenWidth, ScreenHeight) * resolutionMultiplier;
     }
 }

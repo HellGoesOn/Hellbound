@@ -20,6 +20,8 @@ namespace HellTrail.Core.UI
         public static DialogueUIState dialogueUI;
         public static OverworldUIState overworldUI;
 
+        public static UIElement hoveredElement;
+
         public static void Init()
         {
             combatUI = new CombatUIState();
@@ -47,9 +49,15 @@ namespace HellTrail.Core.UI
 
         public static void Update()
         {
+            hoveredElement = null;
             foreach (UIState state in UIStates)
             {
                 state.Update();
+            }
+
+            if(Input.LMBClicked && hoveredElement != null)
+            {
+                hoveredElement.Click();
             }
         }
 

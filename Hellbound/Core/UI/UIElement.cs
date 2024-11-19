@@ -19,8 +19,11 @@ namespace HellTrail.Core.UI
 
         public bool active = true;
         private bool visible = true;
+        public bool capturesMouse;
+        public bool isMouseHovering;
         public Vector2 size;
         public UIEventHandler onUpdate;
+        public UIEventHandler onClick;
         public List<UIElement> children = [];
         public List<UIElement> _childrenToDisown = [];
         public IUIElement parent;
@@ -41,6 +44,20 @@ namespace HellTrail.Core.UI
             if (!active)
                 return;
 
+            isMouseHovering = false; 
+
+            if (capturesMouse)
+            {
+                var mpos = Input.UIMousePosition;
+                if (mpos.X >= position.X && mpos.X <= position.X + size.X
+                    && mpos.Y >= position.Y && mpos.Y <= position.Y + size.Y)
+                {
+                    isMouseHovering = true;
+                    UIManager.hoveredElement = this;
+                }
+            }
+
+
             foreach (UIElement child in children)
                 child.Update();
             OnUpdate();
@@ -51,6 +68,11 @@ namespace HellTrail.Core.UI
                 children.Remove(child);
 
             _childrenToDisown.Clear();
+        }
+
+        public virtual void Click()
+        {
+            onClick?.Invoke(this);
         }
 
         public void Draw(SpriteBatch spriteBatch)

@@ -11,23 +11,42 @@ namespace HellTrail.Core.ECS
     {
         private readonly List<IExecute> _executeSystems = [];
         private readonly List<IDraw> _drawSystems = [];
+        private readonly List<ISystem> _allSystems = [];
+
+        private readonly Dictionary<Type, bool> _enabledSystems = [];
 
         public void AddSystem(ISystem system)
         {
             if(system is IExecute executeSystem) _executeSystems.Add(executeSystem);
             if(system is IDraw drawSystem) _drawSystems.Add(drawSystem);
+
+            _allSystems.Add(system);
+            _enabledSystems.Add(system.GetType(), true);
         }
 
         public void Execute(Context context)
         {
-            for(int i = 0; i < _executeSystems.Count; i++)
-                _executeSystems[i].Execute(context);
+            for (int i = 0; i < _executeSystems.Count; i++)
+            {
+                if (_enabledSystems[_executeSystems[i].GetType()])
+                    _executeSystems[i].Execute(context);
+            }
         }
 
         public void Draw(Context context, SpriteBatch spriteBatch)
         {
-            for(int i = 0; i < _drawSystems.Count;i++)
-                _drawSystems[i].Draw(context, spriteBatch);
+            for (int i = 0; i < _drawSystems.Count; i++)
+            {
+                if (_enabledSystems[_drawSystems[i].GetType()])
+                    _drawSystems[i].Draw(context, spriteBatch);
+            }
         }
+
+        public void ToggleSystem(Type type)
+        {
+            _enabledSystems[type] = !_enabledSystems[type];
+        }
+
+        public List<ISystem> GetAll() => _allSystems;
     }
 }

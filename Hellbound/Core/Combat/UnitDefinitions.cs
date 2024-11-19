@@ -21,8 +21,6 @@ namespace HellTrail.Core.Combat
             protag.abilities.Add(new Agi());
             protag.abilities.Add(new Maragi());
             protag.abilities.Add(new Dia());
-            protag.abilities.Add(new Sukukaja());
-            protag.abilities.Add(new Sukunda());
             protag.statsGrowth = new CombatStats(0.5f, 1.5f, 10, 7, 0.15f);
             protag.stats.magic = 100;
             protag.stats.speed = 7;
@@ -38,7 +36,6 @@ namespace HellTrail.Core.Combat
                 Name = "Ooze",
                 baseDamage = 10
             };
-            slime.stats.value = 3000;
             slime.abilities.Add(ooze);
         }
 

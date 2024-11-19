@@ -127,6 +127,29 @@ namespace HellTrail.Core
         }
 
         public readonly Rectangle AsRect => new (x, y, width, height);
+
+        public override string ToString()
+        {
+            return $"{{{x} {y} {width} {height}}}";
+        }
+
+        public static bool TryParse(string s, out FrameData? frameData)
+        {
+            string[] values = s.Split(' ');
+
+            if (!int.TryParse(values[0], out int x) 
+                || !int.TryParse(values[1], out int y)
+                || !int.TryParse(values[2], out int width)
+                || !int.TryParse(values[3], out int height))
+            {
+                frameData = null;
+                return false;
+            }
+
+            frameData = new FrameData(x, y, width, height);
+
+            return true;
+        }
     }
 
     public delegate void AnimationEventHandler(SpriteAnimation sender);

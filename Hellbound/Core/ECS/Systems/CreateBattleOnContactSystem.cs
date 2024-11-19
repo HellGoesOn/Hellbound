@@ -56,6 +56,10 @@ namespace HellTrail.Core.ECS
                 battle.OnBattleEnd = () =>
                 {
                     context.Destroy(entity);
+                    foreach (Unit unit in GlobalPlayer.ActiveParty)
+                    {
+                        unit.currentAnimation = unit.defaultAnimation;
+                    }
                 };
 
                 GameStateManager.SetState(GameState.Combat, new TrippingBalls(Renderer.SaveFrame()));

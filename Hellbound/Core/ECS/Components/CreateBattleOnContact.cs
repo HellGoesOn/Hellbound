@@ -16,5 +16,12 @@ namespace HellTrail.Core.ECS.Components
             this.enemies = enemies;
             this.trialCharacters = trialCharacters;
         }
+
+        public override string ToString()
+        {
+            string enemy = enemies != null ? string.Join(", ", enemies) : ""; 
+            string trial = trialCharacters != null ? string.Join(", ", trialCharacters) : ""; 
+            return $"Combat: [{enemy}], [{trial}]";
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿using HellTrail.Core.UI;
+﻿using HellTrail.Core.ECS;
+using HellTrail.Core.UI;
+using HellTrail.Core.UI.Elements;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -17,6 +19,25 @@ namespace HellTrail.Core.Overworld
         {
             debugText = new("");
             Append(debugText);
+
+            World con = Main.instance.activeWorld;
+            int off = 0;
+            foreach(var system in con.systems.GetAll())
+            {
+                UICheckBox box = new UICheckBox($"Toggle {system.GetType().Name}");
+                box.Position = new Vector2(16, 64 + off);
+                box.isChecked = true;
+                box.color = Color.Lime;
+                box.onClick = (sender) =>
+                {
+                    var b = (sender as UICheckBox);
+                    b.color = b.isChecked ? Color.Red : Color.Lime;
+                    con.systems.ToggleSystem(system.GetType());
+                };
+                Append(box);
+                off += 18;
+            }
+
         }
 
         public override void Update()

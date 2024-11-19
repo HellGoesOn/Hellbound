@@ -1,5 +1,6 @@
 ﻿using HellTrail.Core.Combat;
 using HellTrail.Core.ECS.Components;
+using HellTrail.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -31,7 +32,8 @@ namespace HellTrail.Core.ECS
                 TextureComponent tex = entity.GetComponent<TextureComponent>();
                 Transform transform = entity.GetComponent<Transform>();
 
-                spriteBatch.Draw(Assets.Textures[tex.textureName], transform.position, null, Color.White, 0f, tex.origin, tex.scale, SpriteEffects.None, 0f);
+                float depth = transform.position.Y / 32.0f * 30; 
+                spriteBatch.Draw(Assets.Textures[tex.textureName], transform.position.ToInt(), null, Color.White, 0f, tex.origin, tex.scale, SpriteEffects.None, depth);
             }
         }
     }

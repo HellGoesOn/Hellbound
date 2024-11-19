@@ -37,6 +37,8 @@ namespace HellTrail
 
         internal List<Transition> transitions = [];
 
+        internal Dictionary<string, World> worlds = [];
+
         public Main()
         {
             prefabContext = new Context();
@@ -60,7 +62,7 @@ namespace HellTrail
             gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
             gdm.ApplyChanges();
             GameStateManager.State = GameState.Overworld;
-            SoundEngine.StartMusic("ChangingSeasons", true);
+            SoundEngine.StartMusic("School Days", true);
 
             //GetGameState().GetCamera().centre = GlobalPlayer.ActiveParty[0].position;
 
@@ -74,7 +76,8 @@ namespace HellTrail
             e.AddComponent(new Obesity(-0.02f));
             e.AddComponent(new Velocity(0, 0));
             e.AddComponent(new CreateBattleOnContact(["Slime", "Slime"], null));
-            e.AddComponent(new CollisionBox(32, 32));
+            e.AddComponent(new CollisionBox(16, 10, new Vector2(8, -4)));
+
         }
 
         protected override void LoadContent()
@@ -84,13 +87,12 @@ namespace HellTrail
             Assets.Load(this);
             Renderer.Load(GraphicsDevice);
             CameraManager.Initialize();
+            Context.InitializeAll();
+            activeWorld = new World();
             UIManager.Init();
             UnitDefinitions.DefineUnits();
             GlobalPlayer.Init();
             ParticleManager.Initialize();
-            Context.InitializeAll();
-
-            activeWorld = new World();
 
             Dialogue dialogue = Dialogue.Create();
             UIManager.dialogueUI.dialoguePanel.Position = new Vector2(32, Renderer.UIPreferedHeight * 0.5f);
@@ -112,6 +114,8 @@ namespace HellTrail
                     {
                         _.CurrentPage.textColor = Color.Transparent;
                         UIManager.dialogueUI.dialoguePanel.Position = new Vector2(32, Renderer.UIPreferedHeight - 180 - 16);
+
+                        activeWorld.LoadFromFile("BaseScene2");
                     }
                 }
         };

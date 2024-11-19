@@ -1,5 +1,6 @@
 ﻿using HellTrail.Core.ECS.Components;
 using HellTrail.Core.Overworld;
+using HellTrail.Extensions;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;

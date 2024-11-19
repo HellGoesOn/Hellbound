@@ -26,7 +26,7 @@ namespace HellTrail.Core.ECS
         public void Draw(Context context, SpriteBatch spriteBatch)
         {
             var entities = _group.Entities;
-
+            UIManager.overworldUI.debugText.text = "";
             for(int i = 0; i < entities.Count; i++)
             {
                 var entity = entities[i];
@@ -40,6 +40,13 @@ namespace HellTrail.Core.ECS
                 {
                     UIManager.overworldUI.debugTime = 15;
                     UIManager.overworldUI.debugText.text = entity.ToString();
+
+                    if (entity.HasComponent<TestComponent>())
+                    {
+                        UIManager.overworldUI.debugTime = 15;
+                        UIManager.overworldUI.debugText.text += entity.GetComponent<TestComponent>().ToString();
+                    }
+
                 }
             }
         }

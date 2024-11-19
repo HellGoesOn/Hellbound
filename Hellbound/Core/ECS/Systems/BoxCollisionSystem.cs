@@ -24,22 +24,22 @@ namespace HellTrail.Core.ECS
 
             for (int i = 0; i < entities.Count; i++)
             {
-                var entity = entities[i];
-                var box1 = entity.GetComponent<CollisionBox>();
-                var transform1 = entity.GetComponent<Transform>();
+                var firstEntity = entities[i];
+                var firstBox = firstEntity.GetComponent<CollisionBox>();
+                var firstTransform = firstEntity.GetComponent<Transform>();
                 for (int j = 0; j < entities.Count; j++)
                 {
-                    var entity2 = entities[j];
-                    if (entity == entity2)
+                    var secondEntity = entities[j];
+                    if (firstEntity == secondEntity)
                         continue;
 
-                    var box2 = entity2.GetComponent<CollisionBox>();
-                    var transform2 = entity2.GetComponent<Transform>();
+                    var secondBox = secondEntity.GetComponent<CollisionBox>();
+                    var secondTransform = secondEntity.GetComponent<Transform>();
 
-                    if (CheckCollision(transform1.position - box1.origin, box1, transform2.position - box1.origin, box2))
+                    if (CheckCollision(firstTransform.position - firstBox.origin, firstBox, secondTransform.position - secondBox.origin, secondBox))
                     {
-                        entity.AddComponent(new HasCollidedMarker(entity2.id));
-                        entity2.AddComponent(new HasCollidedMarker(entity.id));
+                        firstEntity.AddComponent(new HasCollidedMarker(secondEntity.id));
+                        secondEntity.AddComponent(new HasCollidedMarker(firstEntity.id));
                     }
                 }
             }

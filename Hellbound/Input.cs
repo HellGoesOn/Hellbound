@@ -53,9 +53,9 @@ namespace HellTrail
             get
             {
                 MouseState state = Mouse.GetState();
-                //var mx = Main.instance.gdm.PreferredBackBufferWidth / Renderer.UIPreferedWidth;
-                //var my = Main.instance.gdm.PreferredBackBufferHeight / Renderer.UIPreferedHeight;
-                var adjusted = new Vector2(state.X, state.Y); // new Vector2(mx, my);
+                float mx = Main.instance.gdm.PreferredBackBufferWidth / (float)Renderer.UIPreferedWidth;
+                float my = Main.instance.gdm.PreferredBackBufferHeight / (float)Renderer.UIPreferedHeight;
+                var adjusted = new Vector2(state.X, state.Y) / new Vector2(mx, my); // GameOptions.Resolution); 
                 //var cam = CameraManager.GetCamera;
                 //Vector2 v = (adjusted + cam.Position) / cam.zoom;
                 return adjusted;

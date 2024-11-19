@@ -48,6 +48,7 @@
     <None Remove="Assets\Textures\TestBG2.png" />
     <None Remove="Assets\Textures\Tileset.png" />
     <None Remove="Assets\Textures\Tomato.png" />
+    <None Remove="Assets\Textures\UI\UICheckBox.png" />
     <None Remove="Assets\Textures\VictoryPose.png" />
     <None Remove="Assets\Textures\WhatDaDogDoin.png" />
     <None Remove="Assets\Textures\WhatDaDogDoin2.png" />

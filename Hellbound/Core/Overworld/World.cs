@@ -5,6 +5,7 @@ using HellTrail.Core.ECS;
 using HellTrail.Core.ECS.Components;
 using HellTrail.Core.UI;
 using HellTrail.Extensions;
+using HellTrail.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -45,6 +46,7 @@ namespace HellTrail.Core.Overworld
             systems.AddSystem(new MoveCameraSystem(context));
             systems.AddSystem(new ReadPlayerInputSystem(context));
             systems.AddSystem(new ClearCollisionMarkerSystem(context));
+            systems.AddSystem(new ParticleEmissionSystem(context));
             GetCamera().speed = 0.12f;
         }
 
@@ -52,7 +54,7 @@ namespace HellTrail.Core.Overworld
         {
             systems.Execute(context);
             var debugText = UIManager.GetStateByName("debugState").GetElementById("debugText") as UIBorderedText;
-            debugText.text = $"EC={context.entityCount}, CC={Context._maxComponents}\n";
+            debugText.text = $"EC={context.entityCount}, CC={Context._maxComponents}, MPOS={Input.UIMousePosition}, {Color.White}\n";
             
             foreach (var trigger in triggers)
             {
@@ -61,7 +63,7 @@ namespace HellTrail.Core.Overworld
 
             triggers.RemoveAll(x => x.activated);
 
-            if (Input.LMBClicked)
+            if (Input.LMBClicked && UIManager.hoveredElement == null)
             {
                 int x = tileMap.width;
                 int y = tileMap.height;
@@ -77,17 +79,31 @@ namespace HellTrail.Core.Overworld
                     entity.AddComponent(new Transform(Input.MousePosition));
                     var xx = Main.rand.Next(-100, 101);
                     var yy = Main.rand.Next(-100, 101);
+                    entity.AddComponent(new ParticleEmitter
+                        (1,
+                        60,
+                        -35,
+                        35,
+                        -40,
+                        -10,
+                        new Vector2(0.01f, 0.01f),
+                        [Vector2.One * 2, Vector2.One],
+                        [Color.Yellow, Color.Red, Color.Orange, Color.Crimson, Color.Black],
+                        new Vector2(-16, 12),
+                        new Vector2(32, 0)));
+                    //entity.AddComponent(new TestComponent(13, [12, 14, 16], [Vector2.One, Vector2.Zero, Vector2.UnitX], 17));
                     //entity.AddComponent(new Velocity(xx * 0.005f, yy * 0.005f));
                 }    
             }
 
             if(Input.PressedKey(Keys.D9))
             {
-                SaveTile("BaseScene");
+                SaveFile("BaseScene2");
             }
             if(Input.PressedKey(Keys.D8))
             {
-                LoadFromFile("BaseScene");
+                Main.instance.transitions.Add(new SliceTransition(Renderer.SaveFrame()));
+                LoadFromFile("BaseScene2");
             }
 
             /*
@@ -113,7 +129,7 @@ namespace HellTrail.Core.Overworld
             systems.Draw(context, spriteBatch);
         }
 
-        public void SaveTile(string path)
+        public void SaveFile(string path)
         {
             string savePath = Environment.CurrentDirectory +"\\Worlds";
             if (!Directory.Exists(savePath))
