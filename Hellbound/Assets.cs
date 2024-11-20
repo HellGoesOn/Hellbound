@@ -17,6 +17,7 @@ namespace HellTrail
         private readonly static Dictionary<string, Song> _songs = new Dictionary<string, Song>();
         private readonly static Dictionary<string, SoundEffect> _sounds = new Dictionary<string, SoundEffect>();
 
+        public static SpriteFont Arial;
         public static SpriteFont DefaultFont;
         public static SpriteFont CombatMenuFont;
         public static SpriteFont SmallFont;
@@ -55,6 +56,19 @@ namespace HellTrail
             var fontName = "alphbeta";
 
             //var fontBakeResult = TtfFontBaker.Bake(File.ReadAllBytes(@"C:\\Windows\\Fonts\arial.ttf"),
+
+            var arial = TtfFontBaker.Bake(File.ReadAllBytes(@"C:\\Windows\\Fonts\arial.ttf"),
+                24,
+                1024,
+                1024,
+                new[]
+                {
+                    CharacterRange.BasicLatin,
+                    CharacterRange.Latin1Supplement,
+                    CharacterRange.LatinExtendedA,
+                    CharacterRange.Cyrillic
+                }
+            );
             var fontBakeResult = TtfFontBaker.Bake(File.ReadAllBytes(Environment.CurrentDirectory + $"\\Assets\\{fontName}.ttf"),
                 24,
                 1024,
@@ -99,6 +113,8 @@ namespace HellTrail
             );
 
             SmallFont = fontBakeResult.CreateSpriteFont(main.GraphicsDevice);
+
+            Arial = arial.CreateSpriteFont(main.GraphicsDevice);
         }
 
         public static void Unload()

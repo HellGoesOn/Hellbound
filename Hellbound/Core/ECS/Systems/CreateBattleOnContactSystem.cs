@@ -55,7 +55,7 @@ namespace HellTrail.Core.ECS
                 Main.instance.battle = battle;
                 battle.OnBattleEnd = () =>
                 {
-                    context.Destroy(entity);
+                    context.Destroy(entity.id);
                     SoundEngine.StartMusic("Relax", true);
                     foreach (Unit unit in GlobalPlayer.ActiveParty)
                     {

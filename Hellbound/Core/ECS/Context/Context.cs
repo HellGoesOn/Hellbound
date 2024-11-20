@@ -159,11 +159,19 @@ namespace HellTrail.Core.ECS
 
         public void Armaggedon()
         {
-            int oldEntityCount = entityCount;
-            List<Entity> entityList = entities.Where(x => x != null && x.enabled).ToList();
-            for(int i = 0; i < entityList.Count; i++)
+            for(int i = entities.Length-1; i >= 0; i--)
             {
-                Destroy(entityList[i].id, true);
+                if (entities[i] != null)
+                    Destroy(entities[i].id);
+            }
+
+            while (_entityPool.Count > 0)
+            {
+                _entityPool.Pop();
+            }
+            while(activeEntityIds.Count > 0)
+            {
+                activeEntityIds.Pop();
             }
             /*
             for (int i = 0; i < oldEntityCount; i++)
@@ -173,23 +181,22 @@ namespace HellTrail.Core.ECS
             }*/
         }
 
-        public void Destroy(int id, bool doNotPool = false)
+        public void Destroy(int id)
         {
             Entity e = entities[id];
             if (!e.enabled)
                 return;
 
-            foreach(var group in _groups)
+            e.Destroy(this);
+
+            foreach (var group in _groups)
             {
                 group.Value.HandleEntity(e);
             }
 
-            e.Destroy(this);
-
             activeEntityIds.Pop();
 
-            if(!doNotPool)
-                _entityPool.Push(e);
+            _entityPool.Push(e);
 
             entityCount--;
         }

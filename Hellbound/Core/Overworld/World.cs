@@ -47,6 +47,7 @@ namespace HellTrail.Core.Overworld
             systems.AddSystem(new ReadPlayerInputSystem(context));
             systems.AddSystem(new ClearCollisionMarkerSystem(context));
             systems.AddSystem(new ParticleEmissionSystem(context));
+            systems.AddSystem(new DrawTransformBoxSystem(context));
             GetCamera().speed = 0.12f;
         }
 
@@ -71,6 +72,7 @@ namespace HellTrail.Core.Overworld
                     entity.AddComponent(new Transform(Input.MousePosition));
                     var xx = Main.rand.Next(-100, 101);
                     var yy = Main.rand.Next(-100, 101);
+                    entity.AddComponent(new CollisionBox(6, 12, new Vector2(12, 6)));
                     entity.AddComponent(new ParticleEmitter
                         (1,
                         25,
@@ -88,6 +90,7 @@ namespace HellTrail.Core.Overworld
                     entity = context.CopyFrom(Main.instance.prefabContext.entities[1]);
                     entity.RemoveComponent<TextureComponent>();
                     entity.AddComponent(new Transform(Input.MousePosition));
+                    entity.AddComponent(new CollisionBox(6, 12, new Vector2(6)));
                     xx = Main.rand.Next(-100, 101);
                     yy = Main.rand.Next(-100, 101);
                     entity.AddComponent(new ParticleEmitter
@@ -133,7 +136,7 @@ namespace HellTrail.Core.Overworld
 
         public void SaveFile(string path)
         {
-            string savePath = Environment.CurrentDirectory +"\\Worlds";
+            string savePath = GameOptions.WorldDirectory;
             if (!Directory.Exists(savePath))
             {
                 Directory.CreateDirectory(savePath);
@@ -141,16 +144,16 @@ namespace HellTrail.Core.Overworld
 
             StringBuilder sb = new StringBuilder();
             sb.Append("[ ");
-            for (int i = 0; i < tileMap.width; i++)
+            for (int i = 0; i < tileMap.height; i++)
             {
-                for (int j = 0; j < tileMap.height; j++)
+                for (int j = 0; j < tileMap.width; j++)
                 {
-                    sb.Append(tileMap.tiles[i, j] + " ");
+                    sb.Append(tileMap.tiles[j, i] + " ");
                 }
                 sb.Append("]");
                 sb.AppendLine("");
                 
-                if(i != tileMap.width-1)
+                if(i != tileMap.height-1)
                     sb.Append("[ ");
             }
 
@@ -167,7 +170,7 @@ namespace HellTrail.Core.Overworld
 
         public void LoadFromFile(string path)
         {
-            string finalPath = Environment.CurrentDirectory + $"\\Worlds\\{path}.scn";
+            string finalPath = GameOptions.WorldDirectory + $"{path}.scn";
 
             string text = File.ReadAllText(finalPath);
 
@@ -176,21 +179,21 @@ namespace HellTrail.Core.Overworld
             string[] strings = tileText.Split("\n", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             string[] numbers = Regex.Replace(strings[0], "[\\[\\]]", "").Trim().Split(" ");
 
-            tileMap = new TileMap(strings.Length, numbers.Length);
+            tileMap = new TileMap(numbers.Length, strings.Length);
 
-            if(strings.Length > tileMap.width)
+            if(numbers.Length > tileMap.width)
                 throw new Exception("Attempting to load map too big for the current world");
 
             for (int i = 0; i < strings.Length; i++)
             {
                 numbers = Regex.Replace(strings[i], "[\\[\\]]", "").Trim().Split(" ");
 
-                if (numbers.Length > tileMap.height)
+                if (strings.Length > tileMap.height)
                     throw new Exception("Attempting to load map too big for the current world");
 
                 for (int j = 0; j < numbers.Length; j++)
                 {
-                    tileMap[i, j] = int.Parse(numbers[j]);
+                    tileMap[j, i] = int.Parse(numbers[j]);
                 }
             }
 
@@ -200,6 +203,7 @@ namespace HellTrail.Core.Overworld
 
             // TO-DO: move to different class
 
+            if(!string.IsNullOrWhiteSpace(text.Substring(tileText.Length)))
             Entity.DeserializeAll(text.Substring(tileText.Length), context);
         }
 

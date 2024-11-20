@@ -1,4 +1,5 @@
-﻿using HellTrail.Render;
+﻿using HellTrail.Extensions;
+using HellTrail.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -19,11 +20,18 @@ namespace HellTrail.Core.UI
         public Color color = Color.White;
         public Color borderColor = Color.Black;
 
-        public SpriteFont font = Assets.DefaultFont;
+        public int lineBreak = -1;
 
         public override void OnDraw(SpriteBatch spriteBatch)
         {
-            Renderer.DrawBorderedString(spriteBatch, font, text, Position, color, borderColor, Rotation, origin, scale, SpriteEffects.None, 0);
+            string brokenText = text;
+
+            if(lineBreak != -1)
+            {
+                brokenText = brokenText.Splice(lineBreak);
+            }
+
+            Renderer.DrawBorderedString(spriteBatch, font, brokenText, Position, color, borderColor, Rotation, origin, scale, SpriteEffects.None, 0);
         }
     }
 }

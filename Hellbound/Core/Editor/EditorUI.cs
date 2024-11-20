@@ -12,6 +12,7 @@ using HellTrail.Core.Overworld;
 using HellTrail.Core.UI.Elements;
 using Microsoft.Xna.Framework.Graphics;
 using HellTrail.Core.ECS;
+using HellTrail.Core.ECS.Components;
 
 namespace HellTrail.Core.Editor
 {
@@ -23,8 +24,9 @@ namespace HellTrail.Core.Editor
         private int selectedTile;
         public UIPanel[] panels;
 
-        Vector2 camAnchor;
+        bool isInspectingEntity;
         string currentScene = "";
+        Vector2 camAnchor;
 
         private bool subscribedEvent;
 
@@ -60,7 +62,7 @@ namespace HellTrail.Core.Editor
                 UIBorderedText numText = new UIBorderedText($"{i + 1}")
                 {
                     Position = new Vector2(16),
-                    origin = Assets.DefaultFont.MeasureString($"{i + 1}") * 0.5f
+                    origin = Assets.Arial.MeasureString($"{i + 1}") * 0.5f
                 };
 
                 numPanel.Append(numText);
@@ -79,6 +81,66 @@ namespace HellTrail.Core.Editor
             };
 
             panels[0].Append(entityInspectorTitle);
+            panels[0].Append(new UIBorderedText("null")
+            {
+                Position = new Vector2(32, 48),
+                lineBreak = 64,
+                id = "inspectedEntity"
+            });
+
+            panels[0].Append(new UICheckBox("Inspect Entities")
+            {
+                id = "startInspectEntities",
+                Position = new Vector2(16, 16),
+                drawsPanel = true,
+                onClick = (sender) =>
+                {
+                    if((sender as UICheckBox).isChecked)
+                    {
+                        Input.OnMousePressed += InspectEntity;
+                    }
+                    else
+                    {
+                        (panels[0].GetElementById("inspectedEntity") as UIBorderedText).text = "null";
+                        Input.OnMousePressed -= InspectEntity;
+                    }
+                }
+
+            });
+
+            panels[0].Append(new UIBorderedText("")
+            {
+                id = "successful",
+                Position = new Vector2(96 + Assets.Arial.MeasureString("Inspect Entities").X + Assets.Arial.MeasureString("Apply changes").X, 16)
+            });
+
+            panels[0].Append(new UIBorderedText("Apply changes")
+            {
+                id = "trySerialize",
+                size = Assets.Arial.MeasureString("Apply changes"),
+                capturesMouse = true,
+                Position = new Vector2(48 + Assets.Arial.MeasureString("Inspect Entities").X, 12),
+                onClick = (sender) =>
+                {
+                    try
+                    {
+                        Entity e = Entity.Deserialize((panels[0].GetElementById("inspectedEntity") as UIBorderedText).text, Main.instance.activeWorld.context);
+
+                        if (e != null)
+                        {
+                            var yes = (panels[0].GetElementById("succesful") as UIBorderedText);
+                            yes.text = "Successful!";
+                            yes.color = Color.Lime;
+                        }
+                    }
+                    catch
+                    {
+                        var no = (panels[0].GetElementById("successful") as UIBorderedText);
+                        no.text = "ERROR";
+                        no.color = Color.Red;
+                    }
+                }
+            });
 
             panels[1].Append(systemInspectorTitle);
 
@@ -177,8 +239,8 @@ namespace HellTrail.Core.Editor
                 UIBorderedText tileText = new UIBorderedText(text)
                 {
                     id = $"tileId={i}",
-                    size = Assets.DefaultFont.MeasureString(text),
-                    Position = new Vector2(16, 12 + Assets.DefaultFont.MeasureString(text).Y + Assets.DefaultFont.MeasureString(text).Y * i),
+                    size = Assets.Arial.MeasureString(text),
+                    Position = new Vector2(16, 12 + Assets.Arial.MeasureString(text).Y + Assets.Arial.MeasureString(text).Y * i),
                     onClick = (sender) =>
                     {
                         selectedTile = int.Parse(Regex.Replace(sender.id, "[^0-9]", ""));
@@ -198,7 +260,7 @@ namespace HellTrail.Core.Editor
             {
                 Position = new Vector2(16, panels[5].size.Y - 32),
                 capturesMouse = true,
-                size = Assets.DefaultFont.MeasureString("Save Scene"),
+                size = Assets.Arial.MeasureString("Save Scene"),
                 onClick = (sender) =>
                 {
                     if (!string.IsNullOrEmpty(currentScene))
@@ -212,9 +274,9 @@ namespace HellTrail.Core.Editor
 
             panels[5].Append(new UIBorderedText("Save as New Scene")
             {
-                Position = new Vector2(48 + Assets.DefaultFont.MeasureString("Save Scene").X, panels[5].size.Y - 32),
+                Position = new Vector2(48 + Assets.Arial.MeasureString("Save Scene").X, panels[5].size.Y - 32),
                 capturesMouse = true,
-                size = Assets.DefaultFont.MeasureString("Save as New Scene"),
+                size = Assets.Arial.MeasureString("Save as New Scene"),
                 onClick = (sender) =>
                 {
                     if (!string.IsNullOrEmpty(currentScene))
@@ -227,6 +289,11 @@ namespace HellTrail.Core.Editor
                 }
             });
             LoadScenes();
+
+            foreach(UIPanel panel in panels)
+            {
+                panel.SetFont(Assets.Arial);
+            }
         }
 
         private void LoadScenes()
@@ -236,16 +303,16 @@ namespace HellTrail.Core.Editor
                 panels[5].DisownById(element.id);
             }
 
-            string[] files = Directory.GetFiles(Environment.CurrentDirectory + "\\Worlds\\", "*.scn", SearchOption.AllDirectories);
+            string[] files = Directory.GetFiles(GameOptions.WorldDirectory, "*.scn", SearchOption.AllDirectories);
             for (int i = 0; i < files.Length; i++)
             {
                 string fileNoExtension = Path.GetFileNameWithoutExtension(files[i]);
                 var newText = new UIBorderedText(fileNoExtension)
                 {
                     id = files[i],
-                    size = Assets.DefaultFont.MeasureString(fileNoExtension),
+                    size = Assets.Arial.MeasureString(fileNoExtension),
                     capturesMouse = true,
-                    Position = new Vector2(16 + (16 + (int)Assets.DefaultFont.MeasureString($"BaseScene{i}").X) * (int)(i / 6), 48 + 32 * i - ((32 * 6) * (int)(i/6))),
+                    Position = new Vector2(16 + (16 + (int)Assets.Arial.MeasureString($"BaseScene{i}").X) * (int)(i / 6), 48 + 32 * i - ((32 * 6) * (int)(i/6))),
                     onClick = (sender) =>
                     {
                         currentScene = Path.GetFileNameWithoutExtension(sender.id);
@@ -282,7 +349,7 @@ namespace HellTrail.Core.Editor
         {
             base.Draw(spriteBatch);
 
-            //Renderer.DrawBorderedString(spriteBatch, Assets.DefaultFont, $"{camAnchor}", Input.UIMousePosition, Color.White, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);
+            //Renderer.DrawBorderedString(spriteBatch, Assets.Arial, $"{camAnchor}", Input.UIMousePosition, Color.White, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);
         }
 
         private void AnchorCam(MouseButton button)
@@ -302,6 +369,23 @@ namespace HellTrail.Core.Editor
                 IGameState con = Main.instance.GetGameState();
                 Camera cam = con.GetCamera();
                 cam.centre += (camAnchor-Input.MousePosition)*cam.zoom;
+            }
+        }
+
+        private void InspectEntity(MouseButton button)
+        {
+            Group<Entity> group = Main.instance.activeWorld.context.GetGroup(Matcher<Entity>.AllOf(typeof(Transform)));
+            
+            for(int i = 0; i < group.Count; i++)
+            {
+                Entity e = group[i];
+                Transform transform = e.GetComponent<Transform>();
+                var mpos = Input.MousePosition;
+                if (mpos.X >= transform.position.X - 4 && mpos.X <= transform.position.X + 4
+                    && mpos.Y >= transform.position.Y - 4 && mpos.Y <= transform.position.Y + 4)
+                {
+                    (panels[0].GetElementById("inspectedEntity") as UIBorderedText).text = Entity.Serialize(e);
+                }
             }
         }
 

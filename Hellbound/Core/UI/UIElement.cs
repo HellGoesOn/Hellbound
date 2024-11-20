@@ -27,6 +27,7 @@ namespace HellTrail.Core.UI
         public List<UIElement> children = [];
         public List<UIElement> _childrenToDisown = [];
         public IUIElement parent;
+        public SpriteFont font = Assets.DefaultFont;
         public bool Visible
         {
             get => visible;
@@ -110,6 +111,9 @@ namespace HellTrail.Core.UI
         {
             var newElement = (element as UIElement);
             newElement.parent = this;
+
+            if(font != Assets.DefaultFont)
+                newElement.font = this.font;
             children.Add(newElement);
         }
 
@@ -124,6 +128,13 @@ namespace HellTrail.Core.UI
         }
 
         public void DisownById(string id) => Disown(children.Find(x=>x.id == id));
+
+        public void SetFont(SpriteFont font)
+        {
+            this.font = font;
+            foreach (UIElement child in children)
+            { child.SetFont(font); }
+        }
 
 
         private float rotation;

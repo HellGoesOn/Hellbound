@@ -31,5 +31,7 @@ namespace HellTrail
         public static float OldMusicVolume { get; set; } = 0.05f;
 
         public static Vector2 Resolution => new Vector2(ScreenWidth, ScreenHeight) * resolutionMultiplier;
+
+        public static string WorldDirectory => Environment.CurrentDirectory + "\\Content\\Scenes\\";
     }
 }
