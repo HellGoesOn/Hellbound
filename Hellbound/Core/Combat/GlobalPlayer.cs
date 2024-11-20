@@ -19,9 +19,6 @@ namespace HellTrail.Core.Combat
         public static void Init()
         {
             Unit protag = UnitDefinitions.Get("Doorkun");
-            protag.abilities.Add(new Singularity());
-            protag.abilities.Add(new Masukukaja());
-            protag.abilities.Add(new Masukunda());
 
             Unit sidekick = new()
             {
@@ -39,6 +36,7 @@ namespace HellTrail.Core.Combat
             sidekick.abilities.Add(new Dia());
 
             AddPartyMember(protag);
+            AddPartyMember(sidekick);
             //ActiveParty.Add(sidekick);
         }
 

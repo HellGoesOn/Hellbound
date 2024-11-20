@@ -31,7 +31,7 @@ namespace HellTrail.Core.ECS
                 var cameraMarker = entity.GetComponent<CameraMarker>();
                 World world = Main.instance.activeWorld;
                 Camera cam = world.GetCamera();
-                cam.centre += (transform.position - cam.centre) * cam.speed;
+                cam.centre += (transform.position - cam.centre / cam.zoom) * cam.speed;
                 var minX = Math.Clamp(cam.centre.X, cam.view.Width * 0.5f, world.tileMap.width * 32 - cam.view.Width * 0.5f);
                 var minY = Math.Clamp(cam.centre.Y, cam.view.Height * 0.5f, world.tileMap.height * 32 - cam.view.Height * 0.5f);
 

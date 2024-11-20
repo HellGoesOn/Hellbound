@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace HellTrail.Core.ECS
 {
@@ -41,10 +43,10 @@ namespace HellTrail.Core.ECS
             int id = Context.ComponentId[typeof(T)];
             if (HasComponent<T>())
             {
-                return (T) _components[id];
+                return (T)_components[id];
             }
 
-            throw new Exception($"{this} does not contain {typeof(T)}" );
+            throw new Exception($"{this} does not contain {typeof(T)}");
         }
 
         public bool HasComponent<T>()
@@ -65,7 +67,7 @@ namespace HellTrail.Core.ECS
             return true;
         }
 
-        public bool HasAnyComponent() => _components != null && _components.Any(x=>x != null);
+        public bool HasAnyComponent() => _components != null && _components.Any(x => x != null);
 
         public void AddComponent(IComponent component)
         {
@@ -86,8 +88,7 @@ namespace HellTrail.Core.ECS
             {
                 context.componentPools[id].Push(previousComponent);
                 OnComponentChanged?.Invoke(this, component);
-            }
-            else
+            } else
             {
                 OnComponentAdded?.Invoke(this, component);
             }
@@ -104,7 +105,7 @@ namespace HellTrail.Core.ECS
             enabled = false;
             if (_components != null)
             {
-                for(int i = 0; i < _maxComponents; i++)
+                for (int i = 0; i < _maxComponents; i++)
                 {
                     var component = _components[i];
                     if (component == null)
@@ -139,11 +140,58 @@ namespace HellTrail.Core.ECS
             return context.componentPools[id];
         }
 
-        public IComponent[] GetAllComponents() => _components.Where(x=>x !=null).ToArray();
+        public IComponent[] GetAllComponents() => _components.Where(x => x != null).ToArray();
 
         public override string ToString()
         {
-            return $"Entity_{id} \n{string.Join("\n", GetAllComponents().Select(x=>x.ToString()))}";
+            return $"Entity_{id} \n{string.Join("\n", GetAllComponents().Select(x => x.ToString()))}";
+        }
+
+        public static Entity Deserialize(string text, Context context)
+        {
+            string preSplit = Regex.Match(text, @"{(.*)}", RegexOptions.Singleline).Groups[1].Value.Trim();
+            string[] components = preSplit.Split($";{Environment.NewLine}");
+
+            Entity e = context.Create();
+
+            for (int componentIndex = 0; componentIndex < components.Length; componentIndex++)
+            {
+                e.AddComponent(ComponentIO.DeserializeComponent(components[componentIndex]));
+            }
+
+            return e;
+        }
+
+        public static Entity[] DeserializeAll(string text, Context context)
+        {
+            string[] entityTexts = Regex.Split(text, @$" ;{Environment.NewLine}", RegexOptions.Singleline);
+
+            Entity[] entities = new Entity[entityTexts.Length];
+            for (int i = 0; i < entityTexts.Length; i++)
+            {
+                Deserialize(entityTexts[i], context);
+            }
+
+            return entities;
+        }
+
+
+        /// <summary>
+        /// Returns string containing serialized entity
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public static string Serialize(Entity entity)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"Entity_{entity.id}{Environment.NewLine}\t{{");
+            foreach (IComponent c in entity.GetAllComponents())
+            {
+                sb.AppendLine($"\t\t{ComponentIO.SerializeComponent(c)}");
+            }
+            sb.Append($"\t}} ;");
+            
+            return sb.ToString();
         }
     }
 

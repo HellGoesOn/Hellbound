@@ -30,11 +30,11 @@ namespace HellTrail.Core.Overworld
 
         public TileMap tileMap;
 
-        public World() 
+        public World(int entityLimit = 1000, int width = 30, int height = 30) 
         {
             systems = new Systems();
-            context = new Context(500);
-            tileMap = new TileMap(30, 30);
+            context = new Context(entityLimit);
+            tileMap = new TileMap(width, height);
             GetCamera().centre = new Vector2(tileMap.width, tileMap.height) * TileMap.TILE_SIZE * 0.5f;
 
             systems.AddSystem(new DrawSystem(context));
@@ -54,7 +54,7 @@ namespace HellTrail.Core.Overworld
         {
             systems.Execute(context);
             var debugText = UIManager.GetStateByName("debugState").GetElementById("debugText") as UIBorderedText;
-            debugText.text = $"EC={context.entityCount}, CC={Context._maxComponents}, MPOS={Input.UIMousePosition}, {Color.White}\n";
+            debugText.text = $"EC={context.entityCount}, UIE={UIManager.hoveredElement}\n";
             
             foreach (var trigger in triggers)
             {
@@ -63,47 +63,49 @@ namespace HellTrail.Core.Overworld
 
             triggers.RemoveAll(x => x.activated);
 
-            if (Input.LMBClicked && UIManager.hoveredElement == null)
-            {
-                int x = tileMap.width;
-                int y = tileMap.height;
-                tileMap.ChangeTile(1, (int)Input.MousePosition.X / TileMap.TILE_SIZE, (int)Input.MousePosition.Y / TileMap.TILE_SIZE);
-
-            }
-
             if (Input.RMBClicked)
             {
                 if(context.entityCount < context.entities.Length)
                 {
-                    var entity = context.CopyFrom(Main.instance.prefabContext.entities[0]);
+                    var entity = context.CopyFrom(Main.instance.prefabContext.entities[1]);
                     entity.AddComponent(new Transform(Input.MousePosition));
                     var xx = Main.rand.Next(-100, 101);
                     var yy = Main.rand.Next(-100, 101);
                     entity.AddComponent(new ParticleEmitter
                         (1,
-                        60,
-                        -35,
-                        35,
-                        -40,
+                        25,
+                        -15,
+                        15,
+                        -60,
                         -10,
                         new Vector2(0.01f, 0.01f),
                         [Vector2.One * 2, Vector2.One],
                         [Color.Yellow, Color.Red, Color.Orange, Color.Crimson, Color.Black],
-                        new Vector2(-16, 12),
-                        new Vector2(32, 0)));
+                        new Vector2(-1, -7),
+                        new Vector2(2),
+                        false));
+
+                    entity = context.CopyFrom(Main.instance.prefabContext.entities[1]);
+                    entity.RemoveComponent<TextureComponent>();
+                    entity.AddComponent(new Transform(Input.MousePosition));
+                    xx = Main.rand.Next(-100, 101);
+                    yy = Main.rand.Next(-100, 101);
+                    entity.AddComponent(new ParticleEmitter
+                        (1,
+                        15,
+                        -15,
+                        15,
+                        -60,
+                        -10,
+                        new Vector2(0.01f, 0.01f),
+                        [Vector2.One * 2, Vector2.One],
+                        [Color.Yellow, Color.Red, Color.Orange, Color.Crimson, Color.Black],
+                        new Vector2(-1, -7),
+                        new Vector2(2),
+                        true));
                     //entity.AddComponent(new TestComponent(13, [12, 14, 16], [Vector2.One, Vector2.Zero, Vector2.UnitX], 17));
                     //entity.AddComponent(new Velocity(xx * 0.005f, yy * 0.005f));
                 }    
-            }
-
-            if(Input.PressedKey(Keys.D9))
-            {
-                SaveFile("BaseScene2");
-            }
-            if(Input.PressedKey(Keys.D8))
-            {
-                Main.instance.transitions.Add(new SliceTransition(Renderer.SaveFrame()));
-                LoadFromFile("BaseScene2");
             }
 
             /*
@@ -154,15 +156,11 @@ namespace HellTrail.Core.Overworld
 
             sb.AppendLine();
             List<Entity> entities = context.entities.Where(x => x != null && x.enabled).ToList();
-            for(int i =0; i < entities.Count; i++)
+            for(int i = 0; i < entities.Count; i++)
             {
-                Entity e = entities[i];
-                sb.AppendLine($"Entity_{e.id}{Environment.NewLine}\t{{");
-                foreach(IComponent c in e.GetAllComponents())
-                {
-                    sb.AppendLine($"\t\t{ComponentIO.SerializeComponent(c)}");
-                }
-                sb.Append($"\t}} ;{(i == entities.Count-1 ? "" : Environment.NewLine)}");
+                sb.Append(Entity.Serialize(entities[i]));
+                if (i != entities.Count - 1)
+                    sb.Append(Environment.NewLine);
             }
             File.WriteAllText(savePath + $"\\{path}.scn", sb.ToString());
         }
@@ -176,13 +174,16 @@ namespace HellTrail.Core.Overworld
             string tileText = Regex.Match(text, @$".*\]{Environment.NewLine}{Environment.NewLine}", RegexOptions.Singleline).Value;
 
             string[] strings = tileText.Split("\n", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            string[] numbers = Regex.Replace(strings[0], "[\\[\\]]", "").Trim().Split(" ");
+
+            tileMap = new TileMap(strings.Length, numbers.Length);
 
             if(strings.Length > tileMap.width)
                 throw new Exception("Attempting to load map too big for the current world");
 
             for (int i = 0; i < strings.Length; i++)
             {
-                string[] numbers = Regex.Replace(strings[i], "[\\[\\]]", "").Trim().Split(" ");
+                numbers = Regex.Replace(strings[i], "[\\[\\]]", "").Trim().Split(" ");
 
                 if (numbers.Length > tileMap.height)
                     throw new Exception("Attempting to load map too big for the current world");
@@ -197,19 +198,9 @@ namespace HellTrail.Core.Overworld
 
             context.Armaggedon();
 
-            string[] entities = Regex.Split(text.Substring(tileText.Length), @$" ;{Environment.NewLine}", RegexOptions.Singleline);
-            for(int i = 0; i < entities.Length;i++)
-            {
-                string preSplit = Regex.Match(entities[i], @"{(.*)}", RegexOptions.Singleline).Groups[1].Value.Trim();
-                string[] components = preSplit.Split($";{Environment.NewLine}");
+            // TO-DO: move to different class
 
-                Entity e = context.Create();
-
-                for (int componentIndex = 0; componentIndex < components.Length; componentIndex++)
-                {
-                    e.AddComponent(ComponentIO.DeserializeComponent(components[componentIndex]));
-                }
-            }
+            Entity.DeserializeAll(text.Substring(tileText.Length), context);
         }
 
         public Camera GetCamera() => CameraManager.overworldCamera;

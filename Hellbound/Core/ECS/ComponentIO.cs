@@ -9,8 +9,13 @@ using System.Xml.Linq;
 
 namespace HellTrail.Core.ECS
 {
-    public static class ComponentIO
+    public static partial class ComponentIO
     {
+        /// <summary>
+        /// Returns string containing serialized component
+        /// </summary>
+        /// <param name="component"></param>
+        /// <returns></returns>
         public static string SerializeComponent(IComponent component)
         {
             StringBuilder sb = new StringBuilder();
@@ -54,13 +59,18 @@ namespace HellTrail.Core.ECS
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Returns component built from serialized component string
+        /// </summary>
+        /// <param name="component">Must contain name of component & parameters. Do not use this unless you know what you are doing</param>
+        /// <returns></returns>
         public static IComponent DeserializeComponent(string component)
         {
             string trimmed = component.TrimStart();
 
             string name = Regex.Match(trimmed, $"^[^:{Environment.NewLine}]*", RegexOptions.Singleline).Value;
 
-            var value = Regex.Match(trimmed, @"\[(.*)\]", RegexOptions.Singleline).Groups[1].Value;
+            var value = BetweenSquareBrackets().Match(trimmed).Groups[1].Value;
 
             Type type = Context.ComponentTypeByName[name];
 
@@ -68,7 +78,7 @@ namespace HellTrail.Core.ECS
 
             IComponent instance = (IComponent)RuntimeHelpers.GetUninitializedObject(type);
 
-            MatchCollection coll = Regex.Matches(value, @"\{([^{}]*)\}");
+            MatchCollection coll = BetweenSwirlyBracketsExcludingThem().Matches(value);
 
             string[] values = Regex.Split(value, "; ", RegexOptions.Singleline);
 
@@ -83,7 +93,7 @@ namespace HellTrail.Core.ECS
                     Type elementType = field.FieldType.GetElementType();
 
                     string val = values[i];
-                    string[] elements = Regex.Replace(val, @"[{""}]", "").Split(", ");
+                    string[] elements = BetweenSwirlyBracketsRegex().Replace(val, "").Split(", ");
 
                     if (elements.Length <= 1 && string.IsNullOrWhiteSpace(elements[0]))
                     {
@@ -95,7 +105,8 @@ namespace HellTrail.Core.ECS
 
                     for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
                     {
-                        string noQuotes = Regex.Replace(elements[elementIndex], @"[{""}]", "");
+                        string noQuotes = BetweenSwirlyBracketsRegex().Replace(elements[elementIndex], "");
+
                         if (elementType == typeof(Vector2))
                         {
                             noQuotes.TryVector2(out Vector2 vector);
@@ -113,12 +124,11 @@ namespace HellTrail.Core.ECS
                             arr.SetValue(Convert.ChangeType(elements[elementIndex], elementType), elementIndex);
                         }
                     }
-
-
                     field.SetValue(instance, Convert.ChangeType(arr, fields[i].FieldType));
-                } else
+                } 
+                else
                 {
-                    string noQuotes = Regex.Replace(values[i], @"[{""}]", "");
+                    string noQuotes = BetweenSwirlyBracketsRegex().Replace(values[i], "");
                     if (field.FieldType == typeof(Vector2))
                     {
                         noQuotes.TryVector2(out Vector2 vector);
@@ -138,5 +148,12 @@ namespace HellTrail.Core.ECS
 
             return instance;
         }
+
+        [GeneratedRegex(@"[{""}]")]
+        private static partial Regex BetweenSwirlyBracketsRegex();
+        [GeneratedRegex(@"\{([^{}]*)\}")]
+        private static partial Regex BetweenSwirlyBracketsExcludingThem();
+        [GeneratedRegex(@"\[(.*)\]", RegexOptions.Singleline)]
+        private static partial Regex BetweenSquareBrackets();
     }
 }

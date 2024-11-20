@@ -42,11 +42,14 @@ namespace HellTrail.Core.ECS
             }
         }
 
-        public void ToggleSystem(Type type)
+        public void ToggleSystem(Type type, bool? forceTo = null)
         {
-            _enabledSystems[type] = !_enabledSystems[type];
+            forceTo ??= !_enabledSystems[type];
+            _enabledSystems[type] = (bool)forceTo;
         }
 
         public List<ISystem> GetAll() => _allSystems;
+
+        public bool IsEnabled(Type type) => _enabledSystems.Count > 0 && _enabledSystems[type];
     }
 }

@@ -17,11 +17,96 @@ namespace HellTrail
 
         static KeyboardState _oldKBState;
 
+        public static KeyEventHandler OnKeyPressed;
+        public static KeyEventHandler OnKeyHeld;
+        public static KeyEventHandler OnKeyReleased;
+
+        public static MouseEventHandler OnMousePressed;
+        public static MouseEventHandler OnMouseHeld;
+        public static MouseEventHandler OnMouseReleased;
+        public static MouseWheelEventHandler OnMouseWheel;
+
         public static void Update()
         {
+            Keys[] keys = Keyboard.GetState().GetPressedKeys();
+            Keys[] oldKeys = _oldKBState.GetPressedKeys();
+            MouseState state = Mouse.GetState();
+
+            HandleMouse(state);
+
+            for (int i = 0; i < keys.Length; i++)
+            {
+                if (oldKeys.Length <= 0 || !oldKeys.Contains(keys[i]))
+                    OnKeyPressed?.Invoke(keys[i]);
+            }
+
+            for (int i = 0; i < keys.Length; i++)
+            {
+                OnKeyHeld?.Invoke(keys[i]);
+            }
+
+            for (int i = 0; i < oldKeys.Length; i++)
+            {
+                if (keys.Length <= 0 || !keys.Contains(oldKeys[i]))
+                    OnKeyReleased?.Invoke(oldKeys[i]);
+            }
+
             //_oldPos = ScaledMousePos;
             _oldMBState = Mouse.GetState();
             _oldKBState = Keyboard.GetState();
+        }
+
+        private static void HandleMouse(MouseState state)
+        {
+            if(state.ScrollWheelValue != _oldMBState.ScrollWheelValue)
+            {
+                OnMouseWheel?.Invoke(state.ScrollWheelValue, _oldMBState.ScrollWheelValue);
+            }
+
+            if (state.LeftButton == ButtonState.Pressed && _oldMBState.LeftButton == ButtonState.Released)
+            {
+                OnMousePressed?.Invoke(MouseButton.Left);
+            }
+
+            if (state.RightButton == ButtonState.Pressed && _oldMBState.RightButton == ButtonState.Released)
+            {
+                OnMousePressed?.Invoke(MouseButton.Right);
+            }
+
+            if (state.MiddleButton == ButtonState.Pressed && _oldMBState.MiddleButton == ButtonState.Released)
+            {
+                OnMousePressed?.Invoke(MouseButton.Middle);
+            }
+
+            if(state.LeftButton == ButtonState.Pressed)
+            {
+                OnMouseHeld?.Invoke(MouseButton.Left);
+            }
+
+            if(state.RightButton == ButtonState.Pressed)
+            {  
+                OnMouseHeld?.Invoke(MouseButton.Right);
+            }
+
+            if(state.MiddleButton == ButtonState.Pressed)
+            {
+                OnMouseHeld?.Invoke(MouseButton.Middle);
+            }
+
+            if (state.LeftButton == ButtonState.Released && _oldMBState.LeftButton == ButtonState.Pressed)
+            {
+                OnMouseReleased?.Invoke(MouseButton.Left);
+            }
+
+            if (state.RightButton == ButtonState.Released && _oldMBState.RightButton == ButtonState.Pressed)
+            {
+                OnMouseReleased?.Invoke(MouseButton.Right);
+            }
+
+            if (state.MiddleButton == ButtonState.Released && _oldMBState.MiddleButton == ButtonState.Pressed)
+            {
+                OnMouseReleased?.Invoke(MouseButton.Middle);
+            }
         }
 
         public static bool IsWindowActive => Main.instance.IsActive;
@@ -81,5 +166,17 @@ namespace HellTrail
         public static bool RMBReleased => Mouse.GetState().RightButton == ButtonState.Released && _oldMBState.RightButton == ButtonState.Pressed && IsWindowActive;
 
         public static bool RMBHeld => Mouse.GetState().RightButton == ButtonState.Pressed && IsWindowActive;
+    }
+
+    public delegate void MouseEventHandler(MouseButton state);
+    public delegate void MouseWheelEventHandler(int newValue, int oldValue);
+
+    public delegate void KeyEventHandler(Keys key);
+
+    public enum MouseButton
+    {
+        Left,
+        Middle,
+        Right
     }
 }

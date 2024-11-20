@@ -1,5 +1,6 @@
 ﻿using HellTrail.Core.ECS.Components;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using Treeline.Core.Graphics;
 
 namespace HellTrail.Core.ECS
 {
-    public class ParticleEmissionSystem : IExecute
+    public class ParticleEmissionSystem : IDraw
     {
         readonly Group<Entity> _group;
 
@@ -18,7 +19,7 @@ namespace HellTrail.Core.ECS
             _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(Transform), typeof(ParticleEmitter)));
         }
 
-        public void Execute(Context context)
+        public void Draw(Context context, SpriteBatch spriteBatch)
         {
             var entities = _group.Entities;
 
@@ -36,8 +37,8 @@ namespace HellTrail.Core.ECS
                 var velocity = new Vector2(x, y);
                 Vector2 scale = emitter.scales[Main.rand.Next(emitter.scales.Length)];
 
-                x = Main.rand.Next((int)emitter.randomOffset.X+1);
-                y = Main.rand.Next((int)emitter.randomOffset.Y+1);
+                x = Main.rand.Next((int)emitter.randomOffset.X + 1);
+                y = Main.rand.Next((int)emitter.randomOffset.Y + 1);
 
                 Vector2 offset = emitter.offset + new Vector2(x, y);
 
@@ -48,7 +49,8 @@ namespace HellTrail.Core.ECS
                         part.color = clr;
                         part.scale = scale;
                         part.diesToGravity = false;
-                    } 
+                        part.castShadow = true;
+                    }
                 else
                     for (int j = 0; j < emitter.amountPerFrame; j++)
                     {
@@ -56,6 +58,7 @@ namespace HellTrail.Core.ECS
                         part.color = clr;
                         part.scale = scale;
                         part.diesToGravity = false;
+                        part.castShadow = true;
                     }
             }
         }

@@ -62,22 +62,30 @@ namespace HellTrail
             gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
             gdm.ApplyChanges();
             GameStateManager.State = GameState.Overworld;
-            SoundEngine.StartMusic("School Days", true);
+            SoundEngine.StartMusic("Relax", true);
 
             //GetGameState().GetCamera().centre = GlobalPlayer.ActiveParty[0].position;
 
-            var e = prefabContext.Create();
-            e.AddComponent(new TextureComponent("Slime3")
+            var slime = prefabContext.Create();
+            slime.AddComponent(new TextureComponent("Slime3")
             {
                 origin = new Vector2(16),
                 scale = new Vector2(1)
             });
-            e.AddComponent(new Transform(0, 0));
-            e.AddComponent(new Obesity(-0.02f));
-            e.AddComponent(new Velocity(0, 0));
-            e.AddComponent(new CreateBattleOnContact(["Slime", "Slime"], null));
-            e.AddComponent(new CollisionBox(16, 10, new Vector2(8, -4)));
+            slime.AddComponent(new Transform(0, 0));
+            slime.AddComponent(new Obesity(-0.02f));
+            slime.AddComponent(new Velocity(0, 0));
+            slime.AddComponent(new CreateBattleOnContact(["Slime", "Slime"], null));
+            slime.AddComponent(new CollisionBox(16, 10, new Vector2(8, -4)));
 
+            var torch = prefabContext.Create();
+            torch.AddComponent(new TextureComponent("Torch")
+            {
+                origin = new Vector2(6),
+                scale = new Vector2(1)
+            });
+            torch.AddComponent(new Transform(0, 0));
+            torch.AddComponent(new Velocity(0, 0));
         }
 
         protected override void LoadContent()
@@ -85,6 +93,7 @@ namespace HellTrail
             // Load textures, sounds, and so on in here...
             base.LoadContent();
             Assets.Load(this);
+            TileMap.Initialize();
             Renderer.Load(GraphicsDevice);
             CameraManager.Initialize();
             Context.InitializeAll();
@@ -114,8 +123,6 @@ namespace HellTrail
                     {
                         _.CurrentPage.textColor = Color.Transparent;
                         UIManager.dialogueUI.dialoguePanel.Position = new Vector2(32, Renderer.UIPreferedHeight - 180 - 16);
-
-                        activeWorld.LoadFromFile("BaseScene2");
                     }
                 }
         };
@@ -227,6 +234,7 @@ namespace HellTrail
             base.UnloadContent();
 
             Assets.Unload();
+            TileMap.Unload();
             Renderer.Unload();
             Context.Unload();
         }

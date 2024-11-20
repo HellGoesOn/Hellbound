@@ -163,7 +163,7 @@ namespace HellTrail.Core.ECS
             List<Entity> entityList = entities.Where(x => x != null && x.enabled).ToList();
             for(int i = 0; i < entityList.Count; i++)
             {
-                Destroy(entityList[i]);
+                Destroy(entityList[i].id, true);
             }
             /*
             for (int i = 0; i < oldEntityCount; i++)
@@ -173,7 +173,7 @@ namespace HellTrail.Core.ECS
             }*/
         }
 
-        public void Destroy(int id)
+        public void Destroy(int id, bool doNotPool = false)
         {
             Entity e = entities[id];
             if (!e.enabled)
@@ -183,9 +183,14 @@ namespace HellTrail.Core.ECS
             {
                 group.Value.HandleEntity(e);
             }
+
             e.Destroy(this);
+
             activeEntityIds.Pop();
-            _entityPool.Push(e);
+
+            if(!doNotPool)
+                _entityPool.Push(e);
+
             entityCount--;
         }
 

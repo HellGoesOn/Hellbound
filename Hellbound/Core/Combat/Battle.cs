@@ -246,7 +246,6 @@ namespace HellTrail.Core.Combat
         {
             if(Input.PressedKey([Keys.E, Keys.Enter]) && UIManager.combatUI.levelUpElements.Count <= 0)
             {
-                SoundEngine.StartMusic("ChangingSeasons", true);
                 GameStateManager.SetState(GameState.Overworld, new SliceTransition(Renderer.SaveFrame()));
                 OnBattleEnd?.Invoke();
                 Main.instance.battle = null;

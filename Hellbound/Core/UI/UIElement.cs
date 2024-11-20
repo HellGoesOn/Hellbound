@@ -49,8 +49,8 @@ namespace HellTrail.Core.UI
             if (capturesMouse)
             {
                 var mpos = Input.UIMousePosition;
-                if (mpos.X >= position.X && mpos.X <= position.X + size.X
-                    && mpos.Y >= position.Y && mpos.Y <= position.Y + size.Y)
+                if (mpos.X >= Position.X && mpos.X <= Position.X + size.X
+                    && mpos.Y >= Position.Y && mpos.Y <= Position.Y + size.Y)
                 {
                     isMouseHovering = true;
                     UIManager.hoveredElement = this;
