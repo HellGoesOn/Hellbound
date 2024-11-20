@@ -24,7 +24,7 @@ namespace HellTrail.Core.Editor
         private int selectedTile;
         public UIPanel[] panels;
 
-        bool isInspectingEntity;
+        Entity inspectedEntity;
         string currentScene = "";
         Vector2 camAnchor;
 
@@ -124,11 +124,18 @@ namespace HellTrail.Core.Editor
                 {
                     try
                     {
-                        Entity e = Entity.Deserialize((panels[0].GetElementById("inspectedEntity") as UIBorderedText).text, Main.instance.activeWorld.context);
+                        Context con = Main.instance.activeWorld.context;
+                        var entityText = (panels[0].GetElementById("inspectedEntity") as UIBorderedText);
+                        string[] text = entityText.text.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
 
-                        if (e != null)
+                        for (int i = 0; i < text.Length; i++) 
                         {
-                            var yes = (panels[0].GetElementById("succesful") as UIBorderedText);
+                            inspectedEntity.AddComponent(ComponentIO.DeserializeComponent(text[i]));
+                        }
+
+                        if (inspectedEntity != null)
+                        {
+                            var yes = (panels[0].GetElementById("successful") as UIBorderedText);
                             yes.text = "Successful!";
                             yes.color = Color.Lime;
                         }
@@ -374,6 +381,9 @@ namespace HellTrail.Core.Editor
 
         private void InspectEntity(MouseButton button)
         {
+            if (button != MouseButton.Left)
+                return;
+
             Group<Entity> group = Main.instance.activeWorld.context.GetGroup(Matcher<Entity>.AllOf(typeof(Transform)));
             
             for(int i = 0; i < group.Count; i++)
@@ -384,7 +394,13 @@ namespace HellTrail.Core.Editor
                 if (mpos.X >= transform.position.X - 4 && mpos.X <= transform.position.X + 4
                     && mpos.Y >= transform.position.Y - 4 && mpos.Y <= transform.position.Y + 4)
                 {
-                    (panels[0].GetElementById("inspectedEntity") as UIBorderedText).text = Entity.Serialize(e);
+                    inspectedEntity = e;
+                    StringBuilder sb = new StringBuilder();
+                    foreach(IComponent c in e.GetAllComponents())
+                    {
+                        sb.AppendLine(ComponentIO.SerializeComponent(c));
+                    }
+                    (panels[0].GetElementById("inspectedEntity") as UIBorderedText).text = sb.ToString();
                 }
             }
         }

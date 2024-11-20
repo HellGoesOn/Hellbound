@@ -151,6 +151,14 @@ namespace HellTrail.Core.ECS
         {
             string preSplit = Regex.Match(text, @"{(.*)}", RegexOptions.Singleline).Groups[1].Value.Trim();
             string[] components = preSplit.Split($";{Environment.NewLine}");
+            string entityLine = Regex.Match(text, $"Entity_.*[^{Environment.NewLine}]", RegexOptions.Multiline).Value;
+            string id = Regex.Replace(entityLine, "[^0-9]", "");
+
+            Entity checkExisting = context.entities[int.Parse(id)];
+            if (checkExisting != null && checkExisting.enabled)
+            {
+                context.Destroy(checkExisting.id);
+            }
 
             Entity e = context.Create();
 
