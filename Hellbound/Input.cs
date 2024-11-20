@@ -26,6 +26,8 @@ namespace HellTrail
         public static MouseEventHandler OnMouseReleased;
         public static MouseWheelEventHandler OnMouseWheel;
 
+        public static bool isTyping;
+
         public static void Update()
         {
             Keys[] keys = Keyboard.GetState().GetPressedKeys();

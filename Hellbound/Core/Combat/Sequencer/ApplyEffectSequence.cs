@@ -42,7 +42,7 @@ namespace HellTrail.Core.Combat.Sequencer
                 else
                     target.AddReplaceEffect(effect);
 
-                DamageNumber damageNumber = new(DamageType.Normal, $"+{effect.name}", (target.position + new Vector2(0, 12)) * 4);
+                DamageNumber damageNumber = new(DamageType.Normal, $"+{effect.name}", (target.position + new Vector2(0, 12)));
                 battle.damageNumbers.Add(damageNumber);
             }
         }

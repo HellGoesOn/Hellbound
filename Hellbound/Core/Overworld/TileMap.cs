@@ -69,7 +69,7 @@ namespace HellTrail.Core.Overworld
         public void BakeMap()
         {
             needsUpdate = false;
-            var tileTexture = Assets.Textures["Tileset"];
+            var tileTexture = Assets.GetTexture("Tileset");
             var gd = Main.instance.GraphicsDevice;
             if (texture == null)
             {

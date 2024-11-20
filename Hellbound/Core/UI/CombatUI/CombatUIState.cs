@@ -48,15 +48,15 @@ namespace HellTrail.Core.UI.CombatUI
                 //fillColor = Color.White * 0f,
                 //outlineColor = Color.White * 0f,
                 size = new Vector2(500, 140),
-                Position = new Vector2(Renderer.UIPreferedWidth * 0.5f - 200, Renderer.UIPreferedHeight - 150)
             };
+            teamStatus.SetPosition(Renderer.UIPreferedWidth * 0.5f - 200, Renderer.UIPreferedHeight - 150);
             teamNamesText = new("");
             teamHPText = new("");
             teamSPText = new("");
 
-            teamNamesText.Position = new Vector2(16);
-            teamHPText.Position = new Vector2(200, 16);
-            teamSPText.Position = new Vector2(360, 16);
+            teamNamesText.SetPosition(new Vector2(16));
+            teamHPText.SetPosition(new Vector2(200, 16));
+            teamSPText.SetPosition(new Vector2(360, 16));
 
             teamStatus.Append(teamNamesText);
             teamStatus.Append(teamHPText);
@@ -75,24 +75,24 @@ namespace HellTrail.Core.UI.CombatUI
             skillPanel = new UIPanel()
             {
                 size = new Vector2(400, 140),
-                Position = new Vector2(16, Renderer.UIPreferedHeight - 150)
             };
+            skillPanel.SetPosition(16, Renderer.UIPreferedHeight - 150);
 
             skillDescription = new UIBorderedText("");
             skillCost = new UIBorderedText("");
-            skillCost.Position = new Vector2(12, 100);
-            skillDescription.Position = new Vector2(12);
+            skillCost.SetPosition(new Vector2(12, 100));
+            skillDescription.SetPosition(new Vector2(12));
             skillPanel.Append(skillDescription);
             skillPanel.Append(skillCost);
 
             var panel = new UIPanel()
             {
                 size = new Vector2(280, 120),
-                Position = new Vector2(Renderer.UIPreferedWidth-284, Renderer.UIPreferedHeight - 140),
             };
+            panel.SetPosition(Renderer.UIPreferedWidth - 284, Renderer.UIPreferedHeight - 140);
             const string tutorialTex = "[W][A][S][D] Navigate\n[E] Confirm\n[Q] Cancel";
             var tutorialText = new UIBorderedText(tutorialTex);
-            tutorialText.Position = new Vector2(16);
+            tutorialText.SetPosition(new Vector2(16));
             panel.Append(tutorialText);
 
             this.Append(panel);
@@ -111,12 +111,12 @@ namespace HellTrail.Core.UI.CombatUI
             var textElement = new UIBorderedText(text)
             {
                 font = Assets.CombatMenuFont,
-                Position = oneMorePanel.size * 0.5f,
                 origin = Assets.CombatMenuFont.MeasureString(text) * 0.5f
             };
+            textElement.SetPosition(oneMorePanel.size * 0.5f);
 
             basePosition = new Vector2(-oneMorePanel.size.X * 2, Renderer.UIPreferedHeight * 0.5f - oneMorePanel.size.Y * 0.5f);
-            oneMorePanel.Position = basePosition;
+            oneMorePanel.SetPosition(basePosition);
             oneMorePanel.Append(textElement);
 
             Append(oneMorePanel);
@@ -179,8 +179,8 @@ namespace HellTrail.Core.UI.CombatUI
                 var textSize = Assets.DefaultFont.MeasureString(usedAbilityText.text);
                 usedAbilityPanel.size = new Vector2(4 + textSize.X * 1.5f, textSize.Y * 2);
                 usedAbilityText.origin = Assets.DefaultFont.MeasureString(usedAbilityText.text) * 0.5f;
-                usedAbilityText.Position = usedAbilityPanel.size * 0.5f;
-                usedAbilityPanel.Position = new Vector2(Renderer.UIPreferedWidth * 0.5f - usedAbilityPanel.size.X * 0.5f, 80);
+                usedAbilityText.SetPosition(usedAbilityPanel.size * 0.5f);
+                usedAbilityPanel.SetPosition(new Vector2(Renderer.UIPreferedWidth * 0.5f - usedAbilityPanel.size.X * 0.5f, 80));
 
                 if (showUsedAbilityTime <= 0)
                     usedAbilityPanel.Visible = false;
@@ -190,17 +190,17 @@ namespace HellTrail.Core.UI.CombatUI
             {
                 float xMin = 0;
                 float xMax = Renderer.UIPreferedWidth;
-                float rescaled = -1 + 2 * (oneMorePanel.Position.X - xMin) / (xMax - xMin);
+                float rescaled = -1 + 2 * (oneMorePanel.GetPosition().X - xMin) / (xMax - xMin);
 
                 float speed = (rescaled*rescaled)*45+acceleration;
 
-                if(oneMorePanel.Position.X > xMax * 0.5f - 120)
+                if(oneMorePanel.GetPosition().X > xMax * 0.5f - 120)
                     acceleration *= 1.2f;
-                oneMorePanel.Position += new Vector2(speed, 0);
+                oneMorePanel.SetPosition(oneMorePanel.GetPosition() + new Vector2(speed, 0));
 
-                if (oneMorePanel.Position.X >= Renderer.UIPreferedWidth)
+                if (oneMorePanel.GetPosition().X >= Renderer.UIPreferedWidth)
                 {
-                    oneMorePanel.Position = basePosition;
+                    oneMorePanel.SetPosition(basePosition);
                     acceleration = 1f;
                     isRunning = false;
                 }
@@ -244,8 +244,8 @@ namespace HellTrail.Core.UI.CombatUI
                     var targets = activeBattle.TryGetTargets(activeBattle.selectedAbility);
                     if (targets.Contains(unit))
                     {
-                        var position = unit.position * 4;
-                        spriteBatch.Draw(Assets.Textures["Cursor3"], new Vector2(position.X - 40, position.Y) + sway, null, Color.White, 0f, new Vector2(10, 0), 3f, SpriteEffects.None, 0f);
+                        var position = unit.position * Renderer.UIMultiplierX;
+                        spriteBatch.Draw(Assets.GetTexture("Cursor3"), new Vector2(position.X - 40, position.Y) + sway, null, Color.White, 0f, new Vector2(10, 0), 3f, SpriteEffects.None, 0f);
                     }
                 }
             }
@@ -265,8 +265,8 @@ namespace HellTrail.Core.UI.CombatUI
 
                         var boxPos = menu.position;
                         Vector2 boxSize = menu.GetSize;
-                        spriteBatch.Draw(Assets.Textures["Pixel"], boxPos - new Vector2(2), new Rectangle(0, 0, (int)boxSize.X + 16, (int)boxSize.Y * menu.Count + 16), Color.White);
-                        spriteBatch.Draw(Assets.Textures["Pixel"], boxPos, new Rectangle(0, 0, (int)boxSize.X + 12, (int)boxSize.Y * menu.Count + 12), Color.DarkBlue);
+                        spriteBatch.Draw(Assets.GetTexture("Pixel"), boxPos - new Vector2(2), new Rectangle(0, 0, (int)boxSize.X + 16, (int)boxSize.Y * menu.Count + 16), Color.White);
+                        spriteBatch.Draw(Assets.GetTexture("Pixel"), boxPos, new Rectangle(0, 0, (int)boxSize.X + 12, (int)boxSize.Y * menu.Count + 12), Color.DarkBlue);
                         for (int i = 0; i < menu.items.Count; i++)
                         {
                             var option = menu[i];
@@ -276,7 +276,7 @@ namespace HellTrail.Core.UI.CombatUI
                             Color clr = option.color != Color.White ? option.color : menu.selectedOption == i ? Color.White : Color.Gray;
                             if (menu.selectedOption == i && menu.active)
                             {
-                                spriteBatch.Draw(Assets.Textures["Cursor3"], new Vector2(position.X - 40, 6 + menu.position.Y + menu.GetSize.Y * option.index) + sway, null, Color.White, 0f, new Vector2(10, 0), 3f, SpriteEffects.None, 0f);
+                                spriteBatch.Draw(Assets.GetTexture("Cursor3"), new Vector2(position.X - 40, 6 + menu.position.Y + menu.GetSize.Y * option.index) + sway, null, Color.White, 0f, new Vector2(10, 0), 3f, SpriteEffects.None, 0f);
                             }
 
                             spriteBatch.DrawBorderedString(Assets.CombatMenuFont, option.name, menu.position + new Vector2(8, 4 + menu.GetSize.Y * option.index), clr, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);

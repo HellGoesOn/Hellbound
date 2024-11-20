@@ -60,6 +60,7 @@ namespace HellTrail.Core.UI
             var newChild = (UIElement)child;
             newChild.parent = this;
             children.Add(newChild);
+            newChild.RecalcPosition();
         }
 
         public void Disown(IUIElement child)

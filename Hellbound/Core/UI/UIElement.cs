@@ -22,8 +22,10 @@ namespace HellTrail.Core.UI
         public bool capturesMouse;
         public bool isMouseHovering;
         public Vector2 size;
+        public Vector2 scale = Vector2.One;
         public UIEventHandler onUpdate;
         public UIEventHandler onClick;
+        public UIEventHandler onLoseParent;
         public List<UIElement> children = [];
         public List<UIElement> _childrenToDisown = [];
         public IUIElement parent;
@@ -50,14 +52,13 @@ namespace HellTrail.Core.UI
             if (capturesMouse)
             {
                 var mpos = Input.UIMousePosition;
-                if (mpos.X >= Position.X && mpos.X <= Position.X + size.X
-                    && mpos.Y >= Position.Y && mpos.Y <= Position.Y + size.Y)
+                if (mpos.X >= GetPosition().X && mpos.X <= GetPosition().X + size.X*scale.X
+                    && mpos.Y >= GetPosition().Y && mpos.Y <= GetPosition().Y + size.Y * scale.Y)
                 {
                     isMouseHovering = true;
                     UIManager.hoveredElement = this;
                 }
             }
-
 
             foreach (UIElement child in children)
                 child.Update();
@@ -115,6 +116,8 @@ namespace HellTrail.Core.UI
             if(font != Assets.DefaultFont)
                 newElement.font = this.font;
             children.Add(newElement);
+
+            RecalcPosition();
         }
 
         public void Disown(IUIElement element)
@@ -123,6 +126,7 @@ namespace HellTrail.Core.UI
                 return;
 
             var killedElement = (element as UIElement);
+            killedElement.onLoseParent?.Invoke(killedElement);
             killedElement.parent = null;
             _childrenToDisown.Add(killedElement); 
         }
@@ -152,25 +156,44 @@ namespace HellTrail.Core.UI
             set => rotation = value;
         }
 
-        public void SetPosition(Vector2 setPosition)
+        public UIElement SetPosition(Vector2 setPosition)
         {
-            this.Position = setPosition;
+            position = setPosition;
+            RecalcPosition();
+
+            return this;
         }
+
+        public void RecalcPosition()
+        {
+            if (parent is UIElement element)
+                _positionAnchor = position + element._positionAnchor;
+            else
+                _positionAnchor = position;
+
+            foreach (UIElement child in children)
+            {
+                child.RecalcPosition();
+            }
+
+        }
+
+        public UIElement SetPosition(float x, float y)
+        {
+            SetPosition(new Vector2(x, y));
+            return this;
+        }
+
+        public UIElement SetPosition(float value)
+        {
+            SetPosition(new Vector2(value));
+            return this;
+        }
+
+        public Vector2 GetPosition() => _positionAnchor;
 
         private Vector2 position;
-        public Vector2 Position
-        {
-            get
-            { 
-                if(parent is UIElement element)
-                {
-                    return element.Position + position;
-                }
-
-                return position;
-            }
-            set => position = value;
-        }
+        private Vector2 _positionAnchor;
 
         public UIElement GetElement(Predicate<UIElement> predicate)
         {

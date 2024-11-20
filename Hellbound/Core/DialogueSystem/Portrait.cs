@@ -23,7 +23,7 @@ namespace HellTrail.Core.DialogueSystem
             if (portrait != null && portrait.Count > 0)
             {
                 foreach(Portrait portrait in portrait)
-                spriteBatch.Draw(portrait.texture, this.Position + portrait.offset, portrait.frame.AsRect, portrait.tint, portrait.rotation, portrait.origin, portrait.scale, SpriteEffects.None, 0);
+                spriteBatch.Draw(portrait.texture, this.GetPosition() + portrait.offset, portrait.frame.AsRect, portrait.tint, portrait.rotation, portrait.origin, portrait.scale, SpriteEffects.None, 0);
             }
         }
     }
@@ -42,7 +42,7 @@ namespace HellTrail.Core.DialogueSystem
         {
             rotation = 0f;
             tint = Color.White;
-            this.texture = Assets.Textures[texture];
+            this.texture = Assets.GetTexture(texture);
             this.frame = frame;
             scale = Vector2.One;
             origin = new Vector2(frame.width, frame.height) * 0.5f;

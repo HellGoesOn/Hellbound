@@ -99,7 +99,7 @@ namespace HellTrail.Core.ECS
         {
             if (!_entityPool.TryPeek(out Entity entity))
             {
-                entity = new(entityCount, _maxComponents, this)
+                entity = new(entityCount, _maxComponents)
                 {
                     enabled = true
                 };

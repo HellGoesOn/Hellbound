@@ -41,16 +41,17 @@ namespace HellTrail.Core.Editor
                 panels[i] = new()
                 {
                     size = new Vector2(PANEL_WIDTH, PANEL_HEIGHT),
-                    Position = new Vector2(Renderer.UIPreferedWidth * 0.5f - PANEL_WIDTH * 0.5f, Renderer.UIPreferedHeight),
                 };
+
+                panels[i].SetPosition(new Vector2(Renderer.UIPreferedWidth * 0.5f - PANEL_WIDTH * 0.5f, Renderer.UIPreferedHeight));
 
                 UIPanel numPanel = new UIPanel()
                 {
                     id = $"numPanel{i}",
                     size = new Vector2(32),
-                    Position = new Vector2(34 + 34 * i, Renderer.UIPreferedHeight - 34),
                     capturesMouse = true
                 };
+                numPanel.SetPosition(new Vector2(34 + 34 * i, Renderer.UIPreferedHeight - 34));
 
                 numPanel.onClick = (sender) =>
                 {
@@ -61,9 +62,9 @@ namespace HellTrail.Core.Editor
 
                 UIBorderedText numText = new UIBorderedText($"{i + 1}")
                 {
-                    Position = new Vector2(16),
                     origin = Assets.Arial.MeasureString($"{i + 1}") * 0.5f
                 };
+                numText.SetPosition(16);
 
                 numPanel.Append(numText);
                 Append(numPanel);
@@ -73,25 +74,18 @@ namespace HellTrail.Core.Editor
 
             UIBorderedText entityInspectorTitle = new UIBorderedText("Entity Inspector")
             {
-                Position = new Vector2(32, 12)
             };
+            entityInspectorTitle.SetPosition(32, 12);
             UIBorderedText systemInspectorTitle = new UIBorderedText("System Inspector")
             {
-                Position = new Vector2(64, 12)
             };
+            systemInspectorTitle.SetPosition(64, 12);
 
             panels[0].Append(entityInspectorTitle);
-            panels[0].Append(new UIBorderedText("null")
-            {
-                Position = new Vector2(32, 48),
-                lineBreak = 64,
-                id = "inspectedEntity"
-            });
 
             panels[0].Append(new UICheckBox("Inspect Entities")
             {
                 id = "startInspectEntities",
-                Position = new Vector2(16, 16),
                 drawsPanel = true,
                 onClick = (sender) =>
                 {
@@ -101,25 +95,22 @@ namespace HellTrail.Core.Editor
                     }
                     else
                     {
-                        (panels[0].GetElementById("inspectedEntity") as UIBorderedText).text = "null";
                         Input.OnMousePressed -= InspectEntity;
                     }
                 }
 
-            });
+            }.SetPosition(16));
 
             panels[0].Append(new UIBorderedText("")
             {
                 id = "successful",
-                Position = new Vector2(96 + Assets.Arial.MeasureString("Inspect Entities").X + Assets.Arial.MeasureString("Apply changes").X, 16)
-            });
+            }.SetPosition(96 + Assets.Arial.MeasureString("Inspect Entities").X + Assets.Arial.MeasureString("Apply changes").X, 16));
 
             panels[0].Append(new UIBorderedText("Apply changes")
             {
                 id = "trySerialize",
                 size = Assets.Arial.MeasureString("Apply changes"),
                 capturesMouse = true,
-                Position = new Vector2(48 + Assets.Arial.MeasureString("Inspect Entities").X, 12),
                 onClick = (sender) =>
                 {
                     try
@@ -147,7 +138,7 @@ namespace HellTrail.Core.Editor
                         no.color = Color.Red;
                     }
                 }
-            });
+            }.SetPosition(48 + Assets.Arial.MeasureString("Inspect Entities").X, 12));
 
             panels[1].Append(systemInspectorTitle);
 
@@ -163,9 +154,9 @@ namespace HellTrail.Core.Editor
 
                 UICheckBox box = new($"Toggle {type.Name}")
                 {
-                    Position = new Vector2(16 + off, 48),
                     isChecked = con.systems.IsEnabled(type)
                 };
+                box.SetPosition(16 + off, 48);
                 box.color = box.isChecked ? Color.Lime : Color.Red;
                 box.onClick = (sender) =>
                 {
@@ -179,7 +170,6 @@ namespace HellTrail.Core.Editor
 
             UICheckBox toggleAll = new UICheckBox("Toggle All")
             {
-                Position = new Vector2(30, 16),
                 drawsPanel = true,
                 onClick = (sender) =>
                 {
@@ -195,11 +185,11 @@ namespace HellTrail.Core.Editor
                     }
                 }
             };
+            toggleAll.SetPosition(new Vector2(30, 16));
 
             UICheckBox enableALl = new UICheckBox("Enable All")
             {
                 id = "enableAll",
-                Position = new Vector2(12, 16),
                 drawsPanel = true,
                 onClick = (sender) =>
                 {
@@ -213,18 +203,17 @@ namespace HellTrail.Core.Editor
                     }
                 }
             };
+            enableALl.SetPosition(12, 16);
 
             panels[1].Append(toggleAll);
             panels[1].Append(enableALl);
 
             panels[2].Append(new UIBorderedText("Tile Placer")
             {
-                Position = new Vector2(32, 12)
-            });
+            }.SetPosition(32, 12));
 
             UICheckBox isPlacingTiles = new UICheckBox("Activate tile placement")
             {
-                Position = new Vector2(12, 16),
                 panelColor = Color.DarkBlue,
                 drawsPanel = true,
                 onClick = (sender) =>
@@ -239,6 +228,7 @@ namespace HellTrail.Core.Editor
                     }
                 }
             };
+            isPlacingTiles.SetPosition(12, 16);
 
             for (int i = 0; i < TileMap.Tiles.Count; i++)
             {
@@ -247,25 +237,23 @@ namespace HellTrail.Core.Editor
                 {
                     id = $"tileId={i}",
                     size = Assets.Arial.MeasureString(text),
-                    Position = new Vector2(16, 12 + Assets.Arial.MeasureString(text).Y + Assets.Arial.MeasureString(text).Y * i),
                     onClick = (sender) =>
                     {
                         selectedTile = int.Parse(Regex.Replace(sender.id, "[^0-9]", ""));
                     },
                     capturesMouse = true
                 };
+                tileText.SetPosition(new Vector2(16, 12 + Assets.Arial.MeasureString(text).Y + Assets.Arial.MeasureString(text).Y * i));
                 panels[2].Append(tileText);
             }
             panels[2].Append(isPlacingTiles);
 
             panels[5].Append(new UIBorderedText("Scenes")
             {
-                Position = new Vector2(16, 12)
-            });
+            }.SetPosition(16, 12));
 
             panels[5].Append(new UIBorderedText("Save Scene")
             {
-                Position = new Vector2(16, panels[5].size.Y - 32),
                 capturesMouse = true,
                 size = Assets.Arial.MeasureString("Save Scene"),
                 onClick = (sender) =>
@@ -277,11 +265,10 @@ namespace HellTrail.Core.Editor
                         LoadScenes();
                     }
                 }
-            });
+            }.SetPosition(16, panels[5].size.Y - 32));
 
             panels[5].Append(new UIBorderedText("Save as New Scene")
             {
-                Position = new Vector2(48 + Assets.Arial.MeasureString("Save Scene").X, panels[5].size.Y - 32),
                 capturesMouse = true,
                 size = Assets.Arial.MeasureString("Save as New Scene"),
                 onClick = (sender) =>
@@ -294,7 +281,7 @@ namespace HellTrail.Core.Editor
                         LoadScenes();
                     }
                 }
-            });
+            }.SetPosition(48 + Assets.Arial.MeasureString("Save Scene").X, panels[5].size.Y - 32));
             LoadScenes();
 
             foreach(UIPanel panel in panels)
@@ -319,13 +306,14 @@ namespace HellTrail.Core.Editor
                     id = files[i],
                     size = Assets.Arial.MeasureString(fileNoExtension),
                     capturesMouse = true,
-                    Position = new Vector2(16 + (16 + (int)Assets.Arial.MeasureString($"BaseScene{i}").X) * (int)(i / 6), 48 + 32 * i - ((32 * 6) * (int)(i/6))),
                     onClick = (sender) =>
                     {
                         currentScene = Path.GetFileNameWithoutExtension(sender.id);
                         Main.instance.activeWorld.LoadFromFile(Path.GetFileNameWithoutExtension(sender.id));
                     }
                 };
+
+                newText.SetPosition(16 + (16 + (int)Assets.Arial.MeasureString($"BaseScene{i}").X) * (int)(i / 6), 48 + 32 * i - ((32 * 6) * (int)(i / 6)));
 
                 panels[5].Append(newText);
             }
@@ -347,7 +335,6 @@ namespace HellTrail.Core.Editor
                 Input.OnMousePressed -= AnchorCam;
                 subscribedEvent = false;
             }
-
 
             base.Update();
         }
@@ -379,12 +366,13 @@ namespace HellTrail.Core.Editor
             }
         }
 
+        List<UIElement> _elementsToDisown = [];
+
+        Group<Entity> group = Main.instance.activeWorld.context.GetGroup(Matcher<Entity>.AllOf(typeof(Transform)));
         private void InspectEntity(MouseButton button)
         {
-            if (button != MouseButton.Left)
+            if (button != MouseButton.Left || UIManager.hoveredElement != null)
                 return;
-
-            Group<Entity> group = Main.instance.activeWorld.context.GetGroup(Matcher<Entity>.AllOf(typeof(Transform)));
             
             for(int i = 0; i < group.Count; i++)
             {
@@ -395,12 +383,8 @@ namespace HellTrail.Core.Editor
                     && mpos.Y >= transform.position.Y - 4 && mpos.Y <= transform.position.Y + 4)
                 {
                     inspectedEntity = e;
-                    StringBuilder sb = new StringBuilder();
-                    foreach(IComponent c in e.GetAllComponents())
-                    {
-                        sb.AppendLine(ComponentIO.SerializeComponent(c));
-                    }
-                    (panels[0].GetElementById("inspectedEntity") as UIBorderedText).text = sb.ToString();
+                    
+                    Append(new UIEntityInspectionPanel(e));
                 }
             }
         }
@@ -436,25 +420,28 @@ namespace HellTrail.Core.Editor
 
         private void PressedKey(Keys key)
         {
+            if (Input.isTyping)
+                return;
+
             IGameState con = Main.instance.GetGameState();
+
             if (key == Keys.R)
             {
                 con.GetCamera().zoom = 1f;
             }
 
-            if (key >= Keys.D1 && key <= Keys.D1 + panels.Length-1)
+            if (Input.HeldKey(Keys.LeftControl) && key >= Keys.D1 && key <= Keys.D1 + panels.Length-1)
             {
                 lastPanel = selectedPanel;
                 selectedPanel = Convert.ToInt32(Regex.Replace((key - 1).ToString(), "[^0-9]", ""));
                 TogglePanel();
             }
-
         }
 
         private void TogglePanel()
         {
-            panels[lastPanel].Position = new Vector2(Renderer.UIPreferedWidth * 0.5f - PANEL_WIDTH * 0.5f, Renderer.UIPreferedHeight);
-            panels[selectedPanel].Position -= new Vector2(0, PANEL_HEIGHT);
+            panels[lastPanel].SetPosition(new Vector2(Renderer.UIPreferedWidth * 0.5f - PANEL_WIDTH * 0.5f, Renderer.UIPreferedHeight));
+            panels[selectedPanel].SetPosition(panels[selectedPanel].GetPosition() - new Vector2(0, PANEL_HEIGHT));
 
             if (lastPanel == selectedPanel)
             {
@@ -462,7 +449,7 @@ namespace HellTrail.Core.Editor
 
                 if (!panelShown)
                 {
-                    panels[selectedPanel].Position = new Vector2(Renderer.UIPreferedWidth * 0.5f - PANEL_WIDTH * 0.5f, Renderer.UIPreferedHeight);
+                    panels[selectedPanel].SetPosition(new Vector2(Renderer.UIPreferedWidth * 0.5f - PANEL_WIDTH * 0.5f, Renderer.UIPreferedHeight));
                 }
             }
         }

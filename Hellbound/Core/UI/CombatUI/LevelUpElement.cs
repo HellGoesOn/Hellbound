@@ -21,20 +21,19 @@ namespace HellTrail.Core.UI.CombatUI
             UIPanel panel = new()
             {
                 size = new Vector2(540, 260),
-                Position = new Vector2(Renderer.UIPreferedWidth * 0.5f - 270, Renderer.UIPreferedHeight * 0.5f - 130)
             };
+            panel.SetPosition(new Vector2(Renderer.UIPreferedWidth * 0.5f - 270, Renderer.UIPreferedHeight * 0.5f - 130));
 
             UIBorderedText luckyGuy = new(name)
             {
-                Position = new Vector2(panel.size.X * 0.5f, 16),
                 origin = Assets.DefaultFont.MeasureString(name) * 0.5f,
                 color = Color.LightBlue
             };
-
+            luckyGuy.SetPosition(new Vector2(panel.size.X * 0.5f, 16));
             UIBorderedText oldStatsText = new(oldStats.ListStats())
             {
-                Position = new Vector2(16, 46)
             };
+            oldStatsText.SetPosition(16, 46);
             string str = "";
             for (int i = 0; i < oldStats.ListStats().Split("\n").Length-1; i++)
             {
@@ -42,13 +41,13 @@ namespace HellTrail.Core.UI.CombatUI
             }
             UIBorderedText funnyArrowsText = new(str)
             {
-                Position = new Vector2(240, 46)
             };
+            funnyArrowsText.SetPosition(240, 46);
             UIBorderedText newStatsText = new(newStats.ListStats())
             {
-                Position = new Vector2(300, 46),
                 color = Color.Yellow
             };
+            newStatsText.SetPosition(300, 46);
 
             panel.Append(oldStatsText);
             panel.Append(funnyArrowsText);

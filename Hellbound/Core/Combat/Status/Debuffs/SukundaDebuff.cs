@@ -26,8 +26,8 @@ namespace HellTrail.Core.Combat.Status
 
         public override void UpdateVisuals(SpriteBatch spriteBatch, Unit unit, Battle battle)
         {
-            spriteBatch.Draw(Assets.Textures["Arrow"], unit.position - new Vector2(10, 16), null, Color.Crimson, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 1f);
-            spriteBatch.Draw(Assets.Textures["Arrow"], unit.position - new Vector2(10, 20), null, Color.Crimson, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 1f);
+            spriteBatch.Draw(Assets.GetTexture("Arrow"), unit.position - new Vector2(10, 16), null, Color.Crimson, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 1f);
+            spriteBatch.Draw(Assets.GetTexture("Arrow"), unit.position - new Vector2(10, 20), null, Color.Crimson, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 1f);
         }
 
         public override void OnTurnEnd(Unit unit, Battle battle)

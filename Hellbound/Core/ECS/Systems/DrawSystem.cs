@@ -33,7 +33,7 @@ namespace HellTrail.Core.ECS
                 Transform transform = entity.GetComponent<Transform>();
 
                 float depth = transform.position.Y / 32.0f * 30; 
-                spriteBatch.Draw(Assets.Textures[tex.textureName], transform.position.ToInt(), null, Color.White, 0f, tex.origin, tex.scale, SpriteEffects.None, depth);
+                spriteBatch.Draw(Assets.GetTexture(tex.textureName), transform.position.ToInt(), null, Color.White, 0f, tex.origin, tex.scale, SpriteEffects.None, depth);
             }
         }
     }

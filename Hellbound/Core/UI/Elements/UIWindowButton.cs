@@ -9,9 +9,16 @@ using System.Threading.Tasks;
 
 namespace HellTrail.Core.UI.Elements
 {
-    public class UICheckBox : UIElement
+    public enum WindowButtonType
     {
-        public bool isChecked;
+        Empty,
+        CheckMark,
+        XMark,
+        Wrench
+    }
+
+    public class UIWindowButton : UIElement
+    {
         public bool drawsPanel;
 
         public Color color;
@@ -20,12 +27,15 @@ namespace HellTrail.Core.UI.Elements
 
         public string hoverText;
 
-        public UICheckBox(string text = "", Color? color = null)
+        public WindowButtonType buttonType;
+
+        public UIWindowButton(WindowButtonType type, string hoverText = "", Color? color = null)
         {
+            this.buttonType = type;
             size = new Vector2(16);
             capturesMouse = true;
             this.color = color ?? Color.White;
-            hoverText = text;
+            this.hoverText = hoverText;
             this.panelColor = Color.DarkBlue;
             this.panelBorderColor = Color.White;
         }
@@ -35,17 +45,10 @@ namespace HellTrail.Core.UI.Elements
             base.OnUpdate();
         }
 
-        public override void Click()
-        {
-            isChecked = !isChecked;
-
-            base.Click();
-        }
-
         public override void OnDraw(SpriteBatch spriteBatch)
         {
             Texture2D tex = Assets.GetTexture("UICheckBox");
-            spriteBatch.Draw(tex, this.GetPosition(), new Rectangle(0, 16 * (isChecked ? 1 : 0), 16, 16), color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, this.GetPosition(), new Rectangle(0, 16 * (int)buttonType, 16, 16), color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0);
 
             Vector2 size = font.MeasureString(hoverText) + new Vector2(16);
             if (isMouseHovering)

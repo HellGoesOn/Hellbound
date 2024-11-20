@@ -32,8 +32,13 @@ namespace HellTrail.Core.ECS
 
                 Color clr = emitter.color[Main.rand.Next(emitter.color.Length)];
 
-                float x = emitter.direction.X * Main.rand.Next(emitter.randMinX, emitter.randMaxX);
-                float y = emitter.direction.Y * Main.rand.Next(emitter.randMinY, emitter.randMaxY);
+                var getMinX = Math.Min(emitter.randMinX, emitter.randMaxX);
+                var getMinY = Math.Min(emitter.randMinY, emitter.randMaxY);
+                var getMaxX = Math.Max(emitter.randMaxX, emitter.randMinX);
+                var getMaxY = Math.Max(emitter.randMinX, emitter.randMaxY);
+
+                float x = emitter.direction.X * Main.rand.Next(getMinX, getMaxX);
+                float y = emitter.direction.Y * Main.rand.Next(getMinY, getMaxY);
                 var velocity = new Vector2(x, y);
                 Vector2 scale = emitter.scales[Main.rand.Next(emitter.scales.Length)];
 

@@ -21,8 +21,8 @@ namespace HellTrail.Core.UI
         }
         public override void OnDraw(SpriteBatch spriteBatch)
         {
-            Renderer.DrawRect(spriteBatch, Position - Vector2.One * 2, size + Vector2.One * 4, 1, outlineColor, rotation: Rotation);
-            Renderer.DrawRect(spriteBatch, Position, size, 1, fillColor, rotation: Rotation);
+            Renderer.DrawRect(spriteBatch, GetPosition() - Vector2.One * 2, size + Vector2.One * 4, 1, outlineColor, rotation: Rotation);
+            Renderer.DrawRect(spriteBatch, GetPosition(), size, 1, fillColor, rotation: Rotation);
         }
     }
 }

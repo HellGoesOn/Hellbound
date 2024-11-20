@@ -27,7 +27,7 @@ namespace HellTrail.Core.DialogueSystem
         {
             id = "dialogueUIState";
             portrait = new UIPortrait(null);
-            portrait.Position = new Vector2(Renderer.UIPreferedWidth * 0.5f, Renderer.UIPreferedHeight-240);
+            portrait.SetPosition(new Vector2(Renderer.UIPreferedWidth * 0.5f, Renderer.UIPreferedHeight-240));
 
             darkeningPanel = new UIPanel()
             {
@@ -40,28 +40,30 @@ namespace HellTrail.Core.DialogueSystem
             dialoguePanel = new UIPanel()
             {
                 size = new Vector2(Renderer.UIPreferedWidth - 64, 180),
-                Position = new Vector2(32, Renderer.UIPreferedHeight - 180 - 16)
             };
+            dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight - 180 - 16));
             dialogueText = new UIBorderedText("")
             {
-                Position = new Vector2(16)
+                lineBreak = 120,
             };
+            dialoguePanel.SetPosition(16);
             dialoguePanel.Append(dialogueText);
             Append(dialoguePanel);
 
             speakerPanel = new UIPanel()
             {
                 size = new Vector2(180, 40),
-                Position = new Vector2(16, -48)
             };
+            speakerPanel.SetPosition(new Vector2(16, -48));
+
             speakerText = new UIBorderedText("")
             {
-                Position = new Vector2(16, 8)
             };
+            speakerPanel.SetPosition(new Vector2(16, 8));
             actionsText = new("[E] Next")
             {
-                Position = new Vector2(16, 140)
             };
+            actionsText.SetPosition(new Vector2(16, 140));
             speakerPanel.Append(speakerText);
             dialoguePanel.Append(speakerPanel);
             dialoguePanel.Append(actionsText);
@@ -78,7 +80,7 @@ namespace HellTrail.Core.DialogueSystem
                 DialoguePage page = dialogues[0].CurrentPage;
                 speakerText.text = page.title;
                 speakerText.color = page.speakerColor;
-                dialogueText.text = page.VisibleText.Splice(80);
+                dialogueText.text = page.VisibleText;
                 dialogueText.color = page.textColor;
                 dialoguePanel.fillColor = page.fillColor;
                 dialoguePanel.outlineColor = page.borderColor;

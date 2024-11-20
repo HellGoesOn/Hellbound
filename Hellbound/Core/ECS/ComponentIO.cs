@@ -31,25 +31,7 @@ namespace HellTrail.Core.ECS
 
             for(int i = 0; i < fields.Length; i++)
             {
-                FieldInfo field = fields[i];
-                if (field.FieldType.IsArray)
-                {
-                    var values = field.GetValue(component) as Array;
-
-                    sb.Append('{');
-                    if (values != null)
-                    {
-                        for (int index = 0; index < values.Length; index++)
-                        {
-                            sb.Append($"\"{values.GetValue(index)}\"{(index == values.Length - 1 ? "" : ", ")}");
-                        }
-                    }
-                    sb.Append($"}}{(i == fields.Length - 1 ? "" : "; ")}");
-
-                } else
-                {
-                    sb.Append($"\"{field.GetValue(component)}\"{(i == fields.Length - 1 ? "" : "; ")}");
-                }
+                FieldToText(component, sb, fields[i], i == fields.Length-1);
             }
 
             if (fields.Length > 0)
@@ -57,6 +39,28 @@ namespace HellTrail.Core.ECS
 
 
             return sb.ToString();
+        }
+
+        public static void FieldToText(IComponent component, StringBuilder sb, FieldInfo field, bool isLast = true)
+        {
+            if (field.FieldType.IsArray)
+            {
+                var values = field.GetValue(component) as Array;
+
+                sb.Append('{');
+                if (values != null)
+                {
+                    for (int index = 0; index < values.Length; index++)
+                    {
+                        sb.Append($"\"{values.GetValue(index)}\"{(index == values.Length - 1 ? "" : ", ")}");
+                    }
+                }
+                sb.Append($"}}{(isLast ? "" : "; ")}");
+
+            } else
+            {
+                sb.Append($"\"{field.GetValue(component)}\"{(isLast ? "" : "; ")}");
+            }
         }
 
         /// <summary>
@@ -84,69 +88,71 @@ namespace HellTrail.Core.ECS
 
             for (int i= 0; i < fields.Length; i++)
             {
-                FieldInfo field = fields[i];
-                if (field.FieldType.IsArray)
-                {
-                    if (values.Length <= i)
-                        continue;
-
-                    Type elementType = field.FieldType.GetElementType();
-
-                    string val = values[i];
-                    string[] elements = BetweenSwirlyBracketsRegex().Replace(val, "").Split(", ");
-
-                    if (elements.Length <= 1 && string.IsNullOrWhiteSpace(elements[0]))
-                    {
-                        field.SetValue(instance, null);
-                        continue;
-                    }
-
-                    var arr = Array.CreateInstance(elementType, elements.Length);
-
-                    for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
-                    {
-                        string noQuotes = BetweenSwirlyBracketsRegex().Replace(elements[elementIndex], "");
-
-                        if (elementType == typeof(Vector2))
-                        {
-                            noQuotes.TryVector2(out Vector2 vector);
-                            arr.SetValue(vector, elementIndex);
-                        } else if (elementType == typeof(FrameData))
-                        {
-                            noQuotes.TryFrameData(out var frameData);
-                            arr.SetValue(frameData, elementIndex);
-                        } else if(elementType == typeof(Color))
-                        {
-                            noQuotes.TryColor(out var color);
-                            arr.SetValue(color, elementIndex);
-                        } else
-                        {
-                            arr.SetValue(Convert.ChangeType(elements[elementIndex], elementType), elementIndex);
-                        }
-                    }
-                    field.SetValue(instance, Convert.ChangeType(arr, fields[i].FieldType));
-                } 
-                else
-                {
-                    string noQuotes = BetweenSwirlyBracketsRegex().Replace(values[i], "");
-                    if (field.FieldType == typeof(Vector2))
-                    {
-                        noQuotes.TryVector2(out Vector2 vector);
-                        fields[i].SetValue(instance, vector);
-                    } else if(field.FieldType == typeof(FrameData))
-                    {
-                        noQuotes.TryFrameData(out var frameData);
-
-                        fields[i].SetValue(instance, frameData);
-                    }
-                    else
-                    {
-                        fields[i].SetValue(instance, Convert.ChangeType(noQuotes, fields[i].FieldType));
-                    }
-                }
+                TextToFieldValue(fields[i], instance, values[i]);
             }
 
             return instance;
+        }
+
+        public static void TextToFieldValue(FieldInfo field, IComponent instance, string value)
+        {
+            if (field.FieldType.IsArray)
+            {
+                //if (values.Length <= i)
+                //    continue;
+
+                Type elementType = field.FieldType.GetElementType();
+
+                string val = value;
+                string[] elements = BetweenSwirlyBracketsRegex().Replace(val, "").Split(", ");
+
+                if (elements.Length <= 1 && string.IsNullOrWhiteSpace(elements[0]))
+                {
+                    field.SetValue(instance, null);
+                    return;
+                }
+
+                var arr = Array.CreateInstance(elementType, elements.Length);
+
+                for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
+                {
+                    string noQuotes = BetweenSwirlyBracketsRegex().Replace(elements[elementIndex], "");
+
+                    if (elementType == typeof(Vector2))
+                    {
+                        noQuotes.TryVector2(out Vector2 vector);
+                        arr.SetValue(vector, elementIndex);
+                    } else if (elementType == typeof(FrameData))
+                    {
+                        noQuotes.TryFrameData(out var frameData);
+                        arr.SetValue(frameData, elementIndex);
+                    } else if (elementType == typeof(Color))
+                    {
+                        noQuotes.TryColor(out var color);
+                        arr.SetValue(color, elementIndex);
+                    } else
+                    {
+                        arr.SetValue(Convert.ChangeType(elements[elementIndex], elementType), elementIndex);
+                    }
+                }
+                field.SetValue(instance, Convert.ChangeType(arr, field.FieldType));
+            } else
+            {
+                string noQuotes = BetweenSwirlyBracketsRegex().Replace(value, "");
+                if (field.FieldType == typeof(Vector2))
+                {
+                    noQuotes.TryVector2(out Vector2 vector);
+                    field.SetValue(instance, vector);
+                } else if (field.FieldType == typeof(FrameData))
+                {
+                    noQuotes.TryFrameData(out var frameData);
+
+                    field.SetValue(instance, frameData);
+                } else
+                {
+                    field.SetValue(instance, Convert.ChangeType(noQuotes, field.FieldType));
+                }
+            }
         }
 
         [GeneratedRegex(@"[{""}]")]

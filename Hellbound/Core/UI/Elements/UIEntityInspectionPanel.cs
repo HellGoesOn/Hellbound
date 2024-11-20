@@ -1,0 +1,191 @@
+﻿using HellTrail.Core.ECS;
+using HellTrail.Extensions;
+using HellTrail.Render;
+using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HellTrail.Core.UI.Elements
+{
+    public class UIEntityInspectionPanel : UIElement
+    {
+        Entity _inspectedEnity;
+        UIPanel panel;
+        public UIEntityInspectionPanel(Entity entity)
+        {
+            font = Assets.Arial;
+            _inspectedEnity = entity;
+            entity.OnDestroy += (_) =>
+            {
+                _inspectedEnity = null;
+                entity.OnComponentAdded -= UpdateEntity;
+                entity.OnComponentRemoved -= UpdateEntity;
+            };
+
+            entity.OnComponentAdded += UpdateEntity;
+            entity.OnComponentRemoved += UpdateEntity;
+
+            components = _inspectedEnity.GetAllComponents();
+            texts = new UIText[components.Length]; 
+            onLoseParent = (_) =>
+            {
+                entity.OnComponentAdded -= UpdateEntity;
+                entity.OnComponentRemoved -= UpdateEntity;
+                _inspectedEnity = null;
+            };
+
+            UIPanel draggablePanel = new UIDraggablePanel()
+            {
+                id = "inspectedEntityPanel",
+                font = Assets.Arial,
+                size = new Vector2(600, 32)
+            };
+            draggablePanel.SetPosition(new Vector2(64, Renderer.UIPreferedHeight * 0.5f) - new Vector2(0, 300));
+            var entityText = new UIText($"Entity_{_inspectedEnity.id}")
+            {
+                id="entityText"
+            };
+            entityText.SetPosition(34, 6);
+            draggablePanel.Append(entityText);
+
+            panel = new UIPanel()
+            {
+                fillColor = Color.DarkSlateGray,
+                size = new Vector2(600, 600)
+            };
+            panel.SetPosition(0, 34);
+
+            UpdateEntity(_inspectedEnity, null);
+
+            UIWindowButton btn = new(WindowButtonType.XMark, "Close", Color.Red)
+            {
+                scale = Vector2.One * 2,
+                onClick = (sender) =>
+                {
+                    parent.Disown(this);
+                }
+            };
+            btn.SetPosition(600 - 32, 0);
+
+            UIWindowButton btnAll = new(WindowButtonType.XMark, "Close All ", Color.Orange)
+            {
+                scale = Vector2.One * 2,
+                onClick = (sender) =>
+                {
+                    this.parent.Disown(this);
+                }
+            };
+            btnAll.SetPosition(600 - 64, 0);
+
+            UIWindowButton killEntity = new UIWindowButton(WindowButtonType.XMark, "Destroy entity", Color.Crimson)
+            {
+                drawsPanel = true,
+                scale = Vector2.One * 2,
+                onClick = (sender) =>
+                {
+                    Main.instance.activeWorld.context.Destroy(_inspectedEnity);
+                    this.parent.Disown(this);
+                }
+            };
+            killEntity.SetPosition(0, 0);
+
+            draggablePanel.Append(panel);
+            draggablePanel.Append(btn);
+            draggablePanel.Append(btnAll);
+            draggablePanel.Append(killEntity);
+
+            this.Append(draggablePanel);
+        }
+
+        IComponent[] components;
+        UIText[] texts;
+
+        public void UpdateEntity(Entity e, IComponent component)
+        {
+            foreach (UIText text in texts)
+            {
+                panel.Disown(text);
+            }
+
+            components = e.GetAllComponents();
+
+            if(components != null && components.Length <= 0)
+            {
+                Main.instance.activeWorld.context.Destroy(e);
+                this.parent.Disown(this);
+                return;
+            }
+
+            texts = new UIText[components.Length];
+
+            Vector2 accumulatedOffset = Vector2.Zero;
+            for (int i = 0; i < components.Length; i++)
+            {
+                texts[i] = new UIText(ComponentIO.SerializeComponent(components[i]), 40)
+                {
+                    font = Assets.Arial
+                };
+
+                panel.Append(texts[i]);
+                UIWindowButton btn = new UIWindowButton(WindowButtonType.XMark, " Delete", Color.Red)
+                {
+                    drawsPanel = true,
+                    id = $"{i}"
+                };
+
+                UIWindowButton btnChange = new UIWindowButton(WindowButtonType.Wrench, " Change component", Color.Yellow)
+                {
+                    drawsPanel = true,
+                    id = $"{i}"
+                };
+                Vector2 measurement = font.MeasureString(components[i].GetType().Name);
+
+                Vector2 off = Vector2.Zero;
+
+                if (i > 0)
+                {
+                    accumulatedOffset.Y += texts[i-1].size.Y;
+                }
+
+                Vector2 pos = new Vector2(34, accumulatedOffset.Y + 4);
+                texts[i].SetPosition(pos);
+                btn.SetPosition(-32, 2);
+                btnChange.SetPosition(-16, 2);
+                btnChange.onClick = (sender) =>
+                {
+                    var changer = new UIComponentChanger(components[int.Parse(sender.id)]);
+                    changer.SetFont(Assets.Arial);
+                    changer.SetPosition(new Vector2(160));
+                    var debugText = UIManager.GetStateByName("debugState").GetElementById("debugText") as UIBorderedText;
+                    Append(changer);
+                    debugText.text = $"POS={changer.GetPosition()} PARENT={changer.parent}";
+                };
+                btn.onClick = (sender) =>
+                {
+                    if(_inspectedEnity != null)
+                        _inspectedEnity.RemoveComponent(components[int.Parse(sender.id)].GetType());
+                };
+                    
+                texts[i].Append(btnChange);
+                texts[i].Append(btn);
+            }
+
+            panel.size.Y = accumulatedOffset.Y + texts[0].size.Y + 12;
+        }
+
+        public override void OnUpdate()
+        {
+            base.OnUpdate();
+
+            for (int i = 0; i < components.Length; i++)
+            {
+                texts[i].text = ComponentIO.SerializeComponent(components[i]);
+            }
+
+            //(UIManager.GetStateByName("debugState").GetElementById("debugText") as UIBorderedText).text = $"Children:{this.children.Count}, Components:{components.Length}";
+        }
+    }
+}

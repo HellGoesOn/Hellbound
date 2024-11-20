@@ -30,7 +30,7 @@ namespace HellTrail.Core.Overworld
 
             debugText.Visible = debugTime > 0;
 
-            debugText.Position = Input.UIMousePosition;
+            debugText.SetPosition(Input.UIMousePosition);
             debugText.origin = Vector2.Zero;
         }
     }

@@ -19,6 +19,7 @@ using HellTrail.Core.DialogueSystem;
 using HellTrail.Core.Combat.Scripting;
 using HellTrail.Core.ECS;
 using HellTrail.Core.ECS.Components;
+using Microsoft.Xna.Framework.Input.Touch;
 
 namespace HellTrail
 {
@@ -62,7 +63,7 @@ namespace HellTrail
             gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
             gdm.ApplyChanges();
             GameStateManager.State = GameState.Overworld;
-            SoundEngine.StartMusic("Relax", true);
+            SoundEngine.StartMusic("ChangingSeasons", true);
 
             //GetGameState().GetCamera().centre = GlobalPlayer.ActiveParty[0].position;
 
@@ -104,7 +105,7 @@ namespace HellTrail
             ParticleManager.Initialize();
 
             Dialogue dialogue = Dialogue.Create();
-            UIManager.dialogueUI.dialoguePanel.Position = new Vector2(32, Renderer.UIPreferedHeight * 0.5f);
+            UIManager.dialogueUI.dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight * 0.5f));
             DialoguePage[] pages =
                 {
                 new()
@@ -122,7 +123,7 @@ namespace HellTrail
                     onPageEnd = (_) =>
                     {
                         _.CurrentPage.textColor = Color.Transparent;
-                        UIManager.dialogueUI.dialoguePanel.Position = new Vector2(32, Renderer.UIPreferedHeight - 180 - 16);
+                        UIManager.dialogueUI.dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight - 180 - 16));
                     }
                 }
         };
@@ -250,27 +251,15 @@ namespace HellTrail
                 GameStateManager.SetState(GameState.Combat, new TrippingBalls(Renderer.SaveFrame()));
                 StartBattle();
             }
-            
-            if(Input.PressedKey(Keys.F2))
-            {
-                GameState state = GameStateManager.State == GameState.Combat ? GameState.Overworld : GameState.Combat;
-                GameStateManager.SetState(state);
-            }
-            
-            if(Input.PressedKey(Keys.F3))
-            {
-                GameState state = GameStateManager.State == GameState.Overworld ? GameState.MainMenu : GameState.Overworld;
-                GameStateManager.SetState(state);
-            }
 
-            if (Input.PressedKey(Keys.OemPlus))
+            if (Input.PressedKey(Keys.F3))
             {
                 GameOptions.ResolutionMultiplier++;
                 gdm.PreferredBackBufferWidth = GameOptions.ScreenWidth;
                 gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
                 gdm.ApplyChanges();
             }
-            if (Input.PressedKey(Keys.OemMinus))
+            if (Input.PressedKey(Keys.F4))
             {
                 GameOptions.ResolutionMultiplier--;
                 gdm.PreferredBackBufferWidth = GameOptions.ScreenWidth;
@@ -325,7 +314,7 @@ namespace HellTrail
             }
             GraphicsDevice.SetRenderTarget(Renderer.UITarget);
             GraphicsDevice.Clear(Color.Transparent);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
             UIManager.Draw(spriteBatch);
             //spriteBatch.Draw(AssetManager.Textures["Pixel"], new Vector2(110, 586), new Rectangle(0, 0, 66, 20), Color.Black, 0f, Vector2.Zero, new Vector2(4), SpriteEffects.None, 0f);
             //spriteBatch.Draw(AssetManager.Textures["Pixel"], new Vector2(114, 590), new Rectangle(0, 0, 64, 18), Color.Gray, 0f, Vector2.Zero, new Vector2(4), SpriteEffects.None, 0f);

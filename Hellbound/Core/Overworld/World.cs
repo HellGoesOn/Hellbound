@@ -54,8 +54,8 @@ namespace HellTrail.Core.Overworld
         public void Update()
         {
             systems.Execute(context);
-            var debugText = UIManager.GetStateByName("debugState").GetElementById("debugText") as UIBorderedText;
-            debugText.text = $"EC={context.entityCount}, UIE={UIManager.hoveredElement}\n";
+            //var debugText = UIManager.GetStateByName("debugState").GetElementById("debugText") as UIBorderedText;
+            //debugText.text = $"EC={context.entityCount}, UIE={UIManager.hoveredElement}\n";
             
             foreach (var trigger in triggers)
             {
@@ -72,7 +72,6 @@ namespace HellTrail.Core.Overworld
                     entity.AddComponent(new Transform(Input.MousePosition));
                     var xx = Main.rand.Next(-100, 101);
                     var yy = Main.rand.Next(-100, 101);
-                    entity.AddComponent(new CollisionBox(6, 12, new Vector2(12, 6)));
                     entity.AddComponent(new ParticleEmitter
                         (1,
                         25,
@@ -90,7 +89,6 @@ namespace HellTrail.Core.Overworld
                     entity = context.CopyFrom(Main.instance.prefabContext.entities[1]);
                     entity.RemoveComponent<TextureComponent>();
                     entity.AddComponent(new Transform(Input.MousePosition));
-                    entity.AddComponent(new CollisionBox(6, 12, new Vector2(6)));
                     xx = Main.rand.Next(-100, 101);
                     yy = Main.rand.Next(-100, 101);
                     entity.AddComponent(new ParticleEmitter

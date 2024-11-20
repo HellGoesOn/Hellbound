@@ -13,8 +13,11 @@ namespace HellTrail.Render
     {
         public const int PreferedWidth = 320;
         public const int PreferedHeight = 180;
-        public const int UIPreferedWidth = 1280;
-        public const int UIPreferedHeight = 720;
+        public const int UIPreferedWidth = 1280;//1920;
+        public const int UIPreferedHeight = 720;//1080;
+
+        public const float UIMultiplierX = UIPreferedWidth / (float)PreferedWidth;
+        public const float UIMultiplieY = UIPreferedHeight / (float)PreferedHeight;
 
         public static RenderTarget2D WorldTarget { get; set; }
         public static RenderTarget2D MainTarget { get; set; }
@@ -52,7 +55,7 @@ namespace HellTrail.Render
 
         public static void DrawRect(SpriteBatch sb, Vector2 position, Vector2 size, int thickness, Color color, float depth = 0f, float rotation = 0f, Vector2 origin = default)
         {
-            var tex = Assets.Textures["Pixel"];
+            var tex = Assets.GetTexture("Pixel");
             sb.Draw(tex, position, null, color, rotation, origin, size, SpriteEffects.None, depth);
         }
 

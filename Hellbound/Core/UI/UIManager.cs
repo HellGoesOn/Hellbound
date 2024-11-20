@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace HellTrail.Core.UI
 {
@@ -23,6 +24,8 @@ namespace HellTrail.Core.UI
         public static EditorUI editorUI;
 
         public static UIElement hoveredElement;
+
+        public static string tooltipText;
 
         public static void Init()
         {
@@ -44,8 +47,8 @@ namespace HellTrail.Core.UI
             debugState.Append(new UIBorderedText("")
             {
                 id = "debugText",
-                Position = new Vector2(16),
-            });
+            }.SetPosition(16));
+            
             UIStates.Add(debugState);
             UIStates.Add(overworldUI);
             UIStates.Add(editorUI);
@@ -54,6 +57,7 @@ namespace HellTrail.Core.UI
         public static void Update()
         {
             hoveredElement = null;
+            tooltipText = "";
             foreach (UIState state in UIStates)
             {
                 state.Update();
@@ -70,6 +74,16 @@ namespace HellTrail.Core.UI
             foreach (UIState state in UIStates)
             {
                 state.Draw(spriteBatch);
+            }
+
+            if (!string.IsNullOrWhiteSpace(tooltipText))
+            {
+                Vector2 size = Assets.Arial.MeasureString(tooltipText) + new Vector2(16);
+                Vector2 offset = Input.UIMousePosition.Y > Renderer.UIPreferedHeight - size.Y ? new Vector2(16, -16) : new Vector2(16);
+                Renderer.DrawRect(spriteBatch, Input.UIMousePosition + offset - new Vector2(16, 8) - new Vector2(2), size + new Vector2(4), 1, Color.White);
+                Renderer.DrawRect(spriteBatch, Input.UIMousePosition + offset - new Vector2(16, 8), size, 1, Color.DarkBlue);
+
+                Renderer.DrawBorderedString(spriteBatch, Assets.Arial, tooltipText, Input.UIMousePosition + offset - new Vector2(8, 0), Color.White, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);
             }
         }
 

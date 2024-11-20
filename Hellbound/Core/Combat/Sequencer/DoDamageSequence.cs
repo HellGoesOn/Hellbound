@@ -48,7 +48,7 @@ namespace HellTrail.Core.Combat.Sequencer
             if (rng > finalAccuracy)
             {
                 dealtDamage = false;
-                damageNumber = new(DamageType.Normal, "MISS", target.position * 4);
+                damageNumber = new(DamageType.Normal, "MISS", target.position);
                 battle.damageNumbers.Add(damageNumber);
                 return;
             }
@@ -59,7 +59,7 @@ namespace HellTrail.Core.Combat.Sequencer
             var offset = -target.size * 0.25f + new Vector2(xx, yy);
 
             float shakeAmount = 0.16f;
-            damageNumber = new(DamageType.Normal, damageTaken.ToString(), (target.position + offset) * 4);
+            damageNumber = new(DamageType.Normal, damageTaken.ToString(), (target.position + offset));
 
             dealtDamage = true;
             if (damageTaken == 0) // nulled
@@ -79,11 +79,11 @@ namespace HellTrail.Core.Combat.Sequencer
                 shakeAmount = 0.32f;
 
                 damageNumber.DamageType = DamageType.Weak;
-                damageNumber.position = (target.position + offset) * 4;
+                damageNumber.position = (target.position + offset);
             }
             else if (damageTaken < 0)// repelled
             {
-                damageNumber.position = target.position * 4;
+                damageNumber.position = target.position;
                 damageNumber.DamageType = DamageType.Repelled;
                 dealtDamage = false;
 
@@ -106,14 +106,14 @@ namespace HellTrail.Core.Combat.Sequencer
                     repelledType = DamageType.Blocked;
                 }
 
-                DamageNumber damageNumber2 = new(repelledType, damageTaken.ToString(), (caster.position + offset) * 4);
+                DamageNumber damageNumber2 = new(repelledType, damageTaken.ToString(), (caster.position + offset));
                 battle.damageNumbers.Add(damageNumber2);
             }
             else if (damageTaken < damage * statBonus) // resisted
             {
                 shakeAmount = 0.08f;
                 damageNumber.DamageType = DamageType.Resisted;
-                damageNumber.position = (target.position + offset) * 4;
+                damageNumber.position = (target.position + offset);
             }
 
             if (dealtDamage)

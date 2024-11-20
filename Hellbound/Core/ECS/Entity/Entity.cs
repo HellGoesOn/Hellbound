@@ -15,7 +15,6 @@ namespace HellTrail.Core.ECS
         public bool enabled;
         private readonly int _maxComponents;
         IComponent[] _components;
-        Context context;
 
         public EntityChangedHandler OnComponentRemoved;
         public EntityChangedHandler OnComponentChanged;
@@ -23,12 +22,11 @@ namespace HellTrail.Core.ECS
 
         public event EntityDestroyEvent OnDestroy;
 
-        public Entity(int id, int maxComponents, Context context)
+        public Entity(int id, int maxComponents)
         {
             this.id = id;
             this._maxComponents = maxComponents;
             _components = new IComponent[_maxComponents];
-            this.context = context;
         }
 
         public void Reuse(int id)
@@ -80,13 +78,18 @@ namespace HellTrail.Core.ECS
             HandleComponent(typeof(T), null);
         }
 
+        public void RemoveComponent(Type type)
+        {
+            HandleComponent(type, null);
+        }
+
         void HandleComponent(Type type, IComponent component)
         {
             int id = Context.ComponentId[type];
             var previousComponent = _components[id];
             if (previousComponent != null)
             {
-                context.componentPools[id].Push(previousComponent);
+                //context.componentPools[id].Push(previousComponent);
                 OnComponentChanged?.Invoke(this, component);
             } else
             {
@@ -111,7 +114,7 @@ namespace HellTrail.Core.ECS
                     if (component == null)
                         continue;
 
-                    GetComponentPool(Context.ComponentId[component.GetType()]).Push(component);
+                    //GetComponentPool(Context.ComponentId[component.GetType()]).Push(component);
                     component = null;
                 }
             }
@@ -129,7 +132,7 @@ namespace HellTrail.Core.ECS
             OnDestroy = null;
         }
 
-        public TComponent CreateComponent<TComponent>() where TComponent : IComponent, new()
+        /*public TComponent CreateComponent<TComponent>() where TComponent : IComponent, new()
         {
             var componentPool = GetComponentPool(Context.ComponentId[typeof(TComponent)]);
             return componentPool.Count > 0 ? (TComponent)componentPool.Pop() : new TComponent();
@@ -138,7 +141,7 @@ namespace HellTrail.Core.ECS
         protected Stack<IComponent> GetComponentPool(int id)
         {
             return context.componentPools[id];
-        }
+        }*/
 
         public IComponent[] GetAllComponents() => _components.Where(x => x != null).ToArray();
 
@@ -147,20 +150,27 @@ namespace HellTrail.Core.ECS
             return $"Entity_{id} \n{string.Join("\n", GetAllComponents().Select(x => x.ToString()))}";
         }
 
-        public static Entity Deserialize(string text, Context context)
+        public static Entity Deserialize(string text, Context context = null)
         {
             string preSplit = Regex.Match(text, @"{(.*)}", RegexOptions.Singleline).Groups[1].Value.Trim();
             string[] components = preSplit.Split($";{Environment.NewLine}");
             string entityLine = Regex.Match(text, $"Entity_.*[^{Environment.NewLine}]", RegexOptions.Multiline).Value;
             string id = Regex.Replace(entityLine, "[^0-9]", "");
 
-            Entity checkExisting = context.entities[int.Parse(id)];
-            if (checkExisting != null && checkExisting.enabled)
+            Entity e;
+            if (context != null)
             {
-                context.Destroy(checkExisting.id);
+                Entity checkExisting = context.entities[int.Parse(id)];
+                if (checkExisting != null && checkExisting.enabled)
+                {
+                    context.Destroy(checkExisting.id);
+                }
+                e = context.Create();
             }
-
-            Entity e = context.Create();
+            else
+            {
+                e = new Entity(0, Context._maxComponents);
+            }
 
             for (int componentIndex = 0; componentIndex < components.Length; componentIndex++)
             {

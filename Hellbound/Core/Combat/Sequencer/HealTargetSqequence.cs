@@ -14,7 +14,7 @@ namespace HellTrail.Core.Combat.Sequencer
         public void Update(List<Unit> actors, Battle battle)
         {
             target.stats.HP = Math.Min(target.stats.HP + amount, target.stats.MaxHP);
-            DamageNumber damageNumber = new(DamageType.Normal, $"+{amount}", target.position * 4);
+            DamageNumber damageNumber = new(DamageType.Normal, $"+{amount}", target.position);
             damageNumber.color = Color.Lime;
             battle.damageNumbers.Add(damageNumber);
         }

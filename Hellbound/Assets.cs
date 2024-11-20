@@ -174,5 +174,14 @@ namespace HellTrail
 
             return null;
         }
+
+        public static Texture2D GetTexture(string id)
+        {
+            if(Textures.TryGetValue(id, out Texture2D texture))
+            {
+                return texture;
+            }
+            return Textures["Pixel"];
+        }
     }
 }
