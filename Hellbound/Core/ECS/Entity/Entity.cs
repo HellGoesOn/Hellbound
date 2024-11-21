@@ -118,7 +118,6 @@ namespace HellTrail.Core.ECS
                     component = null;
                 }
             }
-
             OnDestroy?.Invoke(this);
         }
 

@@ -21,6 +21,7 @@ namespace HellTrail.Core.UI.Elements
             _inspectedEnity = entity;
             entity.OnDestroy += (_) =>
             {
+                parent.Disown(this);
                 _inspectedEnity = null;
                 entity.OnComponentAdded -= UpdateEntity;
                 entity.OnComponentRemoved -= UpdateEntity;
@@ -88,7 +89,6 @@ namespace HellTrail.Core.UI.Elements
                 onClick = (sender) =>
                 {
                     Main.instance.activeWorld.context.Destroy(_inspectedEnity);
-                    this.parent.Disown(this);
                 }
             };
             killEntity.SetPosition(0, 0);

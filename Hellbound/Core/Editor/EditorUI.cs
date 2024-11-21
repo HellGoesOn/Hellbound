@@ -148,7 +148,7 @@ namespace HellTrail.Core.Editor
             foreach (var system in con.systems.GetAll())
             {
                 var type = system.GetType();
-                if (system is IExecute)
+                if (system is IExecute && system is not IDraw)
                 {
                     con.systems.ToggleSystem(type);
                 }

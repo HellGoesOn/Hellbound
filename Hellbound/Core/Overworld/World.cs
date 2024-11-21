@@ -38,16 +38,18 @@ namespace HellTrail.Core.Overworld
             GetCamera().centre = new Vector2(tileMap.width, tileMap.height) * TileMap.TILE_SIZE * 0.5f;
 
             systems.AddSystem(new DrawSystem(context));
+            systems.AddSystem(new DrawAnimationSystem(context));
             systems.AddSystem(new MoveSystem(context));
             systems.AddSystem(new ObesitySystem(context));
             systems.AddSystem(new DrawBoxSystem(context));
+            systems.AddSystem(new DrawTransformBoxSystem(context));
             systems.AddSystem(new BoxCollisionSystem(context));
             systems.AddSystem(new CreateBattleOnContactSystem(context));
             systems.AddSystem(new MoveCameraSystem(context));
             systems.AddSystem(new ReadPlayerInputSystem(context));
             systems.AddSystem(new ClearCollisionMarkerSystem(context));
             systems.AddSystem(new ParticleEmissionSystem(context));
-            systems.AddSystem(new DrawTransformBoxSystem(context));
+            systems.AddSystem(new FollowerSystem(context));
             GetCamera().speed = 0.12f;
         }
 
@@ -68,6 +70,25 @@ namespace HellTrail.Core.Overworld
             {
                 if(context.entityCount < context.entities.Length)
                 {
+
+                    //var entity = context.Create();
+                    //entity.AddComponent(new Transform(Input.MousePosition));
+                    //entity.AddComponent(new TextureComponent("FlipOff", new Vector2(16)));
+                    //entity.AddComponent(new AnimationComponent(32, 32, 15,
+                    //    [new Vector2(0, 0),
+                    //new Vector2(0, 1),
+                    //new Vector2(0, 2),
+                    //new Vector2(0, 2),
+                    //new Vector2(0, 2),
+                    //new Vector2(0, 3),
+                    //new Vector2(0, 3),
+                    //new Vector2(0, 3),
+                    //new Vector2(0, 3),
+                    //new Vector2(0, 3),
+                    //new Vector2(0, 1),
+                    //])
+                    //    );
+
                     var entity = context.CopyFrom(Main.instance.prefabContext.entities[1]);
                     entity.AddComponent(new Transform(Input.MousePosition));
                     var xx = Main.rand.Next(-100, 101);
@@ -104,8 +125,10 @@ namespace HellTrail.Core.Overworld
                         new Vector2(-1, -7),
                         new Vector2(2),
                         true));
-                    //entity.AddComponent(new TestComponent(13, [12, 14, 16], [Vector2.One, Vector2.Zero, Vector2.UnitX], 17));
-                    //entity.AddComponent(new Velocity(xx * 0.005f, yy * 0.005f));
+
+
+                    entity.AddComponent(new FollowingOther(-1));
+                    entity.AddComponent(new TestComponent(13, [12, 14, 16], [Vector2.One, Vector2.Zero, Vector2.UnitX], 17));
                 }    
             }
 

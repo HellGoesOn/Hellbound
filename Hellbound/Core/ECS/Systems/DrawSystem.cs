@@ -18,7 +18,7 @@ namespace HellTrail.Core.ECS
 
         public DrawSystem(Context context)
         {
-            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(Transform), typeof(TextureComponent)));
+            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(Transform), typeof(TextureComponent)).NoneOf(typeof(AnimationComponent)));
         }
 
 

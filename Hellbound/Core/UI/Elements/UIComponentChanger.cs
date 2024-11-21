@@ -79,10 +79,10 @@ namespace HellTrail.Core.UI.Elements
                 }
             };
             UIText txt = new UIText(this.component.GetType().Name);
-            txt.SetPosition(16, 8);
+            txt.SetPosition(36, 8);
 
-            panel.size = accumulatedSize + new Vector2(0, texts.Last().size.Y);
-            panel.SetPosition(0, 32);
+            panel.size = accumulatedSize + new Vector2(0, 0);
+            panel.SetPosition(0, 0);
             panel.Append(txt);
             drag.Append(panel);
             drag.Append(closeButton);

@@ -17,6 +17,7 @@ namespace HellTrail.Core.UI.Elements
         bool isEditing;
         public bool IsEditing => isEditing;
         int cursorPosition;
+        int lastCursorPosition;
         int cursorSize;
         int heldTime;
         int allowedRepeatRate;
@@ -90,10 +91,13 @@ namespace HellTrail.Core.UI.Elements
         public override void Click()
         {
             isEditing = !isEditing;
-            sneakyDelay = 10;
+            sneakyDelay = 1;
             if (isEditing)
             {
-                cursorPosition = myText.Length;
+                if (lastCursorPosition > 0 && lastCursorPosition <= myText.Length)
+                    cursorPosition = lastCursorPosition;
+                else
+                    cursorPosition = myText.Length;
                 cursorSize = 0;
                 Input.OnKeyHeld += HeldKey;
                 Input.OnKeyPressed += PressKey;
@@ -126,6 +130,8 @@ namespace HellTrail.Core.UI.Elements
             Input.OnKeyPressed -= PressKey;
             Input.OnKeyReleased -= ReleaseKey;
             Input.OnMousePressed -= MousePress;
+
+            lastCursorPosition = cursorPosition;
         }
 
         Keys lastKeyStroked;
@@ -155,18 +161,63 @@ namespace HellTrail.Core.UI.Elements
         {
             if (isEditing)
             {
+                if(key == Keys.Up)
+                {
+                    if(parent is UIElement element)
+                    {
+                        var boxes = element.children.Where(x => x is UITextBox).ToList();
+
+                        var myIndex = boxes.IndexOf(this);
+
+                        if(myIndex-1 >= 0)
+                        {
+                            MousePress(MouseButton.Left);
+                            boxes[myIndex - 1].Click();
+                            return;
+                        }
+                    }
+                }
+
+                if (key == Keys.Down)
+                {
+                    if (parent is UIElement element)
+                    {
+                        var boxes = element.children.Where(x => x is UITextBox).ToList();
+
+                        var myIndex = boxes.IndexOf(this);
+
+                        if (myIndex + 1 < boxes.Count)
+                        {
+                            MousePress(MouseButton.Left);
+                            boxes[myIndex + 1].Click();
+                            return;
+                        }
+                    }
+                }
+
                 cursorPosition = Math.Clamp(cursorPosition, 0, Math.Max(0, myText.Length));
                 string keyValue = "";
                 if (key == Keys.Enter)
                 {
                     MousePress(MouseButton.Left);
-                } else if(key == Keys.OemOpenBrackets)
+                } 
+                else if(key == Keys.OemOpenBrackets)
                 {
                     AddCharacter("{");
-                } else if (key == Keys.OemCloseBrackets)
+                } 
+                else if (key == Keys.OemCloseBrackets)
                 {
                     AddCharacter("}");
-                } else if (key == Keys.Delete || key == Keys.Back)
+                } 
+                else if(key == Keys.Delete)
+                {
+                    if (myText.Length > 0)
+                    {
+                        myText = myText.Remove(Math.Clamp(cursorPosition+1, 0, myText.Length - 1), 1);
+                        onTextChange?.Invoke(this);
+                    }
+                }
+                else if (key == Keys.Back)
                 {
                     if (myText.Length > 0)
                     {
@@ -174,7 +225,8 @@ namespace HellTrail.Core.UI.Elements
                         myText = myText.Remove(Math.Clamp(cursorPosition, 0, myText.Length - 1), 1);
                         onTextChange?.Invoke(this);
                     }
-                }else if(key== Keys.OemMinus)
+                }
+                else if(key== Keys.OemMinus)
                 {
                     AddCharacter("-");
                 }
@@ -185,35 +237,43 @@ namespace HellTrail.Core.UI.Elements
                 else if (key == Keys.OemSemicolon)
                 {
                     AddCharacter(";");
-                } else if (key == Keys.OemQuotes)
+                } 
+                else if (key == Keys.OemQuotes)
                 {
                     if (Input.HeldKey(Keys.LeftShift) || Input.HeldKey(Keys.RightShift))
                         AddCharacter("\"");
                     else
                         AddCharacter("\'");
-                } else if ((key >= Keys.D0 && key <= Keys.D9))
+                } 
+                else if ((key >= Keys.D0 && key <= Keys.D9))
                 {
                     keyValue = Regex.Replace(key.ToString(), "[^0-9]", "");
                     AddCharacter(keyValue);
-                } else if (key == Keys.OemPeriod)
+                } 
+                else if (key == Keys.OemPeriod)
                 {
                     keyValue = ".";
                     AddCharacter(keyValue);
-                } else if (key == Keys.OemComma)
+                } 
+                else if (key == Keys.OemComma)
                 {
                     keyValue = ",";
                     AddCharacter(keyValue);
-                } else if (key == Keys.Space)
+                } 
+                else if (key == Keys.Space)
                 {
                     keyValue = " ";
                     AddCharacter(keyValue);
-                } else if (key == Keys.Left)
+                } 
+                else if (key == Keys.Left)
                 {
                     cursorPosition--;
-                } else if (key == Keys.Right)
+                } 
+                else if (key == Keys.Right)
                 {
                     cursorPosition++;
-                } else if ((key >= Keys.A && key <= Keys.Z) || key == Keys.OemComma || key == Keys.OemPeriod)
+                } 
+                else if ((key >= Keys.A && key <= Keys.Z) || key == Keys.OemComma || key == Keys.OemPeriod)
                 {
                     keyValue = key.ToString();
                     if (!Input.HeldKey(Keys.LeftShift) && !Input.HeldKey(Keys.RightShift))
