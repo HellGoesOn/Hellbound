@@ -47,7 +47,7 @@ Entity_1
 		CollisionBox:
 			["16"; "10"; "{X:8 Y:-4}"];
 		CreateBattleOnContact:
-			[{"Slime", "Slime"}; {}];
+			["TestBG"; {"Slime", "Slime"}; {}];
 		Obesity:
 			["-0,02"];
 		TextureComponent:
@@ -62,7 +62,7 @@ Entity_2
 		CollisionBox:
 			["16"; "10"; "{X:8 Y:-4}"];
 		CreateBattleOnContact:
-			[{"Slime", "Slime"}; {}];
+			["TestBG"; {"Slime", "Slime"}; {}];
 		Obesity:
 			["-0,02"];
 		TextureComponent:
@@ -77,7 +77,7 @@ Entity_3
 		CollisionBox:
 			["16"; "10"; "{X:8 Y:-4}"];
 		CreateBattleOnContact:
-			[{"Slime", "Slime"}; {}];
+			["TestBG"; {"Slime", "Slime"}; {}];
 		Obesity:
 			["-0,02"];
 		TextureComponent:

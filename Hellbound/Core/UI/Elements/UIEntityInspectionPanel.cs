@@ -14,6 +14,7 @@ namespace HellTrail.Core.UI.Elements
     {
         Entity _inspectedEnity;
         UIPanel panel;
+        UIComponentChanger changer;
         public UIEntityInspectionPanel(Entity entity)
         {
             font = Assets.Arial;
@@ -156,12 +157,12 @@ namespace HellTrail.Core.UI.Elements
                 btnChange.SetPosition(-16, 2);
                 btnChange.onClick = (sender) =>
                 {
-                    var changer = new UIComponentChanger(components[int.Parse(sender.id)]);
+                    if (changer != null)
+                        Disown(changer);
+
+                    changer = new UIComponentChanger(components[int.Parse(sender.id)]);
                     changer.SetFont(Assets.Arial);
-                    changer.SetPosition(new Vector2(160));
-                    var debugText = UIManager.GetStateByName("debugState").GetElementById("debugText") as UIBorderedText;
                     Append(changer);
-                    debugText.text = $"POS={changer.GetPosition()} PARENT={changer.parent}";
                 };
                 btn.onClick = (sender) =>
                 {

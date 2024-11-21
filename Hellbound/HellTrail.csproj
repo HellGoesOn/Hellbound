@@ -46,6 +46,7 @@
     <None Remove="Assets\Textures\Slime.png" />
     <None Remove="Assets\Textures\Slime2.png" />
     <None Remove="Assets\Textures\Slime3.png" />
+    <None Remove="Assets\Textures\Space.png" />
     <None Remove="Assets\Textures\starepixel.png" />
     <None Remove="Assets\Textures\TestBG2.png" />
     <None Remove="Assets\Textures\Tileset.png" />

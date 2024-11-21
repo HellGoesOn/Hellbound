@@ -88,7 +88,10 @@ namespace HellTrail.Core.ECS
 
             for (int i= 0; i < fields.Length; i++)
             {
-                TextToFieldValue(fields[i], instance, values[i]);
+                if (values.Length >= i)
+                    TextToFieldValue(fields[i], instance, values[i]);
+                else
+                    TextToFieldValue(fields[i], instance, RuntimeHelpers.GetUninitializedObject(type).ToString());
             }
 
             return instance;

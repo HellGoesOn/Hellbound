@@ -76,7 +76,7 @@ namespace HellTrail
             slime.AddComponent(new Transform(0, 0));
             slime.AddComponent(new Obesity(-0.02f));
             slime.AddComponent(new Velocity(0, 0));
-            slime.AddComponent(new CreateBattleOnContact(["Slime", "Slime"], null));
+            slime.AddComponent(new CreateBattleOnContact("TestBG", ["Slime", "Slime"], null));
             slime.AddComponent(new CollisionBox(16, 10, new Vector2(8, -4)));
 
             var torch = prefabContext.Create();

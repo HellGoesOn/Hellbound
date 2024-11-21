@@ -30,7 +30,7 @@ namespace HellTrail.Core.ECS
                 Transform position = entity.GetComponent<Transform>();
                 ParticleEmitter emitter = entity.GetComponent<ParticleEmitter>();
 
-                Color clr = emitter.color[Main.rand.Next(emitter.color.Length)];
+                Color clr = emitter.color == null ? Color.White : emitter.color[Main.rand.Next(emitter.color.Length)];
 
                 var getMinX = Math.Min(emitter.randMinX, emitter.randMaxX);
                 var getMinY = Math.Min(emitter.randMinY, emitter.randMaxY);
@@ -50,7 +50,7 @@ namespace HellTrail.Core.ECS
                 if (!emitter.additive)
                     for (int j = 0; j < emitter.amountPerFrame; j++)
                     {
-                        Particle part = ParticleManager.NewParticle(new Vector3(position.position + offset, 0), new Vector3(velocity.X, 0, velocity.Y), emitter.lifeTime);
+                        Particle part = ParticleManager.NewParticle(new Vector3(position.position + offset, 0), new Vector3(velocity.X, velocity.Y, 0 ), emitter.lifeTime);
                         part.color = clr;
                         part.scale = scale;
                         part.diesToGravity = false;
@@ -59,7 +59,7 @@ namespace HellTrail.Core.ECS
                 else
                     for (int j = 0; j < emitter.amountPerFrame; j++)
                     {
-                        Particle part = ParticleManager.NewParticleAdditive(new Vector3(position.position + offset, 0), new Vector3(velocity.X, 0, velocity.Y), emitter.lifeTime);
+                        Particle part = ParticleManager.NewParticleAdditive(new Vector3(position.position + offset, 0), new Vector3(velocity.X, velocity.Y, 0 ), emitter.lifeTime);
                         part.color = clr;
                         part.scale = scale;
                         part.diesToGravity = false;

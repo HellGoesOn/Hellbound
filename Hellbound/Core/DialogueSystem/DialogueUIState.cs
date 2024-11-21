@@ -44,29 +44,32 @@ namespace HellTrail.Core.DialogueSystem
             dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight - 180 - 16));
             dialogueText = new UIBorderedText("")
             {
-                lineBreak = 120,
+                lineBreak = 80,
             };
-            dialoguePanel.SetPosition(16);
-            dialoguePanel.Append(dialogueText);
             Append(dialoguePanel);
+            dialoguePanel.SetPosition(16);
 
             speakerPanel = new UIPanel()
             {
                 size = new Vector2(180, 40),
             };
+            dialoguePanel.Append(speakerPanel);
             speakerPanel.SetPosition(new Vector2(16, -48));
 
             speakerText = new UIBorderedText("")
             {
             };
+            dialoguePanel.Append(dialogueText);
             speakerPanel.SetPosition(new Vector2(16, 8));
             actionsText = new("[E] Next")
             {
             };
+            dialoguePanel.Append(actionsText);
             actionsText.SetPosition(new Vector2(16, 140));
             speakerPanel.Append(speakerText);
-            dialoguePanel.Append(speakerPanel);
-            dialoguePanel.Append(actionsText);
+            dialogueText.SetPosition(16);
+            speakerPanel.SetPosition(16, -48);
+            speakerText.SetPosition(16, 8);
         }
 
         public override void Update()

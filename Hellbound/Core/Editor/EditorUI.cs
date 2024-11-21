@@ -13,6 +13,7 @@ using HellTrail.Core.UI.Elements;
 using Microsoft.Xna.Framework.Graphics;
 using HellTrail.Core.ECS;
 using HellTrail.Core.ECS.Components;
+using HellTrail.Extensions;
 
 namespace HellTrail.Core.Editor
 {
@@ -363,6 +364,7 @@ namespace HellTrail.Core.Editor
                 IGameState con = Main.instance.GetGameState();
                 Camera cam = con.GetCamera();
                 cam.centre += (camAnchor-Input.MousePosition)*cam.zoom;
+                cam.centre = cam.centre.ToInt();
             }
         }
 

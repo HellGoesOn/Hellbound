@@ -10,6 +10,8 @@ namespace HellTrail.Core.UI
 {
     public class UIElement : IUIElement
     {
+        bool capturedMouseLastFrame;
+
         public string id;
 
         public UIElement()
@@ -26,6 +28,8 @@ namespace HellTrail.Core.UI
         public UIEventHandler onUpdate;
         public UIEventHandler onClick;
         public UIEventHandler onLoseParent;
+        public UIEventHandler onMouseEnter;
+        public UIEventHandler onMouseLeave;
         public List<UIElement> children = [];
         public List<UIElement> _childrenToDisown = [];
         public IUIElement parent;
@@ -56,9 +60,22 @@ namespace HellTrail.Core.UI
                     && mpos.Y >= GetPosition().Y && mpos.Y <= GetPosition().Y + size.Y * scale.Y)
                 {
                     isMouseHovering = true;
+
+                    if (isMouseHovering && !capturedMouseLastFrame)
+                    {
+                        onMouseEnter?.Invoke(this);
+                    }
+
                     UIManager.hoveredElement = this;
                 }
             }
+
+            if(capturedMouseLastFrame && !isMouseHovering)
+            {
+                onMouseLeave?.Invoke(this);
+            }
+
+
 
             foreach (UIElement child in children)
                 child.Update();
@@ -70,6 +87,8 @@ namespace HellTrail.Core.UI
                 children.Remove(child);
 
             _childrenToDisown.Clear();
+
+            capturedMouseLastFrame = isMouseHovering;
         }
 
         public virtual void Click()

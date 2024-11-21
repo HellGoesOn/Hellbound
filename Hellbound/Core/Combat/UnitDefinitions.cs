@@ -1,5 +1,6 @@
 ﻿using HellTrail.Core.Combat.Abilities;
 using HellTrail.Core.Combat.Abilities.Fire;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,14 @@ namespace HellTrail.Core.Combat
             protag.stats.speed = 7;
             GlobalPlayer.ProtagAnimations(protag);
 
+            Unit peas = DefineUnit("Peas");
+            peas.sprite = "Peas";
+            peas.name = "Peas";
+            peas.ai = new BasicAI();
+
+            peas.resistances = new ElementalResistances(1f, 1f, 1f, 1f, 1f, 0f);
+            peas.BattleStation = new Vector2(90, 90);
+
             Unit slime = DefineUnit("Slime");
             slime.name = "Slime";
             slime.ai = new BasicAI();
@@ -37,6 +46,18 @@ namespace HellTrail.Core.Combat
                 baseDamage = 10
             };
             slime.abilities.Add(ooze);
+            Unit dog = DefineUnit("Dog");
+            dog.name = "Dog";
+            dog.sprite = "WhatDaDogDoin2";
+            dog.ai = new BasicAI();
+            dog.abilities.Add(new BasicAttack()
+            {
+                Name = "Bite",
+                baseDamage = 10
+            });
+            dog.abilities.Add(new Agi());
+            dog.abilities.Add(new Maragi());
+            dog.abilities.Add(new Dia());
         }
 
         private static Unit DefineUnit(string name)

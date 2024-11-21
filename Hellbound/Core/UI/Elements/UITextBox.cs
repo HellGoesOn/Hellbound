@@ -40,6 +40,13 @@ namespace HellTrail.Core.UI.Elements
             allowedRepeatRate = 15;
             maxCharacters = 16;
             capturesMouse = true;
+
+            onLoseParent += (sender) =>
+            {
+                this.onTextSubmit = null;
+                this.onTextChange = null;
+            };
+
         }
 
         public override void OnUpdate()
@@ -153,6 +160,12 @@ namespace HellTrail.Core.UI.Elements
                 if (key == Keys.Enter)
                 {
                     MousePress(MouseButton.Left);
+                } else if(key == Keys.OemOpenBrackets)
+                {
+                    AddCharacter("{");
+                } else if (key == Keys.OemCloseBrackets)
+                {
+                    AddCharacter("}");
                 } else if (key == Keys.Delete || key == Keys.Back)
                 {
                     if (myText.Length > 0)

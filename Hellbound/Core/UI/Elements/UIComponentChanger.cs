@@ -1,4 +1,5 @@
 ﻿using HellTrail.Core.ECS;
+using HellTrail.Render;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace HellTrail.Core.UI.Elements
         FieldInfo[] infos;
         public UIComponentChanger(IComponent component)
         {
+            font = Assets.Arial;
             this.component = component;
 
             UIPanel drag = new UIDraggablePanel()
@@ -29,13 +31,21 @@ namespace HellTrail.Core.UI.Elements
             infos = component.GetType().GetFields();
             texts = new UITextBox[infos.Length];
 
+            Vector2 accumulatedSize2 = new Vector2(300, 46);
+
+            for(int i = 0; i < infos.Length; i++)
+            {
+                UIBorderedText text = new UIBorderedText(infos[i].Name);
+                text.SetPosition(accumulatedSize2.X + 12, accumulatedSize2.Y);
+                accumulatedSize2.Y += font.MeasureString("M").Y + 16;
+                panel.Append(text);
+            }
+
             Vector2 accumulatedSize = new Vector2(300, 40);
             for (int i = 0; i < infos.Length; i++)
             {
                 StringBuilder sb = new StringBuilder();
                 ComponentIO.FieldToText(component, sb, infos[i]);
-                UIBorderedText text = new UIBorderedText(infos[i].Name);
-                text.SetPosition(accumulatedSize.X + 12, 8);
                 texts[i] = new UITextBox()
                 {
                     id = $"{i}",
@@ -43,11 +53,18 @@ namespace HellTrail.Core.UI.Elements
                     maxCharacters = 255
                 };
                 texts[i].size = new Vector2(300, 40);
-                texts[i].Append(text);
 
                 texts[i].SetPosition(0, accumulatedSize.Y);
                 texts[i].onTextChange = OnTextChange;
                 texts[i].onTextSubmit = OnTextSubmit;
+                texts[i].onMouseEnter = (sender) =>
+                {
+                    (sender as UITextBox).color = Color.Yellow;
+                };
+                texts[i].onMouseLeave = (sender) =>
+                {
+                    (sender as UITextBox).color = Color.White;
+                };
 
                 accumulatedSize.Y += texts[i].size.Y;
                 panel.Append(texts[i]);
@@ -61,11 +78,16 @@ namespace HellTrail.Core.UI.Elements
                     parent.Disown(this);
                 }
             };
-            panel.size = accumulatedSize;
+            UIText txt = new UIText(this.component.GetType().Name);
+            txt.SetPosition(16, 8);
+
+            panel.size = accumulatedSize + new Vector2(0, texts.Last().size.Y);
             panel.SetPosition(0, 32);
+            panel.Append(txt);
             drag.Append(panel);
             drag.Append(closeButton);
             this.Append(drag);
+            drag.SetPosition(Renderer.UIPreferedWidth * 0.5f - 150, Renderer.UIPreferedHeight * 0.5f - panel.size.Y * 0.5f);
         }
 
         public void OnTextChange(UIElement sender)

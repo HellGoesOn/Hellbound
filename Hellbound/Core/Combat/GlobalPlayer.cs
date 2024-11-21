@@ -20,39 +20,28 @@ namespace HellTrail.Core.Combat
         {
             Unit protag = UnitDefinitions.Get("Doorkun");
 
-            Unit sidekick = new()
-            {
-                name = "Dog",
-                sprite = "WhatDaDogDoin2",
-                ai = new BasicAI()
-            };
-            sidekick.abilities.Add(new BasicAttack()
-            {
-                Name = "Bite",
-                baseDamage = 10
-            });
-            sidekick.abilities.Add(new Agi());
-            sidekick.abilities.Add(new Maragi());
-            sidekick.abilities.Add(new Dia());
+            protag.animations.Clear();
+
+            ProtagAnimations(protag);
+
 
             AddPartyMember(protag);
-            AddPartyMember(sidekick);
+            AddPartyMember(UnitDefinitions.Get("Dog"));
             //ActiveParty.Add(sidekick);
         }
 
         public static void AddPartyMember(Unit newUnit)
         {
             ActiveParty.Add(newUnit);
-            DefaultBattleStations();
+            DefaultBattleStations(ActiveParty);
         }
 
-        public static void DefaultBattleStations()
+        public static void DefaultBattleStations(List<Unit> units)
         {
             int i = 0;
-            for(i = ActiveParty.Count-1; i >= 0; i--)
+            for(i = units.Count-1; i >= 0; i--)
             {
-                Unit unit = ActiveParty[ActiveParty.Count-1-i];
-                unit.team = Team.Player;
+                Unit unit = units[units.Count-1-i];
                 unit.BattleStation = new Vector2(60 + 4 * i + 32 * (i % 2), 70 + 16 * i - 24 * (i % 2));
             }
         }
