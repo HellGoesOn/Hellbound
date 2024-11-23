@@ -66,72 +66,6 @@ namespace HellTrail.Core.Overworld
 
             triggers.RemoveAll(x => x.activated);
 
-            if (Input.RMBClicked)
-            {
-                if(context.entityCount < context.entities.Length)
-                {
-
-                    //var entity = context.Create();
-                    //entity.AddComponent(new Transform(Input.MousePosition));
-                    //entity.AddComponent(new TextureComponent("FlipOff", new Vector2(16)));
-                    //entity.AddComponent(new AnimationComponent(32, 32, 15,
-                    //    [new Vector2(0, 0),
-                    //new Vector2(0, 1),
-                    //new Vector2(0, 2),
-                    //new Vector2(0, 2),
-                    //new Vector2(0, 2),
-                    //new Vector2(0, 3),
-                    //new Vector2(0, 3),
-                    //new Vector2(0, 3),
-                    //new Vector2(0, 3),
-                    //new Vector2(0, 3),
-                    //new Vector2(0, 1),
-                    //])
-                    //    );
-
-                    var entity = context.CopyFrom(Main.instance.prefabContext.entities[1]);
-                    entity.AddComponent(new Transform(Input.MousePosition));
-                    var xx = Main.rand.Next(-100, 101);
-                    var yy = Main.rand.Next(-100, 101);
-                    entity.AddComponent(new ParticleEmitter
-                        (1,
-                        25,
-                        -15,
-                        15,
-                        -60,
-                        -10,
-                        new Vector2(0.01f, 0.01f),
-                        [Vector2.One * 2, Vector2.One],
-                        [Color.Yellow, Color.Red, Color.Orange, Color.Crimson, Color.Black],
-                        new Vector2(-1, -7),
-                        new Vector2(2),
-                        false));
-
-                    entity = context.CopyFrom(Main.instance.prefabContext.entities[1]);
-                    entity.RemoveComponent<TextureComponent>();
-                    entity.AddComponent(new Transform(Input.MousePosition));
-                    xx = Main.rand.Next(-100, 101);
-                    yy = Main.rand.Next(-100, 101);
-                    entity.AddComponent(new ParticleEmitter
-                        (1,
-                        15,
-                        -15,
-                        15,
-                        -60,
-                        -10,
-                        new Vector2(0.01f, 0.01f),
-                        [Vector2.One * 2, Vector2.One],
-                        [Color.Yellow, Color.Red, Color.Orange, Color.Crimson, Color.Black],
-                        new Vector2(-1, -7),
-                        new Vector2(2),
-                        true));
-
-
-                    entity.AddComponent(new FollowingOther(-1));
-                    entity.AddComponent(new TestComponent(13, [12, 14, 16], [Vector2.One, Vector2.Zero, Vector2.UnitX], 17));
-                }    
-            }
-
             /*
             if (Input.HeldKey(Keys.LeftShift))
                 cam.zoom += 0.02f;
@@ -155,15 +89,15 @@ namespace HellTrail.Core.Overworld
             systems.Draw(context, spriteBatch);
         }
 
-        public void SaveFile(string path)
+        public void SaveFile(string path, string name)
         {
-            string savePath = GameOptions.WorldDirectory;
-            if (!Directory.Exists(savePath))
+            if (!Directory.Exists(Environment.CurrentDirectory + path))
             {
-                Directory.CreateDirectory(savePath);
+                Directory.CreateDirectory(Environment.CurrentDirectory + path);
             }
 
             StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"[{context.entities.Length}]");
             sb.Append("[ ");
             for (int i = 0; i < tileMap.height; i++)
             {
@@ -186,46 +120,51 @@ namespace HellTrail.Core.Overworld
                 if (i != entities.Count - 1)
                     sb.Append(Environment.NewLine);
             }
-            File.WriteAllText(savePath + $"\\{path}.scn", sb.ToString());
+            File.WriteAllText(Environment.CurrentDirectory + path + $"\\{name}.scn", sb.ToString());
         }
 
-        public void LoadFromFile(string path)
+        public static World LoadFromFile(string path, string name)
         {
-            string finalPath = GameOptions.WorldDirectory + $"{path}.scn";
+            string finalPath = Environment.CurrentDirectory + path + $"{name}.scn";
 
             string text = File.ReadAllText(finalPath);
+            string entityCT = Regex.Match(text, @"\[.*\]").Value;
+            int entityCount = int.Parse(Regex.Replace(entityCT, @"[\[\]]", ""));
 
-            string tileText = Regex.Match(text, @$".*\]{Environment.NewLine}{Environment.NewLine}", RegexOptions.Singleline).Value;
+            World world = new World(entityCount);
+            string tileText = Regex.Match(text.Substring(entityCT.Length), @$".*\]{Environment.NewLine}{Environment.NewLine}", RegexOptions.Singleline).Value;
 
             string[] strings = tileText.Split("\n", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             string[] numbers = Regex.Replace(strings[0], "[\\[\\]]", "").Trim().Split(" ");
 
-            tileMap = new TileMap(numbers.Length, strings.Length);
+            world.tileMap = new TileMap(numbers.Length, strings.Length);
 
-            if(numbers.Length > tileMap.width)
+            if(numbers.Length > world.tileMap.width)
                 throw new Exception("Attempting to load map too big for the current world");
 
             for (int i = 0; i < strings.Length; i++)
             {
                 numbers = Regex.Replace(strings[i], "[\\[\\]]", "").Trim().Split(" ");
 
-                if (strings.Length > tileMap.height)
+                if (strings.Length > world.tileMap.height)
                     throw new Exception("Attempting to load map too big for the current world");
 
                 for (int j = 0; j < numbers.Length; j++)
                 {
-                    tileMap[j, i] = int.Parse(numbers[j]);
+                    world.tileMap[j, i] = int.Parse(numbers[j]);
                 }
             }
 
-            tileMap.BakeMap();
+            world.tileMap.BakeMap();
 
-            context.Armaggedon();
+            world.context.Armaggedon();
 
             // TO-DO: move to different class
 
-            if(!string.IsNullOrWhiteSpace(text.Substring(tileText.Length)))
-            Entity.DeserializeAll(text.Substring(tileText.Length), context);
+            if(!string.IsNullOrWhiteSpace(text.Substring(entityCT.Length + tileText.Length)))
+                Entity.DeserializeAll(text.Substring(entityCT.Length + tileText.Length), world.context);
+
+            return world;
         }
 
         public Camera GetCamera() => CameraManager.overworldCamera;

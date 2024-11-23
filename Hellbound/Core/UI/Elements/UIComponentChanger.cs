@@ -16,7 +16,7 @@ namespace HellTrail.Core.UI.Elements
         IComponent component;
         UITextBox[] texts;
         FieldInfo[] infos;
-        public UIComponentChanger(IComponent component)
+        public UIComponentChanger(IComponent component, Vector2 position)
         {
             font = Assets.Arial;
             this.component = component;
@@ -50,7 +50,7 @@ namespace HellTrail.Core.UI.Elements
                 {
                     id = $"{i}",
                     myText = Regex.Replace(sb.ToString(), "\"", ""),
-                    maxCharacters = 255
+                    maxCharacters = 1000
                 };
                 texts[i].size = new Vector2(300, 40);
 
@@ -87,7 +87,7 @@ namespace HellTrail.Core.UI.Elements
             drag.Append(panel);
             drag.Append(closeButton);
             this.Append(drag);
-            drag.SetPosition(Renderer.UIPreferedWidth * 0.5f - 150, Renderer.UIPreferedHeight * 0.5f - panel.size.Y * 0.5f);
+            drag.SetPosition(position);
         }
 
         public void OnTextChange(UIElement sender)

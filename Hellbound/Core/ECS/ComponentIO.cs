@@ -1,6 +1,7 @@
 ﻿using HellTrail.Core.Combat;
 using HellTrail.Extensions;
 using Microsoft.Xna.Framework;
+using System.Net.WebSockets;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -88,13 +89,31 @@ namespace HellTrail.Core.ECS
 
             for (int i= 0; i < fields.Length; i++)
             {
-                if (values.Length >= i)
+                if (values.Length > i)
                     TextToFieldValue(fields[i], instance, values[i]);
                 else
                     TextToFieldValue(fields[i], instance, RuntimeHelpers.GetUninitializedObject(type).ToString());
             }
 
             return instance;
+        }
+
+        public static void SetDefaultField(IComponent component, FieldInfo field)
+        {
+            if (field.FieldType.IsArray)
+            {
+                var elementType = field.FieldType.GetElementType();
+                var emptyObject = RuntimeHelpers.GetUninitializedObject(elementType);
+                var arr = Array.CreateInstance(elementType, 1);
+                arr.SetValue(emptyObject, 0);
+                field.SetValue(component, arr);
+            } else
+            {
+                if(field.FieldType == typeof(string))
+                    field.SetValue(component, string.Empty);
+                else
+                    field.SetValue(component, RuntimeHelpers.GetUninitializedObject(field.FieldType));
+            }
         }
 
         public static void TextToFieldValue(FieldInfo field, IComponent instance, string value)
@@ -133,7 +152,12 @@ namespace HellTrail.Core.ECS
                     {
                         noQuotes.TryColor(out var color);
                         arr.SetValue(color, elementIndex);
-                    } else
+                    } else if(elementType == typeof(IndexTuple))
+                    {
+                        IndexTuple.TryParse(noQuotes, out var indexTuple);
+                        arr.SetValue(indexTuple, elementIndex);
+                    }
+                    else
                     {
                         arr.SetValue(Convert.ChangeType(elements[elementIndex], elementType), elementIndex);
                     }
@@ -151,6 +175,10 @@ namespace HellTrail.Core.ECS
                     noQuotes.TryFrameData(out var frameData);
 
                     field.SetValue(instance, frameData);
+                } else if (field.FieldType == typeof(IndexTuple))
+                {
+                    IndexTuple.TryParse(noQuotes, out var indexTuple);
+                    field.SetValue(instance, indexTuple);
                 } else
                 {
                     field.SetValue(instance, Convert.ChangeType(noQuotes, field.FieldType));

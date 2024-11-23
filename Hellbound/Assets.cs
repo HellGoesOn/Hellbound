@@ -177,6 +177,8 @@ namespace HellTrail
 
         public static Texture2D GetTexture(string id)
         {
+            if (string.IsNullOrEmpty(id))
+                return Textures["Pixel"];
             if(Textures.TryGetValue(id, out Texture2D texture))
             {
                 return texture;

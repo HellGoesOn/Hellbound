@@ -1,4 +1,5 @@
 ﻿using HellTrail.Core.ECS;
+using HellTrail.Core.ECS.Components;
 using HellTrail.Extensions;
 using HellTrail.Render;
 using Microsoft.Xna.Framework;
@@ -15,13 +16,15 @@ namespace HellTrail.Core.UI.Elements
         Entity _inspectedEnity;
         UIPanel panel;
         UIComponentChanger changer;
+        UIComponentSelector componentSelector;
         public UIEntityInspectionPanel(Entity entity)
         {
             font = Assets.Arial;
             _inspectedEnity = entity;
             entity.OnDestroy += (_) =>
             {
-                parent.Disown(this);
+                if(parent != null)
+                    parent.Disown(this);
                 _inspectedEnity = null;
                 entity.OnComponentAdded -= UpdateEntity;
                 entity.OnComponentRemoved -= UpdateEntity;
@@ -50,7 +53,7 @@ namespace HellTrail.Core.UI.Elements
             {
                 id="entityText"
             };
-            entityText.SetPosition(34, 6);
+            entityText.SetPosition(96, 6);
             draggablePanel.Append(entityText);
 
             panel = new UIPanel()
@@ -77,7 +80,13 @@ namespace HellTrail.Core.UI.Elements
                 scale = Vector2.One * 2,
                 onClick = (sender) =>
                 {
-                    this.parent.Disown(this);
+                    foreach (UIElement element in parent.Children)
+                    {
+                        if(element is UIEntityInspectionPanel && element.parent != null)
+                        {
+                            element.parent.Disown(element);
+                        }
+                    }
                 }
             };
             btnAll.SetPosition(600 - 64, 0);
@@ -88,16 +97,44 @@ namespace HellTrail.Core.UI.Elements
                 scale = Vector2.One * 2,
                 onClick = (sender) =>
                 {
-                    Main.instance.activeWorld.context.Destroy(_inspectedEnity);
+                    Main.instance.ActiveWorld.context.Destroy(_inspectedEnity);
                 }
             };
             killEntity.SetPosition(0, 0);
+
+            UIWindowButton addComponent = new UIWindowButton(WindowButtonType.Wrench, "Add Component")
+            {
+                drawsPanel = true,
+                scale = Vector2.One * 2,
+                onClick = (sender) =>
+                {
+                    if(componentSelector != null)
+                        Disown(componentSelector);
+                    Append(componentSelector = new UIComponentSelector(entity));
+                    componentSelector.SetPosition(draggablePanel.GetPosition() + new Vector2(68, 40));
+                }
+            };
+            addComponent.SetPosition(32, 0);
+
+            UIWindowButton saveEntity = new UIWindowButton(WindowButtonType.CheckMark, "Save to prefab")
+            {
+                color = Color.Lime,
+                drawsPanel = true,
+                scale = Vector2.One * 2,
+                onClick = (sender) =>
+                {
+                    Append(new UISaveFileElement<Entity>(new EntitySaver(_inspectedEnity), "\\Content\\Prefabs\\"));
+                }
+            };
+            saveEntity.SetPosition(64, 0);
+
 
             draggablePanel.Append(panel);
             draggablePanel.Append(btn);
             draggablePanel.Append(btnAll);
             draggablePanel.Append(killEntity);
-
+            draggablePanel.Append(addComponent);
+            draggablePanel.Append(saveEntity);
             this.Append(draggablePanel);
         }
 
@@ -112,13 +149,6 @@ namespace HellTrail.Core.UI.Elements
             }
 
             components = e.GetAllComponents();
-
-            if(components != null && components.Length <= 0)
-            {
-                Main.instance.activeWorld.context.Destroy(e);
-                this.parent.Disown(this);
-                return;
-            }
 
             texts = new UIText[components.Length];
 
@@ -160,7 +190,7 @@ namespace HellTrail.Core.UI.Elements
                     if (changer != null)
                         Disown(changer);
 
-                    changer = new UIComponentChanger(components[int.Parse(sender.id)]);
+                    changer = new UIComponentChanger(components[int.Parse(sender.id)], sender.GetPosition() + new Vector2(68, 0));
                     changer.SetFont(Assets.Arial);
                     Append(changer);
                 };
@@ -171,10 +201,11 @@ namespace HellTrail.Core.UI.Elements
                 };
                     
                 texts[i].Append(btnChange);
-                texts[i].Append(btn);
+                if (components[i] is not Transform)
+                    texts[i].Append(btn);
             }
 
-            panel.size.Y = accumulatedOffset.Y + texts[0].size.Y + 12;
+            panel.size.Y = accumulatedOffset.Y + texts[texts.Length-1].size.Y + 12;
         }
 
         public override void OnUpdate()

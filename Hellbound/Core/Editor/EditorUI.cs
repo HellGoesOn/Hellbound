@@ -24,9 +24,7 @@ namespace HellTrail.Core.Editor
         public int lastPanel;
         private int selectedTile;
         public UIPanel[] panels;
-
-        Entity inspectedEntity;
-        string currentScene = "";
+        string currentScene = "EmptyScene";
         Vector2 camAnchor;
 
         private bool subscribedEvent;
@@ -34,6 +32,7 @@ namespace HellTrail.Core.Editor
         public const int PANEL_WIDTH = 800;
         public const int PANEL_HEIGHT = 300;
 
+        Entity prefabEntity;
         public EditorUI()
         {
             panels = new UIPanel[6];
@@ -102,48 +101,53 @@ namespace HellTrail.Core.Editor
 
             }.SetPosition(16));
 
-            panels[0].Append(new UIBorderedText("")
-            {
-                id = "successful",
-            }.SetPosition(96 + Assets.Arial.MeasureString("Inspect Entities").X + Assets.Arial.MeasureString("Apply changes").X, 16));
+            UITextBox prefabPath = new UITextBox();
+            prefabPath.size.X = 240;
+            prefabPath.maxCharacters = 500;
+            prefabPath.myText = "\\Content\\Prefabs\\";
+            prefabPath.SetFont(Assets.Arial);
+            prefabPath.SetPosition(16, 60);
 
-            panels[0].Append(new UIBorderedText("Apply changes")
+            UIBorderedText loadPrefabText = new UIBorderedText("");
+
+            UITextBox prefabName = new UITextBox();
+            prefabName.size.X = 240;
+            prefabName.maxCharacters = 500;
+            prefabName.myText = "Base";
+            prefabName.SetFont(Assets.Arial);
+            prefabName.SetPosition(256, 60);
+            prefabName.onTextSubmit = (sender) =>
             {
-                id = "trySerialize",
-                size = Assets.Arial.MeasureString("Apply changes"),
-                capturesMouse = true,
-                onClick = (sender) =>
+                try
                 {
-                    try
-                    {
-                        Context con = Main.instance.activeWorld.context;
-                        var entityText = (panels[0].GetElementById("inspectedEntity") as UIBorderedText);
-                        string[] text = entityText.text.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
-
-                        for (int i = 0; i < text.Length; i++) 
-                        {
-                            inspectedEntity.AddComponent(ComponentIO.DeserializeComponent(text[i]));
-                        }
-
-                        if (inspectedEntity != null)
-                        {
-                            var yes = (panels[0].GetElementById("successful") as UIBorderedText);
-                            yes.text = "Successful!";
-                            yes.color = Color.Lime;
-                        }
-                    }
-                    catch
-                    {
-                        var no = (panels[0].GetElementById("successful") as UIBorderedText);
-                        no.text = "ERROR";
-                        no.color = Color.Red;
-                    }
+                    Input.OnMousePressed -= CreatePrefab;
+                    Input.OnMouseHeld -= DragEntity;
+                    Input.OnMouseReleased -= ReleaseEntity;
+                    prefabEntity = EntitySaver.Load(prefabPath.myText, prefabName.myText);
+                    Input.OnMousePressed += CreatePrefab;
+                    loadPrefabText.text = $"Loaded {prefabName.myText} prefab. Left Click to place. Right Click to deactivate";
+                    loadPrefabText.color = Color.Lime;
                 }
-            }.SetPosition(48 + Assets.Arial.MeasureString("Inspect Entities").X, 12));
+                catch
+                {
+                    Input.OnMousePressed -= CreatePrefab;
+                    Input.OnMouseHeld -= DragEntity;
+                    Input.OnMouseReleased -= ReleaseEntity;
+                    loadPrefabText.text = "ERROR: Prefab not found!";
+                    loadPrefabText.color = Color.Red;
+                }
+            };
+
+
+            loadPrefabText.SetPosition(16, 100);
+
+            panels[0].Append(loadPrefabText);
+            panels[0].Append(prefabName);
+            panels[0].Append(prefabPath);
 
             panels[1].Append(systemInspectorTitle);
 
-            World con = Main.instance.activeWorld;
+            World con = Main.instance.ActiveWorld;
             int off = 0;
             foreach (var system in con.systems.GetAll())
             {
@@ -252,40 +256,74 @@ namespace HellTrail.Core.Editor
             panels[5].Append(new UIBorderedText("Scenes")
             {
             }.SetPosition(16, 12));
+            //LoadScenes();
 
+            UITextBox scenePath = new UITextBox();
+            scenePath.size.X = 240;
+            scenePath.maxCharacters = 500;
+            scenePath.myText = "\\Content\\Scenes\\";
+            scenePath.SetFont(Assets.Arial);
+            scenePath.SetPosition(16, 60);
+
+            UITextBox sceneName = new UITextBox();
+            sceneName.size.X = 240;
+            sceneName.maxCharacters = 500;
+            sceneName.myText = "BaseScene";
+            sceneName.SetFont(Assets.Arial);
+            sceneName.SetPosition(256, 60);
+
+            var newText = new UIBorderedText("Load Scene")
+            {
+                size = Assets.Arial.MeasureString("Load File"),
+                capturesMouse = true,
+                onClick = (sender) =>
+                {
+                    try
+                    {
+                        currentScene = Path.GetFileNameWithoutExtension(sender.id);
+                        Main.instance.ActiveWorld = World.LoadFromFile(scenePath.myText, sceneName.myText);
+                    }
+                    catch { }
+                },
+                onMouseEnter = (sender) =>
+                {
+                    (sender as UIBorderedText).color = Color.Yellow;
+                },
+                onMouseLeave = (sender) =>
+                {
+                    (sender as UIBorderedText).color = Color.White;
+                }
+            };
             panels[5].Append(new UIBorderedText("Save Scene")
             {
                 capturesMouse = true,
                 size = Assets.Arial.MeasureString("Save Scene"),
                 onClick = (sender) =>
                 {
-                    if (!string.IsNullOrEmpty(currentScene))
+                    try
                     {
-                        World con = Main.instance.activeWorld;
-                        con.SaveFile(currentScene);
-                        LoadScenes();
+                        World con = Main.instance.ActiveWorld;
+                        con.SaveFile(scenePath.myText, sceneName.myText);
                     }
-                }
-            }.SetPosition(16, panels[5].size.Y - 32));
-
-            panels[5].Append(new UIBorderedText("Save as New Scene")
-            {
-                capturesMouse = true,
-                size = Assets.Arial.MeasureString("Save as New Scene"),
-                onClick = (sender) =>
+                    catch { }
+                },
+                onMouseEnter = (sender) =>
                 {
-                    if (!string.IsNullOrEmpty(currentScene))
-                    {
-                        int count = (sender.parent as UIElement).children.Count(x => x.id.Contains(".scn"));
-                        World con = Main.instance.activeWorld;
-                        con.SaveFile($"NewScene{count}");
-                        LoadScenes();
-                    }
+                    (sender as UIBorderedText).color = Color.Yellow;
+                },
+                onMouseLeave = (sender) =>
+                {
+                    (sender as UIBorderedText).color = Color.White;
                 }
-            }.SetPosition(48 + Assets.Arial.MeasureString("Save Scene").X, panels[5].size.Y - 32));
-            LoadScenes();
+            }.SetPosition(16, 160));
 
-            foreach(UIPanel panel in panels)
+            newText.SetPosition(16, 200);
+
+            panels[5].Append(scenePath);
+            panels[5].Append(sceneName);
+            panels[5].Append(newText);
+
+            foreach (UIPanel panel in panels)
             {
                 panel.SetFont(Assets.Arial);
             }
@@ -310,7 +348,7 @@ namespace HellTrail.Core.Editor
                     onClick = (sender) =>
                     {
                         currentScene = Path.GetFileNameWithoutExtension(sender.id);
-                        Main.instance.activeWorld.LoadFromFile(Path.GetFileNameWithoutExtension(sender.id));
+                        Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", Path.GetFileNameWithoutExtension(sender.id));
                     }
                 };
 
@@ -322,22 +360,66 @@ namespace HellTrail.Core.Editor
 
         public override void Update()
         {
-            if(active && !subscribedEvent)
+            CheckSubscriptions();
+
+            base.Update();
+        }
+
+        Entity draggedEntity;
+
+        private void DragEntity(MouseButton button)
+        {
+            if (draggedEntity != null)
+                draggedEntity.GetComponent<Transform>().position = Input.MousePosition;
+        }
+
+        private void ReleaseEntity(MouseButton button)
+        {
+            draggedEntity = null;
+            Input.OnMouseReleased -= ReleaseEntity;
+            Input.OnMouseHeld -= DragEntity;
+        }
+
+        private void CreatePrefab(MouseButton button)
+        {
+            if (UIManager.hoveredElement != null)
+                return;
+
+            if (button == MouseButton.Left)
+            {
+                var entity = Main.instance.ActiveWorld.context.CopyFrom(prefabEntity);
+                draggedEntity = entity;
+                draggedEntity.GetComponent<Transform>().position = Input.MousePosition;
+                Input.OnMouseHeld += DragEntity;
+                Input.OnMouseReleased += ReleaseEntity;
+            }
+
+            if (button == MouseButton.Right)
+            {
+                Input.OnMousePressed -= CreatePrefab;
+            }
+        }
+
+        public void CheckSubscriptions()
+        {
+            if (active && !subscribedEvent)
             {
                 Input.OnKeyPressed += PressedKey;
                 Input.OnMouseWheel += ScrollWheel;
                 Input.OnMouseHeld += OnMiddleMouse;
                 Input.OnMousePressed += AnchorCam;
                 subscribedEvent = true;
-            } else if(!active && subscribedEvent)
+            } else if (!active && subscribedEvent)
             {
                 Input.OnMouseWheel -= ScrollWheel;
                 Input.OnKeyPressed -= PressedKey;
                 Input.OnMousePressed -= AnchorCam;
+                Input.OnMouseHeld -= OnMiddleMouse;
+                Input.OnMousePressed -= CreatePrefab; 
+                Input.OnMouseHeld -= DragEntity;
+                Input.OnMouseReleased -= ReleaseEntity;
                 subscribedEvent = false;
             }
-
-            base.Update();
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -370,10 +452,10 @@ namespace HellTrail.Core.Editor
 
         List<UIElement> _elementsToDisown = [];
 
-        Group<Entity> group = Main.instance.activeWorld.context.GetGroup(Matcher<Entity>.AllOf(typeof(Transform)));
+        Group<Entity> group = Main.instance.ActiveWorld.context.GetGroup(Matcher<Entity>.AllOf(typeof(Transform)));
         private void InspectEntity(MouseButton button)
         {
-            if (button != MouseButton.Left || UIManager.hoveredElement != null)
+            if (UIManager.hoveredElement != null)
                 return;
             
             for(int i = 0; i < group.Count; i++)
@@ -384,9 +466,18 @@ namespace HellTrail.Core.Editor
                 if (mpos.X >= transform.position.X - 4 && mpos.X <= transform.position.X + 4
                     && mpos.Y >= transform.position.Y - 4 && mpos.Y <= transform.position.Y + 4)
                 {
-                    inspectedEntity = e;
-                    
-                    Append(new UIEntityInspectionPanel(e));
+
+                    if (button == MouseButton.Left)
+                    {
+                        var elem = new UIEntityInspectionPanel(e);
+                        Append(elem);
+                    }
+                    if (button == MouseButton.Right)
+                    {
+                        draggedEntity = e;
+                        Input.OnMouseHeld += DragEntity;
+                        Input.OnMouseReleased += ReleaseEntity;
+                    }
                 }
             }
         }
@@ -407,7 +498,7 @@ namespace HellTrail.Core.Editor
 
         private void ScrollWheel(int newValue, int oldValue)
         {
-            IGameState con = Main.instance.activeWorld;
+            IGameState con = Main.instance.ActiveWorld;
             if (newValue > oldValue)
             {
                 con.GetCamera().centre += con.GetCamera().centre * 0.1f;

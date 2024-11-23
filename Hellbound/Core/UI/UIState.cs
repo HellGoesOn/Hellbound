@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,10 +64,23 @@ namespace HellTrail.Core.UI
             newChild.RecalcPosition();
         }
 
-        public void Disown(IUIElement child)
+        public void Disown(IUIElement element, bool plannedToAdopt = false)
         {
-            _childrenToRemove.Add((UIElement)child);
-            (child as UIElement).parent = null;
+            if (!children.Contains(element))
+                return;
+
+            var killedElement = (element as UIElement);
+            killedElement.onLoseParent?.Invoke(killedElement);
+            if (!plannedToAdopt)
+            {
+                killedElement.onMouseEnter = null;
+                killedElement.onMouseLeave = null;
+                killedElement.onClick = null;
+                killedElement.onUpdate = null;
+                killedElement.onLoseParent = null;
+            }
+            killedElement.parent = null;
+            _childrenToRemove.Add(killedElement);
         }
 
 
@@ -76,6 +90,10 @@ namespace HellTrail.Core.UI
         }
 
         public UIElement GetElementById(string id) => GetElement(x => x.id == id);
+
+        public List<UIElement> Children => children;
+
+        public Vector2 GetPosition() => Vector2.Zero;
     }
 
     public delegate void UIStateEventHandler(UIState sender);

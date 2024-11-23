@@ -15,6 +15,8 @@ namespace HellTrail.Render
         public const int PreferedHeight = 180;
         public const int UIPreferedWidth = 1280;//1920;
         public const int UIPreferedHeight = 720;//1080;
+        //public const int UIPreferedHeight = 1080;
+        //public const int UIPreferedWidth = 1920;
 
         public const float UIMultiplierX = UIPreferedWidth / (float)PreferedWidth;
         public const float UIMultiplieY = UIPreferedHeight / (float)PreferedHeight;

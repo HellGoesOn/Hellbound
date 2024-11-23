@@ -34,25 +34,28 @@ namespace HellTrail
             Keys[] oldKeys = _oldKBState.GetPressedKeys();
             MouseState state = Mouse.GetState();
 
-            HandleMouse(state);
-
-            for (int i = 0; i < keys.Length; i++)
+            if (Main.instance.IsActive)
             {
-                if (oldKeys.Length <= 0 || !oldKeys.Contains(keys[i]))
-                    OnKeyPressed?.Invoke(keys[i]);
-            }
+                HandleMouse(state);
 
-            for (int i = 0; i < keys.Length; i++)
-            {
-                OnKeyHeld?.Invoke(keys[i]);
-            }
+                for (int i = 0; i < keys.Length; i++)
+                {
+                    if (oldKeys.Length <= 0 || !oldKeys.Contains(keys[i]))
+                        OnKeyPressed?.Invoke(keys[i]);
+                }
 
-            for (int i = 0; i < oldKeys.Length; i++)
-            {
-                if (keys.Length <= 0 || !keys.Contains(oldKeys[i]))
-                    OnKeyReleased?.Invoke(oldKeys[i]);
-            }
+                for (int i = 0; i < keys.Length; i++)
+                {
+                    OnKeyHeld?.Invoke(keys[i]);
+                }
 
+                for (int i = 0; i < oldKeys.Length; i++)
+                {
+                    if (keys.Length <= 0 || !keys.Contains(oldKeys[i]))
+                        OnKeyReleased?.Invoke(oldKeys[i]);
+                }
+            }
+      
             //_oldPos = ScaledMousePos;
             _oldMBState = Mouse.GetState();
             _oldKBState = Keyboard.GetState();

@@ -29,7 +29,7 @@ namespace HellTrail.Core.ECS
 
                 var transform = entity.GetComponent<Transform>();
                 var cameraMarker = entity.GetComponent<CameraMarker>();
-                World world = Main.instance.activeWorld;
+                World world = Main.instance.ActiveWorld;
                 Camera cam = world.GetCamera();
                 cam.centre += (transform.position - cam.centre / cam.zoom) * cam.speed;
                 if (world.tileMap.width * 32 - cam.view.Width * 0.5f >= cam.view.Width * 0.5f &&

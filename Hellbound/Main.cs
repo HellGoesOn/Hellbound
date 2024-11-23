@@ -32,7 +32,17 @@ namespace HellTrail
         internal static Random rand;
 
         public Battle battle;
-        public World activeWorld;
+        private World activeWorld;
+
+        public World ActiveWorld
+        {
+            get => activeWorld;
+            set
+            {
+                activeWorld = value;
+                UIManager.RelaunchEditor();
+            }
+        }
 
         public Context prefabContext;
 

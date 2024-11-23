@@ -130,7 +130,7 @@ namespace HellTrail.Core
 
         public override string ToString()
         {
-            return $"{{{x} {y} {width} {height}}}";
+            return $"{x} {y} {width} {height}";
         }
 
         public static bool TryParse(string s, out FrameData? frameData)

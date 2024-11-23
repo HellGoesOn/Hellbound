@@ -73,11 +73,11 @@ namespace Treeline.Core.Graphics
             Texture2D texture = Assets.GetTexture("Pixel");
             Vector2 position = new Vector2(this.position.X, this.position.Y + this.position.Z);
 
-            spriteBatch.Draw(texture, position, null, color, rotation, new Vector2(0.5f), scale, SpriteEffects.None, 1.0f);
+            spriteBatch.Draw(texture, position, null, color, rotation, new Vector2(0.5f), scale, SpriteEffects.None, 1f);
 
             if (castShadow)
             {
-                spriteBatch.Draw(texture, new Vector2(this.position.X, this.position.Y), null, Color.Black * 0.15f, rotation, new Vector2(0.5f), scale, SpriteEffects.None, 1.0f);
+                spriteBatch.Draw(texture, new Vector2(this.position.X, this.position.Y), null, Color.Black * 0.15f, rotation, new Vector2(0.5f), scale, SpriteEffects.None, 1f);
             }
         }
     }

@@ -139,13 +139,21 @@ namespace HellTrail.Core.UI
             RecalcPosition();
         }
 
-        public void Disown(IUIElement element)
+        public void Disown(IUIElement element, bool plannedToAdopt = false)
         {
             if (!children.Contains(element))
                 return;
 
             var killedElement = (element as UIElement);
             killedElement.onLoseParent?.Invoke(killedElement);
+            if (!plannedToAdopt)
+            {
+                killedElement.onMouseEnter = null;
+                killedElement.onMouseLeave = null;
+                killedElement.onClick = null;
+                killedElement.onUpdate = null;
+                killedElement.onLoseParent = null;
+            }
             killedElement.parent = null;
             _childrenToDisown.Add(killedElement); 
         }
@@ -220,6 +228,8 @@ namespace HellTrail.Core.UI
         }
 
         public UIElement GetElementById(string id) => GetElement(x => x.id == id);
+
+        public List<UIElement> Children => children;
     }
 
     public delegate void UIEventHandler(UIElement sender);

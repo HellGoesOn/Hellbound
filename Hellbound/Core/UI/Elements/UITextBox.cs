@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SDL2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,8 @@ namespace HellTrail.Core.UI.Elements
 
         public UIEventHandler onTextChange;
         public UIEventHandler onTextSubmit;
+
+        public bool clearOnBeginTyping;
 
         public int maxCharacters;
         public UITextBox()
@@ -78,13 +81,21 @@ namespace HellTrail.Core.UI.Elements
                 Renderer.DrawBorderedString(spriteBatch, font, shownText, GetPosition() + new Vector2(8), color, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);
                 //Renderer.DrawBorderedString(spriteBatch, font, $"{heldTime}\n" + lastKeyStroked.ToString(), GetPosition() + new Vector2(8, -64), color, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);
 
-                if(isEditing)
+            }
+            if (isEditing)
+            {
+                int cursor = Math.Clamp(cursorPosition, 0, myText.Length);
+                float size = string.IsNullOrWhiteSpace(myText) ? 0 : font.MeasureString(myText[0..cursor]).X;
+                float opacity = (float)Math.Abs(Math.Sin(Main.totalTime * 0.25f));
+
+                if(cursorSize > 0 && cursorPosition >= 0)
                 {
-                    int cursor = Math.Clamp(cursorPosition, 0, myText.Length);
-                    float size = string.IsNullOrWhiteSpace(myText) ? 0 : font.MeasureString(myText[0..cursor]).X;
-                    float opacity = (float)Math.Abs(Math.Sin(Main.totalTime * 0.25f));
-                    Renderer.DrawBorderedString(spriteBatch, font, "|", GetPosition() + new Vector2(8 + size, 8), Color.Lime * opacity, Color.Black * opacity, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);
+                    Range range = new Range(new Index(cursorPosition), new(Math.Clamp(cursorPosition + cursorSize, 0, myText.Length)));
+                    Vector2 newSize = font.MeasureString(myText[range]);
+                    Renderer.DrawRect(spriteBatch, GetPosition() + new Vector2(8 + size, 8), newSize, 1, Color.Cyan * 0.25f);
                 }
+
+                Renderer.DrawBorderedString(spriteBatch, font, "|", GetPosition() + new Vector2(8 + size, 8), Color.Lime * opacity, Color.Black * opacity, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);
             }
         }
 
@@ -94,11 +105,17 @@ namespace HellTrail.Core.UI.Elements
             sneakyDelay = 1;
             if (isEditing)
             {
+                if (clearOnBeginTyping)
+                {
+                    myText = "";
+                }
+
                 if (lastCursorPosition > 0 && lastCursorPosition <= myText.Length)
                     cursorPosition = lastCursorPosition;
                 else
                     cursorPosition = myText.Length;
                 cursorSize = 0;
+
                 Input.OnKeyHeld += HeldKey;
                 Input.OnKeyPressed += PressKey;
                 Input.OnKeyReleased += ReleaseKey;
@@ -200,7 +217,28 @@ namespace HellTrail.Core.UI.Elements
                 if (key == Keys.Enter)
                 {
                     MousePress(MouseButton.Left);
-                } 
+                }
+                else if(key == Keys.OemQuestion)
+                {
+                    AddCharacter("/");
+                }
+                else if (key == Keys.OemPipe)
+                {
+                    AddCharacter("\\");
+                }
+                else if(key == Keys.C && Input.HeldKey(Keys.LeftControl))
+                {
+                    if (cursorSize > 0)
+                        SDL.SDL_SetClipboardText(myText.Substring(cursorPosition, Math.Clamp(cursorSize, 0, myText.Length-1)));
+                }
+                else if (key == Keys.Right && Input.HeldKey(Keys.LeftShift))
+                {
+                    cursorSize = Math.Clamp(++cursorSize, 0, myText.Length);
+                } else if(key == Keys.Left && Input.HeldKey(Keys.LeftShift))
+                {
+                    cursorPosition--;
+                    cursorSize = Math.Clamp(++cursorSize, 0, myText.Length);
+                }
                 else if(key == Keys.OemOpenBrackets)
                 {
                     AddCharacter("{");
@@ -208,7 +246,15 @@ namespace HellTrail.Core.UI.Elements
                 else if (key == Keys.OemCloseBrackets)
                 {
                     AddCharacter("}");
+                }
+                else if(key == Keys.D9 && Input.HeldKey(Keys.LeftShift))
+                {
+                    AddCharacter("(");
                 } 
+                else if (key == Keys.D0 && Input.HeldKey(Keys.LeftShift))
+                {
+                    AddCharacter(")");
+                }
                 else if(key == Keys.Delete)
                 {
                     if (myText.Length > 0)
@@ -221,9 +267,18 @@ namespace HellTrail.Core.UI.Elements
                 {
                     if (myText.Length > 0)
                     {
-                        cursorPosition--;
-                        myText = myText.Remove(Math.Clamp(cursorPosition, 0, myText.Length - 1), 1);
-                        onTextChange?.Invoke(this);
+                        if (cursorSize > 0)
+                        {
+                            cursorPosition -= cursorSize;
+                            myText = myText.Remove(Math.Clamp(cursorPosition, 0, myText.Length - 1), cursorSize);
+                            cursorSize = 0;
+                            onTextChange?.Invoke(this);
+                        } else
+                        {
+                            cursorPosition--;
+                            myText = myText.Remove(Math.Clamp(cursorPosition, 0, myText.Length - 1), 1);
+                            onTextChange?.Invoke(this);
+                        }
                     }
                 }
                 else if(key== Keys.OemMinus)
@@ -245,7 +300,7 @@ namespace HellTrail.Core.UI.Elements
                     else
                         AddCharacter("\'");
                 } 
-                else if ((key >= Keys.D0 && key <= Keys.D9))
+                else if (key >= Keys.D0 && key <= Keys.D9)
                 {
                     keyValue = Regex.Replace(key.ToString(), "[^0-9]", "");
                     AddCharacter(keyValue);
@@ -267,12 +322,26 @@ namespace HellTrail.Core.UI.Elements
                 } 
                 else if (key == Keys.Left)
                 {
+                    cursorSize = 0;
                     cursorPosition--;
                 } 
                 else if (key == Keys.Right)
                 {
+                    cursorSize = 0;
                     cursorPosition++;
                 } 
+                else if(key == Keys.V && Input.HeldKey(Keys.LeftControl))
+                {
+                    string text = SDL.SDL_GetClipboardText();
+                    AddCharacter(text);
+                    cursorPosition += text.Length;
+                    cursorSize = 0;
+                }
+                else if(key == Keys.A && Input.HeldKey(Keys.LeftControl))
+                {
+                    cursorPosition = 0;
+                    cursorSize = myText.Length;
+                }
                 else if ((key >= Keys.A && key <= Keys.Z) || key == Keys.OemComma || key == Keys.OemPeriod)
                 {
                     keyValue = key.ToString();
@@ -289,8 +358,15 @@ namespace HellTrail.Core.UI.Elements
             if (myText.Length >= maxCharacters)
                 return;
 
+            if(cursorSize > 0)
+            {
+                myText.Remove(cursorPosition, cursorSize);
+                cursorPosition = Math.Clamp(cursorPosition-cursorSize, 0, myText.Length);
+                cursorSize = 0;
+            }
+
             myText = myText.Insert(cursorPosition, keyValue);
-            cursorPosition++;
+            cursorPosition += keyValue.Length;
             onTextChange?.Invoke(this);
         }
     }

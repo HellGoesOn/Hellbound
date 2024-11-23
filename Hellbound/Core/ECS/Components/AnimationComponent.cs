@@ -11,17 +11,23 @@ namespace HellTrail.Core.ECS.Components
     {
         internal int time;
         internal int currentFrame;
+        public bool looping;
         public int width;
         public int height;
         public int frameSpeed;
         public Vector2[] frames;
+        public Vector2[] scales;
+        public Vector2[] origins;
 
-        public AnimationComponent(int width, int height, int frameSpeed, params Vector2[] frames)
+        public AnimationComponent(bool looping, int width, int height, int frameSpeed, Vector2[] frames, Vector2[] scales, Vector2[] origins)
         {
+            this.looping = looping;
             this.width = width;
             this.height = height;
             this.frameSpeed = frameSpeed;
             this.frames = frames;
+            this.scales = scales;
+            this.origins = origins;
         }
 
         public Rectangle GetRect()
