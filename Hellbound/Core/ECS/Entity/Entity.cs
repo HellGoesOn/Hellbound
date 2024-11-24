@@ -173,7 +173,7 @@ namespace HellTrail.Core.ECS
 
             for (int componentIndex = 0; componentIndex < components.Length; componentIndex++)
             {
-                e.AddComponent(ComponentIO.DeserializeComponent(components[componentIndex]));
+                e.AddComponent(ComponentIO.New_Deserialize(components[componentIndex]));
             }
 
             return e;
@@ -204,7 +204,7 @@ namespace HellTrail.Core.ECS
             sb.AppendLine($"Entity_{entity.id}{Environment.NewLine}\t{{");
             foreach (IComponent c in entity.GetAllComponents())
             {
-                sb.AppendLine($"\t\t{ComponentIO.SerializeComponent(c)}");
+                sb.AppendLine($"\t\t{ComponentIO.New_Serialize(c)}");
             }
             sb.Append($"\t}} ;");
             

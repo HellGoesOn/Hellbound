@@ -75,6 +75,14 @@ namespace HellTrail
             GameStateManager.State = GameState.Overworld;
             SoundEngine.StartMusic("ChangingSeasons", true);
 
+            var dict = new Dictionary<string, Animation>
+            {
+                { "Idle", new Animation(0, 10) }
+            };
+            var test = new Transform(69, 69);
+            string crime = ComponentIO.New_Serialize(test);
+
+            IComponent component = ComponentIO.New_Deserialize(crime);
             //GetGameState().GetCamera().centre = GlobalPlayer.ActiveParty[0].position;
 
             var slime = prefabContext.Create();

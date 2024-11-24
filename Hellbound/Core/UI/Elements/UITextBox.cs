@@ -241,11 +241,17 @@ namespace HellTrail.Core.UI.Elements
                 }
                 else if(key == Keys.OemOpenBrackets)
                 {
-                    AddCharacter("{");
+                    if (Input.HeldKey(Keys.LeftShift))
+                        AddCharacter("[");
+                    else
+                        AddCharacter("{");
                 } 
                 else if (key == Keys.OemCloseBrackets)
                 {
-                    AddCharacter("}");
+                    if (Input.HeldKey(Keys.LeftShift))
+                        AddCharacter("]");
+                    else
+                        AddCharacter("}");
                 }
                 else if(key == Keys.D9 && Input.HeldKey(Keys.LeftShift))
                 {
@@ -283,10 +289,16 @@ namespace HellTrail.Core.UI.Elements
                 }
                 else if(key== Keys.OemMinus)
                 {
-                    AddCharacter("-");
+                    if (Input.HeldKey(Keys.LeftShift))
+                        AddCharacter("_");
+                    else
+                        AddCharacter("-");
                 }
                 else if(key == Keys.OemPlus)
                 {
+                    if (Input.HeldKey(Keys.LeftShift))
+                        AddCharacter("=");
+                    else
                     AddCharacter("+");
                 }
                 else if (key == Keys.OemSemicolon)

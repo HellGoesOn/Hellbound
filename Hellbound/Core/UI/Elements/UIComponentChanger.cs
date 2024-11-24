@@ -45,7 +45,7 @@ namespace HellTrail.Core.UI.Elements
             for (int i = 0; i < infos.Length; i++)
             {
                 StringBuilder sb = new StringBuilder();
-                ComponentIO.FieldToText(component, sb, infos[i]);
+                sb.Append(ComponentIO.New_FieldToText(infos[i], this.component));
                 texts[i] = new UITextBox()
                 {
                     id = $"{i}",
@@ -117,7 +117,7 @@ namespace HellTrail.Core.UI.Elements
             catch
             {
                 StringBuilder sb = new();
-                ComponentIO.FieldToText(component, sb, infos[i]);
+                ComponentIO.New_FieldToText(infos[i], component);
                 box.myText = sb.ToString();
             }
         }

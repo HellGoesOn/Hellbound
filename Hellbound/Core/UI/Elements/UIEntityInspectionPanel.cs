@@ -155,7 +155,7 @@ namespace HellTrail.Core.UI.Elements
             Vector2 accumulatedOffset = Vector2.Zero;
             for (int i = 0; i < components.Length; i++)
             {
-                texts[i] = new UIText(ComponentIO.SerializeComponent(components[i]), 40)
+                texts[i] = new UIText(ComponentIO.New_Serialize(components[i]), 40)
                 {
                     font = Assets.Arial
                 };
@@ -214,7 +214,7 @@ namespace HellTrail.Core.UI.Elements
 
             for (int i = 0; i < components.Length; i++)
             {
-                texts[i].text = ComponentIO.SerializeComponent(components[i]);
+                texts[i].text = ComponentIO.New_Serialize(components[i]);
             }
 
             //(UIManager.GetStateByName("debugState").GetElementById("debugText") as UIBorderedText).text = $"Children:{this.children.Count}, Components:{components.Length}";

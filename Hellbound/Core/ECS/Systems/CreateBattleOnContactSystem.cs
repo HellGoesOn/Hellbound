@@ -57,7 +57,8 @@ namespace HellTrail.Core.ECS
                 {
                     foreach (var unit in trialDefinitions)
                     {
-                        trialUnits.Add(UnitDefinitions.Get(unit));
+                        if(unit != null)
+                            trialUnits.Add(UnitDefinitions.Get(unit));
                     }
                     GlobalPlayer.DefaultBattleStations(trialUnits);
                 }

@@ -22,11 +22,6 @@ namespace HellTrail.Extensions
             return Vector2Ext.FromString(s);
         }
 
-        public static bool TryVector2(this string s, out Vector2 result)
-        {
-            return Vector2Ext.TryParse(s, out result);
-        }
-
         public static bool TryFrameData(this string s, out FrameData? frameData)
         {
             return FrameData.TryParse(s, out frameData);
