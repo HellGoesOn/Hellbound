@@ -22,7 +22,7 @@ namespace HellTrail.Core.Editor
         public bool panelShown;
         public int selectedPanel;
         public int lastPanel;
-        private int selectedTile;
+        private int selectedTile = 1;
         public UIPanel[] panels;
         string currentScene = "EmptyScene";
         Vector2 camAnchor;
@@ -235,12 +235,12 @@ namespace HellTrail.Core.Editor
             };
             isPlacingTiles.SetPosition(12, 16);
 
-            for (int i = 0; i < TileMap.Tiles.Count; i++)
+            for (int i = 0; i < NewerTileMap.TileDefinitions.Count; i++)
             {
-                string text = TileMap.Tiles.Keys.ToList()[i];
+                string text = NewerTileMap.TileDefinitions.Keys.ToList()[i];
                 UIBorderedText tileText = new UIBorderedText(text)
                 {
-                    id = $"tileId={i}",
+                    id = $"tileId={NewerTileMap.TileDefinitions[text].id}",
                     size = Assets.Arial.MeasureString(text),
                     onClick = (sender) =>
                     {
@@ -425,7 +425,6 @@ namespace HellTrail.Core.Editor
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
-
             //Renderer.DrawBorderedString(spriteBatch, Assets.Arial, $"{camAnchor}", Input.UIMousePosition, Color.White, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);
         }
 
@@ -492,7 +491,7 @@ namespace HellTrail.Core.Editor
                 World w = (con as World);
                 int x = w.tileMap.width;
                 int y = w.tileMap.height;
-                w.tileMap.ChangeTile(selectedTile, (int)Input.MousePosition.X / TileMap.TILE_SIZE, (int)Input.MousePosition.Y / TileMap.TILE_SIZE);
+                w.tileMap.SetTile(NewerTileMap.GetById(selectedTile), (int)Input.MousePosition.X / DisplayTileLayer.TILE_SIZE, (int)Input.MousePosition.Y / DisplayTileLayer.TILE_SIZE);
             }
         }
 

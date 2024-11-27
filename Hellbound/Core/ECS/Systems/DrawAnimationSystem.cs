@@ -62,7 +62,7 @@ namespace HellTrail.Core.ECS
                 var texture = entity.GetComponent<TextureComponent>();
                 var animation = entity.GetComponent<AnimationComponent>();
                 var transform = entity.GetComponent<Transform>();
-                float depth = transform.position.Y / (Main.instance.ActiveWorld.tileMap.height * TileMap.TILE_SIZE);
+                float depth = transform.position.Y / (Main.instance.ActiveWorld.tileMap.height * DisplayTileLayer.TILE_SIZE);
 
                 int c = animation.currentFrame;
 

@@ -28,14 +28,17 @@ namespace HellTrail.Core.Overworld
 
         public Texture2D mapTexture;
 
-        public TileMap tileMap;
+        //public TileMap tileMap;
+
+        public NewerTileMap tileMap;
 
         public World(int entityLimit = 1000, int width = 30, int height = 30) 
         {
             systems = new Systems();
             context = new Context(entityLimit);
-            tileMap = new TileMap(width, height);
-            GetCamera().centre = new Vector2(tileMap.width, tileMap.height) * TileMap.TILE_SIZE * 0.5f;
+            //tileMap = new TileMap(width, height);
+            tileMap = new NewerTileMap(width, height);
+            GetCamera().centre = new Vector2(tileMap.width, tileMap.height) * DisplayTileLayer.TILE_SIZE * 0.5f;
 
             systems.AddSystem(new DrawSystem(context));
             systems.AddSystem(new DrawAnimationSystem(context));
@@ -66,6 +69,28 @@ namespace HellTrail.Core.Overworld
 
             triggers.RemoveAll(x => x.activated);
 
+            if(Input.PressedKey(Keys.F7))
+            {
+                Stream stream = File.OpenWrite(GameOptions.WorldDirectory + "World.png");
+                Renderer.MainTarget.SaveAsPng(stream, (int)GameOptions.ScreenWidth, (int)GameOptions.ScreenHeight);
+                stream.Close();
+                stream.Dispose();
+            }
+
+            //if(Input.LMBHeld)
+            //{
+            //    int x = (int)Input.MousePosition.X / NewTileMap.TILE_SIZE;
+            //    int y = (int)Input.MousePosition.Y / NewTileMap.TILE_SIZE;
+            //    tileMap.SetTile(NewerTileMap.TileDefinitions["DarkGrass"], x, y);
+            //}
+
+            //if (Input.RMBHeld)
+            //{
+            //    int x = (int)Input.MousePosition.X / NewTileMap.TILE_SIZE;
+            //    int y = (int)Input.MousePosition.Y / NewTileMap.TILE_SIZE;
+            //    tileMap.SetTile(NewerTileMap.TileDefinitions["Path"], x, y);
+            //}
+
             /*
             if (Input.HeldKey(Keys.LeftShift))
                 cam.zoom += 0.02f;
@@ -79,11 +104,16 @@ namespace HellTrail.Core.Overworld
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            mapTexture = tileMap.texture;
+            //mapTexture = tileMap.texture;
 
             if (mapTexture != null)
             {
-                spriteBatch.Draw(mapTexture, Vector2.Zero, Color.White);
+                //spriteBatch.Draw(mapTexture, Vector2.Zero, Color.White);
+            }
+
+            if(tileMap.didBakeTexture)
+            {
+                spriteBatch.Draw(tileMap.bakedTexture, Vector2.Zero, Color.White);
             }
 
             systems.Draw(context, spriteBatch);
@@ -103,7 +133,7 @@ namespace HellTrail.Core.Overworld
             {
                 for (int j = 0; j < tileMap.width; j++)
                 {
-                    sb.Append(tileMap.tiles[j, i] + " ");
+                    sb.Append(tileMap.GetTile(j, i) + " ");
                 }
                 sb.Append("]");
                 sb.AppendLine("");
@@ -137,7 +167,7 @@ namespace HellTrail.Core.Overworld
             string[] strings = tileText.Split("\n", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             string[] numbers = Regex.Replace(strings[0], "[\\[\\]]", "").Trim().Split(" ");
 
-            world.tileMap = new TileMap(numbers.Length, strings.Length);
+            world.tileMap = new NewerTileMap(numbers.Length, strings.Length);
 
             if(numbers.Length > world.tileMap.width)
                 throw new Exception("Attempting to load map too big for the current world");
@@ -151,11 +181,11 @@ namespace HellTrail.Core.Overworld
 
                 for (int j = 0; j < numbers.Length; j++)
                 {
-                    world.tileMap[j, i] = int.Parse(numbers[j]);
+                    world.tileMap.SetTile(NewerTileMap.GetById(int.Parse(numbers[j])), j, i);
                 }
             }
 
-            world.tileMap.BakeMap();
+            //world.newTileMap.BakeMap();
 
             world.context.Armaggedon();
 

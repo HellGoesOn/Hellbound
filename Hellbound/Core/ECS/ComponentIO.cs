@@ -342,7 +342,6 @@ namespace HellTrail.Core.ECS
 
                     dict.Add(keys[i], result);
                 }
-                bool shit = true;
 
                 field.SetValue(instance, dict);
             } else if (field.FieldType.IsArray)

@@ -44,6 +44,7 @@ namespace HellTrail.Core.ECS
                 foreach(var unit in enemyDefintions)
                 {
                     Unit enemy = UnitDefinitions.Get(unit);
+                    enemy.scale.X *= -1;
                     enemyUnits.Add(enemy);
                     enemy.BattleStation = new Vector2(220 + offset * 8 + ((offset / 3) * 24), 60 + offset * 32 - (offset / 3 * 86));
 

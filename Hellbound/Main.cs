@@ -109,10 +109,25 @@ namespace HellTrail
 
         protected override void LoadContent()
         {
+
+            var newTileMap = new NewTileMap();
+
+            for (int i = 0; i < newTileMap.height;i++)
+            {
+                for(int j = 0; j < newTileMap.width;j++)
+                {
+                    if (i == j)
+                    {
+                        newTileMap.tiles[j, i] = 1;
+                        newTileMap.CheckSurroundingTiles(j, i);
+                    }
+                }
+            }
+
             // Load textures, sounds, and so on in here...
             base.LoadContent();
             Assets.Load(this);
-            TileMap.Initialize();
+            NewerTileMap.Init();
             Renderer.Load(GraphicsDevice);
             CameraManager.Initialize();
             Context.InitializeAll();
@@ -175,8 +190,8 @@ namespace HellTrail
 
             Vector2 pos = GlobalPlayer.ActiveParty[0].position;
 
-            int x = Math.Max(0, (int)pos.X) / TileMap.TILE_SIZE;
-            int y = Math.Max(0, (int)pos.Y) / TileMap.TILE_SIZE;
+            int x = Math.Max(0, (int)pos.X) / DisplayTileLayer.TILE_SIZE;
+            int y = Math.Max(0, (int)pos.Y) / DisplayTileLayer.TILE_SIZE;
 
 
             battle = Battle.Create(list);
@@ -253,7 +268,6 @@ namespace HellTrail
             base.UnloadContent();
 
             Assets.Unload();
-            TileMap.Unload();
             Renderer.Unload();
             Context.Unload();
         }
@@ -308,8 +322,13 @@ namespace HellTrail
 
             if (GetGameState() is World world)
             {
-                if (world.tileMap.needsUpdate)
-                    world.tileMap.BakeMap();
+                //if (world.tileMap.needsUpdate)
+                //    world.tileMap.BakeMap();
+
+                if(!world.tileMap.didBakeTexture)
+                {
+                    world.tileMap.Draw(spriteBatch);
+                }
             }
 
             GraphicsDevice.SetRenderTarget(Renderer.WorldTarget);

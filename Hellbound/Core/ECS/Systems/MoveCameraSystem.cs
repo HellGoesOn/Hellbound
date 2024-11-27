@@ -32,11 +32,11 @@ namespace HellTrail.Core.ECS
                 World world = Main.instance.ActiveWorld;
                 Camera cam = world.GetCamera();
                 cam.centre += (transform.position - cam.centre / cam.zoom) * cam.speed;
-                if (world.tileMap.width * 32 - cam.view.Width * 0.5f >= cam.view.Width * 0.5f &&
-                    world.tileMap.height * 32 - cam.view.Height * 0.5f >= cam.view.Height * 0.5f)
+                if (world.tileMap.width * DisplayTileLayer.TILE_SIZE - cam.view.Width * 0.5f >= cam.view.Width * 0.5f &&
+                    world.tileMap.height * DisplayTileLayer.TILE_SIZE - cam.view.Height * 0.5f >= cam.view.Height * 0.5f)
                 {
-                    var minX = Math.Clamp(cam.centre.X, cam.view.Width * 0.5f, world.tileMap.width * 32 - cam.view.Width * 0.5f);
-                    var minY = Math.Clamp(cam.centre.Y, cam.view.Height * 0.5f, world.tileMap.height * 32 - cam.view.Height * 0.5f);
+                    var minX = Math.Clamp(cam.centre.X, cam.view.Width * 0.5f, world.tileMap.width * DisplayTileLayer.TILE_SIZE - cam.view.Width * 0.5f);
+                    var minY = Math.Clamp(cam.centre.Y, cam.view.Height * 0.5f, world.tileMap.height * DisplayTileLayer.TILE_SIZE - cam.view.Height * 0.5f);
 
                     cam.centre = new Vector2(minX, minY);
                 }

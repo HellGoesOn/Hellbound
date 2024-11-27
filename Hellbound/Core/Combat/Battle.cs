@@ -137,7 +137,6 @@ namespace HellTrail.Core.Combat
             int troll = 0;
             foreach (Unit unit in units)
             {
-                unit.scale = Vector2.One;
                 unit.position = unit.BattleStation - new Vector2(200 * (unit.BattleStation.X > 160 ? -1 : 1), 0);
                 Sequence sequence = new(this)
                 {

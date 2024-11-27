@@ -61,7 +61,7 @@ namespace HellTrail.Render
             sb.Draw(tex, position, null, color, rotation, origin, size, SpriteEffects.None, depth);
         }
 
-        public static void StartSpriteBatch(SpriteBatch spriteBatch, bool ignoreCam = false, BlendState blend = null, DepthStencilState stencil = null, SamplerState state = null, Camera overrideCamera = null)
+        public static void StartSpriteBatch(SpriteBatch spriteBatch, bool ignoreCam = false, BlendState blend = null, DepthStencilState stencil = null, SamplerState state = null, Camera overrideCamera = null, SpriteSortMode sortMode = SpriteSortMode.FrontToBack)
         {
             state ??= SamplerState.PointClamp;
 
@@ -72,9 +72,9 @@ namespace HellTrail.Render
             Camera cam = Main.instance.GetGameState().GetCamera();
 
             if (cam != null && !ignoreCam)
-                spriteBatch.Begin(SpriteSortMode.FrontToBack, blend, state, stencil, RasterizerState.CullNone, null, cam.transform);
+                spriteBatch.Begin(sortMode, blend, state, stencil, RasterizerState.CullNone, null, cam.transform);
             else
-                spriteBatch.Begin(SpriteSortMode.FrontToBack, blend, state, stencil, RasterizerState.CullNone, null);
+                spriteBatch.Begin(sortMode, blend, state, stencil, RasterizerState.CullNone, null);
         }
 
         public static void DrawBorderedString(this SpriteBatch sb, SpriteFont font, string text, Vector2 position, Color color, Color borderColor, float rotation, Vector2 origin, Vector2 scale, SpriteEffects spriteEffects, float depth)
