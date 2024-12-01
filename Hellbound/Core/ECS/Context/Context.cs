@@ -19,7 +19,7 @@ namespace HellTrail.Core.ECS
         public static readonly Dictionary<Type, string> ComponentNameByType = [];
         public static void InitializeAll()
         {
-            IEnumerable<Type> types = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsClass && x.GetInterface("IComponent") != null);
+            IEnumerable<Type> types = Assembly.GetExecutingAssembly().GetTypes().Where(x => (x.IsValueType || x.IsClass) && x.GetInterface("IComponent") != null);
             _maxComponents = types.Count();
             int id = 0;
             foreach (Type type in types)

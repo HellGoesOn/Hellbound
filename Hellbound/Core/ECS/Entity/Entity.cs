@@ -90,6 +90,7 @@ namespace HellTrail.Core.ECS
             if (previousComponent != null)
             {
                 //context.componentPools[id].Push(previousComponent);
+                previousComponent = null;
                 OnComponentChanged?.Invoke(this, component);
             } else
             {
@@ -99,6 +100,7 @@ namespace HellTrail.Core.ECS
             _components[id] = component;
             if (_components[id] == null)
             {
+                previousComponent = null;
                 OnComponentRemoved?.Invoke(this, previousComponent);
             }
         }

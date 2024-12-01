@@ -41,19 +41,9 @@ namespace HellTrail.Core.UI
 
             UIStates.Add(combatUI);
             UIStates.Add(dialogueUI);
-
-            UIState debugState = new()
-            {
-                id = "debugState"
-            };
-            debugState.Append(new UIBorderedText("")
-            {
-                id = "debugText",
-            }.SetPosition(16));
             
-            UIStates.Add(debugState);
             UIStates.Add(overworldUI);
-            RelaunchEditor();
+            //RelaunchEditor();
         }
 
         public static void RelaunchEditor()
@@ -99,9 +89,6 @@ namespace HellTrail.Core.UI
 
                 Renderer.DrawBorderedString(spriteBatch, Assets.Arial, tooltipText, Input.UIMousePosition + offset - new Vector2(8, 0), Color.White, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);
             }
-
-            int x = (int)Input.MousePosition.X / DisplayTileLayer.TILE_SIZE;
-            int y = (int)Input.MousePosition.Y / DisplayTileLayer.TILE_SIZE;
 
         }
 

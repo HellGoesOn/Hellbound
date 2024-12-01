@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HellTrail.Core.ECS.Components
 {
-    public class HasCollidedMarker : IComponent
+    public struct HasCollidedMarker : IComponent
     {
         public int otherId;
 

@@ -1,4 +1,8 @@
 ﻿using HellTrail.Core.ECS.Components;
+using HellTrail.Core.Overworld;
+using HellTrail.Extensions;
+using HellTrail.Render;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,9 +29,9 @@ namespace HellTrail.Core.ECS
                 var entity = entities[i];
                 
                 var velocity = entity.GetComponent<Velocity>();
-                var trans = entity.GetComponent<Transform>();
 
-                trans.position += velocity.value;
+                var transform = entity.GetComponent<Transform>();
+                transform.position += velocity.value;
             }
         }
     }
