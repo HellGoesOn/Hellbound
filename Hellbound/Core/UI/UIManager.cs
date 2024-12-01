@@ -1,4 +1,6 @@
 ﻿using HellTrail.Core.DialogueSystem;
+using HellTrail.Core.ECS;
+using HellTrail.Core.ECS.Components;
 using HellTrail.Core.Editor;
 using HellTrail.Core.Overworld;
 using HellTrail.Core.UI.CombatUI;
@@ -7,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -96,6 +99,10 @@ namespace HellTrail.Core.UI
 
                 Renderer.DrawBorderedString(spriteBatch, Assets.Arial, tooltipText, Input.UIMousePosition + offset - new Vector2(8, 0), Color.White, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);
             }
+
+            int x = (int)Input.MousePosition.X / DisplayTileLayer.TILE_SIZE;
+            int y = (int)Input.MousePosition.Y / DisplayTileLayer.TILE_SIZE;
+
         }
 
         public static UIState CreateState(string id = "")

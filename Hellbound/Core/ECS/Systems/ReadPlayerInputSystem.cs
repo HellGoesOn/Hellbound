@@ -1,5 +1,8 @@
 ﻿using HellTrail.Core.Combat;
 using HellTrail.Core.ECS.Components;
+using HellTrail.Core.UI;
+using HellTrail.Extensions;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -27,10 +30,11 @@ namespace HellTrail.Core.ECS
                 var entity = entities[i];
                 Velocity vel = entity.GetComponent<Velocity>();
                 vel.X = vel.Y = 0;
-                if (Input.HeldKey(Keys.A)) vel.X -= 1.1f;
-                if (Input.HeldKey(Keys.W)) vel.Y -= 1.15f;
-                if (Input.HeldKey(Keys.S)) vel.Y += 1.15f;
-                if (Input.HeldKey(Keys.D)) vel.X += 1.15f;
+                var speed = 1f;
+                if (Input.HeldKey(Keys.A)) vel.X -= speed;
+                if (Input.HeldKey(Keys.W)) vel.Y -= speed;
+                if (Input.HeldKey(Keys.S)) vel.Y += speed;
+                if (Input.HeldKey(Keys.D)) vel.X += speed;
 
                 if (vel.X != 0)
                 {

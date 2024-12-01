@@ -1,5 +1,6 @@
 ﻿using HellTrail.Core.ECS.Components;
 using HellTrail.Core.Overworld;
+using HellTrail.Core.UI;
 using HellTrail.Extensions;
 using Microsoft.Xna.Framework;
 using System;
@@ -16,7 +17,7 @@ namespace HellTrail.Core.ECS
 
         public MoveCameraSystem(Context context)
         {
-            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(Transform), typeof(CameraMarker)));
+            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(Transform), typeof(CameraMarker), typeof(Velocity)));
         }
 
         public void Execute(Context context)
@@ -29,9 +30,15 @@ namespace HellTrail.Core.ECS
 
                 var transform = entity.GetComponent<Transform>();
                 var cameraMarker = entity.GetComponent<CameraMarker>();
+                var velocity = entity.GetComponent<Velocity>();
                 World world = Main.instance.ActiveWorld;
                 Camera cam = world.GetCamera();
-                cam.centre += (transform.position - cam.centre / cam.zoom) * cam.speed;
+
+                var value = (transform.position + velocity.value - cam.centre / cam.zoom) * cam.speed;
+
+                cam.centre += value;
+                //cam.centre = cam.centre.ToInt();
+
                 if (world.tileMap.width * DisplayTileLayer.TILE_SIZE - cam.view.Width * 0.5f >= cam.view.Width * 0.5f &&
                     world.tileMap.height * DisplayTileLayer.TILE_SIZE - cam.view.Height * 0.5f >= cam.view.Height * 0.5f)
                 {

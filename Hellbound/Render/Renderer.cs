@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,6 +25,10 @@ namespace HellTrail.Render
         public static RenderTarget2D WorldTarget { get; set; }
         public static RenderTarget2D MainTarget { get; set; }
         public static RenderTarget2D UITarget { get; set; }
+
+        public static int Layer { get; private set; }
+
+        //private static DrawLayerEvent onDrawStrings;
 
         public static void Load(GraphicsDevice device)
         {
@@ -55,10 +60,23 @@ namespace HellTrail.Render
             UITarget.Dispose();
         }
 
+
+        //public static void DoDrawStrings(SpriteBatch sb)
+        //{
+        //    onDrawStrings?.Invoke(sb);
+        //    onDrawStrings = null;
+        //}
+
         public static void DrawRect(SpriteBatch sb, Vector2 position, Vector2 size, int thickness, Color color, float depth = 0f, float rotation = 0f, Vector2 origin = default)
         {
             var tex = Assets.GetTexture("Pixel");
             sb.Draw(tex, position, null, color, rotation, origin, size, SpriteEffects.None, depth);
+        }
+
+        public static void DrawRectToWorld(Vector2 position, Vector2 size, int thickness, Color color, float depth = 0f, float rotation = 0f, Vector2 origin = default)
+        {
+            var tex = Assets.GetTexture("Pixel");
+            Draw(tex, position, null, color, rotation, origin, size, SpriteEffects.None, depth);
         }
 
         public static void StartSpriteBatch(SpriteBatch spriteBatch, bool ignoreCam = false, BlendState blend = null, DepthStencilState stencil = null, SamplerState state = null, Camera overrideCamera = null, SpriteSortMode sortMode = SpriteSortMode.FrontToBack)
@@ -85,5 +103,48 @@ namespace HellTrail.Render
             sb.DrawString(font, text, position + Vector2.UnitY * 2, borderColor, rotation, origin, scale, spriteEffects, depth);
             sb.DrawString(font, text, position, color, rotation, origin, scale, spriteEffects, depth);
         }
+
+        //public static void DrawBorderedStringX(this SpriteBatch sb, SpriteFont font, string text, Vector2 position, Color color, Color borderColor, float rotation, Vector2 origin, Vector2 scale, SpriteEffects spriteEffects, float depth)
+        //{
+        //    onDrawStrings += (sb) =>
+        //    {
+        //        sb.DrawString(font, text, position + Vector2.UnitX * 2, borderColor, rotation, origin, scale, spriteEffects, depth);
+        //        sb.DrawString(font, text, position - Vector2.UnitX * 2, borderColor, rotation, origin, scale, spriteEffects, depth);
+        //        sb.DrawString(font, text, position - Vector2.UnitY * 2, borderColor, rotation, origin, scale, spriteEffects, depth);
+        //        sb.DrawString(font, text, position + Vector2.UnitY * 2, borderColor, rotation, origin, scale, spriteEffects, depth);
+        //        sb.DrawString(font, text, position, color, rotation, origin, scale, spriteEffects, depth);
+        //    };
+        //}
+
+        private static List<DrawData> _drawData = [];
+
+        public static void Draw(Texture2D texture, Vector2 position, Rectangle? source, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects spriteEffects, float depth)
+        {
+            DrawData dd = new(texture, position, source, color, rotation, origin, scale, spriteEffects, depth);
+
+            _drawData.Add(dd);
+        }
+
+        public static void DoRender(SpriteBatch sb)
+        {
+            _drawData.Sort(SortDrawData);
+            StartSpriteBatch(sb, sortMode: SpriteSortMode.Deferred);
+            for (int i = 0; i < _drawData.Count; i++)
+            {
+                DrawData dd = _drawData[i];
+
+                sb.Draw(dd.texture, dd.position, dd.source, dd.color, dd.rotation, dd.origin, dd.scale, dd.spriteEffects, dd.depth);
+            }
+            sb.End();
+
+            _drawData.Clear();
+        }
+
+        public static int SortDrawData(DrawData x, DrawData y)
+        {
+            return x.CompareTo(y);
+        }
     }
+
+    public delegate void DrawLayerEvent(SpriteBatch spriteBatch);
 }

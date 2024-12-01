@@ -58,7 +58,6 @@
     <None Remove="Assets\Textures\WhatDaDogDoin2.png" />
     <None Remove="Content\Prefabs\Base.fab" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\FNA\FNA.Core.csproj" />
     <ProjectReference Include="..\SpriteFontPlus\src\SpriteFontPlus.FNA.Core.csproj" />

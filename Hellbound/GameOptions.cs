@@ -27,7 +27,7 @@ namespace HellTrail
         public static int ScreenWidth { get; set; } = 320;
         public static int ScreenHeight { get; set; } = 180;
         public static float GeneralVolume { get; set; } = 0.25f;
-        public static float MusicVolume { get; set; } = 0.05f;
+        public static float MusicVolume { get; set; } = 0.00f;
         public static float OldMusicVolume { get; set; } = 0.05f;
 
         public static Vector2 Resolution => new Vector2(ScreenWidth, ScreenHeight) * resolutionMultiplier;

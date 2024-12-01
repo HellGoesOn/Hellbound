@@ -225,7 +225,10 @@ namespace HellTrail.Core.ECS
             for(int i = 0; i < fields.Length; i++)
             {
                 var field = fields[i];
-                TextToFieldValue(field, instance, valuesSeparatedPerField[i]);
+                if(valuesSeparatedPerField.Length <= i)
+                    TextToFieldValue(field, instance, Activator.CreateInstance(field.FieldType).ToString());
+                else
+                    TextToFieldValue(field, instance, valuesSeparatedPerField[i]);
             }
 
             return instance;

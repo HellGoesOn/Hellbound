@@ -1,6 +1,7 @@
 ﻿using HellTrail.Core.ECS.Components;
 using HellTrail.Core.Overworld;
 using HellTrail.Extensions;
+using HellTrail.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace HellTrail.Core.ECS
 {
@@ -62,7 +64,8 @@ namespace HellTrail.Core.ECS
                 var texture = entity.GetComponent<TextureComponent>();
                 var animation = entity.GetComponent<AnimationComponent>();
                 var transform = entity.GetComponent<Transform>();
-                float depth = transform.position.Y / (Main.instance.ActiveWorld.tileMap.height * DisplayTileLayer.TILE_SIZE);
+
+                float depth = 1f + transform.position.Y + transform.origin + transform.layer;
 
                 int c = animation.currentFrame;
 
@@ -71,7 +74,7 @@ namespace HellTrail.Core.ECS
                 var originalRect = animation.GetRect();
                 Vector2 scale = c < animation.scales.Length ? (animation.scales[c] != Vector2.Zero ? animation.scales[c] : Vector2.One) : Vector2.One;
                 Vector2 origin = c < animation.origins.Length ? (animation.origins[c] != Vector2.Zero ? animation.origins[c] : texture.origin) : texture.origin;
-                spriteBatch.Draw(Assets.GetTexture(texture.textureName),
+                Renderer.Draw(Assets.GetTexture(texture.textureName),
                     transform.position.ToInt(),
                     originalRect,
                     Color.White,

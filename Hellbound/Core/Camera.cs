@@ -40,7 +40,7 @@ namespace HellTrail.Core
             }*/
 
             transform = Matrix.CreateScale(new Vector3(zoom, zoom, 0))
-                * Matrix.CreateTranslation(-centre.X, -centre.Y, 0)
+                * Matrix.CreateTranslation(-MathF.Floor(centre.X), -MathF.Floor(centre.Y), 0)
                 * Matrix.CreateRotationZ(rotation)
                 * Matrix.CreateTranslation(new Vector3(view.Width * 0.5f, view.Height * 0.5f, 0f));
 

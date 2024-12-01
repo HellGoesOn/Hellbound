@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -30,30 +31,31 @@ namespace HellTrail.Core.Overworld
 
         //public TileMap tileMap;
 
-        public NewerTileMap tileMap;
+        public TileMap tileMap;
 
         public World(int entityLimit = 1000, int width = 30, int height = 30) 
         {
             systems = new Systems();
             context = new Context(entityLimit);
             //tileMap = new TileMap(width, height);
-            tileMap = new NewerTileMap(width, height);
+            tileMap = new TileMap(width, height);
             GetCamera().centre = new Vector2(tileMap.width, tileMap.height) * DisplayTileLayer.TILE_SIZE * 0.5f;
 
-            systems.AddSystem(new DrawSystem(context));
-            systems.AddSystem(new DrawAnimationSystem(context));
+            systems.AddSystem(new ReadPlayerInputSystem(context));
             systems.AddSystem(new MoveSystem(context));
+            systems.AddSystem(new TileCollisionSystem(context));
             systems.AddSystem(new ObesitySystem(context));
-            systems.AddSystem(new DrawBoxSystem(context));
-            systems.AddSystem(new DrawTransformBoxSystem(context));
             systems.AddSystem(new BoxCollisionSystem(context));
             systems.AddSystem(new CreateBattleOnContactSystem(context));
-            systems.AddSystem(new MoveCameraSystem(context));
-            systems.AddSystem(new ReadPlayerInputSystem(context));
             systems.AddSystem(new ClearCollisionMarkerSystem(context));
             systems.AddSystem(new ParticleEmissionSystem(context));
             systems.AddSystem(new FollowerSystem(context));
-            GetCamera().speed = 0.12f;
+            systems.AddSystem(new MoveCameraSystem(context));
+            systems.AddSystem(new DrawBoxSystem(context));
+            systems.AddSystem(new DrawSystem(context));
+            systems.AddSystem(new DrawAnimationSystem(context));
+            systems.AddSystem(new DrawTransformBoxSystem(context));
+            GetCamera().speed = 0.1f;
         }
 
         public void Update()
@@ -105,18 +107,12 @@ namespace HellTrail.Core.Overworld
         public void Draw(SpriteBatch spriteBatch)
         {
             //mapTexture = tileMap.texture;
-
-            if (mapTexture != null)
-            {
-                //spriteBatch.Draw(mapTexture, Vector2.Zero, Color.White);
-            }
-
-            if(tileMap.didBakeTexture)
-            {
-                spriteBatch.Draw(tileMap.bakedTexture, Vector2.Zero, Color.White);
-            }
-
+            tileMap.Draw(spriteBatch);
             systems.Draw(context, spriteBatch);
+            //if (mapTexture != null)
+            //{
+            //    //spriteBatch.Draw(mapTexture, Vector2.Zero, Color.White);
+            //}
         }
 
         public void SaveFile(string path, string name)
@@ -167,7 +163,7 @@ namespace HellTrail.Core.Overworld
             string[] strings = tileText.Split("\n", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             string[] numbers = Regex.Replace(strings[0], "[\\[\\]]", "").Trim().Split(" ");
 
-            world.tileMap = new NewerTileMap(numbers.Length, strings.Length);
+            world.tileMap = new TileMap(numbers.Length, strings.Length);
 
             if(numbers.Length > world.tileMap.width)
                 throw new Exception("Attempting to load map too big for the current world");
@@ -181,7 +177,7 @@ namespace HellTrail.Core.Overworld
 
                 for (int j = 0; j < numbers.Length; j++)
                 {
-                    world.tileMap.SetTile(NewerTileMap.GetById(int.Parse(numbers[j])), j, i);
+                    world.tileMap.SetTile(TileMap.GetById(int.Parse(numbers[j])), j, i);
                 }
             }
 

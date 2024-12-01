@@ -235,12 +235,12 @@ namespace HellTrail.Core.Editor
             };
             isPlacingTiles.SetPosition(12, 16);
 
-            for (int i = 0; i < NewerTileMap.TileDefinitions.Count; i++)
+            for (int i = 0; i < TileMap.TileDefinitions.Count; i++)
             {
-                string text = NewerTileMap.TileDefinitions.Keys.ToList()[i];
+                string text = TileMap.TileDefinitions.Keys.ToList()[i];
                 UIBorderedText tileText = new UIBorderedText(text)
                 {
-                    id = $"tileId={NewerTileMap.TileDefinitions[text].id}",
+                    id = $"tileId={TileMap.TileDefinitions[text].id}",
                     size = Assets.Arial.MeasureString(text),
                     onClick = (sender) =>
                     {
@@ -491,7 +491,7 @@ namespace HellTrail.Core.Editor
                 World w = (con as World);
                 int x = w.tileMap.width;
                 int y = w.tileMap.height;
-                w.tileMap.SetTile(NewerTileMap.GetById(selectedTile), (int)Input.MousePosition.X / DisplayTileLayer.TILE_SIZE, (int)Input.MousePosition.Y / DisplayTileLayer.TILE_SIZE);
+                w.tileMap.SetTile(TileMap.GetById(selectedTile), (int)Input.MousePosition.X / DisplayTileLayer.TILE_SIZE, (int)Input.MousePosition.Y / DisplayTileLayer.TILE_SIZE);
             }
         }
 

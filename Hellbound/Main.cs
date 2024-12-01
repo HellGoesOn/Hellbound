@@ -109,25 +109,10 @@ namespace HellTrail
 
         protected override void LoadContent()
         {
-
-            var newTileMap = new NewTileMap();
-
-            for (int i = 0; i < newTileMap.height;i++)
-            {
-                for(int j = 0; j < newTileMap.width;j++)
-                {
-                    if (i == j)
-                    {
-                        newTileMap.tiles[j, i] = 1;
-                        newTileMap.CheckSurroundingTiles(j, i);
-                    }
-                }
-            }
-
             // Load textures, sounds, and so on in here...
             base.LoadContent();
             Assets.Load(this);
-            NewerTileMap.Init();
+            TileMap.Init();
             Renderer.Load(GraphicsDevice);
             CameraManager.Initialize();
             Context.InitializeAll();
@@ -137,30 +122,32 @@ namespace HellTrail
             GlobalPlayer.Init();
             ParticleManager.Initialize();
 
-            Dialogue dialogue = Dialogue.Create();
-            UIManager.dialogueUI.dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight * 0.5f));
-            DialoguePage[] pages =
-                {
-                new()
-            {
-                fillColor = Color.Transparent,
-                borderColor = Color.Transparent,
-                text = "In this world, the events to unfold, people to meet and places to visit are entirely fictional. All similarities to your own world are entirely coincidental."
-            },
-                new()
-                {
-                fillColor = Color.Transparent,
-                borderColor = Color.Transparent,
-                    text = "You have been warned.",
-                    textColor = Color.Crimson,
-                    onPageEnd = (_) =>
-                    {
-                        _.CurrentPage.textColor = Color.Transparent;
-                        UIManager.dialogueUI.dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight - 180 - 16));
-                    }
-                }
-        };
-            dialogue.pages.AddRange(pages);
+        //    Dialogue dialogue = Dialogue.Create();
+        //    UIManager.dialogueUI.dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight * 0.5f));
+        //    DialoguePage[] pages =
+        //        {
+        //        new()
+        //    {
+        //        fillColor = Color.Transparent,
+        //        borderColor = Color.Transparent,
+        //        text = "In this world, the events to unfold, people to meet and places to visit are entirely fictional. All similarities to your own world are entirely coincidental."
+        //    },
+        //        new()
+        //        {
+        //        fillColor = Color.Transparent,
+        //        borderColor = Color.Transparent,
+        //            text = "You have been warned.",
+        //            textColor = Color.Crimson,
+        //            onPageEnd = (_) =>
+        //            {
+        //                _.CurrentPage.textColor = Color.Transparent;
+        //                UIManager.dialogueUI.dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight - 180 - 16));
+        //            }
+        //        }
+        //};
+        //    dialogue.pages.AddRange(pages);
+
+            ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", "Hills3");
         }
 
         internal void StartBattle(bool onStone = false)
@@ -299,6 +286,7 @@ namespace HellTrail
                 gdm.ApplyChanges();
             }
 
+            
             UIManager.Update();
             Input.Update();
             SoundEngine.Update();
@@ -320,61 +308,78 @@ namespace HellTrail
         {
             // Render stuff in here. Do NOT run game logic in here!
 
-            if (GetGameState() is World world)
-            {
-                //if (world.tileMap.needsUpdate)
-                //    world.tileMap.BakeMap();
-
-                if(!world.tileMap.didBakeTexture)
-                {
-                    world.tileMap.Draw(spriteBatch);
-                }
-            }
-
-            GraphicsDevice.SetRenderTarget(Renderer.WorldTarget);
-            GraphicsDevice.Clear(Color.Black);
             base.Draw(gameTime);
 
             IGameState state = GetGameState();
 
-            if (state != null)
-            {
-                Renderer.StartSpriteBatch(spriteBatch);
-                state?.Draw(spriteBatch);
-                ParticleManager.Draw(spriteBatch);
-                //Vector2 mousePos = Input.MousePosition;
-                //spriteBatch.Draw(AssetManager.Textures["Elements2"], new Vector2((int)(mousePos.X), (int)(mousePos.Y)), Color.White);
-                //CombatSystem.DrawInWorld(spriteBatch);
-                //spriteBatch.Draw(AssetManager.Textures["Slime3"], new Vector2((int)(mousePos.X + 12), (int)(mousePos.Y+24)), Color.White);
-                //spriteBatch.Draw(AssetManager.Textures["PeasToDisturb3"], new Vector2((int)(mousePos.X + 16), (int)(mousePos.Y-12)), Color.White);
-                spriteBatch.End();
-            }
+            GraphicsDevice.SetRenderTarget(Renderer.WorldTarget);
+            Renderer.StartSpriteBatch(spriteBatch, stencil: DepthStencilState.DepthRead);
+            GetGameState()?.Draw(spriteBatch);
+            spriteBatch.End();
+            Renderer.DoRender(spriteBatch);
+            Renderer.StartSpriteBatch(spriteBatch);
+            ParticleManager.Draw(spriteBatch);
+            spriteBatch.End();
+
             GraphicsDevice.SetRenderTarget(Renderer.UITarget);
             GraphicsDevice.Clear(Color.Transparent);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
             UIManager.Draw(spriteBatch);
-            //spriteBatch.Draw(AssetManager.Textures["Pixel"], new Vector2(110, 586), new Rectangle(0, 0, 66, 20), Color.Black, 0f, Vector2.Zero, new Vector2(4), SpriteEffects.None, 0f);
-            //spriteBatch.Draw(AssetManager.Textures["Pixel"], new Vector2(114, 590), new Rectangle(0, 0, 64, 18), Color.Gray, 0f, Vector2.Zero, new Vector2(4), SpriteEffects.None, 0f);
-            //spriteBatch.Draw(AssetManager.Textures["Elements2"], new Vector2(400, 590), null, Color.White, 0f, Vector2.Zero, new Vector2(4), SpriteEffects.None, 0f);
-            //spriteBatch.DrawString(AssetManager.DefaultFont, $"Tis ur haus?\n{Input.MousePosition}", new Vector2(130, 602), Color.Black);
-            //spriteBatch.DrawString(AssetManager.DefaultFont, $"Tis ur haus?\n{Input.MousePosition}", new Vector2(128, 600), Color.White);
-            //spriteBatch.Draw(AssetManager.Textures["Cursor3"], new Vector2(30+(float)Math.Cos(totalTime*panic)*drunkness, 600 + (float)Math.Sin(totalTime * panic) * drunkness + cursorPos), null, Color.Lerp(Color.White, Color.Gray, (float)Math.Cos(totalTime)), 0f, Vector2.Zero, new Vector2(4), SpriteEffects.None, 1f);
             spriteBatch.End();
 
-            GraphicsDevice.SetRenderTarget(Renderer.MainTarget);
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+            GraphicsDevice.SetRenderTarget(null);
+
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone); 
             spriteBatch.Draw(Renderer.WorldTarget, new Rectangle(0, 0, Renderer.UIPreferedWidth, Renderer.UIPreferedHeight), Color.White);
             spriteBatch.Draw(Renderer.UITarget, new Rectangle(0, 0, Renderer.UIPreferedWidth, Renderer.UIPreferedHeight), Color.White);
-            spriteBatch.End();
-            GraphicsDevice.SetRenderTarget(null);
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
-            spriteBatch.Draw(Renderer.MainTarget, new Rectangle(0, 0, gdm.PreferredBackBufferWidth, gdm.PreferredBackBufferHeight), Color.White);
 
-            foreach(Transition transition in transitions)
+
+            foreach (Transition transition in transitions)
             {
                 transition.Draw(spriteBatch);
             }
             spriteBatch.End();
+
+
+            //if (GetGameState() is World world)
+            //{
+            //    //if (world.tileMap.needsUpdate)
+            //    //    world.tileMap.BakeMap();
+
+            //    if(!world.tileMap.didBakeTexture)
+            //    {
+            //        world.tileMap.Draw(spriteBatch);
+            //    }
+            //}
+            //GraphicsDevice.SetRenderTarget(null);
+
+            //GraphicsDevice.Clear(Color.Black);
+            //base.Draw(gameTime);
+
+            //IGameState state = GetGameState();
+            //if (state != null)
+            //{
+            //    state.Draw(spriteBatch);
+            //    Renderer.RenderLayers(spriteBatch, Renderer.WorldTarget);
+            //    Renderer.StartSpriteBatch(spriteBatch);
+            //    ParticleManager.Draw(spriteBatch);
+            //    spriteBatch.End();
+            //}
+            //GraphicsDevice.SetRenderTarget(Renderer.UITarget);
+            //GraphicsDevice.Clear(Color.Transparent);
+            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+            //UIManager.Draw(spriteBatch);
+            //spriteBatch.End();
+
+            //GraphicsDevice.SetRenderTarget(Renderer.MainTarget);
+            //spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+            //spriteBatch.Draw(Renderer.WorldTarget, new Rectangle(0, 0, Renderer.UIPreferedWidth, Renderer.UIPreferedHeight), Color.White);
+            //spriteBatch.Draw(Renderer.UITarget, new Rectangle(0, 0, Renderer.UIPreferedWidth, Renderer.UIPreferedHeight), Color.White);
+            //spriteBatch.End();
+            //GraphicsDevice.SetRenderTarget(null);
+            //spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+            //spriteBatch.Draw(Renderer.MainTarget, new Rectangle(0, 0, gdm.PreferredBackBufferWidth, gdm.PreferredBackBufferHeight), Color.White);
+
         }
 
         public IGameState GetGameState()

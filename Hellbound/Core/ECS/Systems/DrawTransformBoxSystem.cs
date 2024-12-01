@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace HellTrail.Core.ECS
 {
@@ -28,7 +29,8 @@ namespace HellTrail.Core.ECS
                 var entity = entities[i];
                 Transform transform = entity.GetComponent<Transform>();
 
-                Renderer.DrawRect(spriteBatch, transform.position-new Vector2(4), new Vector2(8), 1, Color.Lime, 1f);
+                float depth = 10000f;
+                Renderer.DrawRectToWorld(transform.ToDraw-new Vector2(4), new Vector2(8), 1, Color.Lime, depth);
             }
         }
     }
