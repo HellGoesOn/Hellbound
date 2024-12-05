@@ -73,7 +73,10 @@ namespace HellTrail.Core.Overworld
                                     items.Add($"{item.count} x {item.name}");
                                 }
 
-                                var InventoryMenu = new UIScrollableMenu(12, items.ToArray());
+                                var InventoryMenu = new UIScrollableMenu(12, items.ToArray())
+                                {
+                                    id = "inventoryMenu"
+                                };
 
                                 var uiPicture = new UIPicture("", new FrameData());
                                 uiPicture.SetPosition(300 - 16, 32);
@@ -147,7 +150,10 @@ namespace HellTrail.Core.Overworld
                                                 {
                                                     var item = GlobalPlayer.Inventory[InventoryMenu.currentSelectedOption];
                                                     var target = GlobalPlayer.ActiveParty[allySelect.currentSelectedOption];
-                                                    item.Use(target, null, [target]);
+                                                    if (!target.Downed)
+                                                        item.Use(target, null, [target]);
+                                                    else
+                                                        SoundEngine.PlaySound("MeepMerp");
                                                     allySelect.closed = true;
 
                                                 };
@@ -220,11 +226,22 @@ namespace HellTrail.Core.Overworld
                                 {
                                     var ysize = fourway.font.MeasureString(unit.name).Y;
                                     fourway.Append(new UIBorderedText(unit.name).SetPosition(16, 16 + offsetY));
-                                    var pic = new UIPicture(unit.portrait, new FrameData(0, 0, 32, 32)).SetPosition(16, 16 + offsetY + ysize + 2);
+                                    UIPicture pic = new UIPicture(unit.portrait, new FrameData(0, 0, 32, 32));
+                                    fourway.Append(pic);
+                                    pic.SetPosition(16, 16 + offsetY + ysize + 2);
+
+                                    if (unit.Downed)
+                                    {
+                                        UIPicture deadFrame = new UIPicture("DeadFrame", new FrameData(0, 0, 32, 32));
+                                        deadFrame.scale *= 3f;
+                                        deadFrame.SetPosition(pic.GetPosition() - new Vector2(4));
+                                        fourway.Append(deadFrame);
+                                        pic.tint = Color.DarkSlateGray;
+                                    }
+
                                     pic.scale *= 3;
                                     var stats = new UIBorderedText(unit.stats.ListStats(false));
                                     stats.SetPosition(16 + 96 + 40, 16 + offsetY + ysize + 2);
-                                    fourway.Append(pic);
                                     fourway.Append(stats);
                                     offsetY += ysize * 2 + 80;
                                 }
@@ -277,6 +294,12 @@ namespace HellTrail.Core.Overworld
                                         confirm.closed = true;
                                     }
                                 };
+                                confirm.onUpdate = (_) =>
+                                {
+                                    if (Input.PressedKey([Keys.Escape, Keys.Q]))
+                                        confirm.closed = true;
+                                };
+
                                 confirm.onLoseParent = (_) => { optionMenuBox.isActive = true; };
                                 break;
                         }
@@ -288,15 +311,11 @@ namespace HellTrail.Core.Overworld
                 if (Main.instance.spiritsAngered)
                     optionMenu.panelColor = Color.DarkRed;
 
-                var navigation = new UIAnimatedPanel(new Vector2(664, 60), UIAnimatedPanel.AnimationStyle.Horizontal);
-                navigation.onUpdate = (_)
-                    =>
-                {
-                };
+                var navigation = new UIAnimatedPanel(new Vector2(764, 60), UIAnimatedPanel.AnimationStyle.Horizontal);
 
                 navigation.SetPosition(Renderer.UIPreferedWidth * 0.5f - navigation.targetSize.X * 0.5f, Renderer.UIPreferedHeight - 120);
                 navigation.openSpeed = 0.25f;
-                navigation.Append(new UIBorderedText("ESC./Q -> Close, W/S -> Move cursor, E -> Select").SetPosition(16));
+                navigation.Append(new UIBorderedText("ESC./Q -> Close/Cancel, W/S -> Move, E -> Select/Confirm").SetPosition(16));
                 navigation.SetFont(Assets.DefaultFont);
 
                 optionMenu.onLoseParent += (sender) =>

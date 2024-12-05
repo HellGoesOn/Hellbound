@@ -609,10 +609,11 @@ namespace HellTrail.Core.Combat
                     unit.stats.EXP += expValue;
                     unit.ClearEffects();
 
-                    if (!anyLevelUps)
-                        anyLevelUps = unit.TryLevelUp();
 
-                    unit.TryLevelUp();
+                    bool leveledUp = unit.TryLevelUp();
+
+                    if (!anyLevelUps)
+                        anyLevelUps = leveledUp;
                 }
 
                 if(anyLevelUps)

@@ -34,7 +34,17 @@ namespace HellTrail.Core.Combat
             AddPartyMember(UnitDefinitions.Get("Dog"));
             //ActiveParty.Add(sidekick);
 
+
+            AddItem(new InfinitePizza());
+
+            AddItem(new TomeOfWisdom());
+
             AddItem(new Tomato()
+            {
+                count = 5
+            });
+
+            AddItem(new ChocolateBar()
             {
                 count = 5
             });

@@ -53,7 +53,7 @@ namespace HellTrail.Core.Combat
             name = "???";
         }
 
-        public bool TryLevelUp()
+        public bool TryLevelUp(bool silent = false)
         {
             if (stats.EXP < stats.toNextLevel)
                 return false;
@@ -66,8 +66,9 @@ namespace HellTrail.Core.Combat
             stats.SP = stats.MaxSP;
             stats.EXP -= stats.toNextLevel;
             stats.toNextLevel = (int)(stats.toNextLevel * 1.12f);
+            if(!silent)
             UIManager.combatUI.CreateLevelUp(name, oldStats, stats);
-            TryLevelUp();
+            TryLevelUp(silent);
 
             return true;
         }

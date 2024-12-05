@@ -30,6 +30,8 @@
     <None Remove="Assets\Audio\Sounds\CutIn.wav" />
     <None Remove="Assets\Audio\Sounds\Death.wav" />
     <None Remove="Assets\Audio\Sounds\Dies.wav" />
+    <None Remove="Assets\Audio\Sounds\LvlUp.wav" />
+    <None Remove="Assets\Audio\Sounds\MeepMerp.wav" />
     <None Remove="Assets\Audio\Sounds\NomNomNom.wav" />
     <None Remove="Assets\Audio\Sounds\senzu.wav" />
     <None Remove="Assets\Audio\Sounds\WhatDaDogDoin.wav" />
