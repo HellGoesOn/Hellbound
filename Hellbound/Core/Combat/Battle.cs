@@ -173,7 +173,7 @@ namespace HellTrail.Core.Combat
 
             foreach (SpriteAnimation animation in fieldAnimations)
             {
-                animation.Update();
+                animation.Update(null);
             }
 
             foreach (DamageNumber number in damageNumbers)
@@ -272,7 +272,7 @@ namespace HellTrail.Core.Combat
                 {
                     anim.position = position;
 
-                    anim.Draw(spriteBatch, unit.scale);
+                    anim.Draw(spriteBatch, unit.scale * anim.scale);
 
                 } else
                 {

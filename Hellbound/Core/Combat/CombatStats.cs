@@ -77,16 +77,19 @@ namespace HellTrail.Core.Combat
             };
         }
 
-        public string ListStats()
+        public string ListStats(bool full = true)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"LVL: {level}");
             sb.AppendLine($"EXP: {EXP} / {toNextLevel}");
             sb.AppendLine($"HP: {HP} / {MaxHP}");
             sb.AppendLine($"SP: {SP} / {MaxSP}");
-            sb.AppendLine($"STR: {(int)strength}");
-            sb.AppendLine($"MA: {(int)magic}");
-            sb.AppendLine($"SPD: {Math.Round(speed, 1)}");
+            if (full)
+            {
+                sb.AppendLine($"STR: {(int)strength}");
+                sb.AppendLine($"MA: {(int)magic}");
+                sb.AppendLine($"SPD: {Math.Round(speed, 1)}");
+            }
             return sb.ToString();
         }
     }

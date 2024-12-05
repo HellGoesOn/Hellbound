@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -15,7 +16,7 @@ namespace HellTrail.Extensions
         {
             string[] str = Regex.Replace(input, "[{X:Y:}]", "").Split(" ");
 
-            if (str.Length < 2 || !float.TryParse(str[0], out float x) || !float.TryParse(str[1], out float y))
+            if (str.Length < 2 || !float.TryParse(str[0], CultureInfo.InvariantCulture, out float x) || !float.TryParse(str[1], CultureInfo.InvariantCulture, out float y))
             {
                 vector = default;
                 return false;
@@ -40,8 +41,8 @@ namespace HellTrail.Extensions
             string splicedString = Regex.Replace(input, "[{X:Y:}]", "");
             string[] str = splicedString.Split(" ", StringSplitOptions.RemoveEmptyEntries);
             if (str.Length < 2
-                || !float.TryParse(str[0], out float x)
-                || !float.TryParse(str[1], out float y))
+                || !float.TryParse(str[0], CultureInfo.InvariantCulture, out float x)
+                || !float.TryParse(str[1], CultureInfo.InvariantCulture, out float y))
             {
                 return default;
             }

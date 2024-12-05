@@ -4,6 +4,7 @@ using HellTrail.Core.UI;
 using HellTrail.Extensions;
 using Microsoft.Xna.Framework;
 using System.Collections;
+using System.Globalization;
 using System.Net.WebSockets;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -100,7 +101,6 @@ namespace HellTrail.Core.ECS
                 else
                     TextToFieldValue(fields[i], instance, RuntimeHelpers.GetUninitializedObject(type).ToString());
             }
-
             return instance;
         }
 
@@ -133,6 +133,9 @@ namespace HellTrail.Core.ECS
         public static string New_Serialize(IComponent component)
         {
             StringBuilder sb = new StringBuilder();
+            CultureInfo currentCulture = CultureInfo.CurrentCulture;
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             Type type = component.GetType();
             sb.Append($"{type.Name}");
 
@@ -156,13 +159,18 @@ namespace HellTrail.Core.ECS
             if (fields.Length > 0)
                 sb.Append("];");
 
+            Thread.CurrentThread.CurrentCulture = currentCulture;
+
             return sb.ToString();
         }
 
         public static string New_FieldToText(FieldInfo field, IComponent instance)
         {
             StringBuilder sb = new StringBuilder();
-            if(field.FieldType.IsArray)
+            CultureInfo currentCulture = CultureInfo.CurrentCulture;
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+            if (field.FieldType.IsArray)
             {
                 sb.Append('[');
                 var values = field.GetValue(instance) as Array;
@@ -202,11 +210,16 @@ namespace HellTrail.Core.ECS
                 sb.Append(field.GetValue(instance).ToString());
             }
 
+            Thread.CurrentThread.CurrentCulture = currentCulture;
+
             return sb.ToString();
         }
 
         public static IComponent New_Deserialize(string readString)
         {
+            CultureInfo currentCulture = CultureInfo.CurrentCulture;
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             string trimmed = readString.Trim();
 
             string componentType = Regex.Replace(Regex.Match(trimmed, @"^[^[]*").Value, "[^a-zA-Z]", "").Trim();
@@ -230,6 +243,8 @@ namespace HellTrail.Core.ECS
                 else
                     TextToFieldValue(field, instance, valuesSeparatedPerField[i]);
             }
+
+            Thread.CurrentThread.CurrentCulture = currentCulture;
 
             return instance;
         }
@@ -324,6 +339,9 @@ namespace HellTrail.Core.ECS
         public static void TextToFieldValue(FieldInfo field, IComponent instance, string value)
         {
             Type t = field.FieldType;
+            CultureInfo currentCulture = CultureInfo.CurrentCulture;
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>))
             {
                 string[] splitInput = Regex.Match(value, @"\[(.*)\]").Groups[1].Value.Split(", ");
@@ -381,27 +399,6 @@ namespace HellTrail.Core.ECS
                         InvokeTryParser(parser, out element, noQuotes, elementType);
                         arr.SetValue(element, elementIndex);
                     }
-
-                    //if (elementType == typeof(Vector2))
-                    //{
-                    //    noQuotes.TryVector2(out Vector2 vector);
-                    //    arr.SetValue(vector, elementIndex);
-                    //} else if (elementType == typeof(FrameData))
-                    //{
-                    //    noQuotes.TryFrameData(out var frameData);
-                    //    arr.SetValue(frameData, elementIndex);
-                    //} else if (elementType == typeof(Color))
-                    //{
-                    //    noQuotes.TryColor(out var color);
-                    //    arr.SetValue(color, elementIndex);
-                    //} else if (elementType == typeof(IndexTuple))
-                    //{
-                    //    IndexTuple.TryParse(noQuotes, out var indexTuple);
-                    //    arr.SetValue(indexTuple, elementIndex);
-                    //} else
-                    //{
-                    //    arr.SetValue(Convert.ChangeType(elements[elementIndex], elementType), elementIndex);
-                    //}
                 }
                 field.SetValue(instance, Convert.ChangeType(arr, field.FieldType));
             } else
@@ -420,6 +417,8 @@ namespace HellTrail.Core.ECS
 
                 field.SetValue(instance, element);
             }
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
         }
 
         [GeneratedRegex(@"[{""}]")]

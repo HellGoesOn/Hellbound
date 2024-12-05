@@ -31,7 +31,7 @@ namespace HellTrail.Core.UI
         public UIEventHandler onMouseEnter;
         public UIEventHandler onMouseLeave;
         public List<UIElement> children = [];
-        public List<UIElement> _childrenToDisown = [];
+        internal List<UIElement> _childrenToDisown = [];
         public IUIElement parent;
         public SpriteFont font = Assets.DefaultFont;
         public bool Visible
@@ -76,9 +76,10 @@ namespace HellTrail.Core.UI
             }
 
 
+            if(PreUpdateChildren())
+                foreach (UIElement child in children)
+                    child.Update();
 
-            foreach (UIElement child in children)
-                child.Update();
             OnUpdate();
 
             onUpdate?.Invoke(this);
@@ -103,10 +104,11 @@ namespace HellTrail.Core.UI
 
             OnDraw(spriteBatch);
 
-            foreach (UIElement child in children)
-            {
-                child.Draw(spriteBatch);
-            }
+            if(PreDrawChildren(spriteBatch))
+                foreach (UIElement child in children)
+                {
+                    child.Draw(spriteBatch);
+                }
         }
 
         public virtual void OnUpdate()
@@ -117,6 +119,16 @@ namespace HellTrail.Core.UI
         public virtual void OnDraw(SpriteBatch spriteBatch)
         {
 
+        }
+
+        public virtual bool PreDrawChildren(SpriteBatch spriteBatch)
+        {
+            return true;
+        }
+
+        public virtual bool PreUpdateChildren()
+        {
+            return true;
         }
 
         public T MakeChild<T>() where T : UIElement

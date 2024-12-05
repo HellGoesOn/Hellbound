@@ -4,6 +4,7 @@ using HellTrail.Core.Combat.Status;
 using HellTrail.Core.ECS;
 using HellTrail.Core.ECS.Components;
 using HellTrail.Core.UI;
+using HellTrail.Core.UI.Elements;
 using HellTrail.Extensions;
 using HellTrail.Render;
 using Microsoft.Xna.Framework;
@@ -21,6 +22,8 @@ namespace HellTrail.Core.Overworld
 {
     public class World : IGameState
     {
+        public bool paused;
+
         public Context context;
 
         public Systems systems;
@@ -60,13 +63,15 @@ namespace HellTrail.Core.Overworld
 
         public void Update()
         {
+            if(!paused)
             systems.Execute(context);
             //var debugText = UIManager.GetStateByName("debugState").GetElementById("debugText") as UIBorderedText;
             //debugText.text = $"EC={context.entityCount}, UIE={UIManager.hoveredElement}\n";
             
             foreach (var trigger in triggers)
             {
-                trigger.TryRunScript(this);
+                if(!paused)
+                    trigger.TryRunScript(this);
             }
 
             triggers.RemoveAll(x => x.activated);
@@ -160,7 +165,7 @@ namespace HellTrail.Core.Overworld
             World world = new World(entityCount);
             string tileText = Regex.Match(text.Substring(entityCT.Length), @$".*\]{Environment.NewLine}{Environment.NewLine}", RegexOptions.Singleline).Value;
 
-            string[] strings = tileText.Split("\n", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            string[] strings = tileText.Split(Environment.NewLine, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             string[] numbers = Regex.Replace(strings[0], "[\\[\\]]", "").Trim().Split(" ");
 
             world.tileMap = new TileMap(numbers.Length, strings.Length);

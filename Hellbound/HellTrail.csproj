@@ -20,15 +20,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Assets\14509.png" />
     <None Remove="Assets\Arrow.png" />
+    <None Remove="Assets\Audio\clangberserk.wav" />
     <None Remove="Assets\Audio\Music\ChangingSeasons.ogg" />
-    <None Remove="Assets\Audio\Music\Relax.ogg" />
     <None Remove="Assets\Audio\Music\School Days.ogg" />
     <None Remove="Assets\Audio\Music\Victory.ogg" />
     <None Remove="Assets\Audio\Sounds\Begin.wav" />
     <None Remove="Assets\Audio\Sounds\CutIn.wav" />
     <None Remove="Assets\Audio\Sounds\Death.wav" />
     <None Remove="Assets\Audio\Sounds\Dies.wav" />
+    <None Remove="Assets\Audio\Sounds\NomNomNom.wav" />
+    <None Remove="Assets\Audio\Sounds\senzu.wav" />
     <None Remove="Assets\Audio\Sounds\WhatDaDogDoin.wav" />
     <None Remove="Assets\BossMusic.ogg" />
     <None Remove="Assets\Dumbass.png" />
@@ -38,6 +41,7 @@
     <None Remove="Assets\Textures\Cursor2.png" />
     <None Remove="Assets\Textures\Cursor3.png" />
     <None Remove="Assets\Textures\Doorkun.png" />
+    <None Remove="Assets\Textures\Dragonslayer.png" />
     <None Remove="Assets\Textures\Elements.png" />
     <None Remove="Assets\Textures\Elements2.png" />
     <None Remove="Assets\Textures\FlipOff.png" />
@@ -56,6 +60,7 @@
     <None Remove="Assets\Textures\VictoryPose.png" />
     <None Remove="Assets\Textures\WhatDaDogDoin.png" />
     <None Remove="Assets\Textures\WhatDaDogDoin2.png" />
+    <None Remove="Assets\thunderfuryl.png" />
     <None Remove="Content\Prefabs\Base.fab" />
   </ItemGroup>
   <ItemGroup>

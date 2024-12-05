@@ -71,7 +71,7 @@ namespace HellTrail.Core.ECS
                 battle.OnBattleEnd = () =>
                 {
                     context.Destroy(entity.id);
-                    SoundEngine.StartMusic("Relax", true);
+                    SoundEngine.StartMusic("ChangingSeasons", true);
                     foreach (Unit unit in GlobalPlayer.ActiveParty)
                     {
                         unit.currentAnimation = unit.defaultAnimation;

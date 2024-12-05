@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,8 +14,8 @@ namespace HellTrail.Extensions
         public static Vector2 FromString(string input)
         {
             string[] str = Regex.Replace(input, "[{X:Y:}]", "").Split(" ");
-            float x = float.Parse(str[0]);
-            float y = float.Parse(str[1]);
+            float x = float.Parse(str[0], CultureInfo.InvariantCulture);
+            float y = float.Parse(str[1], CultureInfo.InvariantCulture);
             return new(x, y);
         }
 

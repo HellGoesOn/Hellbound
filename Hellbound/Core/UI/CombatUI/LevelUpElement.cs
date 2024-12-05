@@ -1,4 +1,5 @@
 ﻿using HellTrail.Core.Combat;
+using HellTrail.Core.UI.Elements;
 using HellTrail.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,10 +19,8 @@ namespace HellTrail.Core.UI.CombatUI
         {
             id = "LevelUp";
 
-            UIPanel panel = new()
-            {
-                size = new Vector2(540, 260),
-            };
+            UIAnimatedPanel panel = new(new Vector2(540, 260), UIAnimatedPanel.AnimationStyle.FourWay);
+            panel.openSpeed = 0.25f;
             panel.SetPosition(new Vector2(Renderer.UIPreferedWidth * 0.5f - 270, Renderer.UIPreferedHeight * 0.5f - 130));
 
             UIBorderedText luckyGuy = new(name)
@@ -29,7 +28,7 @@ namespace HellTrail.Core.UI.CombatUI
                 origin = Assets.DefaultFont.MeasureString(name) * 0.5f,
                 color = Color.LightBlue
             };
-            luckyGuy.SetPosition(new Vector2(panel.size.X * 0.5f, 16));
+            luckyGuy.SetPosition(new Vector2(panel.targetSize.X * 0.5f, 16));
             UIBorderedText oldStatsText = new(oldStats.ListStats())
             {
             };

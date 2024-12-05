@@ -30,6 +30,8 @@ namespace HellTrail
         internal static Main instance;
         internal static double totalTime;
         internal static Random rand;
+        internal bool spiritsAngered;
+        internal static int angerCounter;
 
         public Battle battle;
         private World activeWorld;
@@ -122,30 +124,23 @@ namespace HellTrail
             GlobalPlayer.Init();
             ParticleManager.Initialize();
 
-        //    Dialogue dialogue = Dialogue.Create();
-        //    UIManager.dialogueUI.dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight * 0.5f));
-        //    DialoguePage[] pages =
-        //        {
-        //        new()
-        //    {
-        //        fillColor = Color.Transparent,
-        //        borderColor = Color.Transparent,
-        //        text = "In this world, the events to unfold, people to meet and places to visit are entirely fictional. All similarities to your own world are entirely coincidental."
-        //    },
-        //        new()
-        //        {
-        //        fillColor = Color.Transparent,
-        //        borderColor = Color.Transparent,
-        //            text = "You have been warned.",
-        //            textColor = Color.Crimson,
-        //            onPageEnd = (_) =>
-        //            {
-        //                _.CurrentPage.textColor = Color.Transparent;
-        //                UIManager.dialogueUI.dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight - 180 - 16));
-        //            }
-        //        }
-        //};
-        //    dialogue.pages.AddRange(pages);
+            Dialogue dialogue = Dialogue.Create();
+            UIManager.dialogueUI.dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight * 0.5f));
+            DialoguePage[] pages =
+                {
+                new()
+            {
+                fillColor = Color.Transparent,
+                borderColor = Color.Transparent,
+                textColor = Color.Cyan,
+                text = "(This 'Hell' guy just keeps going on..)",
+                onPageEnd = (_) =>
+                {
+                    UIManager.dialogueUI.dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight - 180 - 16));
+                }
+            }
+        };
+            dialogue.pages.AddRange(pages);
 
             ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", "Hills3");
         }
@@ -263,6 +258,10 @@ namespace HellTrail
         {
             // Run game logic in here. Do NOT render anything here!
             base.Update(gameTime);
+
+            //if (angerCounter >= 15)
+            //    spiritsAngered = true;
+
             totalTime += gameTime.ElapsedGameTime.TotalMilliseconds * 0.01f;
             GetGameState()?.Update();
             if(Input.PressedKey(Keys.F1))
@@ -286,7 +285,7 @@ namespace HellTrail
                 gdm.ApplyChanges();
             }
 
-            
+            GlobalPlayer.Update();
             UIManager.Update();
             Input.Update();
             SoundEngine.Update();
@@ -330,8 +329,8 @@ namespace HellTrail
             GraphicsDevice.SetRenderTarget(null);
 
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone); 
-            spriteBatch.Draw(Renderer.WorldTarget, new Rectangle(0, 0, Renderer.UIPreferedWidth, Renderer.UIPreferedHeight), Color.White);
-            spriteBatch.Draw(Renderer.UITarget, new Rectangle(0, 0, Renderer.UIPreferedWidth, Renderer.UIPreferedHeight), Color.White);
+            spriteBatch.Draw(Renderer.WorldTarget, new Rectangle(0, 0, (int)GameOptions.ScreenWidth, (int)GameOptions.ScreenHeight), Color.White);
+            spriteBatch.Draw(Renderer.UITarget, new Rectangle(0, 0, (int)GameOptions.ScreenWidth, (int)GameOptions.ScreenHeight), Color.White);
 
 
             foreach (Transition transition in transitions)

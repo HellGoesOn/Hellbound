@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using HellTrail.Core.Combat;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -32,13 +33,14 @@ namespace HellTrail.Core
 
         public SpriteAnimation(string texture, FrameData[] frameData)
         {
+            scale = Vector2.One;
             color = Color.White;
             opacity = 1.0f;
             this.texture = texture;
             this.frameData = frameData;
         }
 
-        public void Update()
+        public void Update(Unit unit)
         {
             if(++frameCounter > timePerFrame)
             {
@@ -50,14 +52,14 @@ namespace HellTrail.Core
                     else
                     {
                         if (!finished)
-                            onAnimationEnd?.Invoke(this);
+                            onAnimationEnd?.Invoke(this, unit);
                         finished = true;
                     }
                 }
                 frameCounter = 0;
             }
 
-            onAnimationPlay?.Invoke(this);
+            onAnimationPlay?.Invoke(this, unit);
         }
 
         public void Reset()
@@ -152,5 +154,5 @@ namespace HellTrail.Core
         }
     }
 
-    public delegate void AnimationEventHandler(SpriteAnimation sender);
+    public delegate void AnimationEventHandler(SpriteAnimation sender, Unit unit);
 }

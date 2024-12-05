@@ -32,9 +32,11 @@ namespace HellTrail.Core.UI
 
             OnUpdate?.Invoke(this);
 
-            foreach (UIElement child in children)
+            int childrenCount = children.Count;
+
+            for(int i = 0; i < childrenCount; i++)
             {
-                child.Update();
+                children[i].Update();
             }
 
             foreach(UIElement child in _childrenToRemove)

@@ -12,24 +12,36 @@ namespace HellTrail
     {
         private static bool _isLooping;
         private static bool _updatedSong;
+        public static bool IsMusicPlaying { get; private set; }
         private static string _currentSong;
+        public static string DefaultSong = "ChangingSeasons";
+        private static int _stoppedFor;
+        internal static bool doNotRestart;
 
         public static void StartMusic(string name, bool loop)
         {
             _updatedSong = true;
-            _isLooping = true;
+            _isLooping = loop;
             _currentSong = name;
+            IsMusicPlaying = true;
         }
 
-        public static void StopMusic()
+        public static void StopMusic(int stopFor = 0, bool doNotRestart = false)
         {
+            SoundEngine.doNotRestart = doNotRestart;
+            _stoppedFor = stopFor;
             MediaPlayer.Stop();
             _isLooping = false;
+            IsMusicPlaying = false;
         }
 
         public static void Update()
         {
             MediaPlayer.Volume = GameOptions.MusicVolume;
+
+            if (_stoppedFor > 0)
+                _stoppedFor--;
+
             if (_updatedSong)
             {
                 _updatedSong = false;
@@ -48,6 +60,10 @@ namespace HellTrail
 
                     if (song != null)
                         MediaPlayer.Play(song);
+                }
+                else if (_stoppedFor <= 0 && !doNotRestart)
+                {
+                    StartMusic(DefaultSong, false);
                 }
             }
         }

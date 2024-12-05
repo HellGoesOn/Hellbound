@@ -4,6 +4,7 @@ using HellTrail.Core.ECS.Components;
 using HellTrail.Core.Editor;
 using HellTrail.Core.Overworld;
 using HellTrail.Core.UI.CombatUI;
+using HellTrail.Core.UI.Elements;
 using HellTrail.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -36,8 +37,7 @@ namespace HellTrail.Core.UI
             dialogueUI = new DialogueUIState();
             overworldUI = new OverworldUIState();
             //panel.Rotation = -MathHelper.PiOver2;
-            var state = CreateState();
-            //state.Append(panel);
+            var state = CreateState("testState");
 
             UIStates.Add(combatUI);
             UIStates.Add(dialogueUI);

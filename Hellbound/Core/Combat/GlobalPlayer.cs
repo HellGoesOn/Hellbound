@@ -1,5 +1,7 @@
 ﻿using HellTrail.Core.Combat.Abilities;
 using HellTrail.Core.Combat.Abilities.Fire;
+using HellTrail.Core.Combat.Items;
+using HellTrail.Core.Combat.Items.Consumables;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -13,8 +15,11 @@ namespace HellTrail.Core.Combat
     public static class GlobalPlayer
     {
         private static List<Unit> party = [];
+        private readonly static List<Item> _items = [];
 
         public static List<Unit> ActiveParty { get => party; set => party = value; }
+
+        public static List<Item> Inventory => _items;
 
         public static void Init()
         {
@@ -28,6 +33,11 @@ namespace HellTrail.Core.Combat
             AddPartyMember(protag);
             AddPartyMember(UnitDefinitions.Get("Dog"));
             //ActiveParty.Add(sidekick);
+
+            AddItem(new Tomato()
+            {
+                count = 5
+            });
         }
 
         public static void AddPartyMember(Unit newUnit)
@@ -44,6 +54,23 @@ namespace HellTrail.Core.Combat
                 Unit unit = units[units.Count-1-i];
                 unit.BattleStation = new Vector2(60 + 4 * i + 32 * (i % 2), 70 + 16 * i - 24 * (i % 2));
             }
+        }
+
+        public static void AddItem(Item newItem)
+        {
+            if (_items.Any(x => x.name == newItem.name && x.count + newItem.count <= x.maxCount))
+            {
+                var item = _items.Find(x => x.name == newItem.name&& x.count + newItem.count <= x.maxCount);
+                item.count += newItem.count;
+            } else
+            {
+                _items.Add(newItem);
+            }
+        }
+
+        public static void Update()
+        {
+            _items.RemoveAll(x => x.count <= 0);
         }
 
         // to do: create json file, pull from there instead
@@ -115,7 +142,7 @@ namespace HellTrail.Core.Combat
             {
                 timePerFrame = 6,
                 nextAnimation = "Idle",
-                onAnimationPlay = (_) =>
+                onAnimationPlay = (_, f) =>
                 {
                     Color[] clrs = { Color.Blue, Color.Cyan, Color.Turquoise, Color.LightBlue };
 
@@ -154,7 +181,7 @@ namespace HellTrail.Core.Combat
                     }
                     GameOptions.MusicVolume *= 0.95f;
                 },
-                onAnimationEnd = (_) =>
+                onAnimationEnd = (_, _) =>
                 {
                     GameOptions.MusicVolume = GameOptions.OldMusicVolume;
                 }

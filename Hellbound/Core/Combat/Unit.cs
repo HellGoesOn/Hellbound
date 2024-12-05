@@ -23,6 +23,7 @@ namespace HellTrail.Core.Combat
         public string sprite;
         public string currentAnimation = "";
         public string defaultAnimation = "";
+        public string portrait = "";
         public Team team;
         private Vector2 battleStation;
         public Vector2 position;
@@ -99,7 +100,7 @@ namespace HellTrail.Core.Combat
                 anim.color = Downed ? Color.Crimson : Color.White;
                 anim.opacity = opacity;
                 anim.rotation = rotation;
-                anim.Update();
+                anim.Update(this);
 
                 if (anim.finished)
                 {
@@ -221,6 +222,7 @@ namespace HellTrail.Core.Combat
             Unit copy = new Unit();
             copy.name = name;
             copy.sprite = sprite;
+            copy.portrait = portrait;
             copy.ai = ai;
             copy.animations = [];
             copy.stats = stats.GetCopy();

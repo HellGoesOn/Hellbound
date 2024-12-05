@@ -11,12 +11,13 @@ namespace HellTrail.Core.Combat
 {
     public static class UnitDefinitions
     {
-        private static Dictionary<string, Unit> _definitions = [];
+        private readonly static Dictionary<string, Unit> _definitions = [];
         public static void DefineUnits()
         {
             Unit protag = DefineUnit("Doorkun");
             protag.name = "Doorkun";
             protag.sprite = "Dumbass";
+            protag.portrait = "MCPortrait";
 
             protag.abilities.Add(new BasicAttack());
             protag.abilities.Add(new Agi());
@@ -49,6 +50,7 @@ namespace HellTrail.Core.Combat
             Unit dog = DefineUnit("Dog");
             dog.name = "Dog";
             dog.sprite = "WhatDaDogDoin2";
+            dog.portrait = "DogPortrait2";
             dog.ai = new BasicAI();
             dog.abilities.Add(new BasicAttack()
             {
@@ -58,6 +60,18 @@ namespace HellTrail.Core.Combat
             dog.abilities.Add(new Agi());
             dog.abilities.Add(new Maragi());
             dog.abilities.Add(new Dia());
+            dog.animations.Add("Idle", new SpriteAnimation("WhatDaDogDoin2", [new FrameData(0, 0, 32, 32)])
+            {
+            });
+            dog.animations.Add("Victory", new SpriteAnimation("WhatDaDogDoin2", [new FrameData(0, 0, 32, 32)])
+            {
+                onAnimationPlay = (_, f)
+                =>
+                {
+                    f.position = f.BattleStation + new Vector2(0, (float)Math.Cos(Main.totalTime * 1.5f));
+                    _.scale = new Vector2((float)Math.Sin(Main.totalTime * 2), 1);
+                }
+            });
         }
 
         private static Unit DefineUnit(string name)

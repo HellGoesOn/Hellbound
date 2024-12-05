@@ -34,7 +34,7 @@ namespace HellTrail.Core.Combat.Abilities
             anim.position = caster.position;
             anim.color = Color.White;
             anim.rotation = -0.001f;
-            anim.onAnimationPlay += (_) =>
+            anim.onAnimationPlay += (_, f) =>
             {
                 anim.rotation *= 1.03f;
                 anim.position += (new Vector2(160, 90) - anim.position) * 0.01f;
@@ -48,13 +48,13 @@ namespace HellTrail.Core.Combat.Abilities
             whiteOut.timePerFrame = 460;
             whiteOut.color = Color.White;
             whiteOut.opacity = -1.0f;
-            whiteOut.onAnimationPlay += (_) =>
+            whiteOut.onAnimationPlay += (_, f) =>
             {
                 caster.opacity *= 0.965f;
                 battle.bg.color = Color.Lerp(battle.bg.color, Color.Black, 0.017f);
                 whiteOut.opacity += 0.0085f;
             };
-            whiteOut.onAnimationEnd += (_) =>
+            whiteOut.onAnimationEnd += (_, f) =>
             {
                 caster.opacity = 1.0f;
                 battle.bg.color = oldBgColor;
