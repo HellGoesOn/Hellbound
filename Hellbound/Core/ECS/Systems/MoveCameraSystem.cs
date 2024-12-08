@@ -3,6 +3,7 @@ using HellTrail.Core.Overworld;
 using HellTrail.Core.UI;
 using HellTrail.Extensions;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,22 +32,14 @@ namespace HellTrail.Core.ECS
                 var transform = entity.GetComponent<Transform>();
                 var cameraMarker = entity.GetComponent<CameraMarker>();
                 var velocity = entity.GetComponent<Velocity>();
-                World world = Main.instance.ActiveWorld;
-                Camera cam = world.GetCamera();
+                Camera cam = Main.instance.GetGameState().GetCamera();
 
-                var value = (transform.position + velocity.value - cam.centre / cam.zoom) * cam.speed;
+                var value = (transform.position + velocity.value - cam.centre) * cam.speed;
 
                 cam.centre += value;
                 //cam.centre = cam.centre.ToInt();
 
-                if (world.tileMap.width * DisplayTileLayer.TILE_SIZE - cam.view.Width * 0.5f >= cam.view.Width * 0.5f &&
-                    world.tileMap.height * DisplayTileLayer.TILE_SIZE - cam.view.Height * 0.5f >= cam.view.Height * 0.5f)
-                {
-                    var minX = Math.Clamp(cam.centre.X, cam.view.Width * 0.5f, world.tileMap.width * DisplayTileLayer.TILE_SIZE - cam.view.Width * 0.5f);
-                    var minY = Math.Clamp(cam.centre.Y, cam.view.Height * 0.5f, world.tileMap.height * DisplayTileLayer.TILE_SIZE - cam.view.Height * 0.5f);
 
-                    cam.centre = new Vector2(minX, minY);
-                }
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using HellTrail.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,9 @@ namespace HellTrail.Core
         public static int currentCamera;
 
         public static Camera combatCamera;
+        public static Camera neoCombatCamera;
         public static Camera overworldCamera;
+
 
         public static List<Camera> cameras = new List<Camera>();
 
@@ -31,6 +34,12 @@ namespace HellTrail.Core
             overworldCamera.speed = 1f;
             overworldCamera.centre = new Vector2(160, 90);
             cameras.Add(overworldCamera);
+
+            neoCombatCamera = new Camera(new Viewport(0, 0, Renderer.PreferedWidth, Renderer.PreferedHeight));
+            neoCombatCamera.zoom = 1f;
+            neoCombatCamera.speed = 1f;
+            neoCombatCamera.centre = new Vector2(160, 90);
+            cameras.Add(neoCombatCamera);
         }
 
         public static void Update()

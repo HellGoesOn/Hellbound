@@ -20,6 +20,8 @@ namespace HellTrail.Core.UI.CombatUI
         public bool isRunning;
         public bool showLevelUps;
 
+        public bool beganActing;
+
         public UIPanel oneMorePanel;
 
         public Vector2 basePosition;
@@ -135,6 +137,8 @@ namespace HellTrail.Core.UI.CombatUI
             var state = Main.instance.GetGameState();
             visible = active =  state is Battle;
 
+
+
             if(!active)
             {
                 return;
@@ -244,7 +248,7 @@ namespace HellTrail.Core.UI.CombatUI
                     var targets = activeBattle.TryGetTargets(activeBattle.selectedAbility);
                     if (targets.Contains(unit))
                     {
-                        var position = unit.position * Renderer.UIMultiplierX;
+                        var position = unit.position * 4;
                         spriteBatch.Draw(Assets.GetTexture("Cursor3"), new Vector2(position.X - 40, position.Y) + sway, null, Color.White, 0f, new Vector2(10, 0), 3f, SpriteEffects.None, 0f);
                     }
                 }

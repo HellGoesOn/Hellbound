@@ -15,6 +15,7 @@ namespace HellTrail.Core.Combat
 
         public BattleBackground(string texture)
         {
+            opacity = 1f;
             this.texture = texture;
             color = Color.White;
         }

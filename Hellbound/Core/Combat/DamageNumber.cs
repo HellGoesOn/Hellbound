@@ -90,7 +90,7 @@ namespace HellTrail.Core.Combat
         public void Draw(SpriteBatch sb)
         {
             var orig = Assets.CombatMenuFont.MeasureString(text) * 0.5f;
-            sb.DrawBorderedString(Assets.CombatMenuFont, text, position * new Vector2(Renderer.UIMultiplierX, Renderer.UIMultiplieY) + new Vector2(0, y), color, Color.Black, 0f, orig, Vector2.One, SpriteEffects.None, 0f);
+            sb.DrawBorderedString(Assets.CombatMenuFont, text, position * 4 + new Vector2(0, y), color, Color.Black, 0f, orig, Vector2.One, SpriteEffects.None, 0f);
         }
     }
 

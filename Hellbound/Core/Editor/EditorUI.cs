@@ -152,10 +152,10 @@ namespace HellTrail.Core.Editor
             foreach (var system in con.systems.GetAll())
             {
                 var type = system.GetType();
-                if (system is IExecute && system is not IDraw)
-                {
-                    con.systems.ToggleSystem(type);
-                }
+                //if (system is IExecute && system is not IDraw)
+                //{
+                //    con.systems.ToggleSystem(type);
+                //}
 
                 UICheckBox box = new($"Toggle {type.Name}")
                 {
@@ -500,12 +500,12 @@ namespace HellTrail.Core.Editor
             IGameState con = Main.instance.ActiveWorld;
             if (newValue > oldValue)
             {
-                con.GetCamera().centre += con.GetCamera().centre * 0.1f;
+                //con.GetCamera().centre += con.GetCamera().centre * 0.1f;
                 con.GetCamera().zoom += 0.1f;
             }
             else
             {
-                con.GetCamera().centre -= con.GetCamera().centre * 0.1f;
+                //con.GetCamera().centre -= con.GetCamera().centre * 0.1f;
                 con.GetCamera().zoom -= 0.1f;
             }
         }
@@ -519,7 +519,7 @@ namespace HellTrail.Core.Editor
 
             if (key == Keys.R)
             {
-                con.GetCamera().zoom = 1f;
+                con.GetCamera().zoom = 4f;
             }
 
             if (Input.HeldKey(Keys.LeftControl) && key >= Keys.D1 && key <= Keys.D1 + panels.Length-1)

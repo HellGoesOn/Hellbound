@@ -36,6 +36,16 @@ namespace HellTrail.Core.ECS
                 if (Input.HeldKey(Keys.S)) vel.Y += speed;
                 if (Input.HeldKey(Keys.D)) vel.X += speed;
 
+                if (entity.HasComponent<NewAnimationComponent>())
+                {
+                    var anim = entity.GetComponent<NewAnimationComponent>();
+
+                    if (vel.value.Length() > 0)
+                        anim.currentAnimation = "Victory";
+                    else
+                        anim.currentAnimation = "Idle";
+                }
+
                 if (vel.X != 0)
                 {
                     if (vel.X < 0)

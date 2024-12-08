@@ -1,6 +1,7 @@
 ﻿using HellTrail.Core.ECS;
 using HellTrail.Core.ECS.Components;
 using HellTrail.Core.UI;
+using HellTrail.Extensions;
 using HellTrail.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -102,7 +103,7 @@ namespace HellTrail.Core.Overworld
                 for (int j = 0; j < width; j++)
                 {
                     Texture2D tex = Assets.GetTexture(GetById(_physicalTiles[j, i]).textureName);
-                    Renderer.Draw(tex, new Vector2(j * DisplayTileLayer.TILE_SIZE, i * DisplayTileLayer.TILE_SIZE), null, Color.White, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, _elevationMap[j, i]);
+                    Renderer.Draw(tex, new Vector2(j * DisplayTileLayer.TILE_SIZE, i * DisplayTileLayer.TILE_SIZE).ToInt(), null, Color.White, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, _elevationMap[j, i]);
                     //Renderer.Draw(Assets.GetTexture("Frame2"), new Vector2(j * DisplayTileLayer.TILE_SIZE, i * DisplayTileLayer.TILE_SIZE), null, Color.White, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
                 }
             }
@@ -185,7 +186,7 @@ namespace HellTrail.Core.Overworld
                     int ey = Math.Clamp(i, 0, height - 1);
                     float depth = i * TILE_SIZE + (elevationMap[j, i] * TILE_SIZE + 12 * elevationMap[j, i]) + myTile.weight * 0.0001f + myTile.drawOffset.Y;
                     Rectangle rect = new(x * TILE_SIZE + 1 * x, y * TILE_SIZE + 1 * y, TILE_SIZE, TILE_SIZE);
-                    Vector2 pos = new Vector2(j, i) * TILE_SIZE - new Vector2(TILE_SIZE) * 0.5f + myTile.drawOffset;
+                    Vector2 pos = new Vector2(j, i).ToInt() * TILE_SIZE - (new Vector2(TILE_SIZE) * 0.5f).ToInt() + myTile.drawOffset.ToInt();
                     Renderer.Draw(tileSheet, pos, rect, Color.White, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, depth);
 
                 }

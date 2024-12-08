@@ -16,6 +16,7 @@ namespace HellTrail.Core.Combat.Items
         public int maxCount = 99;
         public float iconRotation;
         public bool consumable;
+        public bool aoe;
         public bool canUseOutOfBattle;
 
         public EquipSlot equipSlot;

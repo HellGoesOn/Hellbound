@@ -29,7 +29,11 @@ namespace HellTrail.Core.UI
 
         public static UIElement hoveredElement;
 
+        public static UIBorderedText debugText;
+
         public static string tooltipText;
+
+        private static List<string> showInDebug = [];
 
         public static void Init()
         {
@@ -38,6 +42,9 @@ namespace HellTrail.Core.UI
             overworldUI = new OverworldUIState();
             //panel.Rotation = -MathHelper.PiOver2;
             var state = CreateState("testState");
+            debugText = new UIBorderedText("");
+            debugText.SetPosition(16);
+            state.Append(debugText);
 
             UIStates.Add(combatUI);
             UIStates.Add(dialogueUI);
@@ -62,6 +69,7 @@ namespace HellTrail.Core.UI
         {
             hoveredElement = null;
             tooltipText = "";
+
             foreach (UIState state in UIStates)
             {
                 state.Update();
@@ -73,12 +81,22 @@ namespace HellTrail.Core.UI
             }
         }
 
+        public static void Debug(string text) => showInDebug.Add(text);
+
         public static void Draw(SpriteBatch spriteBatch)
         {
+            debugText.text = "";
+            foreach (string str in showInDebug)
+            {
+                debugText.text += str + "\n";
+            }
+
             foreach (UIState state in UIStates)
             {
                 state.Draw(spriteBatch);
             }
+
+            showInDebug.Clear();
 
             if (!string.IsNullOrWhiteSpace(tooltipText))
             {

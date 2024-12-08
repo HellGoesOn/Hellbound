@@ -37,7 +37,7 @@ namespace HellTrail.Core.Combat.Items.Consumables
                 panel.panelColor = Color.Crimson;
                 panel.onUpdate = (sender) =>
                 {
-                    inventoryMenu.isActive = false;
+                    inventoryMenu.focused = false;
                     if (Input.PressedKey([Keys.Escape, Keys.E, Keys.Q]))
                     {
                         panel.isClosed = true;
@@ -46,7 +46,7 @@ namespace HellTrail.Core.Combat.Items.Consumables
 
                 panel.onLoseParent = (sender) =>
                 {
-                    inventoryMenu.isActive = true;
+                    inventoryMenu.focused = true;
                 };
 
                 panel.SetPosition(Renderer.UIPreferedWidth * 0.5f - panel.targetSize.X * 0.5f, Renderer.UIPreferedHeight * 0.5f - panel.targetSize.Y * 0.5f);

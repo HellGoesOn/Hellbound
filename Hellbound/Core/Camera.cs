@@ -39,34 +39,37 @@ namespace HellTrail.Core
                 centre += (finalPos * zoom - centre) * speed;
             }*/
 
-            transform = Matrix.CreateScale(new Vector3(zoom, zoom, 0))
-                * Matrix.CreateTranslation(-MathF.Floor(centre.X), -MathF.Floor(centre.Y), 0)
+            transform =
+                Matrix.CreateTranslation(-(int)MathF.Floor(centre.X), -(int)MathF.Floor(centre.Y), 0)
                 * Matrix.CreateRotationZ(rotation)
+                * Matrix.CreateScale(new Vector3(zoom, zoom, 1))
                 * Matrix.CreateTranslation(new Vector3(view.Width * 0.5f, view.Height * 0.5f, 0f));
-
-#if DEBUG
-            /*
-            if (Input.HeldKey(Keys.A))
-                centre.X -= speed;
-            if (Input.HeldKey(Keys.D))
-                centre.X += speed;
-            if (Input.HeldKey(Keys.W))
-                centre.Y -= speed;
-            if (Input.HeldKey(Keys.S))
-                centre.Y += speed;
-            if (Input.HeldKey(Keys.LeftShift))
-                zoom += 0.02f;
-            if (Input.HeldKey(Keys.Space))
-                zoom -= 0.02f;
-            if (Input.HeldKey(Keys.LeftControl))
-                rotation += 0.02f;
-            if (Input.HeldKey(Keys.LeftAlt))
-                rotation -= 0.02f;*/
-
-            if (zoom < 0.1f)
-                zoom = 0.1f;
-#endif
         }
+
+        public void Clamp(Vector2 min, Vector2 max)
+        {
+            var topLeft = centre - new Vector2(view.Width, view.Height) * 0.5f;
+            var bottomRight = centre + new Vector2(view.Width, view.Height) * 0.5f;
+
+            var cameraTopLeftWorld = Vector2.Transform(topLeft, Inverse);
+            var cameraBottomRightWorld = Vector2.Transform(bottomRight, Inverse);
+
+            var width = cameraBottomRightWorld.X - cameraTopLeftWorld.X;
+            var height = cameraBottomRightWorld.Y - cameraTopLeftWorld.Y;
+
+            var bounds = new Rectangle((int)cameraTopLeftWorld.X, (int)cameraBottomRightWorld.Y, (int)width, (int)height);
+
+            if (bounds.X < min.X) bounds.X = (int)min.X;
+            if(bounds.Y < min.Y) bounds.Y = (int)min.Y;
+            if(bounds.Right > max.Y) bounds.Y = (int)max.Y - bounds.Width;
+            if (bounds.Bottom > max.Y) bounds.Y = (int)max.Y - bounds.Height;
+
+            var boundsCenter = new Vector2(bounds.X + bounds.Width, bounds.Y + bounds.Height) * 0.5f;
+            var cameraCenterPosition = Vector2.Transform(boundsCenter, transform);
+            centre = cameraCenterPosition;
+        }
+
+        public Matrix Inverse => Matrix.Invert(transform);
 
         public Vector2 Position => centre - new Vector2(view.Width, view.Height) * 0.5f;
     }

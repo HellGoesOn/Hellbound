@@ -24,8 +24,8 @@ namespace HellTrail.Core.Combat
             protag.abilities.Add(new Maragi());
             protag.abilities.Add(new Dia());
             protag.statsGrowth = new CombatStats(0.5f, 1.5f, 10, 7, 0.15f);
-            protag.stats.magic = 100;
             protag.stats.speed = 7;
+            protag.stats.magic = 100;
             GlobalPlayer.ProtagAnimations(protag);
 
             Unit peas = DefineUnit("Peas");

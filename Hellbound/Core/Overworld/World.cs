@@ -56,9 +56,10 @@ namespace HellTrail.Core.Overworld
             systems.AddSystem(new MoveCameraSystem(context));
             systems.AddSystem(new DrawBoxSystem(context));
             systems.AddSystem(new DrawSystem(context));
-            systems.AddSystem(new DrawAnimationSystem(context));
             systems.AddSystem(new DrawTransformBoxSystem(context));
+            systems.AddSystem(new NewAnimationSystem(context));
             GetCamera().speed = 0.1f;
+            GetCamera().zoom = 4f;
         }
 
         public void Update()
@@ -83,6 +84,8 @@ namespace HellTrail.Core.Overworld
                 stream.Close();
                 stream.Dispose();
             }
+
+            UIManager.Debug(Input.MousePosition.ToString());
 
             //if(Input.LMBHeld)
             //{

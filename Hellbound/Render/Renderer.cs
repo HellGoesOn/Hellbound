@@ -12,15 +12,12 @@ namespace HellTrail.Render
 {
     public static class Renderer
     {
-        public const int PreferedWidth = 320;
-        public const int PreferedHeight = 180;
+        public const int PreferedWidth = 1280;
+        public const int PreferedHeight = 720;
         public const int UIPreferedWidth = 1280;//1920;
         public const int UIPreferedHeight = 720;//1080;
         //public const int UIPreferedHeight = 1080;
         //public const int UIPreferedWidth = 1920;
-
-        public const float UIMultiplierX = UIPreferedWidth / (float)PreferedWidth;
-        public const float UIMultiplieY = UIPreferedHeight / (float)PreferedHeight;
 
         public static RenderTarget2D WorldTarget { get; set; }
         public static RenderTarget2D MainTarget { get; set; }
@@ -87,7 +84,9 @@ namespace HellTrail.Render
 
             blend ??= BlendState.AlphaBlend;
 
-            Camera cam = Main.instance.GetGameState().GetCamera();
+            var gameState = Main.instance.GetGameState();
+
+            Camera cam = gameState.GetCamera();
 
             if (cam != null && !ignoreCam)
                 spriteBatch.Begin(sortMode, blend, state, stencil, RasterizerState.CullNone, null, cam.transform);
@@ -128,12 +127,12 @@ namespace HellTrail.Render
         public static void DoRender(SpriteBatch sb)
         {
             _drawData.Sort(SortDrawData);
-            StartSpriteBatch(sb, sortMode: SpriteSortMode.Deferred);
+            StartSpriteBatch(sb, state: SamplerState.PointWrap, sortMode: SpriteSortMode.Deferred);
             for (int i = 0; i < _drawData.Count; i++)
             {
                 DrawData dd = _drawData[i];
 
-                sb.Draw(dd.texture, dd.position, dd.source, dd.color, dd.rotation, dd.origin, dd.scale, dd.spriteEffects, dd.depth);
+                sb.Draw(dd.texture, dd.position, dd.source, dd.color, dd.rotation, dd.origin, dd.scale, dd.spriteEffects, 0);
             }
             sb.End();
 

@@ -20,8 +20,8 @@ namespace HellTrail
                 resolutionMultiplier = value;
                 if(resolutionMultiplier <= 0)
                     resolutionMultiplier = 1;
-                ScreenWidth = Renderer.PreferedWidth * resolutionMultiplier;
-                ScreenHeight = Renderer.PreferedHeight * resolutionMultiplier;
+                ScreenWidth = 320 * resolutionMultiplier;
+                ScreenHeight = 180 * resolutionMultiplier;
             }
         }
         public static int ScreenWidth { get; set; } = 320;

@@ -11,10 +11,12 @@ namespace HellTrail
     {
         public static GameState State { get; set; } = GameState.Combat;
 
+        private static GameState _nextState;
+
         public static void SetState(GameState newState, Transition transition = null)
         {
             Main.instance.transitions.Add(transition ?? new(Renderer.SaveFrame()));
-            State = newState;
+            _nextState = newState;
             switch(State)
             {
                 case GameState.MainMenu:
@@ -26,14 +28,27 @@ namespace HellTrail
                 case GameState.Overworld:
                     // transition to OW
                     break;
+                case GameState.CombatNew:
+                    break;
+            }
+        }
+
+        public static void Update()
+        {
+            if(_nextState != GameState.Dummy)
+            {
+                State = _nextState;
+                _nextState = GameState.Dummy;
             }
         }
     }
 
     public enum GameState
     {
+        Dummy,
         MainMenu,
         Overworld,
-        Combat
+        Combat,
+        CombatNew
     }
 }

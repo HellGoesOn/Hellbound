@@ -48,6 +48,8 @@ namespace HellTrail.Core.Combat
             {
                 count = 5
             });
+
+            AddItem(new AdrenalineShot() { count = 3 });
         }
 
         public static void AddPartyMember(Unit newUnit)
@@ -86,7 +88,7 @@ namespace HellTrail.Core.Combat
         // to do: create json file, pull from there instead
         public static void ProtagAnimations(Unit mc)
         {
-            SpriteAnimation idle = new("DumbassIdle", 
+            SpriteAnimation idle = new("Dumbass_Idle", 
                 [
                 new FrameData(0, 0, 32, 32),
                 new FrameData(0, 32, 32, 32),

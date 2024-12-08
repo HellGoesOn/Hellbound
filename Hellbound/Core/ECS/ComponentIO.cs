@@ -24,7 +24,7 @@ namespace HellTrail.Core.ECS
         [Obsolete("SerializeComponent is obsolete, use New_Serialize instead")]
         public static string SerializeComponent(IComponent component)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             Type type = component.GetType();
             sb.Append($"{type.Name}");
 
@@ -52,10 +52,8 @@ namespace HellTrail.Core.ECS
         {
             if (field.FieldType.IsArray)
             {
-                var values = field.GetValue(component) as Array;
-
                 sb.Append('{');
-                if (values != null)
+                if (field.GetValue(component) is Array values)
                 {
                     for (int index = 0; index < values.Length; index++)
                     {
@@ -89,8 +87,6 @@ namespace HellTrail.Core.ECS
             FieldInfo[] fields = type.GetFields();
 
             IComponent instance = (IComponent)RuntimeHelpers.GetUninitializedObject(type);
-
-            MatchCollection coll = BetweenSwirlyBracketsExcludingThem().Matches(value);
 
             string[] values = Regex.Split(value, "; ", RegexOptions.Singleline);
 
@@ -132,7 +128,7 @@ namespace HellTrail.Core.ECS
 
         public static string New_Serialize(IComponent component)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             CultureInfo currentCulture = CultureInfo.CurrentCulture;
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
@@ -141,10 +137,12 @@ namespace HellTrail.Core.ECS
 
             FieldInfo[] fields = type.GetFields();
 
-            if (fields.Length > 0)
-                sb.Append(":\n\t[");
-            else
-                sb.Append(";");
+            sb.Append('{');
+
+            //if (fields.Length > 0)
+            //    sb.Append(":\n\t[");
+            //else
+            //    sb.Append(";");
 
             for(int i = 0; i < fields.Length; i++)
             {
@@ -152,12 +150,12 @@ namespace HellTrail.Core.ECS
                 sb.Append(New_FieldToText(field, component));
 
                 if(i < fields.Length - 1)
-                {
-                    sb.Append("; ");
+                    { 
+                    sb.Append("; "); 
                 }
             }
-            if (fields.Length > 0)
-                sb.Append("];");
+
+            sb.Append($"}}{Environment.NewLine}");
 
             Thread.CurrentThread.CurrentCulture = currentCulture;
 
@@ -166,7 +164,7 @@ namespace HellTrail.Core.ECS
 
         public static string New_FieldToText(FieldInfo field, IComponent instance)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             CultureInfo currentCulture = CultureInfo.CurrentCulture;
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
@@ -192,7 +190,7 @@ namespace HellTrail.Core.ECS
                 int index = 0;
                 foreach(var kvp in dict)
                 {
-                    sb.Append($"\"{kvp.Key}\"=[{kvp.Value}]");
+                    sb.Append($"{kvp.Key}=[{kvp.Value}]");
                     index++;
 
                     if (index < dict.Count)
@@ -222,9 +220,9 @@ namespace HellTrail.Core.ECS
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             string trimmed = readString.Trim();
 
-            string componentType = Regex.Replace(Regex.Match(trimmed, @"^[^[]*").Value, "[^a-zA-Z]", "").Trim();
+            string componentType = Regex.Replace(Regex.Match(trimmed, @"^[^{]*").Value, "[^a-zA-Z]", "").Trim();
 
-            string values = Regex.Match(trimmed, @"\[(.*)\]").Groups[1].Value;
+            string values = Regex.Match(trimmed, @"\{(.*)\}", RegexOptions.Singleline).Groups[1].Value;
 
             ///NewAnimationComponent:["Idle"; ["Idle"=[{0 1}], "Idle2"=[{1 2}]]; [{32 32 5}, {16 16 4}, {32 32 6}]];
             string[] valuesSeparatedPerField = values.Split(';', StringSplitOptions.TrimEntries);
@@ -249,7 +247,7 @@ namespace HellTrail.Core.ECS
             return instance;
         }
 
-        private static Dictionary<Type, TryParserContainer> _tryParserCache = [];
+        private static readonly Dictionary<Type, TryParserContainer> _tryParserCache = [];
 
         public static TryParserContainer FindTryParser(Type type)
         {

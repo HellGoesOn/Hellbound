@@ -33,7 +33,7 @@ namespace HellTrail.Extensions
             {
                 return frame;
             }
-            return new Frame(0, 0, 0);
+            return new Frame(0, 0, 0, 0, 0);
         }
 
         public static Vector2 FromString(this Vector2 v, string input)

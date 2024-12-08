@@ -7,7 +7,7 @@ namespace HellTrail.Core.UI.Elements
 {
     public class UIScrollableMenu : UIElement
     {
-        public bool isActive;
+        public bool focused;
         public bool drawArrows;
         public bool closed;
         public bool init;
@@ -53,7 +53,7 @@ namespace HellTrail.Core.UI.Elements
                     sizeX = font.MeasureString(options[i]).X;
                 }
             }
-            isActive = true;
+            focused = true;
             panelColor = Color.DarkBlue;
             borderColor = Color.White;
             targetSize = new Vector2(16 + sizeX + 16, (sizeY + 4) * maxDisplayeedOptions + 32);
@@ -98,7 +98,7 @@ namespace HellTrail.Core.UI.Elements
                 return;
             }
 
-            if (!isActive || options.Count <= 0 || size != targetSize)
+            if (!focused || options.Count <= 0 || size != targetSize)
                 return;
 
             if ((Input.HeldKey(Keys.S) || Input.HeldKey(Keys.W)) && _heldTimer < repeatRate)
@@ -171,7 +171,7 @@ namespace HellTrail.Core.UI.Elements
                     var textPosition = GetPosition() + new Vector2(16, 16 + (sizeY + 4) * offset);
                     spriteBatch.DrawBorderedString(font, option, textPosition, clr, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);
 
-                    if (selected && isActive)
+                    if (selected && focused)
                     {
                         bool evalPosition = GetPosition().X > 50;
                         Vector2 cursorScale = evalPosition ? new Vector2(3, 3) : new Vector2(-3, 3);

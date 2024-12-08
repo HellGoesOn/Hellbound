@@ -117,7 +117,7 @@ namespace HellTrail.Core.ECS
                         continue;
 
                     //GetComponentPool(Context.ComponentId[component.GetType()]).Push(component);
-                    component = null;
+                    _components[i] = null;
                 }
             }
             OnDestroy?.Invoke(this);
@@ -151,10 +151,59 @@ namespace HellTrail.Core.ECS
             return $"Entity_{id} \n{string.Join("\n", GetAllComponents().Select(x => x.ToString()))}";
         }
 
+        static List<string> ExtractComponents(string data)
+        {
+            List<string> components = [];
+            Stack<int> stack = new();
+            int start = -1;
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                if (data[i] == '{')
+                {
+                    if (stack.Count == 0)
+                    {
+                        // Mark the start of a new component
+                        start = i;
+                    }
+                    stack.Push(i);
+                } else if (data[i] == '}')
+                {
+                    if (stack.Count > 0)
+                    {
+                        stack.Pop();
+                        if (stack.Count == 0 && start != -1)
+                        {
+                            // Found a complete component
+                            // Find the component name before the opening brace
+                            int nameStart = data.LastIndexOf('\t', start - 1) + 1;
+                            string componentName = data[nameStart..start].Trim();
+
+                            // Extract the full component including its name
+                            string fullComponent = $"{componentName} {data.Substring(start, i - start + 1).Trim()}";
+                            components.Add(fullComponent);
+                            start = -1; // Reset start for the next component
+                        }
+                    }
+                }
+            }
+
+            return components;
+        }
+
         public static Entity Deserialize(string text, Context context = null)
         {
             string preSplit = Regex.Match(text, @"{(.*)}", RegexOptions.Singleline).Groups[1].Value.Trim();
-            string[] components = preSplit.Split($";{Environment.NewLine}");
+            //string[] components = preSplit.Split($"}}{Environment.NewLine}");
+
+            var components = ExtractComponents(preSplit);
+            //var matches = Regex.Matches(preSplit, $"");
+
+            //foreach (var match in matches)
+            //{
+            //    components.Add(match.ToString());
+            //}
+
             string entityLine = Regex.Match(text, $"Entity_.*[^{Environment.NewLine}]", RegexOptions.Multiline).Value;
             string id = Regex.Replace(entityLine, "[^0-9]", "");
 
@@ -173,7 +222,7 @@ namespace HellTrail.Core.ECS
                 e = new Entity(0, Context._maxComponents);
             }
 
-            for (int componentIndex = 0; componentIndex < components.Length; componentIndex++)
+            for (int componentIndex = 0; componentIndex < components.Count; componentIndex++)
             {
                 e.AddComponent(ComponentIO.New_Deserialize(components[componentIndex]));
             }
@@ -202,7 +251,7 @@ namespace HellTrail.Core.ECS
         /// <returns></returns>
         public static string Serialize(Entity entity)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             sb.AppendLine($"Entity_{entity.id}{Environment.NewLine}\t{{");
             foreach (IComponent c in entity.GetAllComponents())
             {

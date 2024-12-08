@@ -131,9 +131,10 @@ namespace HellTrail
             get
             {
                 MouseState state = Mouse.GetState();
-                var adjusted = new Vector2(state.X, state.Y) / Adjustment;
-                var cam = Main.instance.GetGameState().GetCamera();
-                Vector2 v = (adjusted + cam.Position) / cam.zoom;
+                var adjusted = new Vector2(state.X, state.Y);
+                var gameState = Main.instance.GetGameState();
+                var cam = gameState.GetCamera();
+                Vector2 v = Vector2.Transform(adjusted, cam.Inverse);
                 return v;
             }
         }

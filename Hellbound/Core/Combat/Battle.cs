@@ -90,6 +90,8 @@ namespace HellTrail.Core.Combat
             unitsHitLastRound = [];
             State = BattleState.BeginTurn;
             bg = new BattleBackground("TestBG");
+            GetCamera().zoom = 4f;
+            GetCamera().centre = new Vector2(160, 90);
         }
 
         public static Battle Create(List<Unit> enemies, List<Unit> trialCharacters = null)
@@ -489,6 +491,7 @@ namespace HellTrail.Core.Combat
             if (ActingUnit.team == Team.Player && ActingUnit.ai == null)
             {
                 HandleMenus();
+                UIManager.combatUI.beganActing = true;
             }
 
             State = BattleState.CheckInput;

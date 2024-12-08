@@ -20,6 +20,7 @@ using HellTrail.Core.Combat.Scripting;
 using HellTrail.Core.ECS;
 using HellTrail.Core.ECS.Components;
 using Microsoft.Xna.Framework.Input.Touch;
+using HellTrail.Core.NeoCombat;
 
 namespace HellTrail
 {
@@ -35,6 +36,8 @@ namespace HellTrail
 
         public Battle battle;
         private World activeWorld;
+
+        public NeoBattle battleNew;
 
         public World ActiveWorld
         {
@@ -77,14 +80,14 @@ namespace HellTrail
             GameStateManager.State = GameState.Overworld;
             SoundEngine.StartMusic("ChangingSeasons", true);
 
-            var dict = new Dictionary<string, Animation>
-            {
-                { "Idle", new Animation(0, 10) }
-            };
-            var test = new Transform(69, 69);
-            string crime = ComponentIO.New_Serialize(test);
+            //var dict = new Dictionary<string, Animation>
+            //{
+            //    { "Idle", new Animation(0, 10) }
+            //};
+            //var test = new Transform(69, 69);
+            //string crime = ComponentIO.New_Serialize(test);
 
-            IComponent component = ComponentIO.New_Deserialize(crime);
+            //IComponent component = ComponentIO.New_Deserialize(crime);
             //GetGameState().GetCamera().centre = GlobalPlayer.ActiveParty[0].position;
 
             var slime = prefabContext.Create();
@@ -124,23 +127,23 @@ namespace HellTrail
             GlobalPlayer.Init();
             ParticleManager.Initialize();
 
-            Dialogue dialogue = Dialogue.Create();
-            UIManager.dialogueUI.dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight * 0.5f));
-            DialoguePage[] pages =
-                {
-                new()
-            {
-                fillColor = Color.Transparent,
-                borderColor = Color.Transparent,
-                textColor = Color.Cyan,
-                text = "(This 'Hell' guy just keeps going on..)",
-                onPageEnd = (_) =>
-                {
-                    UIManager.dialogueUI.dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight - 180 - 16));
-                }
-            }
-        };
-            dialogue.pages.AddRange(pages);
+        //    Dialogue dialogue = Dialogue.Create();
+        //    UIManager.dialogueUI.dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight * 0.5f));
+        //    DialoguePage[] pages =
+        //        [
+        //        new()
+        //    {
+        //        fillColor = Color.Transparent,
+        //        borderColor = Color.Transparent,
+        //        textColor = Color.Cyan,
+        //        text = "(This 'Hell' guy just keeps going on..)",
+        //        onPageEnd = (_) =>
+        //        {
+        //            UIManager.dialogueUI.dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight - 180 - 16));
+        //        }
+        //    }
+        //];
+        //    dialogue.pages.AddRange(pages);
 
             ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", "Hills3");
         }
@@ -161,14 +164,13 @@ namespace HellTrail
                 list.Add(slime);
             }
 
-            Unit peas = new Unit()
+            Unit peas = new()
             {
                 sprite = "Peas",
                 name = "Peas",
-                //ai = new BasicAI(),
+                resistances = new ElementalResistances(1f, 1f, 1f, 1f, 1f, 0f),
+                BattleStation = new Vector2(90, 90)
             };
-            peas.resistances = new ElementalResistances(1f, 1f, 1f, 1f, 1f, 0f);
-            peas.BattleStation = new Vector2(90, 90);
 
             Vector2 pos = GlobalPlayer.ActiveParty[0].position;
 
@@ -301,6 +303,8 @@ namespace HellTrail
             }
 
             transitions.RemoveAll(x => x.finished);
+
+            GameStateManager.Update();
         }
 
         protected override void Draw(GameTime gameTime)
@@ -312,7 +316,7 @@ namespace HellTrail
             IGameState state = GetGameState();
 
             GraphicsDevice.SetRenderTarget(Renderer.WorldTarget);
-            Renderer.StartSpriteBatch(spriteBatch, stencil: DepthStencilState.DepthRead);
+            Renderer.StartSpriteBatch(spriteBatch, state: SamplerState.PointWrap, stencil: DepthStencilState.DepthRead);
             GetGameState()?.Draw(spriteBatch);
             spriteBatch.End();
             Renderer.DoRender(spriteBatch);
@@ -322,13 +326,13 @@ namespace HellTrail
 
             GraphicsDevice.SetRenderTarget(Renderer.UITarget);
             GraphicsDevice.Clear(Color.Transparent);
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);
             UIManager.Draw(spriteBatch);
             spriteBatch.End();
 
             GraphicsDevice.SetRenderTarget(null);
 
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone); 
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone); 
             spriteBatch.Draw(Renderer.WorldTarget, new Rectangle(0, 0, (int)GameOptions.ScreenWidth, (int)GameOptions.ScreenHeight), Color.White);
             spriteBatch.Draw(Renderer.UITarget, new Rectangle(0, 0, (int)GameOptions.ScreenWidth, (int)GameOptions.ScreenHeight), Color.White);
 
@@ -383,17 +387,14 @@ namespace HellTrail
 
         public IGameState GetGameState()
         {
-            switch(GameStateManager.State)
+            return GameStateManager.State switch
             {
-                case GameState.Overworld:
-                    return activeWorld;
-                case GameState.Combat:
-                    return battle;
-                case GameState.MainMenu:
-                    return null;
-                default:
-                    throw new NotImplementedException();
-            }
+                GameState.Overworld => activeWorld,
+                GameState.Combat => battle,
+                GameState.MainMenu => null,
+                GameState.CombatNew => battleNew,
+                _ => throw new NotImplementedException(),
+            };
         }
     }
 }
