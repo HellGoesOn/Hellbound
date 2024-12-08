@@ -203,7 +203,7 @@ namespace HellTrail.Core.ECS
 
         public string ListEntities()
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             foreach (Entity e in entities.Where(x => x != null && x.enabled))
             {
                 sb.AppendLine(e.ToString());

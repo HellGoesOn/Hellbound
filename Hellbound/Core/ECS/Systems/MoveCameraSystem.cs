@@ -30,7 +30,6 @@ namespace HellTrail.Core.ECS
                 var entity = entities[i];
 
                 var transform = entity.GetComponent<Transform>();
-                var cameraMarker = entity.GetComponent<CameraMarker>();
                 var velocity = entity.GetComponent<Velocity>();
                 Camera cam = Main.instance.GetGameState().GetCamera();
 

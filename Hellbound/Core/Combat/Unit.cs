@@ -35,7 +35,7 @@ namespace HellTrail.Core.Combat
         public ElementalResistances resistances;
         public List<Ability> abilities;
         public List<StatusEffect> statusEffects;
-        public Dictionary<string, SpriteAnimation> animations = new Dictionary<string, SpriteAnimation>();
+        public Dictionary<string, SpriteAnimation> animations = new();
 
         public float opacity;
 
@@ -220,7 +220,7 @@ namespace HellTrail.Core.Combat
 
         public Unit GetCopy()
         {
-            Unit copy = new Unit();
+            Unit copy = new();
             copy.name = name;
             copy.sprite = sprite;
             copy.portrait = portrait;

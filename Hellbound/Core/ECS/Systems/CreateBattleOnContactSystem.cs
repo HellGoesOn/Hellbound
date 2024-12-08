@@ -39,7 +39,7 @@ namespace HellTrail.Core.ECS
 
                 List<Unit> enemyUnits = [];
                 List<Unit> trialUnits = [];
-                BattleBackground bg = new BattleBackground(component.bgName);
+                BattleBackground bg = new(component.bgName);
                 int offset = 0;
                 foreach(var unit in enemyDefintions)
                 {
@@ -48,8 +48,7 @@ namespace HellTrail.Core.ECS
                     enemyUnits.Add(enemy);
                     enemy.BattleStation = new Vector2(220 + offset * 8 + ((offset / 3) * 24), 60 + offset * 32 - (offset / 3 * 86));
 
-                    if (enemy.ai == null)
-                        enemy.ai = new BasicAI();
+                    enemy.ai ??= new BasicAI();
 
                     offset++;
                 }

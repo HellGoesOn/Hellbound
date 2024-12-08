@@ -23,6 +23,6 @@ namespace HellTrail.Core.ECS.Components
         {
         }
 
-        public Vector2 ToDraw => new Vector2(MathF.Round(position.X), MathF.Round(position.Y));
+        public Vector2 ToDraw => new(MathF.Round(position.X), MathF.Round(position.Y));
     }
 }

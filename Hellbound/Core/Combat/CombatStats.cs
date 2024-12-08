@@ -79,7 +79,7 @@ namespace HellTrail.Core.Combat
 
         public string ListStats(bool full = true)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             sb.AppendLine($"LVL: {level}");
             sb.AppendLine($"EXP: {EXP} / {toNextLevel}");
             sb.AppendLine($"HP: {HP} / {MaxHP}");

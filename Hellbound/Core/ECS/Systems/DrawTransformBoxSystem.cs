@@ -30,7 +30,7 @@ namespace HellTrail.Core.ECS
                 Transform transform = entity.GetComponent<Transform>();
 
                 float depth = 10000f;
-                Renderer.DrawRectToWorld(transform.ToDraw-new Vector2(4), new Vector2(8), 1, Color.Lime, depth);
+                Renderer.DrawRectToWorld(transform.ToDraw-new Vector2(4), new Vector2(8), Color.Lime, depth);
             }
         }
     }

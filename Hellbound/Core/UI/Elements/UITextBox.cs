@@ -61,8 +61,8 @@ namespace HellTrail.Core.UI.Elements
 
         public override void OnDraw(SpriteBatch spriteBatch)
         {
-            Renderer.DrawRect(spriteBatch, GetPosition() - new Vector2(2), size+new Vector2(4), 1, boxInnerColor);  
-            Renderer.DrawRect(spriteBatch, GetPosition(), size, 1, boxBorderColor);
+            Renderer.DrawRect(spriteBatch, GetPosition() - new Vector2(2), size+new Vector2(4), boxInnerColor);  
+            Renderer.DrawRect(spriteBatch, GetPosition(), size, boxBorderColor);
 
             if (!string.IsNullOrEmpty(myText))
             {
@@ -74,8 +74,8 @@ namespace HellTrail.Core.UI.Elements
                 if(isEditing && sizeX > size.X - 16)
                 {
                     var newSize = font.MeasureString(myText) + new Vector2(32, 16);
-                    Renderer.DrawRect(spriteBatch, GetPosition() - new Vector2(2), newSize + new Vector2(4), 1, boxInnerColor);
-                    Renderer.DrawRect(spriteBatch, GetPosition(), newSize, 1, boxBorderColor);
+                    Renderer.DrawRect(spriteBatch, GetPosition() - new Vector2(2), newSize + new Vector2(4), boxInnerColor);
+                    Renderer.DrawRect(spriteBatch, GetPosition(), newSize, boxBorderColor);
                 }
 
                 Renderer.DrawBorderedString(spriteBatch, font, shownText, GetPosition() + new Vector2(8), color, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);
@@ -90,9 +90,9 @@ namespace HellTrail.Core.UI.Elements
 
                 if(cursorSize > 0 && cursorPosition >= 0)
                 {
-                    Range range = new Range(new Index(cursorPosition), new(Math.Clamp(cursorPosition + cursorSize, 0, myText.Length)));
+                    Range range = new(new Index(cursorPosition), new(Math.Clamp(cursorPosition + cursorSize, 0, myText.Length)));
                     Vector2 newSize = font.MeasureString(myText[range]);
-                    Renderer.DrawRect(spriteBatch, GetPosition() + new Vector2(8 + size, 8), newSize, 1, Color.Cyan * 0.25f);
+                    Renderer.DrawRect(spriteBatch, GetPosition() + new Vector2(8 + size, 8), newSize, Color.Cyan * 0.25f);
                 }
 
                 Renderer.DrawBorderedString(spriteBatch, font, "|", GetPosition() + new Vector2(8 + size, 8), Color.Lime * opacity, Color.Black * opacity, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);

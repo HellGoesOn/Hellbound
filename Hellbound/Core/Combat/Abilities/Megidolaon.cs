@@ -21,7 +21,7 @@ namespace HellTrail.Core.Combat.Abilities
         {
             battle.lastAction = $"{caster.name} used {Name}!";
 
-            Sequence sequence = new Sequence(battle);
+            Sequence sequence = new(battle);
             sequence.Add(new MoveActorSequence(caster, new Vector2(160, 90)));
             sequence.Add(new PlaySoundSequence("WhatDaDogDoin"));
             sequence.Add(new DelaySequence(60));

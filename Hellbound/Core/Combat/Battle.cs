@@ -366,15 +366,14 @@ namespace HellTrail.Core.Combat
                                 parentMenu = attacks,
                                 active = true,
                                 visible = false,
-                                sideStep = 3
-                            };
-
-                            fakeMenu.onSelectOption = () =>
-                            {
-                                ability.Use(ActingUnit, this, TryGetTargets(ability));
-                                ClearMenus();
-                                state = BattleState.DoAction;
-                                isPickingTarget = false;
+                                sideStep = 3,
+                                onSelectOption = () =>
+                                {
+                                    ability.Use(ActingUnit, this, TryGetTargets(ability));
+                                    ClearMenus();
+                                    state = BattleState.DoAction;
+                                    isPickingTarget = false;
+                                }
                             };
 
                             fakeMenu.onCancel = () =>
@@ -447,20 +446,12 @@ namespace HellTrail.Core.Combat
             {
                 int option = playerMenu.selectedOption >= 3 ? 0 : playerMenu.selectedOption < 0 ? 2 : playerMenu.selectedOption;
                 var text = "";
-                switch (option)
+                text = option switch
                 {
-                    default:
-                    case 0:
-                        text = "Use an Ability";
-                        break;
-                    case 1:
-                        text = "Use an Item";
-                        break;
-                    case 2:
-                        text = "Reduces damage by 25%.\nProtects from Weaknesses";
-                        break;
-                }
-
+                    1 => "Use an Item",
+                    2 => "Reduces damage by 25%.\nProtects from Weaknesses",
+                    _ => "Use an Ability",
+                };
                 UIManager.combatUI.skillDescription.text = text;
             };
 
@@ -596,7 +587,7 @@ namespace HellTrail.Core.Combat
                         expValue += unit.stats.value;
                     }
 
-                    Sequence seq = new Sequence(this)
+                    Sequence seq = new(this)
                     {
                         active = true
                     };
@@ -695,7 +686,7 @@ namespace HellTrail.Core.Combat
 
         public Sequence CreateSequence()
         {
-            Sequence seq = new Sequence(this);
+            Sequence seq = new(this);
             sequences.Add(seq);
             return seq;
         }

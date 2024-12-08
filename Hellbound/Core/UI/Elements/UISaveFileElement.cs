@@ -22,24 +22,24 @@ namespace HellTrail.Core.UI.Elements
             };
             font = Assets.Arial;
             fileHandler = handler;
-            UITextBox fileName = new UITextBox();
+            UITextBox fileName = new();
             fileName.size.X = 280;
             fileName.clearOnBeginTyping = true;
             fileName.myText = "Enter file name";
             fileName.maxCharacters = 500;
 
-            UITextBox filePath = new UITextBox();
+            UITextBox filePath = new();
             filePath.size.X = 280;
             filePath.myText = defaultPath;
             filePath.maxCharacters = 500;
 
-            UIPanel panel = new UIPanel()
+            UIPanel panel = new()
             {
                 size = new Vector2(300, 200)
             };
             panel.Append(fileName);
 
-            UIBorderedText accept = new UIBorderedText("Save")
+            UIBorderedText accept = new("Save")
             {
                 capturesMouse = true,
                 size = font.MeasureString("Save"),
@@ -53,7 +53,7 @@ namespace HellTrail.Core.UI.Elements
                 }
 
             };
-            UIBorderedText cancel = new UIBorderedText("Cancel")
+            UIBorderedText cancel = new("Cancel")
             {
                 capturesMouse = true,
                 size = font.MeasureString("Cancel"),

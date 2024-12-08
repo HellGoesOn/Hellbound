@@ -226,7 +226,7 @@ namespace HellTrail.Core.UI.CombatUI
 
         public void DrawUI(SpriteBatch spriteBatch, Battle activeBattle)
         {
-            Vector2 sway = new Vector2((float)Math.Sin(Main.totalTime), (float)Math.Cos(Main.totalTime));
+            Vector2 sway = new((float)Math.Sin(Main.totalTime), (float)Math.Cos(Main.totalTime));
 
             skillPanel.Visible = activeBattle.menus.Count > 0 && !activeBattle.isPickingTarget;
 

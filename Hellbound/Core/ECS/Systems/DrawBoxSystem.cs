@@ -32,7 +32,7 @@ namespace HellTrail.Core.ECS
                 var box = entity.GetComponent<CollisionBox>();
                 Transform transform = entity.GetComponent<Transform>();
 
-                Renderer.DrawRectToWorld(transform.position  - box.origin, new Vector2(box.width, box.height), 1, Color.Red * 0.15f, float.MaxValue);
+                Renderer.DrawRectToWorld(transform.position  - box.origin, new Vector2(box.width, box.height), Color.Red * 0.15f, float.MaxValue);
                 var rect = new Rectangle((int)(transform.position.X-box.origin.X), (int)(transform.position.Y-box.origin.Y), box.width, box.height);
                 var point = new Point((int)Input.MousePosition.X, (int)Input.MousePosition.Y);
             }

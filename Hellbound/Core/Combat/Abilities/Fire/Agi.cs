@@ -25,7 +25,7 @@ namespace HellTrail.Core.Combat.Abilities.Fire
 
             int markiplier = targets[0].BattleStation.X < caster.BattleStation.X ? -1 : 1;
 
-            Sequence sequence = new Sequence(battle);
+            Sequence sequence = new(battle);
             sequence.Add(new SetActorAnimation(caster, "Cast"));
             sequence.Add(new DelaySequence(20));
             sequence.Add(new PlaySoundSequence("GunShot"));

@@ -37,7 +37,7 @@ namespace HellTrail.Core.Overworld
             {
                 Main.instance.ActiveWorld.paused = true;
 
-                UIPanel darkening = new UIPanel();
+                UIPanel darkening = new();
                 darkening.fillColor = Color.Black * 0.5f;
                 darkening.outlineColor = Color.White * 0f;
                 darkening.size = new Vector2(Renderer.UIPreferedWidth, Renderer.UIPreferedHeight);
@@ -85,7 +85,7 @@ namespace HellTrail.Core.Overworld
                                 var descriptionPanel = new UIAnimatedPanel(new Vector2(600, 368), UIAnimatedPanel.AnimationStyle.FourWay);
                                 descriptionPanel.SetPosition(180 + InventoryMenu.targetSize.X, 160);
                                 descriptionPanel.openSpeed = 0.35f;
-                                UIBorderedText description = new UIBorderedText("", 40);
+                                UIBorderedText description = new("", 40);
 
                                 descriptionPanel.Append(description);
                                 descriptionPanel.Append(uiPicture);

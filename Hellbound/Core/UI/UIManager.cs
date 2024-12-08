@@ -102,8 +102,8 @@ namespace HellTrail.Core.UI
             {
                 Vector2 size = Assets.Arial.MeasureString(tooltipText) + new Vector2(16);
                 Vector2 offset = Input.UIMousePosition.Y > Renderer.UIPreferedHeight - size.Y ? new Vector2(16, -16) : new Vector2(16);
-                Renderer.DrawRect(spriteBatch, Input.UIMousePosition + offset - new Vector2(16, 8) - new Vector2(2), size + new Vector2(4), 1, Color.White);
-                Renderer.DrawRect(spriteBatch, Input.UIMousePosition + offset - new Vector2(16, 8), size, 1, Color.DarkBlue);
+                Renderer.DrawRect(spriteBatch, Input.UIMousePosition + offset - new Vector2(16, 8) - new Vector2(2), size + new Vector2(4), Color.White);
+                Renderer.DrawRect(spriteBatch, Input.UIMousePosition + offset - new Vector2(16, 8), size, Color.DarkBlue);
 
                 Renderer.DrawBorderedString(spriteBatch, Assets.Arial, tooltipText, Input.UIMousePosition + offset - new Vector2(8, 0), Color.White, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);
             }

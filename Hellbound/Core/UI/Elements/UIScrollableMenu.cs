@@ -150,12 +150,12 @@ namespace HellTrail.Core.UI.Elements
             base.OnDraw(spriteBatch);
 
             Texture2D arrow = Assets.GetTexture("Arrow");
-            Vector2 osciliation = new Vector2(0, (float)Math.Sin(Main.totalTime));
+            Vector2 osciliation = new(0, (float)Math.Sin(Main.totalTime));
 
             var decorativeOffset = new Vector2(0, -size.Y * 0.5f + targetSize.Y * 0.5f);
 
-            Renderer.DrawRect(spriteBatch, GetPosition() - new Vector2(2) + decorativeOffset, size + new Vector2(4), 1, borderColor);
-            Renderer.DrawRect(spriteBatch, GetPosition() + decorativeOffset, size, 1, panelColor);
+            Renderer.DrawRect(spriteBatch, GetPosition() - new Vector2(2) + decorativeOffset, size + new Vector2(4), borderColor);
+            Renderer.DrawRect(spriteBatch, GetPosition() + decorativeOffset, size, panelColor);
 
             if (options.Count > 0 && _optionWindowMin <= options.Count && size == targetSize)
             {

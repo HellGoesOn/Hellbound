@@ -19,7 +19,7 @@ namespace HellTrail.Core
         public static Camera overworldCamera;
 
 
-        public static List<Camera> cameras = new List<Camera>();
+        public static List<Camera> cameras = new();
 
         public static void Initialize()
         {

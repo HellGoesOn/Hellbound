@@ -22,9 +22,9 @@ namespace HellTrail.Core.NeoCombat
 
         private State _state;
 
-        private Vector2[] myEnemiesPositions;
+        private readonly Vector2[] myEnemiesPositions;
 
-        private Vector2[] myAlliesPositions;
+        private readonly Vector2[] myAlliesPositions;
 
         private Vector2 pointOfInterest;
         private float targetZoom;

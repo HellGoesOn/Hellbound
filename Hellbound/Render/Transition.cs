@@ -98,7 +98,7 @@ namespace HellTrail.Render
         {
             int width = target.Width;
             int height = target.Height;
-            Vector2 size = new Vector2(width, height);
+            Vector2 size = new(width, height);
             spriteBatch.Draw(target, new Vector2(moveAmount, 0), new Rectangle(0, 0, width, (int)(height * 0.5f)), Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             spriteBatch.Draw(target, new Vector2(-moveAmount, height / 2), new Rectangle(0, (int)(height * 0.5f), width, (int)(height * 0.5f)), Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
 

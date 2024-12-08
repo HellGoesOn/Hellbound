@@ -23,7 +23,7 @@ namespace HellTrail.Core.Combat.Abilities.Fire
         {
             battle.lastAction = $"{caster.name} used {Name}!";
 
-            Sequence sequence = new Sequence(battle);
+            Sequence sequence = new(battle);
             sequence.Add(new SetActorAnimation(caster, "Cast"));
             sequence.Add(new DelaySequence(20));
 

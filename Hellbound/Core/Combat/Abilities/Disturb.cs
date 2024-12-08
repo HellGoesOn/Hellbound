@@ -24,7 +24,7 @@ namespace HellTrail.Core.Combat.Abilities
 
             if (targets[0].name == "Peas")
             {
-                Sequence sequence = new Sequence(battle);
+                Sequence sequence = new(battle);
                 sequence.Add(new MoveActorSequence(caster, new Vector2(160, 90)));
                 sequence.Add(new SetActorAnimation(caster, "Special"));
                 sequence.Add(new DelaySequence(60));
@@ -41,7 +41,7 @@ namespace HellTrail.Core.Combat.Abilities
             } 
             else
             {
-                Sequence sequence = new Sequence(battle);
+                Sequence sequence = new(battle);
                 sequence.Add(new SetActorAnimation(caster, "Cast"));
                 sequence.Add(new DelaySequence(20));
                 foreach (var target in targets)

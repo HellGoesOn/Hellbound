@@ -14,7 +14,7 @@ namespace HellTrail.Core.Combat
     {
         public string damage;
         public int timeLeft;
-        private int baseTimeLeft;
+        private readonly int baseTimeLeft;
         private float y;
         public float jump;
         public float maxHeight;

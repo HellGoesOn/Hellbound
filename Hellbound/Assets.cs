@@ -13,9 +13,9 @@ namespace HellTrail
 {
     public static class Assets
     {
-        public static Dictionary<string, Texture2D> Textures = new Dictionary<string, Texture2D>();
-        private readonly static Dictionary<string, Song> _songs = new Dictionary<string, Song>();
-        private readonly static Dictionary<string, SoundEffect> _sounds = new Dictionary<string, SoundEffect>();
+        public static Dictionary<string, Texture2D> Textures = new();
+        private readonly static Dictionary<string, Song> _songs = new();
+        private readonly static Dictionary<string, SoundEffect> _sounds = new();
 
         public static SpriteFont Arial;
         public static SpriteFont DefaultFont;
@@ -141,7 +141,7 @@ namespace HellTrail
 
         public static Texture2D LoadTexture(string id, string path, Main main)
         {
-            FileStream str = new FileStream(path, FileMode.Open);
+            FileStream str = new(path, FileMode.Open);
             Texture2D loadedTexture = Texture2D.FromStream(main.GraphicsDevice, str);
 
             str.Dispose();

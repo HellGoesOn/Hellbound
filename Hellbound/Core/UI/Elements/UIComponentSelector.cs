@@ -25,7 +25,7 @@ namespace HellTrail.Core.UI.Elements
                 _entity = null;
             };
 
-            UIPanel panel = new UIPanel();
+            UIPanel panel = new();
             searcher = new UITextBox()
             {
                 font = Assets.Arial,
@@ -44,7 +44,7 @@ namespace HellTrail.Core.UI.Elements
             List<UIElement> buffer = [];
             foreach (string name in Context.ComponentNameById.Values)
             {
-                UIBorderedText componentName = new UIBorderedText(name)
+                UIBorderedText componentName = new(name)
                 {
                     font = Assets.Arial,
                     capturesMouse = true,

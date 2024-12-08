@@ -52,7 +52,7 @@ namespace HellTrail.Core.ECS
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder("[");
+            StringBuilder sb = new("[");
             for (int i = 0; i < _indexes.Length; i++)
             {
                 sb.Append($"{Context.ComponentNameById[_indexes[i]]},");

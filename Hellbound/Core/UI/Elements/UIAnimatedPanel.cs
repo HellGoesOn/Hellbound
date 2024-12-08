@@ -107,8 +107,8 @@ namespace HellTrail.Core.UI.Elements
 
             var decorativeOffset = new Vector2(-size.X * 0.5f + targetSize.X * 0.5f, -size.Y * 0.5f + targetSize.Y * 0.5f);
 
-            Renderer.DrawRect(spriteBatch, GetPosition() - new Vector2(2) + decorativeOffset, size + new Vector2(4), 1, borderColor);
-            Renderer.DrawRect(spriteBatch, GetPosition() + decorativeOffset, size, 1, panelColor);
+            Renderer.DrawRect(spriteBatch, GetPosition() - new Vector2(2) + decorativeOffset, size + new Vector2(4), borderColor);
+            Renderer.DrawRect(spriteBatch, GetPosition() + decorativeOffset, size, panelColor);
         }
 
         public override bool PreUpdateChildren()

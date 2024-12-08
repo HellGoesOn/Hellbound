@@ -91,7 +91,7 @@ namespace HellTrail.Core.UI.Elements
             };
             btnAll.SetPosition(600 - 64, 0);
 
-            UIWindowButton killEntity = new UIWindowButton(WindowButtonType.XMark, "Destroy entity", Color.Crimson)
+            UIWindowButton killEntity = new(WindowButtonType.XMark, "Destroy entity", Color.Crimson)
             {
                 drawsPanel = true,
                 scale = Vector2.One * 2,
@@ -102,7 +102,7 @@ namespace HellTrail.Core.UI.Elements
             };
             killEntity.SetPosition(0, 0);
 
-            UIWindowButton addComponent = new UIWindowButton(WindowButtonType.Wrench, "Add Component")
+            UIWindowButton addComponent = new(WindowButtonType.Wrench, "Add Component")
             {
                 drawsPanel = true,
                 scale = Vector2.One * 2,
@@ -116,7 +116,7 @@ namespace HellTrail.Core.UI.Elements
             };
             addComponent.SetPosition(32, 0);
 
-            UIWindowButton saveEntity = new UIWindowButton(WindowButtonType.CheckMark, "Save to prefab")
+            UIWindowButton saveEntity = new(WindowButtonType.CheckMark, "Save to prefab")
             {
                 color = Color.Lime,
                 drawsPanel = true,
@@ -161,13 +161,13 @@ namespace HellTrail.Core.UI.Elements
                 };
 
                 panel.Append(texts[i]);
-                UIWindowButton btn = new UIWindowButton(WindowButtonType.XMark, " Delete", Color.Red)
+                UIWindowButton btn = new(WindowButtonType.XMark, " Delete", Color.Red)
                 {
                     drawsPanel = true,
                     id = $"{i}"
                 };
 
-                UIWindowButton btnChange = new UIWindowButton(WindowButtonType.Wrench, " Change component", Color.Yellow)
+                UIWindowButton btnChange = new(WindowButtonType.Wrench, " Change component", Color.Yellow)
                 {
                     drawsPanel = true,
                     id = $"{i}"
@@ -181,7 +181,7 @@ namespace HellTrail.Core.UI.Elements
                     accumulatedOffset.Y += texts[i-1].size.Y;
                 }
 
-                Vector2 pos = new Vector2(34, accumulatedOffset.Y + 4);
+                Vector2 pos = new(34, accumulatedOffset.Y + 4);
                 texts[i].SetPosition(pos);
                 btn.SetPosition(-32, 2);
                 btnChange.SetPosition(-16, 2);

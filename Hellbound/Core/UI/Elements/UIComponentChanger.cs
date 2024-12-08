@@ -26,25 +26,25 @@ namespace HellTrail.Core.UI.Elements
                 size = new Vector2(300, 30)
             };
 
-            UIPanel panel = new UIPanel();
+            UIPanel panel = new();
 
             infos = component.GetType().GetFields();
             texts = new UITextBox[infos.Length];
 
-            Vector2 accumulatedSize2 = new Vector2(300, 46);
+            Vector2 accumulatedSize2 = new(300, 46);
 
             for(int i = 0; i < infos.Length; i++)
             {
-                UIBorderedText text = new UIBorderedText(infos[i].Name);
+                UIBorderedText text = new(infos[i].Name);
                 text.SetPosition(accumulatedSize2.X + 12, accumulatedSize2.Y);
                 accumulatedSize2.Y += font.MeasureString("M").Y + 16;
                 panel.Append(text);
             }
 
-            Vector2 accumulatedSize = new Vector2(300, 40);
+            Vector2 accumulatedSize = new(300, 40);
             for (int i = 0; i < infos.Length; i++)
             {
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 sb.Append(ComponentIO.New_FieldToText(infos[i], this.component));
                 texts[i] = new UITextBox()
                 {
@@ -70,7 +70,7 @@ namespace HellTrail.Core.UI.Elements
                 panel.Append(texts[i]);
             }
 
-            UIWindowButton closeButton = new UIWindowButton(WindowButtonType.XMark, "Close", Color.Red)
+            UIWindowButton closeButton = new(WindowButtonType.XMark, "Close", Color.Red)
             {
                 scale = Vector2.One * 2,
                 onClick = (_) =>
@@ -78,7 +78,7 @@ namespace HellTrail.Core.UI.Elements
                     parent.Disown(this);
                 }
             };
-            UIText txt = new UIText(this.component.GetType().Name);
+            UIText txt = new(this.component.GetType().Name);
             txt.SetPosition(36, 8);
 
             panel.size = accumulatedSize + new Vector2(0, 0);

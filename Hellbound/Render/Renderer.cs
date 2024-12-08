@@ -64,19 +64,19 @@ namespace HellTrail.Render
         //    onDrawStrings = null;
         //}
 
-        public static void DrawRect(SpriteBatch sb, Vector2 position, Vector2 size, int thickness, Color color, float depth = 0f, float rotation = 0f, Vector2 origin = default)
+        public static void DrawRect(SpriteBatch sb, Vector2 position, Vector2 size, Color color, float depth = 0f, float rotation = 0f, Vector2 origin = default)
         {
             var tex = Assets.GetTexture("Pixel");
             sb.Draw(tex, position, null, color, rotation, origin, size, SpriteEffects.None, depth);
         }
 
-        public static void DrawRectToWorld(Vector2 position, Vector2 size, int thickness, Color color, float depth = 0f, float rotation = 0f, Vector2 origin = default)
+        public static void DrawRectToWorld(Vector2 position, Vector2 size, Color color, float depth = 0f, float rotation = 0f, Vector2 origin = default)
         {
             var tex = Assets.GetTexture("Pixel");
             Draw(tex, position, null, color, rotation, origin, size, SpriteEffects.None, depth);
         }
 
-        public static void StartSpriteBatch(SpriteBatch spriteBatch, bool ignoreCam = false, BlendState blend = null, DepthStencilState stencil = null, SamplerState state = null, Camera overrideCamera = null, SpriteSortMode sortMode = SpriteSortMode.FrontToBack)
+        public static void StartSpriteBatch(SpriteBatch spriteBatch, bool ignoreCam = false, BlendState blend = null, DepthStencilState stencil = null, SamplerState state = null, SpriteSortMode sortMode = SpriteSortMode.FrontToBack)
         {
             state ??= SamplerState.PointClamp;
 

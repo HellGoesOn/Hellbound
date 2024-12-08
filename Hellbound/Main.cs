@@ -313,8 +313,6 @@ namespace HellTrail
 
             base.Draw(gameTime);
 
-            IGameState state = GetGameState();
-
             GraphicsDevice.SetRenderTarget(Renderer.WorldTarget);
             Renderer.StartSpriteBatch(spriteBatch, state: SamplerState.PointWrap, stencil: DepthStencilState.DepthRead);
             GetGameState()?.Draw(spriteBatch);

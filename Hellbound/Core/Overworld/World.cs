@@ -130,7 +130,7 @@ namespace HellTrail.Core.Overworld
                 Directory.CreateDirectory(Environment.CurrentDirectory + path);
             }
 
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             sb.AppendLine($"[{context.entities.Length}]");
             sb.Append("[ ");
             for (int i = 0; i < tileMap.height; i++)
@@ -139,7 +139,7 @@ namespace HellTrail.Core.Overworld
                 {
                     sb.Append(tileMap.GetTile(j, i) + " ");
                 }
-                sb.Append("]");
+                sb.Append(']');
                 sb.AppendLine("");
                 
                 if(i != tileMap.height-1)
@@ -165,8 +165,8 @@ namespace HellTrail.Core.Overworld
             string entityCT = Regex.Match(text, @"\[.*\]").Value;
             int entityCount = int.Parse(Regex.Replace(entityCT, @"[\[\]]", ""));
 
-            World world = new World(entityCount);
-            string tileText = Regex.Match(text.Substring(entityCT.Length), @$".*\]{Environment.NewLine}{Environment.NewLine}", RegexOptions.Singleline).Value;
+            World world = new(entityCount);
+            string tileText = Regex.Match(text[entityCT.Length..], @$".*\]{Environment.NewLine}{Environment.NewLine}", RegexOptions.Singleline).Value;
 
             string[] strings = tileText.Split(Environment.NewLine, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             string[] numbers = Regex.Replace(strings[0], "[\\[\\]]", "").Trim().Split(" ");
@@ -196,7 +196,7 @@ namespace HellTrail.Core.Overworld
             // TO-DO: move to different class
 
             if(!string.IsNullOrWhiteSpace(text.Substring(entityCT.Length + tileText.Length)))
-                Entity.DeserializeAll(text.Substring(entityCT.Length + tileText.Length), world.context);
+                Entity.DeserializeAll(text[(entityCT.Length + tileText.Length)..], world.context);
 
             return world;
         }

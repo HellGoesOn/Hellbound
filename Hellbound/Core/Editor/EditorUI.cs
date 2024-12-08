@@ -45,7 +45,7 @@ namespace HellTrail.Core.Editor
 
                 panels[i].SetPosition(new Vector2(Renderer.UIPreferedWidth * 0.5f - PANEL_WIDTH * 0.5f, Renderer.UIPreferedHeight));
 
-                UIPanel numPanel = new UIPanel()
+                UIPanel numPanel = new()
                 {
                     id = $"numPanel{i}",
                     size = new Vector2(32),
@@ -60,7 +60,7 @@ namespace HellTrail.Core.Editor
                     TogglePanel();
                 };
 
-                UIBorderedText numText = new UIBorderedText($"{i + 1}")
+                UIBorderedText numText = new($"{i + 1}")
                 {
                     origin = Assets.Arial.MeasureString($"{i + 1}") * 0.5f
                 };
@@ -72,11 +72,11 @@ namespace HellTrail.Core.Editor
                 Append(panels[i]);
             }
 
-            UIBorderedText entityInspectorTitle = new UIBorderedText("Entity Inspector")
+            UIBorderedText entityInspectorTitle = new("Entity Inspector")
             {
             };
             entityInspectorTitle.SetPosition(32, 12);
-            UIBorderedText systemInspectorTitle = new UIBorderedText("System Inspector")
+            UIBorderedText systemInspectorTitle = new("System Inspector")
             {
             };
             systemInspectorTitle.SetPosition(64, 12);
@@ -101,16 +101,16 @@ namespace HellTrail.Core.Editor
 
             }.SetPosition(16));
 
-            UITextBox prefabPath = new UITextBox();
+            UITextBox prefabPath = new();
             prefabPath.size.X = 240;
             prefabPath.maxCharacters = 500;
             prefabPath.myText = "\\Content\\Prefabs\\";
             prefabPath.SetFont(Assets.Arial);
             prefabPath.SetPosition(16, 60);
 
-            UIBorderedText loadPrefabText = new UIBorderedText("");
+            UIBorderedText loadPrefabText = new("");
 
-            UITextBox prefabName = new UITextBox();
+            UITextBox prefabName = new();
             prefabName.size.X = 240;
             prefabName.maxCharacters = 500;
             prefabName.myText = "Base";
@@ -173,12 +173,12 @@ namespace HellTrail.Core.Editor
                 off += 18;
             }
 
-            UICheckBox toggleAll = new UICheckBox("Toggle All")
+            UICheckBox toggleAll = new("Toggle All")
             {
                 drawsPanel = true,
                 onClick = (sender) =>
                 {
-                    foreach (UICheckBox checkBox in (sender.parent as UIElement).children.Where(x => x is UICheckBox))
+                    foreach (UICheckBox checkBox in (sender.parent as UIElement).children.Where(x => x is UICheckBox).Cast<UICheckBox>())
                     {
                         if (checkBox == sender)
                             continue;
@@ -192,13 +192,13 @@ namespace HellTrail.Core.Editor
             };
             toggleAll.SetPosition(new Vector2(30, 16));
 
-            UICheckBox enableALl = new UICheckBox("Enable All")
+            UICheckBox enableALl = new("Enable All")
             {
                 id = "enableAll",
                 drawsPanel = true,
                 onClick = (sender) =>
                 {
-                    foreach (UICheckBox checkBox in (sender.parent as UIElement).children.Where(x => x is UICheckBox))
+                    foreach (UICheckBox checkBox in (sender.parent as UIElement).children.Where(x => x is UICheckBox).Cast<UICheckBox>())
                     {
                         if (checkBox == sender || checkBox == toggleAll)
                             continue;
@@ -217,7 +217,7 @@ namespace HellTrail.Core.Editor
             {
             }.SetPosition(32, 12));
 
-            UICheckBox isPlacingTiles = new UICheckBox("Activate tile placement")
+            UICheckBox isPlacingTiles = new("Activate tile placement")
             {
                 panelColor = Color.DarkBlue,
                 drawsPanel = true,
@@ -238,7 +238,7 @@ namespace HellTrail.Core.Editor
             for (int i = 0; i < TileMap.TileDefinitions.Count; i++)
             {
                 string text = TileMap.TileDefinitions.Keys.ToList()[i];
-                UIBorderedText tileText = new UIBorderedText(text)
+                UIBorderedText tileText = new(text)
                 {
                     id = $"tileId={TileMap.TileDefinitions[text].id}",
                     size = Assets.Arial.MeasureString(text),
@@ -258,14 +258,14 @@ namespace HellTrail.Core.Editor
             }.SetPosition(16, 12));
             //LoadScenes();
 
-            UITextBox scenePath = new UITextBox();
+            UITextBox scenePath = new();
             scenePath.size.X = 240;
             scenePath.maxCharacters = 500;
             scenePath.myText = "\\Content\\Scenes\\";
             scenePath.SetFont(Assets.Arial);
             scenePath.SetPosition(16, 60);
 
-            UITextBox sceneName = new UITextBox();
+            UITextBox sceneName = new();
             sceneName.size.X = 240;
             sceneName.maxCharacters = 500;
             sceneName.myText = "BaseScene";
@@ -329,34 +329,34 @@ namespace HellTrail.Core.Editor
             }
         }
 
-        private void LoadScenes()
-        {
-            foreach (UIElement element in panels[5].children.Where(x => x.id.Contains(".scn")))
-            {
-                panels[5].DisownById(element.id);
-            }
+        //private void LoadScenes()
+        //{
+        //    foreach (UIElement element in panels[5].children.Where(x => x.id.Contains(".scn")))
+        //    {
+        //        panels[5].DisownById(element.id);
+        //    }
 
-            string[] files = Directory.GetFiles(GameOptions.WorldDirectory, "*.scn", SearchOption.AllDirectories);
-            for (int i = 0; i < files.Length; i++)
-            {
-                string fileNoExtension = Path.GetFileNameWithoutExtension(files[i]);
-                var newText = new UIBorderedText(fileNoExtension)
-                {
-                    id = files[i],
-                    size = Assets.Arial.MeasureString(fileNoExtension),
-                    capturesMouse = true,
-                    onClick = (sender) =>
-                    {
-                        currentScene = Path.GetFileNameWithoutExtension(sender.id);
-                        Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", Path.GetFileNameWithoutExtension(sender.id));
-                    }
-                };
+        //    string[] files = Directory.GetFiles(GameOptions.WorldDirectory, "*.scn", SearchOption.AllDirectories);
+        //    for (int i = 0; i < files.Length; i++)
+        //    {
+        //        string fileNoExtension = Path.GetFileNameWithoutExtension(files[i]);
+        //        var newText = new UIBorderedText(fileNoExtension)
+        //        {
+        //            id = files[i],
+        //            size = Assets.Arial.MeasureString(fileNoExtension),
+        //            capturesMouse = true,
+        //            onClick = (sender) =>
+        //            {
+        //                currentScene = Path.GetFileNameWithoutExtension(sender.id);
+        //                Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", Path.GetFileNameWithoutExtension(sender.id));
+        //            }
+        //        };
 
-                newText.SetPosition(16 + (16 + (int)Assets.Arial.MeasureString($"BaseScene{i}").X) * (int)(i / 6), 48 + 32 * i - ((32 * 6) * (int)(i / 6)));
+        //        newText.SetPosition(16 + (16 + (int)Assets.Arial.MeasureString($"BaseScene{i}").X) * (int)(i / 6), 48 + 32 * i - ((32 * 6) * (int)(i / 6)));
 
-                panels[5].Append(newText);
-            }
-        }
+        //        panels[5].Append(newText);
+        //    }
+        //}
 
         public override void Update()
         {
@@ -432,8 +432,6 @@ namespace HellTrail.Core.Editor
         {
             if(button == MouseButton.Middle)
             {
-                IGameState con = Main.instance.GetGameState();
-                Camera cam = con.GetCamera();
                 camAnchor = Input.MousePosition;
             }
         }
@@ -449,9 +447,7 @@ namespace HellTrail.Core.Editor
             }
         }
 
-        List<UIElement> _elementsToDisown = [];
-
-        Group<Entity> group = Main.instance.ActiveWorld.context.GetGroup(Matcher<Entity>.AllOf(typeof(Transform)));
+        readonly Group<Entity> group = Main.instance.ActiveWorld.context.GetGroup(Matcher<Entity>.AllOf(typeof(Transform)));
         private void InspectEntity(MouseButton button)
         {
             if (UIManager.hoveredElement != null)
@@ -489,8 +485,6 @@ namespace HellTrail.Core.Editor
             if (button == MouseButton.Left)
             {
                 World w = (con as World);
-                int x = w.tileMap.width;
-                int y = w.tileMap.height;
                 w.tileMap.SetTile(TileMap.GetById(selectedTile), (int)Input.MousePosition.X / DisplayTileLayer.TILE_SIZE, (int)Input.MousePosition.Y / DisplayTileLayer.TILE_SIZE);
             }
         }

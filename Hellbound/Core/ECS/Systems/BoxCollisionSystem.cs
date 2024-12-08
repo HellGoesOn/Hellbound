@@ -47,8 +47,8 @@ namespace HellTrail.Core.ECS
 
         public bool CheckCollision(Vector2 position1, CollisionBox box1, Vector2 position2, CollisionBox box2)
         {
-            Rectangle rect1 = new Rectangle((int)position1.X, (int)position1.Y, box1.width, box1.height); 
-            Rectangle rect2 = new Rectangle((int)position2.X, (int)position2.Y, box2.width, box2.height); 
+            Rectangle rect1 = new((int)position1.X, (int)position1.Y, box1.width, box1.height); 
+            Rectangle rect2 = new((int)position2.X, (int)position2.Y, box2.width, box2.height); 
 
             return rect1.Intersects(rect2);
         }

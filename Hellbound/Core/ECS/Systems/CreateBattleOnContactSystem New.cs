@@ -34,8 +34,6 @@ namespace HellTrail.Core.ECS
                 if (otherEntity == null || !otherEntity.enabled || !otherEntity.HasComponent<PlayerMarker>())
                     return;
 
-                CreateBattleOnContact component = entity.GetComponent<CreateBattleOnContact>();
-
                 Main.instance.battleNew = NeoBattle.Create([otherEntity], [entity, entity]);
 
                 SoundEngine.StartMusic("BossMusic", true);

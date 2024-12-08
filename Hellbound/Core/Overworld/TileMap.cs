@@ -83,7 +83,7 @@ namespace HellTrail.Core.Overworld
         public int GetTile(int x, int y) => _physicalTiles[x, y];
         public int GetTileElevation(int x, int y) => _elevationMap[x, y];
 
-        public void SetTile(TileDefinition tile, int x, int y, int elevation = 0)
+        public void SetTile(TileDefinition tile, int x, int y)
         {
             int cx = Math.Clamp(x, 0, width - 1);
             int cy = Math.Clamp(y, 0, height - 1);
@@ -91,7 +91,7 @@ namespace HellTrail.Core.Overworld
             _elevationMap[cx, cy] = tile.elevation;
             foreach (var layer in _displayTiles)
             {
-                layer.SetTile(tile, cx, cy, true);
+                layer.SetTile(tile, cx, cy);
             }
             didBakeTexture = false;
         }
@@ -110,7 +110,7 @@ namespace HellTrail.Core.Overworld
 
             foreach (var displayLayer in _displayTiles)
             {
-                displayLayer.Draw(spriteBatch);
+                displayLayer.Draw();
             }
 
         }
@@ -174,7 +174,7 @@ namespace HellTrail.Core.Overworld
             _displayedTiles = new Vector2[this.width+1, this.height+1];
         }
 
-        public void Draw(SpriteBatch sb)
+        public void Draw()
         {
             for (int i = 0; i < height+1; i++)
             {
@@ -182,8 +182,6 @@ namespace HellTrail.Core.Overworld
                 {
                     int x = (int)_displayedTiles[j, i].X;
                     int y = (int)_displayedTiles[j, i].Y;
-                    int ex = Math.Clamp(j, 0, width - 1);
-                    int ey = Math.Clamp(i, 0, height - 1);
                     float depth = i * TILE_SIZE + (elevationMap[j, i] * TILE_SIZE + 12 * elevationMap[j, i]) + myTile.weight * 0.0001f + myTile.drawOffset.Y;
                     Rectangle rect = new(x * TILE_SIZE + 1 * x, y * TILE_SIZE + 1 * y, TILE_SIZE, TILE_SIZE);
                     Vector2 pos = new Vector2(j, i).ToInt() * TILE_SIZE - (new Vector2(TILE_SIZE) * 0.5f).ToInt() + myTile.drawOffset.ToInt();
@@ -193,7 +191,7 @@ namespace HellTrail.Core.Overworld
             }
         }
 
-        public void SetTile(TileDefinition tile, int x, int y, bool setDisplayTile = false)
+        public void SetTile(TileDefinition tile, int x, int y)
         {
             _tiles[x, y] = tile.id == myTile.id ? 1 : 0;
                     
@@ -246,7 +244,7 @@ namespace HellTrail.Core.Overworld
             new Vector2(0, 0),
         ];
 
-        public static Dictionary<TilePattern, Vector2> PatternMapping = new Dictionary<TilePattern, Vector2>()
+        public readonly static Dictionary<TilePattern, Vector2> PatternMapping = new()
             {
                 {new(1, 1,
                     1, 1), new Vector2(2, 1) }, // all corners
@@ -291,7 +289,7 @@ namespace HellTrail.Core.Overworld
             pattern = [topLeft, topRight, bottomLeft, bottomRight];
         }
 
-        public bool Equals(TilePattern other)
+        public readonly bool Equals(TilePattern other)
         {
             for (int i = 0; i < pattern.Length; i++)
             {
@@ -301,12 +299,12 @@ namespace HellTrail.Core.Overworld
             return true;
         }
 
-        public override bool Equals(object obj)
+        public override readonly bool Equals(object obj)
         {
-            return obj is TilePattern && Equals((TilePattern)obj);
+            return obj is TilePattern tile && Equals(tile);
         }
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.Combine(pattern[0], pattern[1], pattern[2], pattern[3]);
         }

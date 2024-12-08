@@ -31,7 +31,7 @@ namespace HellTrail.Core.Combat.Items.Consumables
             SoundEngine.StopMusic(35 * 60);
             SoundEngine.PlaySound("FinalFlash", 0.25f);
 
-            UIPicture disturbingThePeace = new UIPicture("14509", new FrameData(255, 81, 262, 240));
+            UIPicture disturbingThePeace = new("14509", new FrameData(255, 81, 262, 240));
             disturbingThePeace.origin = new(131, 100);
             disturbingThePeace.scale *= 4;
             disturbingThePeace.tint = Color.White * 0.0f;

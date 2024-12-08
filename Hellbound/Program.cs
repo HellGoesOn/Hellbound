@@ -6,7 +6,7 @@ namespace HellTrail
     {
         static void Main(string[] args)
         {
-            using (Main g = new Main())
+            using (Main g = new())
             {
                 g.Run();
             }

@@ -22,7 +22,7 @@ namespace HellTrail.Core.Combat.Status.Debuffs
         public override void OnTurnBegin(Unit unit, Battle battle)
         {
             base.OnTurnBegin(unit, battle);
-            Sequence seq = new Sequence(battle);
+            Sequence seq = new(battle);
             seq.Add(new DoDamageSequence(unit, unit, (int)(unit.stats.MaxHP * 0.08f), ElementalType.DoT));
             seq.Add(new DelaySequence(30));
             battle.sequences.Add(seq);

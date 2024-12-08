@@ -71,7 +71,7 @@ namespace Treeline.Core.Graphics
                 return;
 
             Texture2D texture = Assets.GetTexture("Pixel");
-            Vector2 position = new Vector2(this.position.X, this.position.Y + this.position.Z);
+            Vector2 position = new(this.position.X, this.position.Y + this.position.Z);
 
             spriteBatch.Draw(texture, position, null, color, rotation, new Vector2(0.5f), scale, SpriteEffects.None, 1f);
 

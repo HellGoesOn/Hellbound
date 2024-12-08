@@ -28,7 +28,7 @@ namespace HellTrail.Core.Combat.Abilities
 
             int markiplier = targets[0].BattleStation.X < caster.BattleStation.X ? -1 : 1;
 
-            Sequence sequence = new Sequence(battle);
+            Sequence sequence = new(battle);
             sequence.Add(new MoveActorSequence(caster, targets[0].position - new Vector2(32 * markiplier, 0)));
             sequence.Add(new SetActorAnimation(caster, "Cast"));
             sequence.Add(new DelaySequence(20));

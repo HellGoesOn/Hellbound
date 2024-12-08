@@ -63,7 +63,7 @@ namespace HellTrail.Core.Combat.Abilities
             whiteOut.depth = 1f;
 
 
-            Sequence seq = new Sequence(battle);
+            Sequence seq = new(battle);
             seq.Add(new PlaySoundSequence("Dies"));
             seq.Add(new DelaySequence(120));
             seq.Add(new SetActorAnimation(caster, "Cast"));
