@@ -31,7 +31,6 @@ namespace HellTrail.Core.Combat
 
 
             AddPartyMember(protag);
-            AddPartyMember(UnitDefinitions.Get("Dog"));
             //ActiveParty.Add(sidekick);
 
 

@@ -1,26 +1,15 @@
-﻿using HellTrail.Core.Combat;
-using HellTrail.Core.Combat.Scripting;
-using HellTrail.Core.Combat.Status;
-using HellTrail.Core.ECS;
-using HellTrail.Core.ECS.Components;
+﻿using HellTrail.Core.ECS;
 using HellTrail.Core.UI;
-using HellTrail.Core.UI.Elements;
-using HellTrail.Extensions;
 using HellTrail.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace HellTrail.Core.Overworld
 {
-    public class World : IGameState
+    public partial class World : IGameState
     {
         public bool paused;
 
@@ -28,7 +17,9 @@ namespace HellTrail.Core.Overworld
 
         public Systems systems;
 
-        public List<Trigger> triggers = [];
+        public static List<Trigger> triggers = [];
+
+        public static List<string> flags = [];
 
         public Texture2D mapTexture;
 
@@ -49,15 +40,22 @@ namespace HellTrail.Core.Overworld
             systems.AddSystem(new TileCollisionSystem(context));
             systems.AddSystem(new ObesitySystem(context));
             systems.AddSystem(new BoxCollisionSystem(context));
+            systems.AddSystem(new TripWireSystem(context));
+            systems.AddSystem(new LoadingZoneSystem(context));
             systems.AddSystem(new CreateBattleOnContactSystem(context));
-            systems.AddSystem(new ClearCollisionMarkerSystem(context));
             systems.AddSystem(new ParticleEmissionSystem(context));
             systems.AddSystem(new FollowerSystem(context));
             systems.AddSystem(new MoveCameraSystem(context));
-            systems.AddSystem(new DrawBoxSystem(context));
             systems.AddSystem(new DrawSystem(context));
-            systems.AddSystem(new DrawTransformBoxSystem(context));
+            systems.AddSystem(new KillBasedOnFlagSystem(context));
             systems.AddSystem(new NewAnimationSystem(context));
+            systems.AddSystem(new ClearCollisionMarkerSystem(context));
+
+#if false
+
+            systems.AddSystem(new DrawTransformBoxSystem(context));
+            systems.AddSystem(new DrawBoxSystem(context));
+#endif
             GetCamera().speed = 0.1f;
             GetCamera().zoom = 4f;
         }
@@ -159,7 +157,7 @@ namespace HellTrail.Core.Overworld
 
         public static World LoadFromFile(string path, string name)
         {
-            string finalPath = Environment.CurrentDirectory + path + $"{name}.scn";
+            string finalPath = Environment.CurrentDirectory + path + $"\\{name}.scn";
 
             string text = File.ReadAllText(finalPath);
             string entityCT = Regex.Match(text, @"\[.*\]").Value;

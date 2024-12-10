@@ -180,13 +180,12 @@ namespace HellTrail.Core.Overworld
             {
                 for (int j = 0; j < width + 1; j++)
                 {
-                    int x = (int)_displayedTiles[j, i].X;
-                    int y = (int)_displayedTiles[j, i].Y;
+                    int x = (int)MathF.Floor(_displayedTiles[j, i].X);
+                    int y = (int)MathF.Floor(_displayedTiles[j, i].Y);
                     float depth = i * TILE_SIZE + (elevationMap[j, i] * TILE_SIZE + 12 * elevationMap[j, i]) + myTile.weight * 0.0001f + myTile.drawOffset.Y;
                     Rectangle rect = new(x * TILE_SIZE + 1 * x, y * TILE_SIZE + 1 * y, TILE_SIZE, TILE_SIZE);
-                    Vector2 pos = new Vector2(j, i).ToInt() * TILE_SIZE - (new Vector2(TILE_SIZE) * 0.5f).ToInt() + myTile.drawOffset.ToInt();
+                    Vector2 pos = (new Vector2(j, i) * TILE_SIZE - (new Vector2(TILE_SIZE) * 0.5f) + myTile.drawOffset).ToInt();
                     Renderer.Draw(tileSheet, pos, rect, Color.White, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, depth);
-
                 }
             }
         }

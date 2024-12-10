@@ -442,7 +442,7 @@ namespace HellTrail.Core.Editor
             {
                 IGameState con = Main.instance.GetGameState();
                 Camera cam = con.GetCamera();
-                cam.centre += (camAnchor-Input.MousePosition)*cam.zoom;
+                cam.centre += (camAnchor-Input.MousePosition);
                 cam.centre = cam.centre.ToInt();
             }
         }

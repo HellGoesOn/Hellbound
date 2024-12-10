@@ -1,4 +1,5 @@
 ﻿using HellTrail.Core.Combat;
+using HellTrail.Core.DialogueSystem;
 using HellTrail.Core.ECS.Components;
 using HellTrail.Core.UI;
 using HellTrail.Extensions;
@@ -23,25 +24,27 @@ namespace HellTrail.Core.ECS
 
         public void Execute(Context context)
         {
+            bool dontListen = Main.instance.transitions.Count > 0 || UIManager.dialogueUI.dialogues.Count > 0;
             var entities = _group.Entities;
 
             for (int i = 0; i < entities.Count; i++)
             {
+
                 var entity = entities[i];
                 Velocity vel = entity.GetComponent<Velocity>();
                 vel.X = vel.Y = 0;
-                var speed = 1f;
-                if (Input.HeldKey(Keys.A)) vel.X -= speed;
-                if (Input.HeldKey(Keys.W)) vel.Y -= speed;
-                if (Input.HeldKey(Keys.S)) vel.Y += speed;
-                if (Input.HeldKey(Keys.D)) vel.X += speed;
+                var speed = 1.25f;
+                if (Input.HeldKey(Keys.A) && !dontListen) vel.X -= speed;
+                if (Input.HeldKey(Keys.W) && !dontListen) vel.Y -= speed;
+                if (Input.HeldKey(Keys.S) && !dontListen) vel.Y += speed;
+                if (Input.HeldKey(Keys.D) && !dontListen) vel.X += speed;
 
                 if (entity.HasComponent<NewAnimationComponent>())
                 {
                     var anim = entity.GetComponent<NewAnimationComponent>();
 
                     if (vel.value.Length() > 0)
-                        anim.currentAnimation = "Victory";
+                        anim.currentAnimation = "Run";
                     else
                         anim.currentAnimation = "Idle";
                 }

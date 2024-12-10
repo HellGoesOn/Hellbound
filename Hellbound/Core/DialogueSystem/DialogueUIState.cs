@@ -70,6 +70,8 @@ namespace HellTrail.Core.DialogueSystem
             dialogueText.SetPosition(16);
             speakerPanel.SetPosition(16, -48);
             speakerText.SetPosition(16, 8);
+
+            dialoguePanel.SetPosition(16, Renderer.UIPreferedHeight - 16 - dialoguePanel.size.Y);
         }
 
         public override void Update()

@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace HellTrail.Core.ECS.Components
 {
-    public class CameraMarker : IComponent
+    public class TripWire : IComponent
     {
-        public CameraMarker()
+        public string trigger;
+
+        public TripWire(string trigger) 
         {
+            this.trigger = trigger;
         }
     }
 }

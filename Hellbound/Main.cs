@@ -45,7 +45,9 @@ namespace HellTrail
             set
             {
                 activeWorld = value;
+#if DEBUG
                 UIManager.RelaunchEditor();
+#endif
             }
         }
 
@@ -126,6 +128,7 @@ namespace HellTrail
             UnitDefinitions.DefineUnits();
             GlobalPlayer.Init();
             ParticleManager.Initialize();
+            World.InitTriggers();
 
         //    Dialogue dialogue = Dialogue.Create();
         //    UIManager.dialogueUI.dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight * 0.5f));

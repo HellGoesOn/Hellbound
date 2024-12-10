@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace HellTrail.Core.ECS.Components
 {
-    public class CameraMarker : IComponent
+    public class DiesIfFlagRaised : IComponent
     {
-        public CameraMarker()
+        public string flag;
+
+        public DiesIfFlagRaised(string flag)
         {
+            this.flag = flag;
         }
     }
 }

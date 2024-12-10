@@ -43,6 +43,132 @@ namespace HellTrail.Render
         }
     }
 
+    public class BlackFadeInFadeOut : Transition
+    {
+        float fadeIn;
+        float fadeOut;
+        public float speed = 0.05f;
+        public BlackFadeInFadeOut(RenderTarget2D target) : base(target)
+        {
+        }
+
+        public override void Update()
+        {
+            if (fadeOut < 1.0f)
+                fadeOut += speed;
+            else if (fadeIn < 1.0f)
+                fadeIn += speed;
+            else
+                finished = true;
+        }
+
+        public override void DoDraw(SpriteBatch spriteBatch)
+        {
+            Color clr = Color.Lerp(Color.White, Color.Black, fadeOut);
+            if(fadeOut <= 1.0f)
+                spriteBatch.Draw(target, Vector2.Zero, clr);
+            else
+                spriteBatch.Draw(Assets.GetTexture("Pixel"), new Rectangle(0, 0, target.Width, target.Height), Color.Black * (1.0f-fadeIn));
+        }
+    }
+
+    public class ZoneTransition : Transition
+    {
+        Vector2 endPosition;
+        Vector2 currentPosition;
+        public Vector2 startPosition;
+        public Vector2 direction;
+        public float speed = 100f;
+        public bool coveredScreen;
+
+        public float progress = 1.05f;
+
+        public ZoneTransition(RenderTarget2D target, Vector2 direction) : base(target)
+        {
+            this.direction = direction;
+
+            //if(float.Sign(direction.X) == 1)
+            //{
+            //    currentPosition = startPosition = new Vector2(-target.Width * 2, 0);
+            //    endPosition = new Vector2(-startPosition.X, 0);
+            //}
+
+            //if(float.Sign(direction.X) == -1)
+            //{
+            //    currentPosition = startPosition = new Vector2(target.Width * 2, 0);
+            //    endPosition = new Vector2(-startPosition.X, 0);
+            //}
+
+            //if(direction.Y < 0)
+            //{
+            //    startPosition = new Vector2(0, target.Width * 2f);
+            //}
+            //else if(direction.Y > 0)
+            //{
+            //    startPosition = new Vector2(0, -target.Width * 2f);
+            //}
+            //else if(direction.X < 0)
+            //{
+            //    startPosition = new Vector2(target.Width * 2, 0);
+            //}
+            //else
+            //{
+            //    startPosition = new Vector2(-target.Width * 2f, 0);
+            //}
+
+        }
+
+        public override void Update()
+        {
+            //currentPosition += direction * speed;
+
+            //if (Vector2.Distance(currentPosition, Vector2.Zero) <= speed)
+            //    coveredScreen = true;
+
+            //if(Vector2.Distance(currentPosition, endPosition) <= speed * 0.5f)
+            //{
+            //    finished = true;
+            //}
+
+            progress -= 0.05f;
+
+            if (progress <= 0.0f)
+                finished = true;
+        }
+
+        public override void DoDraw(SpriteBatch spriteBatch)
+        {
+            //if(!coveredScreen)
+
+            var scale = direction.X != 0 ? new Vector2(progress, 1) : new Vector2(1, progress);
+
+            var origin = new Vector2(target.Width, target.Height) * 0.5f;
+
+            if(direction.X > 0)
+            {
+                origin = new Vector2(target.Width, 0);
+            }
+            if (direction.X < 0)
+            {
+                origin = new Vector2(0, 0);
+            }
+            if (direction.Y > 0)
+            {
+                origin = new Vector2(0, target.Height);
+            }
+
+            if (direction.Y < 0)
+            {
+                origin = new Vector2(0, -target.Height);
+            }
+
+
+
+            spriteBatch.Draw(target, Vector2.Zero+origin, null, Color.White, 0f, origin, scale, SpriteEffects.None, 0f);
+            //spriteBatch.Draw(Assets.GetTexture("Pixel"), currentPosition, new Rectangle(0, 0, (int)(target.Width * 2f), (int)(target.Width * 2f)), Color.Black);
+        }
+    }
+
     public class TrippingBalls : Transition
     {
         public float opacity;

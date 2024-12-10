@@ -36,6 +36,7 @@ namespace HellTrail.Core.ECS
                 var value = (transform.position + velocity.value - cam.centre) * cam.speed;
 
                 cam.centre += value;
+                cam.Clamp(Vector2.Zero, new Vector2(30) * 32);
                 //cam.centre = cam.centre.ToInt();
 
 

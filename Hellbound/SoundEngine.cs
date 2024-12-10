@@ -23,6 +23,8 @@ namespace HellTrail
             _updatedSong = true;
             _isLooping = loop;
             _currentSong = name;
+
+            MediaPlayer.Pause();
             IsMusicPlaying = true;
         }
 

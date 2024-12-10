@@ -3,6 +3,7 @@ using HellTrail.Core.Combat.Abilities;
 using HellTrail.Core.Combat.Scripting;
 using HellTrail.Core.DialogueSystem;
 using HellTrail.Core.ECS.Components;
+using HellTrail.Core.Overworld;
 using HellTrail.Render;
 using Microsoft.Xna.Framework;
 using System;
@@ -32,6 +33,9 @@ namespace HellTrail.Core.ECS
 
                 if (otherEntity == null || !otherEntity.enabled || !otherEntity.HasComponent<PlayerMarker>())
                     return;
+
+                if (Main.instance.GetGameState() is not World)
+                    continue;
 
                 CreateBattleOnContact component = entity.GetComponent<CreateBattleOnContact>();
                 string[] enemyDefintions = component.enemies;
