@@ -16,6 +16,7 @@ namespace HellTrail.Core.Combat
 {
     public class Unit
     {
+        public int lastItemIndex, lastAbilityIndex;
         public float depth;
         public float shake;
         public float rotation;
@@ -30,7 +31,9 @@ namespace HellTrail.Core.Combat
         public Vector2 size = new (32);
         public Vector2 scale = new (1);
         public BasicAI ai = null;
-        public CombatStats stats;
+        private CombatStats _stats;
+        public CombatStats Stats { get => _stats; }
+        public CombatStats baseStats;
         public CombatStats statsGrowth;
         public ElementalResistances resistances;
         public List<Ability> abilities;
@@ -43,7 +46,8 @@ namespace HellTrail.Core.Combat
         {
             abilities = [];
             statusEffects = [];
-            stats = new CombatStats();
+            baseStats = new CombatStats();
+            _stats = new CombatStats();
             statsGrowth = new CombatStats(1, 1, 15, 5, 0.5f);
             currentAnimation = defaultAnimation = "Idle";
             resistances = new ElementalResistances();
@@ -53,21 +57,32 @@ namespace HellTrail.Core.Combat
             name = "???";
         }
 
+        public void SetBaseStats(CombatStats newStats)
+        {
+            baseStats = newStats.GetCopy();
+            _stats = newStats;
+        }
+
+        public void IncreaseStats(CombatStats newStats)
+        {
+            _stats += newStats;
+        }
+
         public bool TryLevelUp(bool silent = false)
         {
-            if (stats.EXP < stats.toNextLevel)
+            if (_stats.EXP < Stats.toNextLevel)
                 return false;
 
-            var oldStats = stats.GetCopy();
+            var oldStats = Stats.GetCopy();
 
-            stats.level++;
-            stats += statsGrowth;
-            stats.HP = stats.MaxHP;
-            stats.SP = stats.MaxSP;
-            stats.EXP -= stats.toNextLevel;
-            stats.toNextLevel = (int)(stats.toNextLevel * 1.12f);
+            _stats.level++;
+            _stats += statsGrowth;
+            _stats.HP = Stats.MaxHP;
+            _stats.SP = Stats.MaxSP;
+            _stats.EXP -= Stats.toNextLevel;
+            _stats.toNextLevel = (int)(_stats.toNextLevel * 1.12f);
             if(!silent)
-            UIManager.combatUI.CreateLevelUp(name, oldStats, stats);
+            UIManager.combatUI.CreateLevelUp(name, oldStats, _stats);
             TryLevelUp(silent);
 
             return true;
@@ -116,7 +131,7 @@ namespace HellTrail.Core.Combat
             }
         }
 
-        public bool Downed => stats.HP <= 0;
+        public bool Downed => Stats.HP <= 0;
 
         public Vector2 BattleStation
         {
@@ -226,7 +241,7 @@ namespace HellTrail.Core.Combat
             copy.portrait = portrait;
             copy.ai = ai;
             copy.animations = [];
-            copy.stats = stats.GetCopy();
+            copy._stats = _stats.GetCopy();
             copy.statsGrowth = statsGrowth.GetCopy();
             copy.resistances = resistances.GetCopy();
             copy.currentAnimation = currentAnimation;

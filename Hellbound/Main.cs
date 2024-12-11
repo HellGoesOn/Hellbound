@@ -199,7 +199,7 @@ namespace HellTrail
                     condition = (b) =>
                     {
                         Unit unit = b.unitsHitLastRound.FirstOrDefault(x => x.name == "Peas");
-                        return unit != null && unit.stats.HP == unit.stats.MaxHP && b.State == BattleState.VictoryCheck;
+                        return unit != null && unit.Stats.HP == unit.Stats.MaxHP && b.State == BattleState.VictoryCheck;
                     },
                     action = (b) =>
                     {
@@ -232,7 +232,7 @@ namespace HellTrail
                         dialogue.pages.AddRange([page, page2, page3]);
                         var disturb = new Disturb()
                         {
-                            hpCost = battle.playerParty[0].stats.HP - 1,
+                            hpCost = battle.playerParty[0].Stats.HP - 1,
                             spCost = 0,
                             canTarget = ValidTargets.All
                         };

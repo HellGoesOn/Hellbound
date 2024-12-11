@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HellTrail.Core.Combat.Items
 {
-    public abstract class Item
+    public abstract class Item : ICanTarget
     {
         public string name;
         public string description;
@@ -27,7 +27,7 @@ namespace HellTrail.Core.Combat.Items
 
         public ItemEventHandler onViewed;
 
-        public ValidTargets validTargets = ValidTargets.Ally;
+        public ValidTargets canTarget = ValidTargets.Ally;
 
         public Item(string name, string description)
         {
@@ -64,6 +64,11 @@ namespace HellTrail.Core.Combat.Items
             Weapon,
             Accessory,
         }
+
+
+        public ValidTargets CanTarget() => canTarget;
+
+        public bool AoE() => aoe;
     }
 
     public delegate void ItemEventHandler(Item item);

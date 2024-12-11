@@ -19,7 +19,7 @@ namespace HellTrail.Core.Combat.Items.Consumables
         protected override void OnUse(Unit caster, Battle battle, List<Unit> targets)
         {
             SoundEngine.PlaySound("senzu", 0.75f);
-            caster.stats.SP = Math.Clamp(caster.stats.SP + 24, 0, caster.stats.MaxSP);
+            caster.Stats.SP = Math.Clamp(caster.Stats.SP + 24, 0, caster.Stats.MaxSP);
         }
     }
 }

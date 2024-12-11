@@ -14,7 +14,7 @@ namespace HellTrail.Core.Combat.Items.Consumables
             icon = "thunderfuryl";
             frames = [new FrameData(0, 0, 52, 48)];
             iconScale *= 2;
-            validTargets = ValidTargets.World;
+            canTarget = ValidTargets.World;
             //iconRotation = MathHelper.PiOver4;
             iconOrigin = new Vector2(26, 24);
 

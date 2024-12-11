@@ -18,7 +18,7 @@ namespace HellTrail.Core.Combat.Items.Consumables
         protected override void OnUse(Unit caster, Battle battle, List<Unit> targets)
         {
             SoundEngine.PlaySound("NomNomNom", 0.75f);
-            caster.stats.HP = Math.Clamp(caster.stats.HP + 1, 0, caster.stats.MaxHP);
+            caster.Stats.HP = Math.Clamp(caster.Stats.HP + 1, 0, caster.Stats.MaxHP);
         }
     }
 }

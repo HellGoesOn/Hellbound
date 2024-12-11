@@ -19,7 +19,7 @@ namespace HellTrail.Core.Combat.Abilities
 
         protected override void UseAbility(Unit caster, Battle battle, List<Unit> targets)
         {
-            Sequence sequence = battle.CreateSequence();
+            Sequence sequence = CreateSequence(battle);
             sequence.Add(new SetActorAnimation(caster, "Cast"));
             sequence.Delay(60);
             sequence.CustomAction(() =>

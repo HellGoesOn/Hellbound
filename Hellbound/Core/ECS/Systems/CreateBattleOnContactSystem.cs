@@ -86,7 +86,7 @@ namespace HellTrail.Core.ECS
                     condition = (b) =>
                     {
                         Unit unit = b.unitsHitLastRound.FirstOrDefault(x => x.name == "Peas");
-                        return unit != null && unit.stats.HP == unit.stats.MaxHP && b.State == BattleState.VictoryCheck;
+                        return unit != null && unit.Stats.HP == unit.Stats.MaxHP && b.State == BattleState.VictoryCheck;
                     },
                     action = (b) =>
                     {

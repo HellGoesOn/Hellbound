@@ -29,6 +29,13 @@ namespace HellTrail.Core.Combat
 
             ProtagAnimations(protag);
 
+            protag.abilities.Add(new MyriadTruths());
+            for(int i =0; i < 32; i++)
+            protag.abilities.Add(new Singularity()
+            {
+                spCost = 10
+            });
+
 
             AddPartyMember(protag);
             //ActiveParty.Add(sidekick);
@@ -49,11 +56,13 @@ namespace HellTrail.Core.Combat
             });
 
             AddItem(new AdrenalineShot() { count = 3 });
+            AddItem(new FireGem() { count = 3 });
         }
 
         public static void AddPartyMember(Unit newUnit)
         {
             ActiveParty.Add(newUnit);
+            newUnit.ai = null;
             DefaultBattleStations(ActiveParty);
         }
 

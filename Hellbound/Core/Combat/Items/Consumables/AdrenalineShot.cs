@@ -13,7 +13,7 @@ namespace HellTrail.Core.Combat.Items.Consumables
             icon = "AdrenalineShot";
             frames = [new FrameData(0, 0, 32, 32)];
             iconScale *= 4;
-            validTargets = ValidTargets.DownedAlly;
+            canTarget = ValidTargets.DownedAlly;
             consumable = true;
         }
 
@@ -23,7 +23,7 @@ namespace HellTrail.Core.Combat.Items.Consumables
                 return;
 
             SoundEngine.PlaySound("stimpack", 0.75f);
-            caster.stats.HP = (int)(caster.stats.MaxHP * 0.1f);
+            caster.Stats.HP = (int)(caster.Stats.MaxHP * 0.1f);
         }
     }
 }

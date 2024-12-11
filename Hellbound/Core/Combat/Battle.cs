@@ -1,9 +1,11 @@
 ﻿using HellTrail.Core.Combat.Abilities;
+using HellTrail.Core.Combat.Items;
 using HellTrail.Core.Combat.Scripting;
 using HellTrail.Core.Combat.Sequencer;
 using HellTrail.Core.Combat.Status;
 using HellTrail.Core.DialogueSystem;
 using HellTrail.Core.UI;
+using HellTrail.Core.UI.Elements;
 using HellTrail.Extensions;
 using HellTrail.Render;
 using Microsoft.VisualBasic.FileIO;
@@ -21,6 +23,8 @@ namespace HellTrail.Core.Combat
 {
     public class Battle : IGameState
     {
+        int lastItemIndex, lastAbilityIndex;
+
         public int turnCount;
 
         public int _actingUnit;
@@ -73,6 +77,8 @@ namespace HellTrail.Core.Combat
 
 
         public Action OnBattleEnd;
+
+        public ICanTarget TargetingWith { get; private set; }
 
         public Battle() 
         {
@@ -128,13 +134,13 @@ namespace HellTrail.Core.Combat
             foreach (Unit unit in enemies)
             {
                 unit.team = Team.Enemy;
-                unit.stats.speed += rand.Next(1, 10) * 0.01f;
+                unit.Stats.speed += rand.Next(1, 10) * 0.01f;
             }
             
             units.AddRange(enemies);
 
             unitsNoSpeedSort.AddRange(units);
-            units = [.. units.OrderByDescending(x => x.stats.speed)];
+            units = [.. units.OrderByDescending(x => x.Stats.speed)];
 
             int troll = 0;
             foreach (Unit unit in units)
@@ -155,6 +161,12 @@ namespace HellTrail.Core.Combat
 
         public void Update()
         {
+            foreach (var menu in menusToRemove)
+            {
+                menus.Remove(menu);
+            }
+
+            menusToRemove.Clear();
             fieldAnimations.RemoveAll(x => x.finished);
 
             damageNumbers.RemoveAll(x => x.timeLeft <= 0);
@@ -327,142 +339,396 @@ namespace HellTrail.Core.Combat
 
         private void HandleMenus()
         {
-            var playerMenu = new Menu()
-            {
-                active = true,
-                position = new Vector2(80, Renderer.UIPreferedHeight / 2 - 80)
-            };
+            var playerMenu = new UIScrollableMenu(3, "Attack", "Item", "Guard");
+            playerMenu.openSpeed = 0.25f;
 
-            playerMenu.AddOption("Attack", ()
-                =>
-            {
-                var attacks = new Menu()
+            playerMenu.SetPosition(80, Renderer.UIPreferedHeight * 0.5f - playerMenu.targetSize.Y * 0.5f);
+
+            playerMenu.onSelectOption = (sender) =>
                 {
-                    position = playerMenu.position + new Vector2(playerMenu.GetSize.X + 8, 0),
-                    active = true,
-                    parentMenu = playerMenu
-                };
-                int option = attacks.selectedOption > ActingUnit.abilities.Count ? 0 : attacks.selectedOption < 0 ? ActingUnit.abilities.Count - 1 : attacks.selectedOption;
+                    playerMenu.focused = false;
+                    switch (playerMenu.CurrentOption)
+                    {
+                        case "Attack":
+                            string[] attackNames = ActingUnit.abilities.Select(x => x.Name).ToArray();
 
-                var skill = ActingUnit.abilities[option];
-                SetSkillDesc(skill);
+                            var attacks = new UIScrollableMenu(8, attackNames);
+                            attacks.openSpeed = 0.25f;
+                            attacks.SetPosition(playerMenu.GetPosition() + new Vector2(playerMenu.targetSize.X, -attacks.targetSize.Y * 0.25f));
 
-                AddMenu(attacks);
+                            var attackDescriptionPanel = new UIAnimatedPanel(new Vector2(400, 140));
+                            attackDescriptionPanel.openSpeed = 0.35f;
+                            attackDescriptionPanel.SetPosition(attacks.GetPosition() + new Vector2(attacks.targetSize.X + 10, attacks.targetSize.Y * 0.25f));
+                            var attackDescriptionText = new UIBorderedText("");
 
-                foreach (var ability in ActingUnit.abilities)
-                {
-                    var attackOption = attacks.AddOption(ability.Name,
-                        () =>
-                        {
-                            isPickingTarget = true;
-                            selectedAbility = ability;
-                            //ability.Use(ActingUnit, this, [ActingUnit]);
-                            //ClearMenus();
-                            //state = BattleState.BeginAction;
+                            attackDescriptionText.SetPosition(8);
 
-                            Menu fakeMenu = new()
+                            attacks.onUpdate = (sender) =>
                             {
-                                position = attacks.position + new Vector2(attacks.GetSize.X + 8, 0),
-                                parentMenu = attacks,
-                                active = true,
-                                visible = false,
-                                sideStep = 3,
-                                onSelectOption = () =>
+                                if (Input.PressedKey(Keys.Q) && attacks.focused)
                                 {
-                                    ability.Use(ActingUnit, this, TryGetTargets(ability));
-                                    ClearMenus();
-                                    state = BattleState.DoAction;
+                                    attackDescriptionPanel.isClosed = attacks.closed = true;
+                                }
+                            };
+
+                            attacks.onSelectOption = (sender) =>
+                            {
+                                attacks.focused = false;
+                                attacks.suspended = true;
+                                attackDescriptionPanel.suspended = true;
+                                var ability = ActingUnit.abilities[attacks.currentSelectedOption];
+                                TargetingWith = ability;
+                                isPickingTarget = true;
+
+                                var fakeMenu = new UIScrollableMenu(1, "");
+
+                                fakeMenu.Visible = false;
+
+                                fakeMenu.onScrollOption = (_)
+                                =>
+                                {
+                                    selectedTarget += fakeMenu.currentSelectedOption;
+                                };
+
+                                fakeMenu.onSelectOption = (_) =>
+                                {
+                                    fakeMenu.closed = true;
                                     isPickingTarget = false;
-                                }
-                            };
+                                    ability.Use(ActingUnit, this, TryGetTargets(ability));
+                                    state = BattleState.DoAction;
+                                    playerMenu.closed = true;
+                                    attacks.closed = true;
+                                    attackDescriptionPanel.isClosed = true;
+                                    ActingUnit.lastAbilityIndex = attacks.currentSelectedOption;
+                                };
 
-                            fakeMenu.onCancel = () =>
-                            {
-                                foreach (var menu in menus)
+                                fakeMenu.openSpeed = 1f;
+
+                                fakeMenu.onUpdate = (sender) =>
                                 {
-                                    menu.visible = true;
-                                }
-                                isPickingTarget = false;
-                                int option = attacks.selectedOption > ActingUnit.abilities.Count ? 0 : attacks.selectedOption < 0 ? ActingUnit.abilities.Count - 1 : attacks.selectedOption;
+                                    if (Input.PressedKey([Keys.Escape, Keys.Q]) && (sender as UIScrollableMenu).focused)
+                                    {
+                                        isPickingTarget = false;
+                                        TargetingWith = null;
+                                        fakeMenu.closed = true;
+                                    }
+                                };
 
-                                Ability skill = ActingUnit.abilities[option];
+                                fakeMenu.onLoseParent = (_) =>
+                                {
+                                    attacks.focused = true;
+                                    attacks.suspended = false;
+                                    attackDescriptionPanel.suspended = false;
+                                };
 
-                                SetSkillDesc(skill);
-                                RemoveMenu(fakeMenu);
+                                UIManager.combatUI.Append(fakeMenu);
                             };
 
-                            fakeMenu.onChangeOption = () =>
+                            attacks.onLoseParent = (sender) => { playerMenu.focused = true; };
+
+                            attacks.onChangeOption = (sender) =>
                             {
-                                selectedTarget += fakeMenu.selectedOption;
+                                attackDescriptionText.text = ActingUnit.abilities[attacks.currentSelectedOption].Description;
                             };
 
-                            foreach (var menu in menus)
+                            if(ActingUnit.lastAbilityIndex < attacks.options.Count)
                             {
-                                menu.visible = false;
+                                attacks.currentSelectedOption = ActingUnit.lastAbilityIndex;
+                                attacks.onChangeOption?.Invoke(attacks);
                             }
 
-                            AddMenu(fakeMenu);
-                            attacks.active = false;
+
+                            attackDescriptionPanel.Append(attackDescriptionText);
+
+                            UIManager.combatUI.Append(attackDescriptionPanel);
+                            UIManager.combatUI.Append(attacks);
+                            break;
+                        case "Item":
+                            OpenInventory(playerMenu);
+                            break;
+                        case "Guard":
+                            playerMenu.closed = true;
+                            ActingUnit.AddEffect(new GuardingEffect());
+                            state = BattleState.DoAction;
+                            break;
+                    }
+                };
+
+
+            UIManager.combatUI.Append(playerMenu);
+        }
+
+        private void OpenInventory(UIScrollableMenu playerMenu)
+        {
+            List<string> items = [];
+
+            foreach (var item in GlobalPlayer.Inventory)
+            {
+                items.Add($"{item.count} x {item.name}");
+            }
+
+            var InventoryMenu = new UIScrollableMenu(12, items.ToArray())
+            {
+                id = "inventoryMenu"
+            };
+
+            var uiPicture = new UIPicture("", new FrameData());
+            uiPicture.SetPosition(300 - 16, 32);
+
+            var descriptionPanel = new UIAnimatedPanel(new Vector2(600, 368), UIAnimatedPanel.AnimationStyle.FourWay);
+            descriptionPanel.SetPosition(180 + InventoryMenu.targetSize.X, 160);
+            descriptionPanel.openSpeed = 0.35f;
+            UIBorderedText description = new("", 40);
+
+            descriptionPanel.Append(description);
+            descriptionPanel.Append(uiPicture);
+            description.SetPosition(16, 160);
+
+            InventoryMenu.onUpdate = (sender) =>
+            {
+                if (Input.PressedKey([Keys.Escape, Keys.Q]) && (sender as UIScrollableMenu).focused)
+                {
+                    InventoryMenu.focused = false;
+                    InventoryMenu.closed = true;
+                    descriptionPanel.isClosed = true;
+                }
+            };
+            InventoryMenu.onSelectOption = (sender) =>
+            {
+                var item = GlobalPlayer.Inventory[InventoryMenu.currentSelectedOption];
+
+                switch (item.canTarget)
+                {
+                    case ValidTargets.World:
+                        item.Use(playerParty[0], null, playerParty);
+                        break;
+                    case ValidTargets.Enemy:
+
+                        TargetingWith = item;
+
+                        InventoryMenu.focused = false;
+                        InventoryMenu.suspended = true;
+                        descriptionPanel.suspended = true;
+
+                        isPickingTarget = true;
+
+                        var fakeMenu = new UIScrollableMenu(1, "");
+
+                        fakeMenu.Visible = false;
+
+                        fakeMenu.onScrollOption = (_)
+                        =>
+                        {
+                            selectedTarget += fakeMenu.currentSelectedOption;
+                        };
+
+                        fakeMenu.onSelectOption = (_) =>
+                        {
+                            fakeMenu.closed = true;
+                            InventoryMenu.openSpeed = 1f;
+                            descriptionPanel.openSpeed = 1f;
+                            CloseInventory(InventoryMenu, descriptionPanel);
+                            isPickingTarget = false;
                             UIManager.combatUI.skillDescription.text = "";
                             UIManager.combatUI.skillCost.text = "";
-                        });
+                            ClearMenus();
+                            item.Use(ActingUnit, this, TryGetTargets(item));
+                            state = BattleState.DoAction;
+                            playerMenu.closed = true;
+                            ActingUnit.lastItemIndex = InventoryMenu.currentSelectedOption;
+                        };
 
-                    if (!ability.CanCast(ActingUnit))
-                    {
-                        attackOption.canSelect = false;
-                        attackOption.color = Color.DarkSlateGray;
-                    }
+                        fakeMenu.openSpeed = 1f;
+
+                        fakeMenu.onUpdate = (sender) =>
+                        {
+                            if (Input.PressedKey([Keys.Escape, Keys.Q]) && (sender as UIScrollableMenu).focused)
+                            {
+                                isPickingTarget = false;
+                                TargetingWith = null;
+                                fakeMenu.closed = true;
+                            }
+                        };
+
+                        fakeMenu.onLoseParent = (_) =>
+                        {
+                            ExposedTargets.Clear();
+                            InventoryMenu.focused = true;
+                            InventoryMenu.suspended = false;
+                            descriptionPanel.suspended = false;
+                        };
+
+                        UIManager.combatUI.Append(fakeMenu);
+
+                        break;
+                    case ValidTargets.DownedAlly:
+                    case ValidTargets.Ally:
+                        InventoryMenu.focused = false;
+                        if (item.aoe)
+                        {
+                            var useOnAll = new UIScrollableMenu(2, "Cancel", "Use");
+                            useOnAll.openSpeed = 0.35f;
+                            useOnAll.onSelectOption = (sender) =>
+                            {
+                                switch (useOnAll.CurrentOption)
+                                {
+                                    case "Cancel":
+                                        useOnAll.closed = true;
+                                        break;
+                                    case "Use":
+                                        useOnAll.closed = true;
+                                        item.Use(playerParty[0], null, playerParty);
+                                        CloseInventory(InventoryMenu, descriptionPanel);
+                                        playerMenu.closed = true;
+                                        ActingUnit.lastItemIndex = InventoryMenu.currentSelectedOption;
+                                        break;
+                                }
+                            };
+
+                            useOnAll.onLoseParent = (sender) =>
+                            {
+                                InventoryMenu.focused = true;
+                                InventoryMenu.focused = true;
+                                var oldCount = InventoryMenu.options.Count;
+                                InventoryMenu.options = GlobalPlayer.Inventory.Select(item => $"{item.count} x {item.name}").ToList();
+
+                                if (InventoryMenu.options.Count != oldCount)
+                                {
+                                    InventoryMenu.currentSelectedOption = InventoryMenu.options.Count - 1;
+                                    InventoryMenu.onChangeOption?.Invoke(InventoryMenu);
+                                }
+                            };
+
+                            InventoryMenu.Append(useOnAll);
+                            useOnAll.SetPosition(InventoryMenu.targetSize.X * 0.5f - useOnAll.targetSize.X * 0.5f, InventoryMenu.targetSize.Y * 0.5f - useOnAll.targetSize.Y * 0.5f);
+
+                            break;
+                        }
+                        List<string> allyNames = playerParty.Select(x => x.name).ToList();
+
+                        var allySelect = new UIScrollableMenu(4, [.. allyNames])
+                        {
+                            openSpeed = 0.25f,
+                            onLoseParent = (sender) =>
+                            {
+                                InventoryMenu.focused = true;
+                                var oldCount = InventoryMenu.options.Count;
+                                InventoryMenu.options = GlobalPlayer.Inventory.Select(item => $"{item.count} x {item.name}").ToList();
+
+                                if (InventoryMenu.options.Count != oldCount)
+                                {
+                                    InventoryMenu.currentSelectedOption = InventoryMenu.options.Count - 1;
+                                    InventoryMenu.onChangeOption?.Invoke(InventoryMenu);
+                                }
+                            }
+                        };
+
+                        var selectText = new UIBorderedText("Use on..");
+                        selectText.color = new Color(57, 255, 20);
+                        allySelect.drawArrows = false;
+                        allySelect.Append(selectText);
+                        selectText.SetPosition(20, -14);
+
+                        allySelect.onUpdate = (sender) =>
+                        {
+                            if (Input.PressedKey([Keys.Escape, Keys.Q]) && (sender as UIScrollableMenu).focused)
+                                allySelect.closed = true;
+                        };
+
+                        allySelect.onSelectOption = (sender) =>
+                        {
+                            var item = GlobalPlayer.Inventory[InventoryMenu.currentSelectedOption];
+                            var target = playerParty[allySelect.currentSelectedOption];
+                            if ((!target.Downed && item.canTarget == ValidTargets.Ally) || (target.Downed && item.canTarget == ValidTargets.DownedAlly))
+                            {
+                                ActingUnit.lastItemIndex = InventoryMenu.currentSelectedOption;
+                                playerMenu.closed = true;
+                                CloseInventory(InventoryMenu, descriptionPanel);
+                                item.Use(target, null, [target]);
+                            } else
+                                SoundEngine.PlaySound("MeepMerp");
+                            allySelect.closed = true;
+
+                        };
+                        allySelect.SetPosition(InventoryMenu.targetSize.X * 0.5f - allySelect.targetSize.X * 0.5f, InventoryMenu.targetSize.Y * 0.5f - allySelect.targetSize.Y * 0.5f);
+
+                        allySelect.onChangeOption?.Invoke(allySelect);
+
+                        InventoryMenu.Append(allySelect);
+                        break;
                 }
+                
+            };
 
-                attacks.onChangeOption = () =>
-                {
-                    int option = attacks.selectedOption >= ActingUnit.abilities.Count ? 0 : attacks.selectedOption < 0 ? ActingUnit.abilities.Count - 1 : attacks.selectedOption;
-
-                    var skill = ActingUnit.abilities[option];
-                    SetSkillDesc(skill);
-                };
-
-                attacks.onCancel = () =>
-                {
-                    UIManager.combatUI.skillDescription.text = "";
-                    UIManager.combatUI.skillCost.text = "";
-                    RemoveMenu(attacks);
-                };
-
-                playerMenu.active = false;
-                //subMenus
-            });
-            playerMenu.AddOption("Item", () => { });
-            playerMenu.AddOption("Guard", () =>
+            InventoryMenu.onChangeOption = (sender) =>
             {
-                RemoveMenu(playerMenu);
-                playerMenu = null;
-                ActingUnit.AddEffect(new GuardingEffect());
-                state = BattleState.DoAction;
+                if (GlobalPlayer.Inventory.Count > 0)
+                {
+                    var item = GlobalPlayer.Inventory[InventoryMenu.currentSelectedOption];
+                    if (!string.IsNullOrWhiteSpace(item.icon))
+                    {
+                        uiPicture.frames = item.frames;
+                        uiPicture.textureName = item.icon;
+                        uiPicture.scale = item.iconScale;
+                        uiPicture.rotation = item.iconRotation;
+                        uiPicture.origin = item.iconOrigin;
+
+                        item.onViewed?.Invoke(item);
+
+                        uiPicture.SetPosition(descriptionPanel.size.X * 0.5f, 64);
+                    } else
+                    {
+                        uiPicture.frames = null;
+                        uiPicture.textureName = "";
+                    }
+                    description.text = item.description;
+                } else
+                {
+                    uiPicture.frames = null;
+                    uiPicture.textureName = "";
+                    uiPicture.scale = Vector2.One;
+                    uiPicture.origin = Vector2.Zero;
+                    uiPicture.origin = Vector2.Zero;
+                    description.text = "Holy shit this lack of items is kinda\ndepressing.";
+                }
+            };
+
+            InventoryMenu.onLoseParent += (sender) =>
+            {
+                isPickingTarget = false;
+                TargetingWith = null;
+                playerMenu.focused = true;
+            };
+
+            InventoryMenu.openSpeed = 0.35f;
+
+            InventoryMenu.SetPosition(160);
+
+            if (ActingUnit.lastItemIndex < InventoryMenu.options.Count)
+            {
+                InventoryMenu.currentSelectedOption = ActingUnit.lastItemIndex;
+                InventoryMenu.onChangeOption?.Invoke(InventoryMenu);
             }
-            );
 
-            playerMenu.onChangeOption = () =>
+            UIManager.combatUI.Append(InventoryMenu);
+            UIManager.combatUI.Append(descriptionPanel);
+        }
+
+        private void CloseInventory(UIScrollableMenu InventoryMenu, UIAnimatedPanel descriptionPanel, bool doSequence = true)
+        {
+            InventoryMenu.closed = true;
+            descriptionPanel.isClosed = true;
+
+            menus.Clear();
+
+            if (doSequence)
             {
-                int option = playerMenu.selectedOption >= 3 ? 0 : playerMenu.selectedOption < 0 ? 2 : playerMenu.selectedOption;
-                var text = "";
-                text = option switch
-                {
-                    1 => "Use an Item",
-                    2 => "Reduces damage by 25%.\nProtects from Weaknesses",
-                    _ => "Use an Ability",
-                };
-                UIManager.combatUI.skillDescription.text = text;
-            };
+                Sequence seq = CreateSequence();
+                seq.SetAnimation(ActingUnit, "Cast");
+                seq.Delay(60);
+            }
 
-            playerMenu.onCancel = () =>
-            {
-                playerMenu.selectedOption = playerMenu.Count - 1;
-                var text = "Reduces damage by 25%.\nProtects from Weaknesses";
-                UIManager.combatUI.skillDescription.text = text;
-            };
-
-            menus.Add(playerMenu);
+            state = BattleState.DoAction;
         }
 
         private static void SetSkillDesc(Ability skill)
@@ -490,6 +756,7 @@ namespace HellTrail.Core.Combat
 
         public void DoAction()
         {
+            ExposedTargets.Clear();
             State = BattleState.VictoryCheck;
         }
 
@@ -584,7 +851,7 @@ namespace HellTrail.Core.Combat
                 {
                     if(unit.team == Team.Enemy)
                     {
-                        expValue += unit.stats.value;
+                        expValue += unit.Stats.value;
                     }
 
                     Sequence seq = new(this)
@@ -600,7 +867,7 @@ namespace HellTrail.Core.Combat
                 bool anyLevelUps = false;
                 foreach(Unit unit in GlobalPlayer.ActiveParty)
                 {
-                    unit.stats.EXP += expValue;
+                    unit.Stats.EXP += expValue;
                     unit.ClearEffects();
 
 
@@ -645,13 +912,22 @@ namespace HellTrail.Core.Combat
             menusToAdd.Add(menu);
         }
 
-        public List<Unit> TryGetTargets(Ability ability)
+        private List<Unit> _exposedTargets = [];
+
+        public List<Unit> ExposedTargets
+        { 
+            get => _exposedTargets;
+        }
+
+        public List<Unit> TryGetTargets(ICanTarget getTargetFor)
         {
+            ExposedTargets.Clear();
             Func<Unit, bool> selector = x => ActingUnit.team != x.team && !x.Downed;
 
-            switch (ability.canTarget) {
+            switch (getTargetFor.CanTarget())
+            {
                 case ValidTargets.Ally:
-                selector = x => ActingUnit.team == x.team && !x.Downed;
+                    selector = x => ActingUnit.team == x.team && !x.Downed;
                     break;
                 case ValidTargets.All:
                     selector = x => !x.Downed;
@@ -664,29 +940,132 @@ namespace HellTrail.Core.Combat
             List<Unit> targets = unitsNoSpeedSort.Where(selector).ToList();
 
             if (targets.Count == 0)
-                return [];
-
-            if (ability.aoe)
             {
+                ExposedTargets.Clear();
+                return [];
+            }
+
+            if (getTargetFor.AoE())
+            {
+                ExposedTargets.AddRange(targets);
                 return targets;
             }
 
-            var tryMouse = targets.FirstOrDefault(x => x.ContainsMouse(-x.size * 0.5f));
-            if (tryMouse != null && Menu.mouseEnabled)
-                selectedTarget = targets.IndexOf(tryMouse);
+            if (Menu.mouseEnabled)
+            {
+                var tryMouse = targets.FirstOrDefault(x => x.ContainsMouse(-x.size * 0.5f));
+                if (tryMouse != null)
+                    selectedTarget = targets.IndexOf(tryMouse);
+            }
 
             if (selectedTarget < 0)
-                selectedTarget = targets.Count-1;
+                selectedTarget = targets.Count - 1;
 
-            if(selectedTarget > targets.Count-1)
+            if (selectedTarget > targets.Count - 1)
                 selectedTarget = 0;
 
+            ExposedTargets.Add(targets[selectedTarget]);
             return [targets[selectedTarget]];
         }
 
-        public Sequence CreateSequence()
+
+        //public List<Unit> TryGetTargets(Ability ability)
+        //{
+        //    ExposedTargets.Clear();
+        //    Func<Unit, bool> selector = x => ActingUnit.team != x.team && !x.Downed;
+
+        //    switch (ability.canTarget)
+        //    {
+        //        case ValidTargets.Ally:
+        //            selector = x => ActingUnit.team == x.team && !x.Downed;
+        //            break;
+        //        case ValidTargets.All:
+        //            selector = x => !x.Downed;
+        //            break;
+        //        case ValidTargets.AllButSelf:
+        //            selector = x => x != ActingUnit && !x.Downed;
+        //            break;
+        //    };
+
+        //    List<Unit> targets = unitsNoSpeedSort.Where(selector).ToList();
+
+        //    if (targets.Count == 0)
+        //    {
+        //        ExposedTargets.Clear();
+        //        return [];
+        //    }
+
+        //    if (ability.aoe)
+        //    {
+        //        ExposedTargets.AddRange(targets);
+        //        return targets;
+        //    }
+
+        //    if (Menu.mouseEnabled)
+        //    {
+        //        var tryMouse = targets.FirstOrDefault(x => x.ContainsMouse(-x.size * 0.5f));
+        //        if (tryMouse != null)
+        //            selectedTarget = targets.IndexOf(tryMouse);
+        //    }
+
+        //    if (selectedTarget < 0)
+        //        selectedTarget = targets.Count - 1;
+
+        //    if (selectedTarget > targets.Count - 1)
+        //        selectedTarget = 0;
+
+        //    ExposedTargets.Add(targets[selectedTarget]);
+        //    return [targets[selectedTarget]];
+        //}
+
+        //public List<Unit> TryGetTargets(Item item)
+        //{
+        //    ExposedTargets.Clear();
+        //    Func<Unit, bool> selector = x => ActingUnit.team != x.team && !x.Downed;
+
+        //    switch (item.canTarget) {
+        //        case ValidTargets.Ally:
+        //        selector = x => ActingUnit.team == x.team && !x.Downed;
+        //            break;
+        //        case ValidTargets.All:
+        //            selector = x => !x.Downed;
+        //            break;
+        //        case ValidTargets.AllButSelf:
+        //            selector = x => x != ActingUnit && !x.Downed;
+        //            break;
+        //    };
+
+        //    List<Unit> targets = unitsNoSpeedSort.Where(selector).ToList();
+
+        //    if (targets.Count == 0)
+        //    {
+        //        ExposedTargets.Clear();
+        //        return [];
+        //    }
+        //    if (item.aoe)
+        //    {
+        //        ExposedTargets.AddRange(targets);
+        //        return targets;
+        //    }
+
+        //    var tryMouse = targets.FirstOrDefault(x => x.ContainsMouse(-x.size * 0.5f));
+        //    if (tryMouse != null && Menu.mouseEnabled)
+        //        selectedTarget = targets.IndexOf(tryMouse);
+
+        //    if (selectedTarget < 0)
+        //        selectedTarget = targets.Count-1;
+
+        //    if(selectedTarget > targets.Count-1)
+        //        selectedTarget = 0;
+
+        //    ExposedTargets.Add(targets[selectedTarget]);
+        //    return [targets[selectedTarget]];
+        //}
+
+        public Sequence CreateSequence(bool startActive = false)
         {
             Sequence seq = new(this);
+            //seq.active = startActive;
             sequences.Add(seq);
             return seq;
         }

@@ -35,11 +35,11 @@ namespace HellTrail.Core.Combat.Sequencer
         {
             float guardFactor = target.HasStatus<GuardingEffect>() ? 0.75f : 1.0f;
 
-            int statBonus = type == ElementalType.DoT ? 1 : type == ElementalType.Phys ? (int)Math.Sqrt(caster.stats.strength) : (int)Math.Sqrt(caster.stats.magic);
+            int statBonus = type == ElementalType.DoT ? 1 : type == ElementalType.Phys ? (int)Math.Sqrt(caster.Stats.strength) : (int)Math.Sqrt(caster.Stats.magic);
 
             int damageTaken = (int)(damage*statBonus * (1 - target.resistances[type]) * guardFactor);
 
-            float finalAccuracy = accuracy * caster.stats.accuracy * (1.0f-target.stats.evasion);
+            float finalAccuracy = accuracy * caster.Stats.accuracy * (1.0f-target.Stats.evasion);
 
             DamageNumber damageNumber;
 
@@ -52,7 +52,7 @@ namespace HellTrail.Core.Combat.Sequencer
                 battle.damageNumbers.Add(damageNumber);
                 return;
             }
-            target.stats.HP = Math.Max(0, target.stats.HP - damageTaken);
+            target.Stats.HP = Math.Max(0, target.Stats.HP - damageTaken);
 
             var xx = Main.rand.Next((int)(target.size.X * 0.5f));
             var yy = Main.rand.Next((int)(target.size.Y * 0.5f));
@@ -90,7 +90,7 @@ namespace HellTrail.Core.Combat.Sequencer
                 shakeAmount = 0;
 
                 damageTaken = (int)(damage * statBonus * (1 - caster.resistances[type]));
-                caster.stats.HP = Math.Max(0, caster.stats.HP - damageTaken);
+                caster.Stats.HP = Math.Max(0, caster.Stats.HP - damageTaken);
                 float casterResist = caster.resistances[type];
                 DamageType repelledType = DamageType.Normal;
                 if (casterResist > 0 && casterResist < 1)

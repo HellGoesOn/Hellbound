@@ -33,6 +33,10 @@ namespace HellTrail.Core.Combat.Items.Consumables
                 panel.Append(new UIBorderedText("Unfortunately, even the goodest of boys cannot read.\nNeither can you, but that's your fault. Lazybum.", 36).SetPosition(16));
 
                 var inventoryMenu = (UIManager.overworldUI.GetElementById("inventoryMenu") as UIScrollableMenu);
+                if (Main.instance.GetGameState() is Battle)
+                {
+                    inventoryMenu = (UIManager.combatUI.GetElementById("inventoryMenu") as UIScrollableMenu);
+                }
 
                 panel.openSpeed = 0.25f;
 
@@ -61,7 +65,7 @@ namespace HellTrail.Core.Combat.Items.Consumables
                 || normalizedName.Contains("cheesy"))
             {
                 SoundEngine.PlaySound("LvlUp", 0.75f);
-                caster.stats.EXP += 1001;
+                caster.Stats.EXP += 1001;
                 caster.TryLevelUp(true);
             }
             else
@@ -72,6 +76,11 @@ namespace HellTrail.Core.Combat.Items.Consumables
                 panel.Append(new UIBorderedText("You try to read & understand the text, however you do not succeed.", 36).SetPosition(16));
 
                 var inventoryMenu = (UIManager.overworldUI.GetElementById("inventoryMenu") as UIScrollableMenu);
+
+                if(Main.instance.GetGameState() is Battle)
+                {
+                    inventoryMenu = (UIManager.combatUI.GetElementById("inventoryMenu") as UIScrollableMenu);
+                }
 
                 panel.openSpeed = 0.25f;
 

@@ -23,16 +23,16 @@ namespace HellTrail.Core.Combat.Abilities.Fire
         {
             battle.lastAction = $"{caster.name} used {Name}!";
 
-            Sequence sequence = new(battle);
+            Sequence sequence = CreateSequence(battle);
             sequence.Add(new SetActorAnimation(caster, "Cast"));
             sequence.Add(new DelaySequence(20));
 
             foreach (Unit target in targets)
             {
+                sequence.Add(new DelaySequence(15));
                 sequence.Add(new PlaySoundSequence("GunShot"));
                 sequence.Add(new DoDamageSequence(caster, target, 12, ElementalType.Fire));
                 sequence.Add(new ApplyEffectSequence(sequence, target, new Burning(), 95, true));
-                sequence.Add(new DelaySequence(5)); 
                 sequence.Add(new OneActionSequence(() =>
                 {
                     for (int i = 0; i < 250; i++)
@@ -53,7 +53,6 @@ namespace HellTrail.Core.Combat.Abilities.Fire
                 }));
             }
             sequence.Add(new MoveActorSequence(caster, caster.BattleStation));
-            battle.sequences.Add(sequence);
         }
     }
 }

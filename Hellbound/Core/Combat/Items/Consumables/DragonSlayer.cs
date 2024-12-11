@@ -14,7 +14,7 @@ namespace HellTrail.Core.Combat.Items.Consumables
             icon = "Dragonslayer";
             frames = [new FrameData(0, 0, 88, 88)];
             iconScale *= 2;
-            validTargets = ValidTargets.World;
+            canTarget = ValidTargets.World;
             //iconRotation = MathHelper.PiOver4;
             iconOrigin = new Vector2(44);
 

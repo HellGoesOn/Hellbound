@@ -24,7 +24,7 @@ namespace HellTrail.Core.Combat.Abilities
 
             if (targets[0].name == "Peas")
             {
-                Sequence sequence = new(battle);
+                Sequence sequence = CreateSequence(battle);
                 sequence.Add(new MoveActorSequence(caster, new Vector2(160, 90)));
                 sequence.Add(new SetActorAnimation(caster, "Special"));
                 sequence.Add(new DelaySequence(60));
@@ -37,11 +37,10 @@ namespace HellTrail.Core.Combat.Abilities
                     sequence.Delay(10);
                     sequence.DoDamage(caster, unit, 99999, ElementalType.Almighty);
                 }
-                battle.sequences.Add(sequence);
             } 
             else
             {
-                Sequence sequence = new(battle);
+                Sequence sequence = CreateSequence(battle);
                 sequence.Add(new SetActorAnimation(caster, "Cast"));
                 sequence.Add(new DelaySequence(20));
                 foreach (var target in targets)
@@ -50,7 +49,6 @@ namespace HellTrail.Core.Combat.Abilities
                 }
                 sequence.Add(new DelaySequence(20));
                 sequence.Add(new MoveActorSequence(caster, caster.BattleStation));
-                battle.sequences.Add(sequence);
             }
         }
     }

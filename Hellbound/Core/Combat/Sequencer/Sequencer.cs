@@ -1,4 +1,5 @@
 ﻿using HellTrail.Core.Combat.Status;
+using HellTrail.Core.UI;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,13 @@ namespace HellTrail.Core.Combat.Sequencer
     {
         public int currentAction;
 
+        public int updateCounter;
+
         public bool isFinished;
 
         public bool active;
+
+        public string source = "";
 
         public Battle battle;
 
@@ -34,6 +39,10 @@ namespace HellTrail.Core.Combat.Sequencer
         {
             if (isFinished)
                 return;
+
+            updateCounter++;
+
+            //UIManager.Debug(updateCounter.ToString() + $" from {source}");
 
             Actions[currentAction].Update(Actors, battle);
 

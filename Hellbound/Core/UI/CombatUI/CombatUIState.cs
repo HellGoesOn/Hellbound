@@ -19,6 +19,7 @@ namespace HellTrail.Core.UI.CombatUI
 
         public bool isRunning;
         public bool showLevelUps;
+        public bool isTargetingWithItem;
 
         public bool beganActing;
 
@@ -137,9 +138,7 @@ namespace HellTrail.Core.UI.CombatUI
             var state = Main.instance.GetGameState();
             visible = active =  state is Battle;
 
-
-
-            if(!active)
+            if (!active)
             {
                 return;
             }
@@ -168,9 +167,9 @@ namespace HellTrail.Core.UI.CombatUI
             string partySP = "";
             foreach(Unit unit in (state as Battle).playerParty)
             {
-                partyStatus += $"[ {unit.stats.level} ]{(unit.name)}\n";
-                partyHP += $"HP: {unit.stats.HP}/{unit.stats.MaxHP}\n";
-                partySP += $"SP: {unit.stats.SP}/{unit.stats.MaxSP}\n";
+                partyStatus += $"[ {unit.Stats.level} ]{(unit.name)}\n";
+                partyHP += $"HP: {unit.Stats.HP}/{unit.Stats.MaxHP}\n";
+                partySP += $"SP: {unit.Stats.SP}/{unit.Stats.MaxSP}\n";
             }
 
             teamNamesText.text = partyStatus;
@@ -243,9 +242,10 @@ namespace HellTrail.Core.UI.CombatUI
             //    Vector2 finalPos = new Vector2((int)adjPos.X, (int)(adjPos.Y + 64));
             //    spriteBatch.DrawBorderedString(Assets.SmallFont, buffs, finalPos, Color.White, Color.Black, 0f, orig, Vector2.One, SpriteEffects.None, 0);
 
-                if (activeBattle.isPickingTarget)
+                if (activeBattle.isPickingTarget && activeBattle.TargetingWith != null)
                 {
-                    var targets = activeBattle.TryGetTargets(activeBattle.selectedAbility);
+                    var targets = activeBattle.TryGetTargets(activeBattle.TargetingWith);
+
                     if (targets.Contains(unit))
                     {
                         var position = unit.position * 4;

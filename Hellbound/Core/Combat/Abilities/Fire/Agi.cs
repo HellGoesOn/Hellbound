@@ -25,7 +25,7 @@ namespace HellTrail.Core.Combat.Abilities.Fire
 
             int markiplier = targets[0].BattleStation.X < caster.BattleStation.X ? -1 : 1;
 
-            Sequence sequence = new(battle);
+            Sequence sequence = CreateSequence(battle);
             sequence.Add(new SetActorAnimation(caster, "Cast"));
             sequence.Add(new DelaySequence(20));
             sequence.Add(new PlaySoundSequence("GunShot"));
@@ -51,7 +51,6 @@ namespace HellTrail.Core.Combat.Abilities.Fire
             sequence.Add(new ApplyEffectSequence(sequence, targets[0], new Burning(), 100, true));
             sequence.Add(new DelaySequence(20));
             sequence.Add(new MoveActorSequence(caster, caster.BattleStation));
-            battle.sequences.Add(sequence); 
         }
     }
 }

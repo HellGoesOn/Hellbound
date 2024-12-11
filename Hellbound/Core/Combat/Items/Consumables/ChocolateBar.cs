@@ -30,7 +30,10 @@ namespace HellTrail.Core.Combat.Items.Consumables
                 var panel = new UIAnimatedPanel(new Vector2(600, 132));
                 panel.Append(new UIBorderedText("Wait.. you didn't.. no way.. you. IDIOT. Absolute. Fucking. IMBECILE. Do you even know what you've done??", 36).SetPosition(16));
 
-                var inventoryMenu = (UIManager.overworldUI.GetElementById("inventoryMenu") as UIScrollableMenu);
+                var inventoryMenu = (UIManager.overworldUI.GetElementById("inventoryMenu") as UIScrollableMenu); if (Main.instance.GetGameState() is Battle)
+                {
+                    inventoryMenu = (UIManager.combatUI.GetElementById("inventoryMenu") as UIScrollableMenu);
+                }
 
                 panel.openSpeed = 0.25f;
 
@@ -53,11 +56,11 @@ namespace HellTrail.Core.Combat.Items.Consumables
 
                 UIManager.overworldUI.Append(panel);
 
-                caster.stats.HP = 0;
+                caster.Stats.HP = 0;
             } else
             {
                 SoundEngine.PlaySound("senzu", 0.75f);
-                caster.stats.HP = Math.Clamp(caster.stats.HP + 15, 0, caster.stats.MaxHP);
+                caster.Stats.HP = Math.Clamp(caster.Stats.HP + 15, 0, caster.Stats.MaxHP);
             }
         }
     }

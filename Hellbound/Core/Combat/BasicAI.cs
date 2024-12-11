@@ -39,10 +39,10 @@ namespace HellTrail.Core.Combat
                 selector = x => !x.Downed;
 
             if (abilityToUse.canTarget == ValidTargets.DownedAlly)
-                selector = x => x.stats.HP <= 0 && x.team == whoAmI.team;
+                selector = x => x.Stats.HP <= 0 && x.team == whoAmI.team;
 
             if (abilityToUse.canTarget == ValidTargets.DownedEnemy)
-                selector = x => x.stats.HP <= 0 && x.team != whoAmI.team;
+                selector = x => x.Stats.HP <= 0 && x.team != whoAmI.team;
 
             return selector;
         }

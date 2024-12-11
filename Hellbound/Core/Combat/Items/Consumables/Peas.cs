@@ -20,7 +20,7 @@ namespace HellTrail.Core.Combat.Items.Consumables
             icon = "Peas";
             frames = [new FrameData(0, 0, 32, 32)];
             iconScale *= 3;
-            validTargets = ValidTargets.World;
+            canTarget = ValidTargets.World;
         }
 
         protected override void OnUse(Unit caster, Battle battle, List<Unit> targets)

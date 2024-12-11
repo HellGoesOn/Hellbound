@@ -85,7 +85,7 @@ Entity_5
 	{
 		CollisionBox{16; 8; {X:8 Y:-4}}
 
-		CreateBattleOnContact{"Tomato"; [Slime, Slime, Slime]; []}
+		CreateBattleOnContact{"TestBG2"; [Slime, Slime, Slime]; []}
 
 		Obesity{0}
 

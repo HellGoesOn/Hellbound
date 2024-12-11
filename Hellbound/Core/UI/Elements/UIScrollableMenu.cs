@@ -10,6 +10,7 @@ namespace HellTrail.Core.UI.Elements
         public bool focused;
         public bool drawArrows;
         public bool closed;
+        public bool suspended;
         public bool init;
         public int currentSelectedOption;
         public int repeatRate;
@@ -33,6 +34,7 @@ namespace HellTrail.Core.UI.Elements
 
         public UIEventHandler onSelectOption;
         public UIEventHandler onChangeOption;
+        public UIEventHandler onScrollOption;
 
         public UIScrollableMenu(int maxDisplayeedOptions, params string[] options )
         {
@@ -70,7 +72,7 @@ namespace HellTrail.Core.UI.Elements
 
         public override void OnUpdate()
         {
-            if (size != targetSize && !closed)
+            if (size != targetSize && !closed && !suspended)
             {
                 size = Vector2.Lerp(size, targetSize, openSpeed);
 
@@ -84,16 +86,17 @@ namespace HellTrail.Core.UI.Elements
                 }
             }
 
-            if (closed)
+            if (closed || suspended)
             {
-                size.Y = MathHelper.Lerp(size.Y, 0, openSpeed);
+                if(size.Y > 0.001f)
+                    size.Y = MathHelper.Lerp(size.Y, 0, openSpeed);
+                //UIManager.Debug(size.Y.ToString());
 
-                if (size.Y < targetSize.Y * openSpeed * 0.5f)
+                if (size.Y < targetSize.Y * openSpeed * 0.5f && closed)
                 {
                     size.Y = 0;
                     this.parent.Disown(this);
                 }
-
 
                 return;
             }
@@ -109,6 +112,7 @@ namespace HellTrail.Core.UI.Elements
             if(Input.PressedKey(Keys.S) || (Input.HeldKey(Keys.S) && _heldTimer >= repeatRate))
             {
                 currentSelectedOption++;
+                onScrollOption?.Invoke(this);
                 if (_heldTimer >= repeatRate)
                     _heldTimer -= (int)(repeatRate * 0.33f);
 
@@ -120,6 +124,7 @@ namespace HellTrail.Core.UI.Elements
             if(Input.PressedKey(Keys.W) || (Input.HeldKey(Keys.W) && _heldTimer >= repeatRate))
             {
                 currentSelectedOption--;
+                onScrollOption?.Invoke(this);
                 if(_heldTimer >= repeatRate)
                     _heldTimer -= (int)(repeatRate * 0.33f);
 
@@ -148,6 +153,9 @@ namespace HellTrail.Core.UI.Elements
         public override void OnDraw(SpriteBatch spriteBatch)
         {
             base.OnDraw(spriteBatch);
+
+            if (suspended && size.Y <= 0.5f)
+                return;
 
             Texture2D arrow = Assets.GetTexture("Arrow");
             Vector2 osciliation = new(0, (float)Math.Sin(Main.totalTime));

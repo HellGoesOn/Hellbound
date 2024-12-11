@@ -19,7 +19,7 @@ namespace HellTrail.Core.Combat.Abilities
 
         public override void AdjustCosts(Unit caster)
         {
-            hpCost = (int)(caster.stats.MaxHP * 0.08f);
+            hpCost = (int)(caster.Stats.MaxHP * 0.08f);
         }
 
         protected override void UseAbility(Unit caster, Battle battle, List<Unit> targets)
@@ -28,7 +28,7 @@ namespace HellTrail.Core.Combat.Abilities
 
             int markiplier = targets[0].BattleStation.X < caster.BattleStation.X ? -1 : 1;
 
-            Sequence sequence = new(battle);
+            Sequence sequence = CreateSequence(battle);
             sequence.Add(new MoveActorSequence(caster, targets[0].position - new Vector2(32 * markiplier, 0)));
             sequence.Add(new SetActorAnimation(caster, "Cast"));
             sequence.Add(new DelaySequence(20));
@@ -36,7 +36,6 @@ namespace HellTrail.Core.Combat.Abilities
             sequence.Add(new DoDamageSequence(caster, targets[0], 25));
             sequence.Add(new DelaySequence(20));
             sequence.Add(new MoveActorSequence(caster, caster.BattleStation));
-            battle.sequences.Add(sequence);
         }
     }
 }

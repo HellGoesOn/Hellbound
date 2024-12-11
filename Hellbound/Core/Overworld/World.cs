@@ -83,7 +83,7 @@ namespace HellTrail.Core.Overworld
                 stream.Dispose();
             }
 
-            UIManager.Debug(Input.MousePosition.ToString());
+           // UIManager.Debug(Input.MousePosition.ToString());
 
             //if(Input.LMBHeld)
             //{

@@ -107,7 +107,7 @@ namespace HellTrail.Core.Overworld
 
                                     if (item.canUseOutOfBattle)
                                     {
-                                        switch (item.validTargets)
+                                        switch (item.canTarget)
                                         {
                                             case ValidTargets.World:
                                                 item.Use(GlobalPlayer.ActiveParty[0], null, GlobalPlayer.ActiveParty);
@@ -121,7 +121,7 @@ namespace HellTrail.Core.Overworld
                                                     useOnAll.openSpeed = 0.35f;
                                                     useOnAll.onSelectOption = (sender) =>
                                                     {
-                                                        switch(useOnAll.CurrentOption)
+                                                        switch (useOnAll.CurrentOption)
                                                         {
                                                             case "Cancel":
                                                                 useOnAll.closed = true;
@@ -129,6 +129,7 @@ namespace HellTrail.Core.Overworld
                                                             case "Use":
                                                                 useOnAll.closed = true;
                                                                 item.Use(GlobalPlayer.ActiveParty[0], null, GlobalPlayer.ActiveParty);
+
                                                                 break;
                                                         }
                                                     };
@@ -189,9 +190,10 @@ namespace HellTrail.Core.Overworld
                                                 {
                                                     var item = GlobalPlayer.Inventory[InventoryMenu.currentSelectedOption];
                                                     var target = GlobalPlayer.ActiveParty[allySelect.currentSelectedOption];
-                                                    if ((!target.Downed && item.validTargets == ValidTargets.Ally) ||(target.Downed && item.validTargets == ValidTargets.DownedAlly))
+                                                    if ((!target.Downed && item.canTarget == ValidTargets.Ally) || (target.Downed && item.canTarget == ValidTargets.DownedAlly))
+                                                    {
                                                         item.Use(target, null, [target]);
-                                                    else
+                                                    } else
                                                         SoundEngine.PlaySound("MeepMerp");
                                                     allySelect.closed = true;
 
@@ -306,7 +308,7 @@ namespace HellTrail.Core.Overworld
                                     portrait.frames = [new FrameData(0, 0, 32, 32)];
                                     portrait.scale = new Vector2(3);
                                     memberName.text = selectedMember.name;
-                                    memberStats.text = selectedMember.stats.ListStats();
+                                    memberStats.text = selectedMember.Stats.ListStats();
                                     portrait.tint = Color.White;
                                     restInPeace.tint = Color.White * 0;
 

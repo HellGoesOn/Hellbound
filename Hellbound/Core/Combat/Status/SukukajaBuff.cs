@@ -21,8 +21,8 @@ namespace HellTrail.Core.Combat.Status
 
         public override void OnApply(Unit unit)
         {
-            unit.stats.accuracy += 0.5f;
-            unit.stats.evasion += 0.5f;
+            unit.Stats.accuracy += 0.5f;
+            unit.Stats.evasion += 0.5f;
         }
 
         public override void OnTurnBegin(Unit unit, Battle battle)
@@ -51,8 +51,8 @@ namespace HellTrail.Core.Combat.Status
 
         public override void OnRemove(Unit unit)
         {
-            unit.stats.accuracy -= 0.5f;
-            unit.stats.evasion -= 0.5f;
+            unit.Stats.accuracy -= 0.5f;
+            unit.Stats.evasion -= 0.5f;
 
             UIManager.combatUI.SetAbilityUsed("Agility increase reverted!");
         }

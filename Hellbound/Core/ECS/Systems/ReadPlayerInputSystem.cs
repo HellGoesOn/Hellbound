@@ -34,6 +34,10 @@ namespace HellTrail.Core.ECS
                 Velocity vel = entity.GetComponent<Velocity>();
                 vel.X = vel.Y = 0;
                 var speed = 1.25f;
+
+                if (Input.HeldKey(Keys.LeftShift))
+                    speed = 4;
+
                 if (Input.HeldKey(Keys.A) && !dontListen) vel.X -= speed;
                 if (Input.HeldKey(Keys.W) && !dontListen) vel.Y -= speed;
                 if (Input.HeldKey(Keys.S) && !dontListen) vel.Y += speed;

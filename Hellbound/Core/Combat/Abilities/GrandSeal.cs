@@ -17,7 +17,7 @@ namespace HellTrail.Core.Combat.Abilities
 
         protected override void UseAbility(Unit caster, Battle battle, List<Unit> targets)
         {
-            Sequence sequence = new(battle);
+            Sequence sequence = CreateSequence(battle);
             sequence.Add(new MoveActorSequence(caster, new Vector2(160, 90)));
             sequence.Add(new SetActorAnimation(caster, "Special"));
             sequence.Add(new DelaySequence(60));
@@ -32,7 +32,6 @@ namespace HellTrail.Core.Combat.Abilities
                 sequence.Add(new PlaySoundSequence("Death"));
             }
             sequence.Add(new DelaySequence(60));
-            battle.sequences.Add(sequence);
 
         }
     }
