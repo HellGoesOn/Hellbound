@@ -14,6 +14,9 @@ namespace HellTrail.Core.Combat
         private readonly static Dictionary<string, Unit> _definitions = [];
         public static void DefineUnits()
         {
+            Unit placeHolder = DefineUnit("Dud");
+            placeHolder.Stats.HP = 0;
+
             Unit protag = DefineUnit("Doorkun");
             protag.name = "Doorkun";
             protag.sprite = "Dumbass";

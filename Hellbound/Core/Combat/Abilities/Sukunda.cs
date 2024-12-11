@@ -25,6 +25,9 @@ namespace HellTrail.Core.Combat.Abilities
             sequence.Delay(60);
             sequence.CustomAction(() =>
                 {
+                    //SoundEngine.PlaySound("SolarFlare");
+                    SoundEngine.PlaySound("Flash");
+
                 if (targets[0].HasStatus<SukukajaBuff>())
                 {
                     UIManager.combatUI.SetAbilityUsed("Accuracy & Evasion back to normal");

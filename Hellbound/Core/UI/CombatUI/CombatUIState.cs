@@ -367,14 +367,14 @@ namespace HellTrail.Core.UI.CombatUI
                 number.Draw(spriteBatch);
             }
 
-            if (activeBattle.battleEnded)
-            {
-                string text = $"Battle Result: {activeBattle.State} !";
-                Vector2 orig = Assets.DefaultFont.MeasureString(text) * 0.5f;
-                Color color = activeBattle.State == BattleState.Victory ? Color.Gold : activeBattle.State == BattleState.Loss ? Color.Red : Color.Crimson;
-                spriteBatch.DrawBorderedString(Assets.DefaultFont, text, new Vector2(640, 160), color, Color.Black, 0f, new Vector2((int)orig.X, (int)orig.Y), Vector2.One, SpriteEffects.None, 0f);
-                //spriteBatch.DrawString(AssetManager.DefaultFont, text, new Vector2(GameOptions.ScreenWidth * 0.5f, GameOptions.ScreenHeight * 0.25f), color, 0f, new Vector2((int)orig.X, (int)orig.Y), Vector2.One, SpriteEffects.None, 0f);
-            }
+            //if (activeBattle.battleEnded)
+            //{
+            //    string text = $"Battle Result: {activeBattle.State} !";
+            //    Vector2 orig = Assets.DefaultFont.MeasureString(text) * 0.5f;
+            //    Color color = activeBattle.State == BattleState.Victory ? Color.Gold : activeBattle.State == BattleState.Loss ? Color.Red : Color.Crimson;
+            //    spriteBatch.DrawBorderedString(Assets.DefaultFont, text, new Vector2(640, 160), color, Color.Black, 0f, new Vector2((int)orig.X, (int)orig.Y), Vector2.One, SpriteEffects.None, 0f);
+            //    //spriteBatch.DrawString(AssetManager.DefaultFont, text, new Vector2(GameOptions.ScreenWidth * 0.5f, GameOptions.ScreenHeight * 0.25f), color, 0f, new Vector2((int)orig.X, (int)orig.Y), Vector2.One, SpriteEffects.None, 0f);
+            //}
 
             int enemyHpBarIndex = 0;
             foreach (var unit in activeBattle.units.Where(x => x.team == Team.Enemy))

@@ -85,6 +85,25 @@ namespace HellTrail.Core.UI
             _childrenToRemove.Add(killedElement);
         }
 
+        public void Disown(string id, bool plannedToAdopt = false)
+        {
+            if (!children.Any(x=>x.id == id))
+                return;
+
+            var killedElement = children.First(x=>x.id == id);
+            killedElement.onLoseParent?.Invoke(killedElement);
+            if (!plannedToAdopt)
+            {
+                killedElement.onMouseEnter = null;
+                killedElement.onMouseLeave = null;
+                killedElement.onClick = null;
+                killedElement.onUpdate = null;
+                killedElement.onLoseParent = null;
+            }
+            killedElement.parent = null;
+            _childrenToRemove.Add(killedElement);
+        }
+
 
         public UIElement GetElement(Predicate<UIElement> predicate)
         {

@@ -253,13 +253,102 @@ namespace HellTrail.Core.Combat
                 case BattleState.Victory:
                     PlayVictory();
                     break;
+                case BattleState.Loss:
+                    DoLoss();
+                    break;
             }
         }
 
+        bool didLoss;
+        int timer;
+        bool showedRestartOptions;
+        public void DoLoss()
+        {
+            if(!didLoss)
+            {
+                didLoss = true;
+                var skillIssue = new UIPanel();
+                skillIssue.size = new Vector2(Renderer.UIPreferedWidth, Renderer.UIPreferedHeight);
+
+                var wowYouSuck = new UIBorderedText("Damn.. You actually suck..");
+                wowYouSuck.SetPosition(new Vector2(Renderer.UIPreferedWidth, Renderer.UIPreferedHeight) * 0.5f - wowYouSuck.font.MeasureString(wowYouSuck.text) * 0.5f);
+                wowYouSuck.color = Color.White * 0;
+                wowYouSuck.borderColor = Color.White * 0;
+                skillIssue.outlineColor = Color.White * 0f;
+                skillIssue.fillColor = Color.White * 0f;
+
+
+                var wowYouSuck2 = new UIBorderedText("Have you tried, like, opening your eyes maybe?");
+                wowYouSuck2.SetPosition(new Vector2(Renderer.UIPreferedWidth, Renderer.UIPreferedHeight) * 0.5f - wowYouSuck.font.MeasureString(wowYouSuck2.text) * 0.5f + new Vector2(0, 40));
+                wowYouSuck2.color = Color.White * 0;
+                wowYouSuck2.borderColor = Color.White * 0;
+
+                skillIssue.Append(wowYouSuck);
+                skillIssue.Append(wowYouSuck2);
+
+                skillIssue.onUpdate = (sender) =>
+                {
+                    if (++timer >= 120)
+                    {
+                        wowYouSuck2.color = Color.Lerp(wowYouSuck2.color, Color.White, 0.026f);
+                        wowYouSuck2.borderColor = Color.Lerp(wowYouSuck2.borderColor, Color.Black, 0.026f);
+                    }
+
+                    if(timer >= 240)
+                    {
+                        if (!showedRestartOptions)
+                        {
+                            UIScrollableMenu options = new UIScrollableMenu(3, ["Restart from zone entrance", "Retry battle", "Quit q_q"]);
+                            options.drawArrows = false;
+                            options.panelColor = Color.Transparent;
+                            options.borderColor = Color.Transparent;
+                            options.SetPosition(new Vector2(Renderer.UIPreferedWidth, Renderer.UIPreferedHeight) * 0.5f - wowYouSuck.font.MeasureString(wowYouSuck2.text) * 0.5f + new Vector2(0, 80));
+
+                            UIManager.combatUI.Append(options);
+                            showedRestartOptions = true;
+                        }
+                    }
+
+                    wowYouSuck.color = Color.Lerp(wowYouSuck.color, Color.White, 0.026f);
+                    wowYouSuck.borderColor = Color.Lerp(wowYouSuck.borderColor, Color.Black, 0.026f);
+                    skillIssue.fillColor = Color.Lerp(skillIssue.fillColor, Color.Red * 0.65f, 0.026f);
+                };
+
+                UIManager.combatUI.Append(skillIssue);
+            }
+        }
+
+        bool showedVictory;
+        int showedVictoryTimer;
+
         public void PlayVictory()
         {
+            if(!showedVictory)
+            {
+                var victoryDeclaration = new UIAnimatedPanel(new Vector2(400, 40), UIAnimatedPanel.AnimationStyle.Horizontal);
+                victoryDeclaration.id = "victory";
+                victoryDeclaration.SetPosition(Renderer.UIPreferedWidth * 0.5f - 200, 80);
+                victoryDeclaration.openSpeed = 0.25f;
+                var victoryText = new UIBorderedText("VICTORY!");
+                victoryText.color = Color.Gold;
+
+                victoryText.SetPosition(200 - victoryText.font.MeasureString(victoryText.text).X * 0.5f, 8);
+
+                victoryDeclaration.Append(victoryText);
+
+                victoryDeclaration.onUpdate = (sender) =>
+                {
+                    if (++showedVictoryTimer >= 600 || Input.PressedKey([Keys.E, Keys.Enter]))
+                        victoryDeclaration.isClosed = true;
+                };
+
+                UIManager.combatUI.Append(victoryDeclaration);
+                showedVictory = true;
+            }
+
             if(Input.PressedKey([Keys.E, Keys.Enter]) && UIManager.combatUI.levelUpElements.Count <= 0)
             {
+                UIManager.combatUI.Disown("victory");
                 GameStateManager.SetState(GameState.Overworld, new SliceTransition(Renderer.SaveFrame()));
                 OnBattleEnd?.Invoke();
                 Main.instance.battle = null;
@@ -835,6 +924,7 @@ namespace HellTrail.Core.Combat
                     ActingUnit.RemoveEffect(eff);
             }
 
+            if(!weaknessHitLastRound)
             foreach (StatusEffect effect in ActingUnit.statusEffects)
             {
                 effect.OnTurnEnd(ActingUnit, this);
@@ -1033,100 +1123,6 @@ namespace HellTrail.Core.Combat
             ExposedTargets.Add(targets[selectedTarget]);
             return [targets[selectedTarget]];
         }
-
-
-        //public List<Unit> TryGetTargets(Ability ability)
-        //{
-        //    ExposedTargets.Clear();
-        //    Func<Unit, bool> selector = x => ActingUnit.team != x.team && !x.Downed;
-
-        //    switch (ability.canTarget)
-        //    {
-        //        case ValidTargets.Ally:
-        //            selector = x => ActingUnit.team == x.team && !x.Downed;
-        //            break;
-        //        case ValidTargets.All:
-        //            selector = x => !x.Downed;
-        //            break;
-        //        case ValidTargets.AllButSelf:
-        //            selector = x => x != ActingUnit && !x.Downed;
-        //            break;
-        //    };
-
-        //    List<Unit> targets = unitsNoSpeedSort.Where(selector).ToList();
-
-        //    if (targets.Count == 0)
-        //    {
-        //        ExposedTargets.Clear();
-        //        return [];
-        //    }
-
-        //    if (ability.aoe)
-        //    {
-        //        ExposedTargets.AddRange(targets);
-        //        return targets;
-        //    }
-
-        //    if (Menu.mouseEnabled)
-        //    {
-        //        var tryMouse = targets.FirstOrDefault(x => x.ContainsMouse(-x.size * 0.5f));
-        //        if (tryMouse != null)
-        //            selectedTarget = targets.IndexOf(tryMouse);
-        //    }
-
-        //    if (selectedTarget < 0)
-        //        selectedTarget = targets.Count - 1;
-
-        //    if (selectedTarget > targets.Count - 1)
-        //        selectedTarget = 0;
-
-        //    ExposedTargets.Add(targets[selectedTarget]);
-        //    return [targets[selectedTarget]];
-        //}
-
-        //public List<Unit> TryGetTargets(Item item)
-        //{
-        //    ExposedTargets.Clear();
-        //    Func<Unit, bool> selector = x => ActingUnit.team != x.team && !x.Downed;
-
-        //    switch (item.canTarget) {
-        //        case ValidTargets.Ally:
-        //        selector = x => ActingUnit.team == x.team && !x.Downed;
-        //            break;
-        //        case ValidTargets.All:
-        //            selector = x => !x.Downed;
-        //            break;
-        //        case ValidTargets.AllButSelf:
-        //            selector = x => x != ActingUnit && !x.Downed;
-        //            break;
-        //    };
-
-        //    List<Unit> targets = unitsNoSpeedSort.Where(selector).ToList();
-
-        //    if (targets.Count == 0)
-        //    {
-        //        ExposedTargets.Clear();
-        //        return [];
-        //    }
-        //    if (item.aoe)
-        //    {
-        //        ExposedTargets.AddRange(targets);
-        //        return targets;
-        //    }
-
-        //    var tryMouse = targets.FirstOrDefault(x => x.ContainsMouse(-x.size * 0.5f));
-        //    if (tryMouse != null && Menu.mouseEnabled)
-        //        selectedTarget = targets.IndexOf(tryMouse);
-
-        //    if (selectedTarget < 0)
-        //        selectedTarget = targets.Count-1;
-
-        //    if(selectedTarget > targets.Count-1)
-        //        selectedTarget = 0;
-
-        //    ExposedTargets.Add(targets[selectedTarget]);
-        //    return [targets[selectedTarget]];
-        //}
 
         public Sequence CreateSequence(bool startActive = false)
         {

@@ -62,7 +62,7 @@ namespace HellTrail.Core.Combat.Items.Consumables
                 count++;
             } 
             else if (normalizedName.Contains("slicey") || normalizedName.Contains("slicer") || normalizedName.Contains("neckslicer")
-                || normalizedName.Contains("cheesy"))
+                || normalizedName.Contains("cheesyalice"))
             {
                 SoundEngine.PlaySound("LvlUp", 0.75f);
                 caster.Stats.EXP += 1001;

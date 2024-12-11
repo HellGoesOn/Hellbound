@@ -1,0 +1,9 @@
+Entity_5
+	{
+		NewAnimationComponent{"Sunflower"; "Bob"; [Bob=[(0 3)]]; [{0 0 48 48 15}, {0 48 48 48 15}, {0 96 48 48 15}, {0 144 48 48 15}]}
+
+		TextureComponent{"Sunflower_Bob"; {X:24 Y:36}; {X:1 Y:1}}
+
+		Transform{{X:432.75 Y:493.5}; 0; 0}
+
+	} ;

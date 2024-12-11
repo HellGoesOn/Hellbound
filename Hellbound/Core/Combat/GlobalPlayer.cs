@@ -27,9 +27,9 @@ namespace HellTrail.Core.Combat
 
             protag.animations.Clear();
 
-            protag.abilities.Add(new MyriadTruths());
             protag.abilities.Add(new Sukukaja());
-            //protag.Stats.magic = 50;
+            protag.abilities.Add(new Sukunda());
+            protag.Stats.magic = 50;
 
             ProtagAnimations(protag);
 
