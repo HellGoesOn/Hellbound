@@ -15,6 +15,7 @@ namespace HellTrail.Core.Combat.Abilities
             hpCost = 99;
             aoe = false;
             canTarget = ValidTargets.Enemy;
+            elementalType = ElementalType.Phys;
         }
 
         public override void AdjustCosts(Unit caster)

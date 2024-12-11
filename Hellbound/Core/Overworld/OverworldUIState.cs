@@ -2,6 +2,7 @@
 using HellTrail.Core.Combat.Items;
 using HellTrail.Core.DialogueSystem;
 using HellTrail.Core.ECS;
+using HellTrail.Core.ECS.Components;
 using HellTrail.Core.UI;
 using HellTrail.Core.UI.Elements;
 using HellTrail.Render;
@@ -9,6 +10,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,6 +38,20 @@ namespace HellTrail.Core.Overworld
             if (Input.PressedKey(Keys.Escape) && optionMenu == null && Main.instance.GetGameState() is World)
             {
                 Main.instance.ActiveWorld.paused = true;
+
+                UIAnimatedPanel blackBarTop = new UIAnimatedPanel(new Vector2(Renderer.UIPreferedWidth, 160));
+                blackBarTop.SetPosition(0, -80);
+                blackBarTop.borderColor = Color.Black;
+                blackBarTop.panelColor = Color.Black;
+
+
+                UIAnimatedPanel blackBarBot = new UIAnimatedPanel(new Vector2(Renderer.UIPreferedWidth, 160));
+                blackBarBot.SetPosition(0, Renderer.UIPreferedHeight - 80);
+                blackBarBot.borderColor = Color.Black;
+                blackBarBot.panelColor = Color.Black;
+
+                Append(blackBarTop);
+                Append(blackBarBot);
 
                 UIPanel darkening = new();
                 darkening.fillColor = Color.Black * 0.5f;
@@ -273,8 +289,8 @@ namespace HellTrail.Core.Overworld
                                 memberPanel.openSpeed = 0.25f;
                                 memberPanel.SetPosition(partyMemberMenu.GetPosition() + new Vector2(200, -120));
 
-                                var portrait = new UIPicture("", []);
-                                portrait.SetPosition(16, 48);
+                                var portrait = new UICombatPortrait("", 0, 0);
+                                portrait.SetPosition(16, 32);
                                 memberPanel.Append(portrait);
                                 partyMemberMenu.onUpdate = (sender) =>
                                 {
@@ -285,37 +301,159 @@ namespace HellTrail.Core.Overworld
                                     }
                                 };
 
-                                var restInPeace = new UIPicture("DeadFrame", new FrameData(0, 0, 32, 32));
-                                restInPeace.SetPosition(16, 48);
-                                restInPeace.scale = new Vector2(3);
-                                memberPanel.Append(restInPeace);
 
 
+                                //var memberName = new UIBorderedText("");
+                                //memberName.SetPosition(16);
+                                //memberPanel.Append(memberName);
 
-                                var memberName = new UIBorderedText("");
-                                memberName.SetPosition(16);
-                                memberPanel.Append(memberName);
 
+                                //var memberStats = new UIBorderedText("");
+                                //memberStats.SetPosition(120, 16);
+                                //memberPanel.Append(memberStats);
 
-                                var memberStats = new UIBorderedText("");
-                                memberStats.SetPosition(16, 148);
-                                memberPanel.Append(memberStats);
+                                var memberLevel = new UIBorderedText("");
+                                memberLevel.SetPosition(120, 16);
+                                memberPanel.Append(memberLevel);
+                                var requiredEXP = new UIBorderedText("");
+                                requiredEXP.SetPosition(memberPanel.targetSize.X, 120);
+                                memberPanel.Append(requiredEXP);
+
+                                var expBar = new UIProgressBar(new Vector2(memberPanel.targetSize.X - 130, 6), 0);
+                                expBar.fillColor = Color.Yellow;
+                                expBar.bgColor = Color.DarkGoldenrod;
+                                expBar.bgSize = 4;
+                                expBar.SetPosition(120, 48);
+                                memberPanel.Append(expBar);
+
+                                var magicStatText = new UIBorderedText("Magic");
+                                memberPanel.Append(magicStatText);
+                                var xxx = 130;
+                                magicStatText.SetPosition(xxx, 64);
+
+                                var magicStatBar = new UIProgressBar(new Vector2(210, magicStatText.font.MeasureString("Y").Y - 8), 0);
+                                magicStatBar.SetPosition(240, 70);
+                                magicStatBar.fillColor = Color.Yellow;
+                                magicStatBar.maxValue = 99;
+                                memberPanel.Append(magicStatBar);
+
+                                var magicStatValueText = new UIBorderedText("");
+                                magicStatValueText.SetPosition(240 + magicStatBar.size.X, 64);
+                                memberPanel.Append(magicStatValueText);
+
+                                var strStatText = new UIBorderedText("Strength");
+                                memberPanel.Append(strStatText);
+                                strStatText.SetPosition(xxx, 104);
+
+                                var strStatBar = new UIProgressBar(new Vector2(210, magicStatText.font.MeasureString("Y").Y - 8), 0);
+                                strStatBar.SetPosition(240, 110);
+                                strStatBar.fillColor = Color.Yellow;
+                                strStatBar.maxValue = 99;
+                                memberPanel.Append(strStatBar);
+
+                                var strStatValueText = new UIBorderedText("");
+                                strStatValueText.SetPosition(240 + strStatBar.size.X, 104);
+                                memberPanel.Append(strStatValueText);
+
+                                var spdStatText = new UIBorderedText("Speed");
+                                memberPanel.Append(spdStatText);
+                                spdStatText.SetPosition(xxx, 144);
+
+                                var spdStatBar = new UIProgressBar(new Vector2(210, magicStatText.font.MeasureString("Y").Y - 8), 0);
+                                spdStatBar.SetPosition(240, 150);
+                                spdStatBar.fillColor = Color.Yellow;
+                                spdStatBar.maxValue = 99;
+                                memberPanel.Append(spdStatBar);
+
+                                var spdStatValueText = new UIBorderedText("");
+                                spdStatValueText.SetPosition(240 + spdStatBar.size.X, 144);
+                                memberPanel.Append(spdStatValueText);
+
+                                var affinities = new UIBorderedText("Affinities");
+                                memberPanel.Append(affinities);
+                                affinities.SetPosition(new Vector2(xxx, 184));
+
+                                UIPicture[] affinityTypes = new UIPicture[7];
+                                UIPicture[] elementalIcons = new UIPicture[7];
+                                for (int i = 0; i < 7; i++)
+                                {
+                                    var affinityElementPic = new UIPicture("AffinityTypeFramed", [new(0, 0, 32, 32)]);
+                                    affinityElementPic.SetPosition(xxx + i * 64 + 4 * i - 64, 224 + 64);
+                                    affinityElementPic.scale = new Vector2(2);
+                                    memberPanel.Append(affinityElementPic);
+                                    affinityTypes[i] = affinityElementPic;
+                                }
+
+                                for (int i = 0; i < 7; i++)
+                                {
+                                    var loadedIcons = "ElementsIconsFramed";
+                                    var affinityElementPic = new UIPicture(loadedIcons, [new(0, 32 * i, 32, 32)]);
+                                    affinityElementPic.SetPosition(xxx + i * 64 + 4 * i - 64, 224);
+                                    affinityElementPic.scale = new Vector2(2);
+                                    memberPanel.Append(affinityElementPic);
+                                    elementalIcons[i] = affinityElementPic;
+                                }
+
 
                                 partyMemberMenu.onChangeOption = (sender) =>
                                 {
                                     var selectedMember = GlobalPlayer.ActiveParty[partyMemberMenu.currentSelectedOption];
-                                    portrait.textureName = selectedMember.portrait;
-                                    portrait.frames = [new FrameData(0, 0, 32, 32)];
+                                    portrait.SetValues(selectedMember.Stats.HP, selectedMember.Stats.SP, selectedMember.Stats.MaxHP, selectedMember.Stats.MaxSP);
+                                    portrait.picture.textureName = selectedMember.portrait;
+                                    portrait.picture.frames = [new FrameData(0, 0, 32, 32)];
                                     portrait.scale = new Vector2(3);
-                                    memberName.text = selectedMember.name;
-                                    memberStats.text = selectedMember.Stats.ListStats();
-                                    portrait.tint = Color.White;
-                                    restInPeace.tint = Color.White * 0;
+                                    portrait.lerpSpeed = 4;
+                                    //memberName.text = selectedMember.name;
+                                    //memberStats.text = selectedMember.Stats.ListStats();
+                                    portrait.picture.tint = Color.White;
+                                    memberLevel.text = $"Level {selectedMember.Stats.level} | EXP {selectedMember.Stats.EXP}..";
+                                    requiredEXP.text = $"..{selectedMember.Stats.toNextLevel}";
+                                    requiredEXP.SetPosition(memberPanel.targetSize.X - requiredEXP.font.MeasureString(requiredEXP.text).X - 8, 17);
 
-                                    if(selectedMember.Downed)
+                                    expBar.value = selectedMember.Stats.EXP;
+                                    expBar.maxValue = selectedMember.Stats.toNextLevel;
+
+                                    magicStatBar.value = selectedMember.Stats.magic;
+                                    magicStatValueText.text = $"{selectedMember.Stats.magic}";
+                                    magicStatValueText.SetPosition(240 + magicStatBar.size.X - magicStatValueText.font.MeasureString(magicStatValueText.text).X, 64);
+
+                                    strStatBar.value = selectedMember.Stats.strength;
+                                    strStatValueText.text = $"{selectedMember.Stats.strength}";
+                                    strStatValueText.SetPosition(240 + strStatBar.size.X - strStatValueText.font.MeasureString(strStatValueText.text).X, 104);
+
+                                    spdStatBar.value = selectedMember.Stats.speed;
+                                    spdStatValueText.text = $"{selectedMember.Stats.speed}";
+                                    spdStatValueText.SetPosition(240 + strStatBar.size.X - strStatValueText.font.MeasureString(strStatValueText.text).X, 144);
+
+
+                                    for(int i = 0; i < 7; i++)
                                     {
-                                        portrait.tint = Color.DarkGray;
-                                        restInPeace.tint = Color.White;
+
+                                        var getValue = selectedMember.resistances[(ElementalType)i];
+
+                                        FrameData[] newFrames = [new FrameData(0, 0, 32, 32)];
+
+                                        if (getValue < 0)
+                                            newFrames = [new(0, 32, 32, 32)];
+                                        if (getValue > 0 && getValue < 1.0f)
+                                            newFrames = [new(0, 64, 32, 32)];
+                                        if (getValue == 1.0f)
+                                            newFrames = [new(0, 96, 32, 32)];
+                                        if (getValue > 1.0f)
+                                            newFrames = [new(0, 128, 32, 32)];
+
+                                        var loadedIcons = "ElementsIconsFramed";
+                                        if (i == 0 && (Main.rand.Next(25) == 0 || (getValue > 1.0f && Main.rand.Next(5) == 0)))
+                                            loadedIcons = "ElementsIconsFramed_EasterEgg";
+
+                                        elementalIcons[i].textureName = loadedIcons;
+
+                                        affinityTypes[i].frames = newFrames;
+                                    }
+
+                                    if (selectedMember.Downed)
+                                    {
+                                        portrait.picture.tint = Color.DarkGray;
                                     }
                                 };
 
@@ -390,6 +528,8 @@ namespace HellTrail.Core.Overworld
                     Main.instance.ActiveWorld.paused = false;
                     sender.parent.Disown(darkening);
                     optionMenu = null;
+                    blackBarTop.isClosed = true;
+                    blackBarBot.isClosed = true;
                 };
 
                 optionMenu.onUpdate = (sender) =>

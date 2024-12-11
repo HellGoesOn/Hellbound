@@ -27,23 +27,20 @@ namespace HellTrail.Core.Combat
 
             protag.animations.Clear();
 
+            protag.abilities.Add(new MyriadTruths());
+            protag.abilities.Add(new Sukukaja());
+            //protag.Stats.magic = 50;
+
             ProtagAnimations(protag);
 
-            protag.abilities.Add(new MyriadTruths());
-            for(int i =0; i < 32; i++)
-            protag.abilities.Add(new Singularity()
-            {
-                spCost = 10
-            });
+            protag.resistances[ElementalType.DoT] = -0.5f;
+            //protag.resistances[ElementalType.Phys] = 200f;
 
 
             AddPartyMember(protag);
             //ActiveParty.Add(sidekick);
 
-
             AddItem(new InfinitePizza());
-
-            AddItem(new TomeOfWisdom());
 
             AddItem(new Tomato()
             {

@@ -15,6 +15,7 @@ namespace HellTrail.Core.Combat.Abilities
         public Sukukaja() : base("Sukukaja", "Increases accuracy of 1 ally")
         {
             canTarget = ValidTargets.Ally;
+            elementalType = ElementalType.Support;
         }
 
         protected override void UseAbility(Unit caster, Battle battle, List<Unit> targets)

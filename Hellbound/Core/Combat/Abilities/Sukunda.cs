@@ -15,6 +15,7 @@ namespace HellTrail.Core.Combat.Abilities
         public Sukunda() : base("Sukunda", "Reduces accuracy of 1 Foe")
         {
             canTarget = ValidTargets.Enemy;
+            elementalType = ElementalType.Support;
         }
 
         protected override void UseAbility(Unit caster, Battle battle, List<Unit> targets)

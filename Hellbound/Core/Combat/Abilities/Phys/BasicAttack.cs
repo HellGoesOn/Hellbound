@@ -17,6 +17,7 @@ namespace HellTrail.Core.Combat.Abilities
             baseDamage = 25;
             aoe = false;
             canTarget = ValidTargets.Enemy;
+            elementalType = ElementalType.Phys;
         }
 
         protected override void UseAbility(Unit caster, Battle battle, List<Unit> targets)

@@ -18,10 +18,12 @@ namespace HellTrail.Core.Combat
             protag.name = "Doorkun";
             protag.sprite = "Dumbass";
             protag.portrait = "MCPortrait";
+            protag.portraitCombat = "MCPortrait_Combat";
+            protag.resistances[ElementalType.Elec] = 0.5f; 
+            protag.resistances[ElementalType.Wind] = -0.5f; 
 
             protag.abilities.Add(new BasicAttack());
             protag.abilities.Add(new Agi());
-            protag.abilities.Add(new Maragi());
             protag.abilities.Add(new Dia());
             protag.statsGrowth = new CombatStats(0.5f, 1.5f, 10, 7, 0.15f);
             protag.Stats.speed = 7;
@@ -47,9 +49,11 @@ namespace HellTrail.Core.Combat
             };
             slime.abilities.Add(ooze);
             Unit dog = DefineUnit("Dog");
+            dog.resistances[ElementalType.Almighty] = -1.0f;
             dog.name = "Dog";
             dog.sprite = "WhatDaDogDoin2";
             dog.portrait = "DogPortrait2";
+            dog.portraitCombat = "DogPortrait_Combat";
             dog.ai = new BasicAI();
             dog.abilities.Add(new BasicAttack()
             {

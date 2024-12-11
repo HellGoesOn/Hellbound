@@ -1,5 +1,6 @@
 ﻿using HellTrail.Core.Combat;
 using HellTrail.Core.Combat.Status;
+using HellTrail.Core.UI.Elements;
 using HellTrail.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Treeline.Core.Graphics;
@@ -41,9 +43,30 @@ namespace HellTrail.Core.UI.CombatUI
         public int showUsedAbilityTime = 0;
 
         public List<LevelUpElement> levelUpElements;
+        public List<UICombatPortrait> portraits = [];
+
+        public List<UIProgressBar> enemyHPBars = [];
+        public List<UIBorderedText> enemyHPTexts = [];
 
         public CombatUIState()
         {
+
+            for(int i = 0; i < 5; i++)
+            {
+                var newBar = new UIProgressBar(new Vector2(100, 8), 0);
+                newBar.Visible = false;
+                newBar.fillColor = Color.LightSeaGreen;
+                newBar.Rotation = -0.2f;
+
+                var hpText = new UIBorderedText("HP");
+                hpText.color = Color.White;
+                hpText.SetPosition(12, 12);
+                newBar.Append(hpText);
+                enemyHPBars.Add(newBar);
+                enemyHPTexts.Add(hpText);
+                Append(enemyHPBars[i]);
+            }
+
             levelUpElements = [];
             id = "combatUIState";
             teamStatus = new()
@@ -90,15 +113,15 @@ namespace HellTrail.Core.UI.CombatUI
 
             var panel = new UIPanel()
             {
-                size = new Vector2(280, 120),
+                size = new Vector2(Renderer.UIPreferedWidth - 8, 40),
             };
-            panel.SetPosition(Renderer.UIPreferedWidth - 284, Renderer.UIPreferedHeight - 140);
-            const string tutorialTex = "[W][A][S][D] Navigate\n[E] Confirm\n[Q] Cancel";
+            panel.SetPosition(4, 4);
+            const string tutorialTex = "[W][A][S][D] Navigate [E] Confirm [Q] Cancel";
             var tutorialText = new UIBorderedText(tutorialTex);
-            tutorialText.SetPosition(new Vector2(16));
+            tutorialText.SetPosition(new Vector2(16, 8));
             panel.Append(tutorialText);
 
-            this.Append(panel);
+            //this.Append(panel);
             this.Append(skillPanel);
 
             acceleration = 1;
@@ -125,7 +148,42 @@ namespace HellTrail.Core.UI.CombatUI
             Append(oneMorePanel);
             //Append(debug);
             Append(usedAbilityPanel);
-            Append(teamStatus);
+            //Append(teamStatus);
+        }
+
+        public void CreatePortraits(Battle battle)
+        {
+            foreach(UICombatPortrait p in portraits)
+            {
+                Disown(p);
+            }
+            portraits.Clear();
+
+            float off = 0;
+            foreach (var unit in battle.playerParty)
+            {
+                UICombatPortrait newPortrait = new UICombatPortrait(unit.portraitCombat, unit.Stats.MaxHP, unit.Stats.MaxSP);
+                newPortrait.SetPosition(Renderer.UIPreferedWidth - 128 * battle.playerParty.Count + off, Renderer.UIPreferedHeight - 160);
+                off += 120;
+                newPortrait.hpBar.Rotation = -0.25f;
+                newPortrait.spBar.Rotation = -0.25f;
+                newPortrait.hpText.Rotation = -0.25f;
+                newPortrait.spText.Rotation = -0.25f;
+                newPortrait.hpValueText.SetPosition(80, 50);
+                newPortrait.spValueText.SetPosition(80, 100);
+
+                Append(newPortrait);
+                portraits.Add(newPortrait);
+            }
+
+            int index = 0;
+            foreach(var unit in battle.units.Where(x=>x.team == Team.Enemy))
+            {
+                enemyHPBars[index].SetPosition(unit.BattleStation * 4 + new Vector2(-16, 40));
+                enemyHPBars[index].value = unit.Stats.HP;
+                enemyHPBars[index].maxValue = unit.Stats.MaxHP;
+                index++;
+            }
         }
 
         public void CreateLevelUp(string forWho, CombatStats oldStats, CombatStats newStats)
@@ -231,16 +289,16 @@ namespace HellTrail.Core.UI.CombatUI
 
             foreach (Unit unit in activeBattle.units)
             {
-            //    string buffs = "";
+                //    string buffs = "";
 
-            //    foreach (StatusEffect fx in unit.statusEffects)
-            //        buffs += $"[{fx.name}]={fx.turnsLeft}\n";
+                //    foreach (StatusEffect fx in unit.statusEffects)
+                //        buffs += $"[{fx.name}]={fx.turnsLeft}\n";
 
-            //    Color clr = unit.Downed ? Color.Crimson : Color.White;
-            //    Vector2 adjPos = unit.position * 4;
-            //    Vector2 orig = Assets.SmallFont.MeasureString(buffs) * 0.5f;
-            //    Vector2 finalPos = new Vector2((int)adjPos.X, (int)(adjPos.Y + 64));
-            //    spriteBatch.DrawBorderedString(Assets.SmallFont, buffs, finalPos, Color.White, Color.Black, 0f, orig, Vector2.One, SpriteEffects.None, 0);
+                //    Color clr = unit.Downed ? Color.Crimson : Color.White;
+                //    Vector2 adjPos = unit.position * 4;
+                //    Vector2 orig = Assets.SmallFont.MeasureString(buffs) * 0.5f;
+                //    Vector2 finalPos = new Vector2((int)adjPos.X, (int)(adjPos.Y + 64));
+                //    spriteBatch.DrawBorderedString(Assets.SmallFont, buffs, finalPos, Color.White, Color.Black, 0f, orig, Vector2.One, SpriteEffects.None, 0);
 
                 if (activeBattle.isPickingTarget && activeBattle.TargetingWith != null)
                 {
@@ -254,41 +312,55 @@ namespace HellTrail.Core.UI.CombatUI
                 }
             }
 
-            if (activeBattle.ActingUnit != null)
+            foreach (var p in portraits)
             {
-                //    string text2 = $"Delay: {nextStateDelay} State: {state}";
-                //    Vector2 orig2 = Assets.DefaultFont.MeasureString(text2) * 0.5f;
-                //    spriteBatch.DrawBorderedString(Assets.DefaultFont, text2, new Vector2(640, 80), Color.White, Color.Black, 0f, orig2, Vector2.One, SpriteEffects.None, 0f);
-
-                if (activeBattle.menus.Count > 0)
-                {
-                    foreach (var menu in activeBattle.menus)
-                    {
-                        if (!menu.visible)
-                            continue;
-
-                        var boxPos = menu.position;
-                        Vector2 boxSize = menu.GetSize;
-                        spriteBatch.Draw(Assets.GetTexture("Pixel"), boxPos - new Vector2(2), new Rectangle(0, 0, (int)boxSize.X + 16, (int)boxSize.Y * menu.Count + 16), Color.White);
-                        spriteBatch.Draw(Assets.GetTexture("Pixel"), boxPos, new Rectangle(0, 0, (int)boxSize.X + 12, (int)boxSize.Y * menu.Count + 12), Color.DarkBlue);
-                        for (int i = 0; i < menu.items.Count; i++)
-                        {
-                            var option = menu[i];
-                            Vector2 size = Assets.DefaultFont.MeasureString(option.name);
-                            Vector2 orig3 = size * 0.5f;
-                            var position = new Vector2(boxPos.X + 4, boxPos.Y + 4 + i * size.Y);
-                            Color clr = option.color != Color.White ? option.color : menu.selectedOption == i ? Color.White : Color.Gray;
-                            if (menu.selectedOption == i && menu.active)
-                            {
-                                spriteBatch.Draw(Assets.GetTexture("Cursor3"), new Vector2(position.X - 40, 6 + menu.position.Y + menu.GetSize.Y * option.index) + sway, null, Color.White, 0f, new Vector2(10, 0), 3f, SpriteEffects.None, 0f);
-                            }
-
-                            spriteBatch.DrawBorderedString(Assets.CombatMenuFont, option.name, menu.position + new Vector2(8, 4 + menu.GetSize.Y * option.index), clr, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
-                            //Renderer.DrawRect(spriteBatch, menu.position + new Vector2(4, 4+menu.GetSize.Y * option.index), menu.GetSize, 1, Color.Orange * 0.75f);
-                        }
-                    }
-                }
+                p.penisEnlargmentPills = activeBattle.ActingUnit != null && activeBattle.ActingUnit.portraitCombat == p.portrait;
             }
+
+            for (int i = 0; i < activeBattle.playerParty.Count; i++)
+            {
+                var unit = activeBattle.playerParty[i];
+
+                portraits[i].penisEnlargmentPills = activeBattle.ActingUnit == unit && unit.portraitCombat == portraits[i].portrait;
+                portraits[i].SetValues(unit.Stats.HP, unit.Stats.SP, unit.Stats.MaxHP, unit.Stats.MaxSP);
+            }
+
+            //if (activeBattle.ActingUnit != null)
+            //{
+
+            //    //    string text2 = $"Delay: {nextStateDelay} State: {state}";
+            //    //    Vector2 orig2 = Assets.DefaultFont.MeasureString(text2) * 0.5f;
+            //    //    spriteBatch.DrawBorderedString(Assets.DefaultFont, text2, new Vector2(640, 80), Color.White, Color.Black, 0f, orig2, Vector2.One, SpriteEffects.None, 0f);
+
+            //    if (activeBattle.menus.Count > 0)
+            //    {
+            //        foreach (var menu in activeBattle.menus)
+            //        {
+            //            if (!menu.visible)
+            //                continue;
+
+            //            var boxPos = menu.position;
+            //            Vector2 boxSize = menu.GetSize;
+            //            spriteBatch.Draw(Assets.GetTexture("Pixel"), boxPos - new Vector2(2), new Rectangle(0, 0, (int)boxSize.X + 16, (int)boxSize.Y * menu.Count + 16), Color.White);
+            //            spriteBatch.Draw(Assets.GetTexture("Pixel"), boxPos, new Rectangle(0, 0, (int)boxSize.X + 12, (int)boxSize.Y * menu.Count + 12), Color.DarkBlue);
+            //            for (int i = 0; i < menu.items.Count; i++)
+            //            {
+            //                var option = menu[i];
+            //                Vector2 size = Assets.DefaultFont.MeasureString(option.name);
+            //                Vector2 orig3 = size * 0.5f;
+            //                var position = new Vector2(boxPos.X + 4, boxPos.Y + 4 + i * size.Y);
+            //                Color clr = option.color != Color.White ? option.color : menu.selectedOption == i ? Color.White : Color.Gray;
+            //                if (menu.selectedOption == i && menu.active)
+            //                {
+            //                    spriteBatch.Draw(Assets.GetTexture("Cursor3"), new Vector2(position.X - 40, 6 + menu.position.Y + menu.GetSize.Y * option.index) + sway, null, Color.White, 0f, new Vector2(10, 0), 3f, SpriteEffects.None, 0f);
+            //                }
+
+            //                spriteBatch.DrawBorderedString(Assets.CombatMenuFont, option.name, menu.position + new Vector2(8, 4 + menu.GetSize.Y * option.index), clr, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
+            //                //Renderer.DrawRect(spriteBatch, menu.position + new Vector2(4, 4+menu.GetSize.Y * option.index), menu.GetSize, 1, Color.Orange * 0.75f);
+            //            }
+            //        }
+            //    }
+            //}
 
             foreach (DamageNumber number in activeBattle.damageNumbers)
             {
@@ -302,6 +374,25 @@ namespace HellTrail.Core.UI.CombatUI
                 Color color = activeBattle.State == BattleState.Victory ? Color.Gold : activeBattle.State == BattleState.Loss ? Color.Red : Color.Crimson;
                 spriteBatch.DrawBorderedString(Assets.DefaultFont, text, new Vector2(640, 160), color, Color.Black, 0f, new Vector2((int)orig.X, (int)orig.Y), Vector2.One, SpriteEffects.None, 0f);
                 //spriteBatch.DrawString(AssetManager.DefaultFont, text, new Vector2(GameOptions.ScreenWidth * 0.5f, GameOptions.ScreenHeight * 0.25f), color, 0f, new Vector2((int)orig.X, (int)orig.Y), Vector2.One, SpriteEffects.None, 0f);
+            }
+
+            int enemyHpBarIndex = 0;
+            foreach (var unit in activeBattle.units.Where(x => x.team == Team.Enemy))
+            {
+                var targetWith = activeBattle.TargetingWith;
+                enemyHPBars[enemyHpBarIndex].value = unit.Stats.HP;
+                enemyHPBars[enemyHpBarIndex].maxValue = unit.Stats.MaxHP;
+                enemyHPBars[enemyHpBarIndex].Visible = (activeBattle.unitsHitLastRound.Contains(unit) 
+                    || (activeBattle.isPickingTarget && targetWith != null &&
+                    (targetWith.CanTarget() == ValidTargets.Enemy
+                    || targetWith.CanTarget() == ValidTargets.All
+                    || targetWith.CanTarget() == ValidTargets.AllButSelf)));
+                if (unit.Downed)
+                    enemyHPBars[enemyHpBarIndex].Visible = enemyHPBars[enemyHpBarIndex].CurrentValue > 0;
+                enemyHPBars[enemyHpBarIndex].SetPosition(unit.position * 4 + new Vector2(-16, 64));
+                enemyHPTexts[enemyHpBarIndex].text = unit.name;
+                enemyHPTexts[enemyHpBarIndex].SetPosition(-16, -24);
+                enemyHpBarIndex++;
             }
         }
 

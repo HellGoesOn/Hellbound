@@ -15,6 +15,7 @@ namespace HellTrail.Core.Combat.Abilities
             spCost = 20;
             aoe = true;
             canTarget = ValidTargets.All;
+            elementalType = ElementalType.DoT;
         }
 
         protected override void UseAbility(Unit caster, Battle battle, List<Unit> targets)

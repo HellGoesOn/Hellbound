@@ -9,6 +9,7 @@ namespace HellTrail.Core.Combat.Abilities
         public Masukukaja() : base("Masukukaja", "Increases agility of all allies")
         {
             canTarget = ValidTargets.Ally;
+            elementalType = ElementalType.Support;
             aoe = true;
         }
 

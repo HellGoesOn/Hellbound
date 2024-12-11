@@ -15,11 +15,33 @@ namespace HellTrail.Core.UI.Elements
         public int currentSelectedOption;
         public int repeatRate;
 
+        private float extraSpacing;
+        public float ExtraSpacing
+        {
+            get => extraSpacing;
+            set 
+            {
+                extraSpacing = value;
+                targetSize = baseTargetSize + new Vector2(padding, extraSpacing*OptionWindowMax);
+            }
+        }
         public float sizeY;
+        private float padding;
+        public float Padding
+        { 
+            get => padding; 
+            set
+            {
+                padding = value;
+                targetSize = baseTargetSize + new Vector2(padding, extraSpacing * OptionWindowMax);
+            }
+        }
         public float openSpeed;
 
         private int _optionWindowMin;
+        public int OptionWindowMin => _optionWindowMin;
         private int _optionWindowMax;
+        public int OptionWindowMax => _optionWindowMax;
         private int _heldTimer;
 
         public Color panelColor;
@@ -27,12 +49,16 @@ namespace HellTrail.Core.UI.Elements
 
         public Color selectedColor;
         public Color notSelectedColor;
+        public Color notAvailableColor;
 
         public List<string> options;
+        public List<int> unavailableOptions = [];
 
-        public readonly Vector2 targetSize;
+        public Vector2 targetSize;
+        private readonly Vector2 baseTargetSize;
 
         public UIEventHandler onSelectOption;
+        public UIEventHandler onUnavailableSelectOption;
         public UIEventHandler onChangeOption;
         public UIEventHandler onScrollOption;
 
@@ -58,7 +84,8 @@ namespace HellTrail.Core.UI.Elements
             focused = true;
             panelColor = Color.DarkBlue;
             borderColor = Color.White;
-            targetSize = new Vector2(16 + sizeX + 16, (sizeY + 4) * maxDisplayeedOptions + 32);
+            notAvailableColor = Color.DarkRed;
+            baseTargetSize = targetSize = new Vector2(16 + padding + sizeX + 16, (sizeY + 4) * maxDisplayeedOptions + 32);
             size = new Vector2(targetSize.X, 0);
 
             selectedColor = Color.Yellow;
@@ -135,16 +162,21 @@ namespace HellTrail.Core.UI.Elements
 
             if(Input.PressedKey([Keys.E, Keys.Enter]))
             {
+                if(!unavailableOptions.Contains(currentSelectedOption))
                 onSelectOption?.Invoke(this);
+                else
+                    onUnavailableSelectOption?.Invoke(this);
             }
 
             if(currentSelectedOption >= _optionWindowMin + _optionWindowMax)
             {
                 _optionWindowMin++;
+                onChangeOption?.Invoke(this);
             }
             else if(currentSelectedOption < _optionWindowMin)
             {
                 _optionWindowMin--;
+                onChangeOption?.Invoke(this);
             }
 
             _optionWindowMin = Math.Clamp(_optionWindowMin, 0, options.Count - 1);
@@ -175,8 +207,8 @@ namespace HellTrail.Core.UI.Elements
 
                     bool selected = i == currentSelectedOption;
                     string option = options[i];
-                    Color clr = selected ? selectedColor : notSelectedColor;
-                    var textPosition = GetPosition() + new Vector2(16, 16 + (sizeY + 4) * offset);
+                    Color clr = unavailableOptions.Contains(i) ? notAvailableColor : selected ? selectedColor : notSelectedColor;
+                    var textPosition = GetPosition() + new Vector2(16 + padding, 16 + (sizeY + 4 + extraSpacing) * offset);
                     spriteBatch.DrawBorderedString(font, option, textPosition, clr, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);
 
                     if (selected && focused)
@@ -184,7 +216,7 @@ namespace HellTrail.Core.UI.Elements
                         bool evalPosition = GetPosition().X > 50;
                         Vector2 cursorScale = evalPosition ? new Vector2(3, 3) : new Vector2(-3, 3);
                         Vector2 cursorPosition = evalPosition ? textPosition + new Vector2(osciliation.Y, 0) - new Vector2(40, 0) : textPosition - new Vector2(osciliation.Y, 0) + new Vector2(size.X + 10, 0);
-                        spriteBatch.Draw(Assets.GetTexture("Cursor3"), cursorPosition, null, Color.White, 0f, new Vector2(10, 0), cursorScale, SpriteEffects.None, 1f);
+                        spriteBatch.Draw(Assets.GetTexture("Cursor3"), cursorPosition - new Vector2(padding, 0), null, Color.White, 0f, new Vector2(10, 0), cursorScale, SpriteEffects.None, 1f);
 
                     }
 

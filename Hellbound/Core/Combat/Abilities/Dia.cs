@@ -13,6 +13,7 @@ namespace HellTrail.Core.Combat.Abilities
         {
             aoe = false;
             canTarget = ValidTargets.Ally;
+            elementalType = ElementalType.Healing;
             spCost = 3;
         }
 

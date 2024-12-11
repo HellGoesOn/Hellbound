@@ -17,6 +17,7 @@ namespace HellTrail.Core.Combat.Abilities.Fire
             spCost = 9;
             aoe = true;
             canTarget = ValidTargets.Enemy;
+            elementalType = ElementalType.Fire;
         }
 
         protected override void UseAbility(Unit caster, Battle battle, List<Unit> targets)
@@ -29,7 +30,7 @@ namespace HellTrail.Core.Combat.Abilities.Fire
 
             foreach (Unit target in targets)
             {
-                sequence.Add(new DelaySequence(15));
+                sequence.Add(new DelaySequence(5));
                 sequence.Add(new PlaySoundSequence("GunShot"));
                 sequence.Add(new DoDamageSequence(caster, target, 12, ElementalType.Fire));
                 sequence.Add(new ApplyEffectSequence(sequence, target, new Burning(), 95, true));

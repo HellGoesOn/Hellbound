@@ -63,6 +63,9 @@ namespace HellTrail.Core.Combat
         Elec,
         Wind,
         Almighty,
-        DoT
+        DoT,
+        Support,
+        Healing,
+        None
     }
 }

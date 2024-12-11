@@ -25,6 +25,7 @@ namespace HellTrail.Core.Combat
         public string currentAnimation = "";
         public string defaultAnimation = "";
         public string portrait = "";
+        public string portraitCombat = "";
         public Team team;
         private Vector2 battleStation;
         public Vector2 position;
@@ -239,6 +240,7 @@ namespace HellTrail.Core.Combat
             copy.name = name;
             copy.sprite = sprite;
             copy.portrait = portrait;
+            copy.portraitCombat = portraitCombat;
             copy.ai = ai;
             copy.animations = [];
             copy._stats = _stats.GetCopy();

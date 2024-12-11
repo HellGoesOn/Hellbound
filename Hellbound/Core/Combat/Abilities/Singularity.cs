@@ -14,6 +14,7 @@ namespace HellTrail.Core.Combat.Abilities
         {
             spCost = 100;
             canTarget = ValidTargets.AllButSelf;
+            elementalType = ElementalType.Almighty;
             aoe = true;
         }
 

@@ -20,6 +20,8 @@ namespace HellTrail.Core.Combat.Abilities
         public int hpCost;
         public int spCost;
 
+        public ElementalType elementalType = ElementalType.None;
+
         public Ability(string name, string description)
         {
             aoe = false;

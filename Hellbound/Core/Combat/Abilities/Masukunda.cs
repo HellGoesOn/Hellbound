@@ -15,6 +15,7 @@ namespace HellTrail.Core.Combat.Abilities
         public Masukunda() : base("Masukunda", "Reduces accuracy of all foes")
         {
             canTarget = ValidTargets.Enemy;
+            elementalType = ElementalType.Support;
             aoe = true;
         }
 

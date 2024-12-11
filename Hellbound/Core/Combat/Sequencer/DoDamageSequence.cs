@@ -52,7 +52,6 @@ namespace HellTrail.Core.Combat.Sequencer
                 battle.damageNumbers.Add(damageNumber);
                 return;
             }
-            target.Stats.HP = Math.Max(0, target.Stats.HP - damageTaken);
 
             var xx = Main.rand.Next((int)(target.size.X * 0.5f));
             var yy = Main.rand.Next((int)(target.size.Y * 0.5f));
@@ -89,7 +88,7 @@ namespace HellTrail.Core.Combat.Sequencer
 
                 shakeAmount = 0;
 
-                damageTaken = (int)(damage * statBonus * (1 - caster.resistances[type]));
+                damageTaken = (int)(Math.Abs(damageTaken) * (1 - caster.resistances[type]));
                 caster.Stats.HP = Math.Max(0, caster.Stats.HP - damageTaken);
                 float casterResist = caster.resistances[type];
                 DamageType repelledType = DamageType.Normal;
@@ -118,6 +117,7 @@ namespace HellTrail.Core.Combat.Sequencer
 
             if (dealtDamage)
             {
+                target.Stats.HP = Math.Max(0, target.Stats.HP - damageTaken);
                 if (target.HasStatus<GuardingEffect>())
                     target.RemoveAllEffects<GuardingEffect>();
             }

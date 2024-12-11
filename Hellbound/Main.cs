@@ -20,7 +20,6 @@ using HellTrail.Core.Combat.Scripting;
 using HellTrail.Core.ECS;
 using HellTrail.Core.ECS.Components;
 using Microsoft.Xna.Framework.Input.Touch;
-using HellTrail.Core.NeoCombat;
 
 namespace HellTrail
 {
@@ -36,8 +35,6 @@ namespace HellTrail
 
         public Battle battle;
         private World activeWorld;
-
-        public NeoBattle battleNew;
 
         public World ActiveWorld
         {
@@ -112,6 +109,7 @@ namespace HellTrail
             });
             torch.AddComponent(new Transform(0, 0));
             torch.AddComponent(new Velocity(0, 0));
+            transitions.Add(new BlackFadeInFadeOut(Renderer.SaveFrame()));
         }
 
         protected override void LoadContent()
@@ -393,7 +391,6 @@ namespace HellTrail
                 GameState.Overworld => activeWorld,
                 GameState.Combat => battle,
                 GameState.MainMenu => null,
-                GameState.CombatNew => battleNew,
                 _ => throw new NotImplementedException(),
             };
         }

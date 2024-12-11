@@ -17,6 +17,7 @@ namespace HellTrail.Core.Combat.Abilities.Fire
             spCost = 3;
             aoe = false;
             canTarget = ValidTargets.Enemy;
+            elementalType = ElementalType.Fire;
         }
 
         protected override void UseAbility(Unit caster, Battle battle, List<Unit> targets)

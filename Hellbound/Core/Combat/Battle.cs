@@ -113,7 +113,6 @@ namespace HellTrail.Core.Combat
 
             battle.winConditions.Add(x => !x.units.Any(x => !x.Downed && x.team == Team.Enemy)); 
             
-
             return battle;
         }
 
@@ -157,6 +156,8 @@ namespace HellTrail.Core.Combat
                 troll += 6;
                 this.sequences.Add(sequence);
             }
+
+            UIManager.combatUI.CreatePortraits(this);
         }
 
         public void Update()
@@ -342,7 +343,7 @@ namespace HellTrail.Core.Combat
             var playerMenu = new UIScrollableMenu(3, "Attack", "Item", "Guard");
             playerMenu.openSpeed = 0.25f;
 
-            playerMenu.SetPosition(80, Renderer.UIPreferedHeight * 0.5f - playerMenu.targetSize.Y * 0.5f);
+            playerMenu.SetPosition(64, Renderer.UIPreferedHeight * 0.5f - playerMenu.targetSize.Y * 0.5f);
 
             playerMenu.onSelectOption = (sender) =>
                 {
@@ -351,10 +352,17 @@ namespace HellTrail.Core.Combat
                     {
                         case "Attack":
                             string[] attackNames = ActingUnit.abilities.Select(x => x.Name).ToArray();
+                            int[] unusable = ActingUnit.abilities.Where(x => !x.CanCast(ActingUnit)).Select(x=> ActingUnit.abilities.IndexOf(x)).ToArray();
 
-                            var attacks = new UIScrollableMenu(8, attackNames);
+                            var attacks = new UIScrollableMenu(8, attackNames)
+                            {
+                                Padding = 32
+                            };
                             attacks.openSpeed = 0.25f;
                             attacks.SetPosition(playerMenu.GetPosition() + new Vector2(playerMenu.targetSize.X, -attacks.targetSize.Y * 0.25f));
+                            attacks.unavailableOptions.AddRange(unusable);
+
+                            attacks.onUnavailableSelectOption = (_) => { SoundEngine.PlaySound("MeepMerp"); };
 
                             var attackDescriptionPanel = new UIAnimatedPanel(new Vector2(400, 140));
                             attackDescriptionPanel.openSpeed = 0.35f;
@@ -363,6 +371,11 @@ namespace HellTrail.Core.Combat
 
                             attackDescriptionText.SetPosition(8);
 
+                            var attackCost = new UIBorderedText("");
+                            attackCost.SetPosition(8, 100);
+                            attacks.ExtraSpacing = 8;
+                            attackDescriptionPanel.Append(attackCost);
+
                             attacks.onUpdate = (sender) =>
                             {
                                 if (Input.PressedKey(Keys.Q) && attacks.focused)
@@ -370,6 +383,15 @@ namespace HellTrail.Core.Combat
                                     attackDescriptionPanel.isClosed = attacks.closed = true;
                                 }
                             };
+
+                            UIPicture[] pic = new UIPicture[8];
+
+                            for (int i = 0; i < 8; i++)
+                            {
+                                pic[i] = new UIPicture("ElementsIconsFramed");
+                                pic[i].SetPosition(8, 10 + 32 * i + 4 * i);
+                                attacks.Append(pic[i]);
+                            }
 
                             attacks.onSelectOption = (sender) =>
                             {
@@ -412,6 +434,12 @@ namespace HellTrail.Core.Combat
                                         TargetingWith = null;
                                         fakeMenu.closed = true;
                                     }
+
+                                    if (Input.PressedKey(Keys.D))
+                                        selectedTarget += 3;
+
+                                    if (Input.PressedKey(Keys.A))
+                                        selectedTarget -= 3;
                                 };
 
                                 fakeMenu.onLoseParent = (_) =>
@@ -426,9 +454,41 @@ namespace HellTrail.Core.Combat
 
                             attacks.onLoseParent = (sender) => { playerMenu.focused = true; };
 
+
+                            attacks.onScrollOption = (sender) =>
+                            {
+                            };
+
                             attacks.onChangeOption = (sender) =>
                             {
-                                attackDescriptionText.text = ActingUnit.abilities[attacks.currentSelectedOption].Description;
+                                for (int i = 0; i < pic.Length; i++)
+                                {
+                                    if (pic[i] == null)
+                                        continue;
+
+                                    var ableism = ActingUnit.abilities.Count > attacks.OptionWindowMin + i ? ActingUnit.abilities[attacks.OptionWindowMin + i] : null;
+                                    if (ableism != null)
+                                    {
+                                        pic[i].frames = [new FrameData(0, 32 * (int)ableism.elementalType, 32, 32)];
+                                    } else
+                                    {
+                                        pic[i].frames = [new(0, 32 * 9, 32, 32)];
+                                    }
+                                }
+
+                                var ability = ActingUnit.abilities[attacks.currentSelectedOption];
+                                attackDescriptionText.text = ability.Description;
+
+                                string cost = "Cost: ";
+                                if (ability.hpCost > 0)
+                                    cost += $"{ability.hpCost} HP ";
+
+                                if (ability.spCost > 0)
+                                    cost += $"{ability.spCost} SP\n";
+
+                                if (ability.spCost <= 0 && ability.hpCost <= 0)
+                                    cost = "";
+                                attackCost.text = cost;
                             };
 
                             if(ActingUnit.lastAbilityIndex < attacks.options.Count)
@@ -548,6 +608,12 @@ namespace HellTrail.Core.Combat
                                 TargetingWith = null;
                                 fakeMenu.closed = true;
                             }
+
+                            if (Input.PressedKey(Keys.D))
+                                selectedTarget += 3;
+
+                            if (Input.PressedKey(Keys.A))
+                                selectedTarget -= 3;
                         };
 
                         fakeMenu.onLoseParent = (_) =>
@@ -723,7 +789,7 @@ namespace HellTrail.Core.Combat
 
             if (doSequence)
             {
-                Sequence seq = CreateSequence();
+                Sequence seq = CreateSequence(true);
                 seq.SetAnimation(ActingUnit, "Cast");
                 seq.Delay(60);
             }
@@ -1065,7 +1131,7 @@ namespace HellTrail.Core.Combat
         public Sequence CreateSequence(bool startActive = false)
         {
             Sequence seq = new(this);
-            //seq.active = startActive;
+            seq.active = startActive;
             sequences.Add(seq);
             return seq;
         }
