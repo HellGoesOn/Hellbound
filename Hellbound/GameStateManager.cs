@@ -1,4 +1,5 @@
-﻿using HellTrail.Render;
+﻿using HellTrail.Core.UI;
+using HellTrail.Render;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +18,16 @@ namespace HellTrail
         {
             Main.instance.transitions.Add(transition ?? new(Renderer.SaveFrame()));
             _nextState = newState;
-            switch(State)
+            switch(newState)
             {
                 case GameState.MainMenu:
+                    var state = UIManager.GetStateByName("MainMenu");
+                    if (state != null)
+                    {
+                        (state as MainMenuUI).mainMenu = null;
+                        UIManager.UIStates.Remove(state);
+                    }
+                    Main.instance.mainMenu = new MainMenu();
                     // change to main menu, play neccessary animations, do setup etc
                     break;
                 case GameState.Combat:

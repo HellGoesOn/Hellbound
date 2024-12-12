@@ -70,8 +70,9 @@ namespace HellTrail.Core.UI
             hoveredElement = null;
             tooltipText = "";
 
-            foreach (UIState state in UIStates)
+            for(int i = 0; i < UIStates.Count; i++)
             {
+                var state = UIStates[i];
                 state.Update();
             }
 
@@ -107,7 +108,6 @@ namespace HellTrail.Core.UI
 
                 Renderer.DrawBorderedString(spriteBatch, Assets.Arial, tooltipText, Input.UIMousePosition + offset - new Vector2(8, 0), Color.White, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);
             }
-
         }
 
         public static UIState CreateState(string id = "")

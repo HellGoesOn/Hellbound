@@ -37,7 +37,7 @@ namespace HellTrail.Core.ECS
 
                 float depth = 1f + transform.position.Y + DisplayTileLayer.TILE_SIZE+8 + transform.layer*DisplayTileLayer.TILE_SIZE+12*transform.layer;
                 //float depth = transform.layer + transform.position.Y;
-                Renderer.Draw(Assets.GetTexture(tex.textureName), transform.position, null, Color.White, 0f, tex.origin, tex.scale, SpriteEffects.None, depth);
+                Renderer.Draw(Assets.GetTexture(tex.textureName), transform.position, null, tex.color, 0f, tex.origin, tex.scale, SpriteEffects.None, depth, tex.solidColor);
             }
         }
     }

@@ -1,4 +1,6 @@
 ﻿using HellTrail.Core;
+using HellTrail.Core.UI;
+using HellTrail.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -89,7 +91,7 @@ namespace HellTrail.Render
             Camera cam = gameState.GetCamera();
 
             if (cam != null && !ignoreCam)
-                spriteBatch.Begin(sortMode, blend, state, stencil, RasterizerState.CullNone, null, cam.transform);
+                spriteBatch.Begin(sortMode, blend, state, stencil, RasterizerState.CullNone, Assets.MainEffect, cam.transform);
             else
                 spriteBatch.Begin(sortMode, blend, state, stencil, RasterizerState.CullNone, null);
         }
@@ -117,9 +119,9 @@ namespace HellTrail.Render
 
         private static List<DrawData> _drawData = [];
 
-        public static void Draw(Texture2D texture, Vector2 position, Rectangle? source, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects spriteEffects, float depth)
+        public static void Draw(Texture2D texture, Vector2 position, Rectangle? source, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects spriteEffects, float depth, bool solid = false)
         {
-            DrawData dd = new(texture, position, source, color, rotation, origin, scale, spriteEffects, depth);
+            DrawData dd = new(texture, position, source, color, rotation, origin, scale, spriteEffects, depth, solid);
 
             _drawData.Add(dd);
         }
@@ -132,7 +134,8 @@ namespace HellTrail.Render
             {
                 DrawData dd = _drawData[i];
 
-                sb.Draw(dd.texture, dd.position, dd.source, dd.color, dd.rotation, dd.origin, dd.scale, dd.spriteEffects, 0);
+                //UIManager.Debug($"{dd.texture.Name} :{dd.color.A} : {dd.color.ShaderFix(dd.solid).A}");
+                sb.Draw(dd.texture, dd.position, dd.source, dd.color.ShaderFix(dd.solid), dd.rotation, dd.origin, dd.scale, dd.spriteEffects, 0);
             }
             sb.End();
 
@@ -143,6 +146,8 @@ namespace HellTrail.Render
         {
             return x.CompareTo(y);
         }
+
+        public static Vector2 ScreenMiddle => new Vector2(UIPreferedWidth, UIPreferedHeight) * 0.5f;
     }
 
     public delegate void DrawLayerEvent(SpriteBatch spriteBatch);

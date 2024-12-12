@@ -96,8 +96,11 @@ namespace HellTrail.Core.Combat
             if (Downed && opacity > 0)
             {
                 opacity -= 0.02f;
+
+                if (opacity < 0)
+                    opacity = 0;
             }
-            else if(opacity < 1.2f)
+            else if(opacity < 1.2f && !Downed)
             {
                 opacity += 0.02f;
             }    

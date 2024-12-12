@@ -1,4 +1,5 @@
 ﻿using HellTrail.Core.Combat;
+using HellTrail.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -77,7 +78,7 @@ namespace HellTrail.Core
             Texture2D tex = Assets.GetTexture(texture);
             Vector2 origin = new Vector2(frameData[currentFrame].width, frameData[0].height) * 0.5f;
 
-            spriteBatch.Draw(tex, position, frameData[currentFrame].AsRect, color * opacity, rotation, origin, frameData[currentFrame].scale * scale, SpriteEffects.None, depth);
+            Renderer.Draw(tex, position, frameData[currentFrame].AsRect, color * opacity, rotation, origin, frameData[currentFrame].scale * scale, SpriteEffects.None, depth);
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 position, Color color, float rotation, Vector2 scale = default, float? depth = null)
@@ -90,7 +91,7 @@ namespace HellTrail.Core
             Texture2D tex = Assets.GetTexture(texture);
             Vector2 origin = new Vector2(frameData[currentFrame].width, frameData[0].height) * 0.5f;
 
-            spriteBatch.Draw(tex, position, frameData[currentFrame].AsRect, color * opacity, rotation, origin, frameData[currentFrame].scale * scale, SpriteEffects.None, (float)depth);
+            Renderer.Draw(tex, position, frameData[currentFrame].AsRect, color * opacity, rotation, origin, frameData[currentFrame].scale * scale, SpriteEffects.None, (float)depth);
         }
 
         public SpriteAnimation GetCopy()

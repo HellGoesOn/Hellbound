@@ -1,4 +1,5 @@
 ﻿using HellTrail.Core.UI;
+using HellTrail.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -39,8 +40,8 @@ namespace HellTrail.Core.Combat.Status
 
             } else
             {
-                spriteBatch.Draw(Assets.GetTexture(unit.sprite), new Vector2((int)(unit.position.X), (int)(unit.position.Y)) + offset*2, null, Color.Blue * 0.25f, 0f, new Vector2(16), unit.scale, SpriteEffects.None, unit.depth - 0.01f);
-                spriteBatch.Draw(Assets.GetTexture(unit.sprite), new Vector2((int)(unit.position.X), (int)(unit.position.Y)) - offset*2, null, Color.Blue * 0.25f, 0f, new Vector2(16), unit.scale, SpriteEffects.None, unit.depth - 0.01f);
+                spriteBatch.DrawFixed(Assets.GetTexture(unit.sprite), new Vector2((int)(unit.position.X), (int)(unit.position.Y)) + offset*2, null, Color.Blue * 0.25f, 0f, new Vector2(16), unit.scale, SpriteEffects.None, unit.depth - 0.01f);
+                spriteBatch.DrawFixed(Assets.GetTexture(unit.sprite), new Vector2((int)(unit.position.X), (int)(unit.position.Y)) - offset*2, null, Color.Blue * 0.25f, 0f, new Vector2(16), unit.scale, SpriteEffects.None, unit.depth - 0.01f);
             }
         }
 

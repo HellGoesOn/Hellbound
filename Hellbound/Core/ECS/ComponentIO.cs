@@ -4,6 +4,7 @@ using HellTrail.Core.UI;
 using HellTrail.Extensions;
 using Microsoft.Xna.Framework;
 using System.Collections;
+using System.ComponentModel;
 using System.Globalization;
 using System.Net.WebSockets;
 using System.Reflection;
@@ -102,7 +103,11 @@ namespace HellTrail.Core.ECS
 
         public static void SetDefaultField(IComponent component, FieldInfo field)
         {
-            if(field.FieldType.IsGenericTypeDefinition)
+            if(field.FieldType == typeof(Color))
+            {
+                field.SetValue(component, Color.White);
+            }
+            else if(field.FieldType.IsGenericTypeDefinition)
             {
                 Type[] types = field.FieldType.GetGenericArguments();
 
@@ -255,7 +260,7 @@ namespace HellTrail.Core.ECS
             {
                 return tryParser;
             }
-
+                
             var nativeImpl = type.GetMethod("TryParse", new[] { typeof(string), type.MakeByRefType() });
             if (nativeImpl != null)
             {
@@ -399,6 +404,10 @@ namespace HellTrail.Core.ECS
                     }
                 }
                 field.SetValue(instance, Convert.ChangeType(arr, field.FieldType));
+            }
+            else if (field.FieldType == typeof(Color))
+            {
+                field.SetValue(instance, Color.White);
             } else
             {
                 string noQuotes = BetweenSwirlyBracketsRegex().Replace(value, "");

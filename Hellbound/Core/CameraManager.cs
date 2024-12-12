@@ -17,6 +17,7 @@ namespace HellTrail.Core
         public static Camera combatCamera;
         public static Camera neoCombatCamera;
         public static Camera overworldCamera;
+        public static Camera mainMenuCamera;
 
 
         public static List<Camera> cameras = new();
@@ -35,11 +36,11 @@ namespace HellTrail.Core
             overworldCamera.centre = new Vector2(160, 90);
             cameras.Add(overworldCamera);
 
-            neoCombatCamera = new Camera(new Viewport(0, 0, Renderer.PreferedWidth, Renderer.PreferedHeight));
-            neoCombatCamera.zoom = 1f;
-            neoCombatCamera.speed = 1f;
-            neoCombatCamera.centre = new Vector2(160, 90);
-            cameras.Add(neoCombatCamera);
+            mainMenuCamera = new Camera(new Viewport(0, 0, Renderer.PreferedWidth, Renderer.PreferedHeight));
+            mainMenuCamera.zoom = 1f;
+            mainMenuCamera.speed = 1f;
+            mainMenuCamera.centre = new Vector2(160, 90);
+            cameras.Add(mainMenuCamera);
         }
 
         public static void Update()

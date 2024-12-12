@@ -38,6 +38,7 @@
     <None Remove="Assets\Audio\Sounds\WhatDaDogDoin.wav" />
     <None Remove="Assets\BossMusic.ogg" />
     <None Remove="Assets\Dumbass.png" />
+    <None Remove="Assets\Effects\Test.xnb" />
     <None Remove="Assets\stimpack.wav" />
     <None Remove="Assets\TestAnimation.png" />
     <None Remove="Assets\Textures\Canvas.png" />
@@ -56,6 +57,7 @@
     <None Remove="Assets\Textures\Slime3.png" />
     <None Remove="Assets\Textures\Space.png" />
     <None Remove="Assets\Textures\starepixel.png" />
+    <None Remove="Assets\Textures\Test.xnb" />
     <None Remove="Assets\Textures\TestBG2.png" />
     <None Remove="Assets\Textures\TestTestTest.png" />
     <None Remove="Assets\Textures\Tileset.png" />
@@ -79,6 +81,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Assets\Effects\Test.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

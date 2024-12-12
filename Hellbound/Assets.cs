@@ -22,8 +22,17 @@ namespace HellTrail
         public static SpriteFont CombatMenuFont;
         public static SpriteFont SmallFont;
 
+        public static Effect MainEffect;
+
+        public const float MF_TOLERANCE = 200;
+
         public static void Load(Main main)
         {
+            MainEffect = main.Content.Load<Effect>("Assets/Effects/Test");
+
+            MainEffect.Parameters["tolerance"].SetValue(MF_TOLERANCE / 255f);
+
+
             string[] textures = Directory.GetFiles("Assets/Textures/", "*.png", SearchOption.AllDirectories);
             string[] songs = Directory.GetFiles("Assets/Audio/Music");
             string[] sounds = Directory.GetFiles("Assets/Audio/Sounds");

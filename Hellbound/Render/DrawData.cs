@@ -14,8 +14,9 @@ namespace HellTrail.Render
         public readonly float rotation;
         public readonly SpriteEffects spriteEffects;
         public readonly float depth;
+        public readonly bool solid;
 
-        public DrawData(Texture2D texture, Vector2 position, Rectangle? source, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects spriteEffects,  float depth)
+        public DrawData(Texture2D texture, Vector2 position, Rectangle? source, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects spriteEffects,  float depth, bool solid = false)
         {
             this.source = source;
             this.texture = texture;
@@ -26,6 +27,7 @@ namespace HellTrail.Render
             this.spriteEffects = spriteEffects;
             this.depth = depth;
             this.origin = origin;
+            this.solid = solid;
         }
 
         public int CompareTo(object obj)

@@ -21,6 +21,9 @@ namespace HellTrail.Core.Overworld
     {
         //public UIBorderedText debugText;
 
+        int _heldTimer;
+        float _repeatRate;
+
         public UIScrollableMenu optionMenu;
 
         public int lastTarget;
@@ -462,6 +465,96 @@ namespace HellTrail.Core.Overworld
                                 sender.parent.Append(partyMemberMenu);
                                 sender.parent.Append(memberPanel);
                                 break;
+                            case "Settings":
+                                optionMenu.focused = false;
+
+                                var settings = new UIScrollableMenu(4, ["Very biiiiiiiiiiiiiiiiiiiig text", "Music Volume", "Resolution", "Back"]);
+                                settings.openSpeed = 0.25f;
+                                settings.onChangeOption = (sender) =>
+                                {
+                                    settings.options[0] = $"Game Volume: {Math.Round(GameOptions.GeneralVolume * 100)}%";
+                                    settings.options[1] = $"Music Volume: {Math.Round(GameOptions.MusicVolume * 100)}%";
+                                    settings.options[2] = $"Resolution: {GameOptions.ScreenWidth}x{GameOptions.ScreenHeight}";
+                                };
+
+                                settings.SetPosition(Renderer.UIPreferedWidth * 0.5f - settings.targetSize.X * 0.5f, Renderer.UIPreferedHeight * 0.5f - settings.targetSize.Y * 0.5f);
+
+                                settings.onSelectOption = (sender) =>
+                                {
+                                    switch (settings.CurrentOption)
+                                    {
+                                        case "Back":
+                                            settings.closed = true; break;
+                                    }
+                                };
+
+                                settings.onLoseParent = (sender) => { optionMenu.focused = true; };
+
+                                settings.onUpdate = (sender) =>
+                                {
+                                    if (Input.HeldKey(Keys.A) || Input.HeldKey(Keys.D))
+                                    {
+                                        _heldTimer++;
+                                        if (_heldTimer >= _repeatRate && _repeatRate > 5)
+                                            _repeatRate--;
+                                    } else
+                                    {
+                                        _repeatRate = 15;
+                                        _heldTimer = 0;
+                                    }
+
+                                    settings.options[0] = $"Game Volume: {Math.Round(GameOptions.GeneralVolume * 100)}%";
+                                    settings.options[1] = $"Music Volume: {Math.Round(GameOptions.MusicVolume * 100)}%";
+                                    settings.options[2] = $"Resolution: {GameOptions.ScreenWidth}x{GameOptions.ScreenHeight}";
+                                    if (Input.PressedKey([Keys.Escape, Keys.Q]))
+                                        settings.closed = true;
+
+                                    if(Input.PressedKey(Keys.D) || (Input.HeldKey(Keys.D) && _heldTimer >= _repeatRate))
+                                    {
+                                        _heldTimer = 0;
+                                        switch(settings.currentSelectedOption)
+                                        {
+                                            case 0:
+                                                GameOptions.GeneralVolume += 0.01f;
+                                                break;
+                                            case 1:
+                                                GameOptions.MusicVolume += 0.01f;
+                                                break;
+                                            case 2:
+                                                GameOptions.ResolutionMultiplier += 1;
+                                                Main.instance.UpdateResolution();
+                                                break;
+                                        }
+                                    }
+
+                                    if (Input.PressedKey(Keys.A) || (Input.HeldKey(Keys.A) && _heldTimer >= _repeatRate))
+                                    {
+                                        _heldTimer = 0;
+                                        switch (settings.currentSelectedOption)
+                                        {
+                                            case 0:
+                                                GameOptions.GeneralVolume -= 0.01f;
+                                                break;
+                                            case 1:
+                                                GameOptions.MusicVolume -= 0.01f;
+                                                break;
+                                            case 2:
+                                                if (GameOptions.ResolutionMultiplier - 1 >= 1)
+                                                {
+                                                    GameOptions.ResolutionMultiplier -= 1;
+                                                    Main.instance.UpdateResolution();
+                                                }
+                                                break;
+                                        }
+                                    }
+
+                                    GameOptions.GeneralVolume = Math.Clamp(GameOptions.GeneralVolume, 0, 1.0f);
+                                    GameOptions.MusicVolume = Math.Clamp(GameOptions.MusicVolume, 0, 1.0f);
+                                };
+
+                                Append(settings);
+
+                                break;
                             case "Quit":
                                 optionMenuBox.focused = false;
 
@@ -491,8 +584,13 @@ namespace HellTrail.Core.Overworld
                                 =>
                                 {
                                     if (confirm.currentSelectedOption == 1)
-                                        Main.instance.Exit();
-                                    else
+                                    {
+                                        optionMenu.closed = true;
+                                        optionMenu.onLoseParent += (sender) =>
+                                        {
+                                            GameStateManager.SetState(GameState.MainMenu, new BlackFadeInFadeOut(Renderer.SaveFrame(true)));
+                                        };
+                                    } else
                                     {
                                         confirm.closed = true;
                                     }

@@ -1,0 +1,17 @@
+Entity_0
+	{
+		CameraMarker{}
+
+		CollisionBox{16; 10; {X:8 Y:-4}}
+
+		NewAnimationComponent{"Dumbass"; "Idle"; [Idle=[(0 2)], Run=[(3 6)], Jump=[(6 7)]]; [{0 0 32 32 10}, {0 32 32 32 10}, {0 64 32 32 10}, {0 0 32 32 7}, {0 32 32 32 7}, {0 64 32 32 7}, {0 96 32 32 7}, , {0 0 32 32 0}]}
+
+		PlayerMarker{}
+
+		TextureComponent{"Dumbass"; {X:16 Y:16}; {X:1 Y:1}}
+
+		Transform{{X:20.833374 Y:548.66675}; 0; 0}
+
+		Velocity{{X:0 Y:0}}
+
+	} ;

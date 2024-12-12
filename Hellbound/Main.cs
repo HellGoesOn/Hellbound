@@ -20,6 +20,7 @@ using HellTrail.Core.Combat.Scripting;
 using HellTrail.Core.ECS;
 using HellTrail.Core.ECS.Components;
 using Microsoft.Xna.Framework.Input.Touch;
+using System.Globalization;
 
 namespace HellTrail
 {
@@ -35,6 +36,8 @@ namespace HellTrail
 
         public Battle battle;
         private World activeWorld;
+
+        public MainMenu mainMenu;
 
         public World ActiveWorld
         {
@@ -88,28 +91,33 @@ namespace HellTrail
 
             //IComponent component = ComponentIO.New_Deserialize(crime);
             //GetGameState().GetCamera().centre = GlobalPlayer.ActiveParty[0].position;
+            
+            mainMenu = new MainMenu();
 
-            var slime = prefabContext.Create();
-            slime.AddComponent(new TextureComponent("Slime3")
-            {
-                origin = new Vector2(16),
-                scale = new Vector2(1)
-            });
-            slime.AddComponent(new Transform(0, 0));
-            slime.AddComponent(new Obesity(-0.02f));
-            slime.AddComponent(new Velocity(0, 0));
-            slime.AddComponent(new CreateBattleOnContact("TestBG", ["Slime", "Slime"], null));
-            slime.AddComponent(new CollisionBox(16, 10, new Vector2(8, -4)));
 
-            var torch = prefabContext.Create();
-            torch.AddComponent(new TextureComponent("Torch")
+            if (File.Exists(Environment.CurrentDirectory + "\\config.cfg"))
             {
-                origin = new Vector2(6),
-                scale = new Vector2(1)
-            });
-            torch.AddComponent(new Transform(0, 0));
-            torch.AddComponent(new Velocity(0, 0));
-            transitions.Add(new BlackFadeInFadeOut(Renderer.SaveFrame()));
+                var oldCulture = Thread.CurrentThread.CurrentCulture;
+                Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+                var options = File.ReadAllText(Environment.CurrentDirectory + "\\config.cfg").Split(Environment.NewLine);
+
+                if (options.Length >= 1 && int.TryParse(options[0], out var x))
+                {
+                    GameOptions.ResolutionMultiplier = x;
+                    UpdateResolution();
+                }
+                if (options.Length >= 2 && float.TryParse(options[1], out var y))
+                {
+                    GameOptions.GeneralVolume = Math.Clamp(y, 0.0f, 1.0f);
+                }
+                if (options.Length >= 3 && float.TryParse(options[2], out var z))
+                {
+                    GameOptions.MusicVolume = Math.Clamp(z, 0.0f, 1.0f);
+                }
+
+                Thread.CurrentThread.CurrentCulture = oldCulture;
+            }
+            GameStateManager.SetState(GameState.MainMenu, new BlackFadeInFadeOut(Renderer.SaveFrame()));
         }
 
         protected override void LoadContent()
@@ -255,6 +263,16 @@ namespace HellTrail
             Assets.Unload();
             Renderer.Unload();
             Context.Unload();
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+            File.WriteAllText(Environment.CurrentDirectory + "\\config.cfg", $"{GameOptions.ResolutionMultiplier}{Environment.NewLine}{GameOptions.GeneralVolume}{Environment.NewLine}{GameOptions.MusicVolume}");
+        }
+
+        public void UpdateResolution()
+        {
+            gdm.PreferredBackBufferWidth = GameOptions.ScreenWidth;
+            gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
+            gdm.ApplyChanges();
         }
 
         protected override void Update(GameTime gameTime)
@@ -308,11 +326,18 @@ namespace HellTrail
             GameStateManager.Update();
         }
 
+        bool onceAndNeverAgain;
         protected override void Draw(GameTime gameTime)
         {
             // Render stuff in here. Do NOT run game logic in here!
 
             base.Draw(gameTime);
+
+            if (!onceAndNeverAgain)
+            {
+                GraphicsDevice.Clear(Color.Black);
+                onceAndNeverAgain = true;
+            }
 
             GraphicsDevice.SetRenderTarget(Renderer.WorldTarget);
             Renderer.StartSpriteBatch(spriteBatch, state: SamplerState.PointWrap, stencil: DepthStencilState.DepthRead);
@@ -390,7 +415,7 @@ namespace HellTrail
             {
                 GameState.Overworld => activeWorld,
                 GameState.Combat => battle,
-                GameState.MainMenu => null,
+                GameState.MainMenu => mainMenu,
                 _ => throw new NotImplementedException(),
             };
         }

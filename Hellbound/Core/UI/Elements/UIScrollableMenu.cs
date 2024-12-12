@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Reflection.Metadata;
 
 namespace HellTrail.Core.UI.Elements
 {
@@ -14,6 +15,8 @@ namespace HellTrail.Core.UI.Elements
         public bool init;
         public int currentSelectedOption;
         public int repeatRate;
+
+        public float opacity = 1f;
 
         private float extraSpacing;
         public float ExtraSpacing
@@ -44,6 +47,8 @@ namespace HellTrail.Core.UI.Elements
         public int OptionWindowMax => _optionWindowMax;
         private int _heldTimer;
 
+        public int HeldTimer => _heldTimer;
+
         public Color panelColor;
         public Color borderColor;
 
@@ -61,6 +66,8 @@ namespace HellTrail.Core.UI.Elements
         public UIEventHandler onUnavailableSelectOption;
         public UIEventHandler onChangeOption;
         public UIEventHandler onScrollOption;
+
+        public float bob = 0.0f;
 
         public UIScrollableMenu(int maxDisplayeedOptions, params string[] options )
         {
@@ -194,8 +201,8 @@ namespace HellTrail.Core.UI.Elements
 
             var decorativeOffset = new Vector2(0, -size.Y * 0.5f + targetSize.Y * 0.5f);
 
-            Renderer.DrawRect(spriteBatch, GetPosition() - new Vector2(2) + decorativeOffset, size + new Vector2(4), borderColor);
-            Renderer.DrawRect(spriteBatch, GetPosition() + decorativeOffset, size, panelColor);
+            Renderer.DrawRect(spriteBatch, GetPosition() - new Vector2(2) + decorativeOffset, size + new Vector2(4), borderColor * opacity);
+            Renderer.DrawRect(spriteBatch, GetPosition() + decorativeOffset, size, panelColor * opacity);
 
             if (options.Count > 0 && _optionWindowMin <= options.Count && size == targetSize)
             {
@@ -206,17 +213,23 @@ namespace HellTrail.Core.UI.Elements
                         break;
 
                     bool selected = i == currentSelectedOption;
-                    string option = options[i];
-                    Color clr = unavailableOptions.Contains(i) ? notAvailableColor : selected ? selectedColor : notSelectedColor;
-                    var textPosition = GetPosition() + new Vector2(16 + padding, 16 + (sizeY + 4 + extraSpacing) * offset);
-                    spriteBatch.DrawBorderedString(font, option, textPosition, clr, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);
 
-                    if (selected && focused)
+                    bool selectedNFocused = selected && focused;
+
+                    string option = options[i];
+
+                    Color clr = (unavailableOptions.Contains(i) ? notAvailableColor : selected ? selectedColor : notSelectedColor) * opacity; ;
+                    var textPosition = GetPosition() + new Vector2(16 + padding, 16 + (sizeY + 4 + extraSpacing) * offset) 
+                        + (selectedNFocused ? new Vector2((float)Math.Sin(Main.totalTime) * bob, (float)Math.Cos(Main.totalTime) * bob) : Vector2.Zero);
+
+                    spriteBatch.DrawBorderedString(font, option, textPosition, clr, Color.Black * opacity, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);
+
+                    if (selectedNFocused)
                     {
                         bool evalPosition = GetPosition().X > 50;
                         Vector2 cursorScale = evalPosition ? new Vector2(3, 3) : new Vector2(-3, 3);
                         Vector2 cursorPosition = evalPosition ? textPosition + new Vector2(osciliation.Y, 0) - new Vector2(40, 0) : textPosition - new Vector2(osciliation.Y, 0) + new Vector2(size.X + 10, 0);
-                        spriteBatch.Draw(Assets.GetTexture("Cursor3"), cursorPosition - new Vector2(padding, 0), null, Color.White, 0f, new Vector2(10, 0), cursorScale, SpriteEffects.None, 1f);
+                        spriteBatch.Draw(Assets.GetTexture("Cursor3"), cursorPosition - new Vector2(padding, 0), null, Color.White * opacity, 0f, new Vector2(10, 0), cursorScale, SpriteEffects.None, 1f);
 
                     }
 
@@ -226,8 +239,8 @@ namespace HellTrail.Core.UI.Elements
 
             if (drawArrows)
             {
-                spriteBatch.Draw(arrow, GetPosition() + new Vector2(size.X * 0.5f, -16) - osciliation +decorativeOffset, null, Color.White, 0f, new Vector2(5, 3.5f), new Vector2(3, -3), SpriteEffects.None, 0f);
-                spriteBatch.Draw(arrow, GetPosition() + new Vector2(size.X * 0.5f, 16 + size.Y) + osciliation + decorativeOffset, null, Color.White, 0f, new Vector2(5, 3.5f), Vector2.One * 3, SpriteEffects.None, 0f);
+                spriteBatch.Draw(arrow, GetPosition() + new Vector2(size.X * 0.5f, -16) - osciliation +decorativeOffset, null, Color.White * opacity, 0f, new Vector2(5, 3.5f), new Vector2(3, -3), SpriteEffects.None, 0f);
+                spriteBatch.Draw(arrow, GetPosition() + new Vector2(size.X * 0.5f, 16 + size.Y) + osciliation + decorativeOffset, null, Color.White * opacity, 0f, new Vector2(5, 3.5f), Vector2.One * 3, SpriteEffects.None, 0f);
             }
         }
 

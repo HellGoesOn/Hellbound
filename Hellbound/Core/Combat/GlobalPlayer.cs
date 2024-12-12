@@ -54,6 +54,7 @@ namespace HellTrail.Core.Combat
 
             AddItem(new AdrenalineShot() { count = 3 });
             AddItem(new FireGem() { count = 3 });
+            AddItem(new TomeOfWisdom() { count = 3 });
         }
 
         public static void AddPartyMember(Unit newUnit)

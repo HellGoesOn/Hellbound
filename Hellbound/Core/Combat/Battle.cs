@@ -365,7 +365,7 @@ namespace HellTrail.Core.Combat
         {
             if (bg != null)
             {
-                spriteBatch.Draw(Assets.GetTexture(bg.texture), Vector2.Zero, bg.color);
+                spriteBatch.Draw(Assets.GetTexture(bg.texture), Vector2.Zero, bg.color.ShaderFix(false));
             }
 
             foreach (Unit unit in units)
@@ -380,7 +380,7 @@ namespace HellTrail.Core.Combat
 
                 } else
                 {
-                    spriteBatch.Draw(Assets.GetTexture(unit.sprite), new Vector2((int)(position.X), (int)(position.Y)), null, clr * unit.opacity, 0f, new Vector2(16), unit.scale, SpriteEffects.None, unit.depth);
+                    Renderer.Draw(Assets.GetTexture(unit.sprite), new Vector2((int)(position.X), (int)(position.Y)), null, clr * unit.opacity, 0f, new Vector2(16), unit.scale, SpriteEffects.None, unit.depth);
                     //Renderer.DrawRect(spriteBatch, unit.position-unit.size*0.5f, unit.size, 1, Color.Orange * 0.25f);
                 }
 
@@ -394,7 +394,7 @@ namespace HellTrail.Core.Combat
             if (ActingUnit != null)
             {
                 Color clr = ActingUnit.team == Team.Player ? ActingUnit.ai != null ? Color.Yellow : Color.Lime : Color.Red;
-                spriteBatch.Draw(Assets.GetTexture("Arrow"), new Vector2((int)(ActingUnit.position.X), (int)(ActingUnit.position.Y) - 24 + (float)Math.Cos(Main.totalTime)), null, clr * ActingUnit.opacity, 0f, new Vector2(5, 3.5f), new Vector2((float)Math.Sin(Main.totalTime * 0.75f), 1f), SpriteEffects.None, 1f);
+                Renderer.Draw(Assets.GetTexture("Arrow"), new Vector2((int)(ActingUnit.position.X), (int)(ActingUnit.position.Y) - 24 + (float)Math.Cos(Main.totalTime)), null, clr * ActingUnit.opacity, 0f, new Vector2(5, 3.5f), new Vector2((float)Math.Sin(Main.totalTime * 0.75f), 1f), SpriteEffects.None, 1f);
             }
             foreach (SpriteAnimation animation in fieldAnimations)
             {

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace HellTrail.Core.ECS
 {
@@ -73,7 +74,7 @@ namespace HellTrail.Core.ECS
                 Rectangle rect = new(frame.x, frame.y, frame.width, frame.height);
 
                 float depth = 1f + Math.Abs(transform.position.Y) + DisplayTileLayer.TILE_SIZE + 8 + transform.layer * DisplayTileLayer.TILE_SIZE + 12 * transform.layer;
-                Renderer.Draw(texture, transform.position, rect, Color.White, 0f, textureComponent.origin, textureComponent.scale, SpriteEffects.None, depth);
+                Renderer.Draw(texture, transform.position, rect, textureComponent.color, 0f, textureComponent.origin, textureComponent.scale, SpriteEffects.None, depth, textureComponent.solidColor);
             }
         }
     }
