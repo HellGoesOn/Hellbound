@@ -1,13 +1,13 @@
 ﻿using System.Text;
 
-namespace HellTrail.Core.Combat
+namespace Casull.Core.Combat
 {
     public class CombatStats
     {
         public int HP;
         public float accuracy;
         public float evasion;
-        public int MaxHP;
+        private int maxHP;
         public int SP;
         public int MaxSP;
         public float strength;
@@ -18,16 +18,18 @@ namespace HellTrail.Core.Combat
         public int level;
         public float speed;
 
+        public int MaxHP { get => maxHP; set => maxHP = HP = value; }
+
         public CombatStats()
         {
             accuracy = 1f;
             evasion = 0f;
             value = 20;
             EXP = 0;
-            toNextLevel = 100;
+            toNextLevel = 40;
             level = 1;
-            HP = MaxHP = 100;
-            SP = MaxSP = 60;
+            HP = MaxHP = 60;
+            SP = MaxSP = 30;
             strength = 3;
             magic = 3;
             speed = 6.0f;
@@ -38,7 +40,7 @@ namespace HellTrail.Core.Combat
             evasion = 1f;
             EXP = 0;
             value = 20;
-            toNextLevel = 100;
+            toNextLevel = 40;
             level = 1;
             this.strength = attack;
             this.magic = magic;
@@ -61,8 +63,7 @@ namespace HellTrail.Core.Combat
 
         public CombatStats GetCopy()
         {
-            return new CombatStats()
-            {
+            return new CombatStats() {
                 HP = this.HP,
                 SP = this.SP,
                 MaxHP = this.MaxHP,
@@ -84,8 +85,7 @@ namespace HellTrail.Core.Combat
             sb.AppendLine($"EXP: {EXP} / {toNextLevel}");
             sb.AppendLine($"HP: {HP} / {MaxHP}");
             sb.AppendLine($"SP: {SP} / {MaxSP}");
-            if (full)
-            {
+            if (full) {
                 sb.AppendLine($"STR: {(int)strength}");
                 sb.AppendLine($"MA: {(int)magic}");
                 sb.AppendLine($"SPD: {Math.Round(speed, 1)}");

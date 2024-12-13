@@ -1,12 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.UI
+namespace Casull.Core.UI
 {
     public class UIState : IUIElement
     {
@@ -20,7 +15,7 @@ namespace HellTrail.Core.UI
 
         public UIStateEventHandler OnUpdate;
 
-        public UIState() 
+        public UIState()
         {
             id = string.Empty;
         }
@@ -34,13 +29,11 @@ namespace HellTrail.Core.UI
 
             int childrenCount = children.Count;
 
-            for(int i = 0; i < childrenCount; i++)
-            {
+            for (int i = 0; i < childrenCount; i++) {
                 children[i].Update();
             }
 
-            foreach(UIElement child in _childrenToRemove)
-            {
+            foreach (UIElement child in _childrenToRemove) {
                 children.Remove(child);
             }
 
@@ -52,8 +45,7 @@ namespace HellTrail.Core.UI
             if (!visible)
                 return;
 
-            foreach (UIElement child in children.Where(x=>x.Visible))
-            {
+            foreach (UIElement child in children.Where(x => x.Visible)) {
                 child.Draw(spriteBatch);
             }
         }
@@ -73,8 +65,7 @@ namespace HellTrail.Core.UI
 
             var killedElement = (element as UIElement);
             killedElement.onLoseParent?.Invoke(killedElement);
-            if (!plannedToAdopt)
-            {
+            if (!plannedToAdopt) {
                 killedElement.onMouseEnter = null;
                 killedElement.onMouseLeave = null;
                 killedElement.onClick = null;
@@ -87,13 +78,12 @@ namespace HellTrail.Core.UI
 
         public void Disown(string id, bool plannedToAdopt = false)
         {
-            if (!children.Any(x=>x.id == id))
+            if (!children.Any(x => x.id == id))
                 return;
 
-            var killedElement = children.First(x=>x.id == id);
+            var killedElement = children.First(x => x.id == id);
             killedElement.onLoseParent?.Invoke(killedElement);
-            if (!plannedToAdopt)
-            {
+            if (!plannedToAdopt) {
                 killedElement.onMouseEnter = null;
                 killedElement.onMouseLeave = null;
                 killedElement.onClick = null;

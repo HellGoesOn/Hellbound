@@ -1,13 +1,8 @@
-﻿using HellTrail.Core.UI;
+﻿using Casull.Core.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.DialogueSystem
+namespace Casull.Core.DialogueSystem
 {
     public class UIPortrait : UIElement
     {
@@ -20,10 +15,9 @@ namespace HellTrail.Core.DialogueSystem
 
         public override void OnDraw(SpriteBatch spriteBatch)
         {
-            if (portrait != null && portrait.Count > 0)
-            {
-                foreach(Portrait portrait in portrait)
-                spriteBatch.Draw(portrait.texture, this.GetPosition() + portrait.offset, portrait.frame.AsRect, portrait.tint, portrait.rotation, portrait.origin, portrait.scale, SpriteEffects.None, 0);
+            if (portrait != null && portrait.Count > 0) {
+                foreach (Portrait portrait in portrait)
+                    spriteBatch.Draw(portrait.texture, this.GetPosition() + portrait.offset, portrait.frame.AsRect, portrait.tint, portrait.rotation, portrait.origin, portrait.scale, SpriteEffects.None, 0);
             }
         }
     }

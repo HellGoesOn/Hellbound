@@ -1,6 +1,5 @@
-﻿using HellTrail;
-using HellTrail.Extensions;
-using HellTrail.Render;
+﻿using Casull;
+using Casull.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -51,8 +50,7 @@ namespace Treeline.Core.Graphics
 
         public virtual void Update()
         {
-            if (delay > 0)
-            {
+            if (delay > 0) {
                 delay--;
                 return;
             }
@@ -76,8 +74,7 @@ namespace Treeline.Core.Graphics
 
             spriteBatch.Draw(texture, position, null, color.ShaderFix(false), rotation, new Vector2(0.5f), scale, SpriteEffects.None, 1f);
 
-            if (castShadow)
-            {
+            if (castShadow) {
                 spriteBatch.Draw(texture, new Vector2(this.position.X, this.position.Y), null, Color.Black * 0.15f, rotation, new Vector2(0.5f), scale, SpriteEffects.None, 1f);
             }
         }

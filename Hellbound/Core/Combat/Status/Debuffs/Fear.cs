@@ -1,12 +1,7 @@
-﻿using HellTrail.Core.Combat.Sequencer;
+﻿using Casull.Core.Combat.Sequencer;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.Combat.Status.Debuffs
+namespace Casull.Core.Combat.Status.Debuffs
 {
     public class Fear : StatusEffect
     {
@@ -20,8 +15,7 @@ namespace HellTrail.Core.Combat.Status.Debuffs
         public override void OnTurnBegin(Unit unit, Battle battle)
         {
             turnsLeft--;
-            if(battle.rand.Next(101) <= 50)
-            {
+            if (battle.rand.Next(101) <= 50) {
                 Sequence seq = new(battle);
                 seq.Add(new DelaySequence(60));
                 battle.sequences.Add(seq);

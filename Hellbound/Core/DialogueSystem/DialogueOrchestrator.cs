@@ -1,4 +1,4 @@
-﻿namespace HellTrail.Core.DialogueSystem
+﻿namespace Casull.Core.DialogueSystem
 {
     public static class DialogueOrchestrator
     {

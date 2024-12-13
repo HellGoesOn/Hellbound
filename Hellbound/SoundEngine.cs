@@ -1,12 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail
+namespace Casull
 {
     public static class SoundEngine
     {
@@ -44,8 +39,7 @@ namespace HellTrail
             if (_stoppedFor > 0)
                 _stoppedFor--;
 
-            if (_updatedSong)
-            {
+            if (_updatedSong) {
                 _updatedSong = false;
                 MediaPlayer.Stop();
                 var song = Assets.GetSong(_currentSong);
@@ -54,17 +48,14 @@ namespace HellTrail
                     MediaPlayer.Play(song);
             }
 
-            if (MediaPlayer.State == MediaState.Stopped)
-            {
-                if (_isLooping)
-                {
+            if (MediaPlayer.State == MediaState.Stopped) {
+                if (_isLooping) {
                     var song = Assets.GetSong(_currentSong);
 
                     if (song != null)
                         MediaPlayer.Play(song);
                 }
-                else if (_stoppedFor <= 0 && !doNotRestart)
-                {
+                else if (_stoppedFor <= 0 && !doNotRestart) {
                     StartMusic(DefaultSong, false);
                 }
             }
@@ -79,8 +70,7 @@ namespace HellTrail
 
             var fx = Assets.GetSound(name)?.CreateInstance();
 
-            if (fx != null)
-            {
+            if (fx != null) {
                 fx.Volume = volume;
                 fx.Play();
                 return fx;

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace HellTrail.Core.ECS
+namespace Casull.Core.ECS
 {
     public class Entity
     {
@@ -39,8 +33,7 @@ namespace HellTrail.Core.ECS
         public T GetComponent<T>() where T : IComponent
         {
             int id = Context.ComponentId[typeof(T)];
-            if (HasComponent<T>())
-            {
+            if (HasComponent<T>()) {
                 return (T)_components[id];
             }
 
@@ -55,8 +48,7 @@ namespace HellTrail.Core.ECS
 
         public bool HasComponents(params int[] indexes)
         {
-            for (int i = 0; i < indexes.Length; i++)
-            {
+            for (int i = 0; i < indexes.Length; i++) {
                 int index = indexes[i];
                 if (_components[index] == null)
                     return false;
@@ -87,19 +79,17 @@ namespace HellTrail.Core.ECS
         {
             int id = Context.ComponentId[type];
             var previousComponent = _components[id];
-            if (previousComponent != null)
-            {
+            if (previousComponent != null) {
                 //context.componentPools[id].Push(previousComponent);
                 previousComponent = null;
                 OnComponentChanged?.Invoke(this, component);
-            } else
-            {
+            }
+            else {
                 OnComponentAdded?.Invoke(this, component);
             }
 
             _components[id] = component;
-            if (_components[id] == null)
-            {
+            if (_components[id] == null) {
                 previousComponent = null;
                 OnComponentRemoved?.Invoke(this, previousComponent);
             }
@@ -108,10 +98,8 @@ namespace HellTrail.Core.ECS
         public void Destroy(Context context)
         {
             enabled = false;
-            if (_components != null)
-            {
-                for (int i = 0; i < _maxComponents; i++)
-                {
+            if (_components != null) {
+                for (int i = 0; i < _maxComponents; i++) {
                     var component = _components[i];
                     if (component == null)
                         continue;
@@ -157,23 +145,18 @@ namespace HellTrail.Core.ECS
             Stack<int> stack = new();
             int start = -1;
 
-            for (int i = 0; i < data.Length; i++)
-            {
-                if (data[i] == '{')
-                {
-                    if (stack.Count == 0)
-                    {
+            for (int i = 0; i < data.Length; i++) {
+                if (data[i] == '{') {
+                    if (stack.Count == 0) {
                         // Mark the start of a new component
                         start = i;
                     }
                     stack.Push(i);
-                } else if (data[i] == '}')
-                {
-                    if (stack.Count > 0)
-                    {
+                }
+                else if (data[i] == '}') {
+                    if (stack.Count > 0) {
                         stack.Pop();
-                        if (stack.Count == 0 && start != -1)
-                        {
+                        if (stack.Count == 0 && start != -1) {
                             // Found a complete component
                             // Find the component name before the opening brace
                             int nameStart = data.LastIndexOf('\t', start - 1) + 1;
@@ -208,22 +191,18 @@ namespace HellTrail.Core.ECS
             string id = Regex.Replace(entityLine, "[^0-9]", "");
 
             Entity e;
-            if (context != null)
-            {
+            if (context != null) {
                 Entity checkExisting = context.entities[int.Parse(id)];
-                if (checkExisting != null && checkExisting.enabled)
-                {
+                if (checkExisting != null && checkExisting.enabled) {
                     context.Destroy(checkExisting.id);
                 }
                 e = context.Create();
             }
-            else
-            {
+            else {
                 e = new Entity(0, Context._maxComponents);
             }
 
-            for (int componentIndex = 0; componentIndex < components.Count; componentIndex++)
-            {
+            for (int componentIndex = 0; componentIndex < components.Count; componentIndex++) {
                 e.AddComponent(ComponentIO.New_Deserialize(components[componentIndex]));
             }
 
@@ -235,8 +214,7 @@ namespace HellTrail.Core.ECS
             string[] entityTexts = Regex.Split(text, @$" ;{Environment.NewLine}", RegexOptions.Singleline);
 
             Entity[] entities = new Entity[entityTexts.Length];
-            for (int i = 0; i < entityTexts.Length; i++)
-            {
+            for (int i = 0; i < entityTexts.Length; i++) {
                 Deserialize(entityTexts[i], context);
             }
 
@@ -253,12 +231,11 @@ namespace HellTrail.Core.ECS
         {
             StringBuilder sb = new();
             sb.AppendLine($"Entity_{entity.id}{Environment.NewLine}\t{{");
-            foreach (IComponent c in entity.GetAllComponents())
-            {
+            foreach (IComponent c in entity.GetAllComponents()) {
                 sb.AppendLine($"\t\t{ComponentIO.New_Serialize(c)}");
             }
             sb.Append($"\t}} ;");
-            
+
             return sb.ToString();
         }
     }

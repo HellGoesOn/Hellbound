@@ -1,12 +1,7 @@
-﻿using HellTrail.Core.Combat.Sequencer;
+﻿using Casull.Core.Combat.Sequencer;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.Combat.Abilities
+namespace Casull.Core.Combat.Abilities
 {
     public class GrandSeal : Ability
     {
@@ -25,8 +20,7 @@ namespace HellTrail.Core.Combat.Abilities
             sequence.Add(new PlaySoundSequence("Exodia", 1));
             sequence.Add(new PlaySoundSequence("FinalFlash", 1));
             sequence.Add(new DelaySequence(90));
-            foreach (Unit target in targets)
-            {
+            foreach (Unit target in targets) {
                 sequence.Add(new DelaySequence(4));
                 sequence.Add(new DoDamageSequence(caster, target, 999, ElementalType.Almighty));
                 sequence.Add(new PlaySoundSequence("Death"));

@@ -1,16 +1,6 @@
-﻿using HellTrail.Core.Combat.Abilities.Fire;
-using HellTrail.Core.UI;
-using HellTrail.Core.UI.Elements;
-using HellTrail.Render;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Casull.Core.Combat.Abilities.Fire;
 
-namespace HellTrail.Core.Combat.Items.Consumables
+namespace Casull.Core.Combat.Items.Consumables
 {
     public class FireGem : Item
     {
@@ -26,8 +16,7 @@ namespace HellTrail.Core.Combat.Items.Consumables
 
         protected override void OnUse(Unit caster, Battle battle, List<Unit> targets)
         {
-            new Agi()
-            {
+            new Agi() {
                 hpCost = 0,
                 spCost = 0
             }.Use(caster, battle, targets, true);

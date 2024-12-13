@@ -1,21 +1,14 @@
-﻿using HellTrail.Core.Combat.Sequencer;
-using HellTrail.Core.UI;
-using Microsoft.Xna.Framework;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Casull.Core.Combat.Sequencer;
+using Casull.Core.UI;
 
-namespace HellTrail.Core.Combat.Abilities
+namespace Casull.Core.Combat.Abilities
 {
     public class Ability : ICanTarget
     {
         public string Name;
         public string Description;
         public bool aoe;
+        public bool canUseOutOfCombat;
         public ValidTargets canTarget;
         public int hpCost;
         public int spCost;
@@ -36,19 +29,19 @@ namespace HellTrail.Core.Combat.Abilities
             if (!CanCast(caster))
                 return;
 
-            UIManager.combatUI.showUsedAbilityTime = 90;
-            UIManager.combatUI.usedAbilityPanel.Visible = true;
-            UIManager.combatUI.usedAbilityText.text = Name;
             if (!useBaseStats)
                 UseAbility(caster, battle, targets);
-            else
-            {
+            else {
                 var copy = caster.GetCopy();
                 copy.SetBaseStats(caster.baseStats);
                 UseAbility(copy, battle, targets);
             }
-            battle.lastUsedAbility = this;
-
+            if (battle != null) {
+                UIManager.combatUI.showUsedAbilityTime = 90;
+                UIManager.combatUI.usedAbilityPanel.Visible = true;
+                UIManager.combatUI.usedAbilityText.text = Name;
+                battle.lastUsedAbility = this;
+            }
             caster.Stats.HP -= hpCost;
             caster.Stats.SP -= spCost;
         }
@@ -73,6 +66,11 @@ namespace HellTrail.Core.Combat.Abilities
 
         public Sequence CreateSequence(Battle battle)
         {
+            if (battle == null) {
+                var sq = new Sequence(null);
+                Main.instance.outOfBoundsSequences.Add(sq);
+                return sq;
+            };
             var seq = battle.CreateSequence(true);
             seq.source = GetType().ToString();
             return seq;

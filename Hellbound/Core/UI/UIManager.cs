@@ -1,22 +1,12 @@
-﻿using HellTrail.Core.DialogueSystem;
-using HellTrail.Core.ECS;
-using HellTrail.Core.ECS.Components;
-using HellTrail.Core.Editor;
-using HellTrail.Core.Overworld;
-using HellTrail.Core.UI.CombatUI;
-using HellTrail.Core.UI.Elements;
-using HellTrail.Render;
+﻿using Casull.Core.DialogueSystem;
+using Casull.Core.Editor;
+using Casull.Core.Overworld;
+using Casull.Core.UI.CombatUI;
+using Casull.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace HellTrail.Core.UI
+namespace Casull.Core.UI
 {
     public static class UIManager
     {
@@ -48,15 +38,14 @@ namespace HellTrail.Core.UI
 
             UIStates.Add(combatUI);
             UIStates.Add(dialogueUI);
-            
+
             UIStates.Add(overworldUI);
             //RelaunchEditor();
         }
 
         public static void RelaunchEditor()
         {
-            if (editorUI != null)
-            {
+            if (editorUI != null) {
                 editorUI.active = false;
                 editorUI.CheckSubscriptions();
             }
@@ -70,14 +59,12 @@ namespace HellTrail.Core.UI
             hoveredElement = null;
             tooltipText = "";
 
-            for(int i = 0; i < UIStates.Count; i++)
-            {
+            for (int i = 0; i < UIStates.Count; i++) {
                 var state = UIStates[i];
                 state.Update();
             }
 
-            if(Input.LMBClicked && hoveredElement != null)
-            {
+            if (Input.LMBClicked && hoveredElement != null) {
                 hoveredElement.Click();
             }
         }
@@ -87,20 +74,17 @@ namespace HellTrail.Core.UI
         public static void Draw(SpriteBatch spriteBatch)
         {
             debugText.text = "";
-            foreach (string str in showInDebug)
-            {
+            foreach (string str in showInDebug) {
                 debugText.text += str + "\n";
             }
 
-            foreach (UIState state in UIStates)
-            {
+            foreach (UIState state in UIStates) {
                 state.Draw(spriteBatch);
             }
 
             showInDebug.Clear();
 
-            if (!string.IsNullOrWhiteSpace(tooltipText))
-            {
+            if (!string.IsNullOrWhiteSpace(tooltipText)) {
                 Vector2 size = Assets.Arial.MeasureString(tooltipText) + new Vector2(16);
                 Vector2 offset = Input.UIMousePosition.Y > Renderer.UIPreferedHeight - size.Y ? new Vector2(16, -16) : new Vector2(16);
                 Renderer.DrawRect(spriteBatch, Input.UIMousePosition + offset - new Vector2(16, 8) - new Vector2(2), size + new Vector2(4), Color.White);
@@ -112,8 +96,7 @@ namespace HellTrail.Core.UI
 
         public static UIState CreateState(string id = "")
         {
-            var uiState = new UIState()
-            {
+            var uiState = new UIState() {
                 id = id
             };
             UIStates.Add(uiState);
@@ -122,6 +105,6 @@ namespace HellTrail.Core.UI
 
         public static UIState GetState(Predicate<UIState> predicate) => UIStates.Find(predicate);
 
-        public static UIState GetStateByName(string name) => GetState(x=>x.id == name);
+        public static UIState GetStateByName(string name) => GetState(x => x.id == name);
     }
 }

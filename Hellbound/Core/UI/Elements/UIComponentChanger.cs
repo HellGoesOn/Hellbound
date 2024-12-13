@@ -1,15 +1,10 @@
-﻿using HellTrail.Core.ECS;
-using HellTrail.Render;
+﻿using Casull.Core.ECS;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.UI.Elements
+namespace Casull.Core.UI.Elements
 {
     public class UIComponentChanger : UIElement
     {
@@ -21,8 +16,7 @@ namespace HellTrail.Core.UI.Elements
             font = Assets.Arial;
             this.component = component;
 
-            UIPanel drag = new UIDraggablePanel()
-            {
+            UIPanel drag = new UIDraggablePanel() {
                 size = new Vector2(300, 30)
             };
 
@@ -33,8 +27,7 @@ namespace HellTrail.Core.UI.Elements
 
             Vector2 accumulatedSize2 = new(300, 46);
 
-            for(int i = 0; i < infos.Length; i++)
-            {
+            for (int i = 0; i < infos.Length; i++) {
                 UIBorderedText text = new(infos[i].Name);
                 text.SetPosition(accumulatedSize2.X + 12, accumulatedSize2.Y);
                 accumulatedSize2.Y += font.MeasureString("M").Y + 16;
@@ -42,12 +35,10 @@ namespace HellTrail.Core.UI.Elements
             }
 
             Vector2 accumulatedSize = new(300, 40);
-            for (int i = 0; i < infos.Length; i++)
-            {
+            for (int i = 0; i < infos.Length; i++) {
                 StringBuilder sb = new();
                 sb.Append(ComponentIO.New_FieldToText(infos[i], this.component));
-                texts[i] = new UITextBox()
-                {
+                texts[i] = new UITextBox() {
                     id = $"{i}",
                     myText = Regex.Replace(sb.ToString(), "\"", ""),
                     maxCharacters = 1000
@@ -57,12 +48,10 @@ namespace HellTrail.Core.UI.Elements
                 texts[i].SetPosition(0, accumulatedSize.Y);
                 texts[i].onTextChange = OnTextChange;
                 texts[i].onTextSubmit = OnTextSubmit;
-                texts[i].onMouseEnter = (sender) =>
-                {
+                texts[i].onMouseEnter = (sender) => {
                     (sender as UITextBox).color = Color.Yellow;
                 };
-                texts[i].onMouseLeave = (sender) =>
-                {
+                texts[i].onMouseLeave = (sender) => {
                     (sender as UITextBox).color = Color.White;
                 };
 
@@ -70,11 +59,9 @@ namespace HellTrail.Core.UI.Elements
                 panel.Append(texts[i]);
             }
 
-            UIWindowButton closeButton = new(WindowButtonType.XMark, "Close", Color.Red)
-            {
+            UIWindowButton closeButton = new(WindowButtonType.XMark, "Close", Color.Red) {
                 scale = Vector2.One * 2,
-                onClick = (_) =>
-                {
+                onClick = (_) => {
                     parent.Disown(this);
                 }
             };
@@ -96,12 +83,10 @@ namespace HellTrail.Core.UI.Elements
 
             var box = (sender as UITextBox);
 
-            try
-            {
+            try {
                 ComponentIO.TextToFieldValue(infos[i], component, box.myText);
             }
-            catch
-            {
+            catch {
             }
         }
 
@@ -110,12 +95,10 @@ namespace HellTrail.Core.UI.Elements
             int i = int.Parse(sender.id);
 
             var box = (sender as UITextBox);
-            try
-            {
+            try {
                 ComponentIO.TextToFieldValue(infos[i], component, box.myText);
             }
-            catch
-            {
+            catch {
                 StringBuilder sb = new();
                 ComponentIO.New_FieldToText(infos[i], component);
                 box.myText = sb.ToString();

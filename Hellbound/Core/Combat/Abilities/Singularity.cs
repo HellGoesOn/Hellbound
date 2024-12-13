@@ -1,12 +1,7 @@
-﻿using HellTrail.Core.Combat.Sequencer;
+﻿using Casull.Core.Combat.Sequencer;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.Combat.Abilities
+namespace Casull.Core.Combat.Abilities
 {
     public class Singularity : Ability
     {
@@ -35,8 +30,7 @@ namespace HellTrail.Core.Combat.Abilities
             anim.position = caster.position;
             anim.color = Color.White;
             anim.rotation = -0.001f;
-            anim.onAnimationPlay += (_, f) =>
-            {
+            anim.onAnimationPlay += (_, f) => {
                 anim.rotation *= 1.03f;
                 anim.position += (new Vector2(160, 90) - anim.position) * 0.01f;
                 CameraManager.GetCamera.centre = new Vector2(160 + (float)Math.Sin(Main.totalTime * 2 * anim.rotation), 90 + (float)Math.Cos(Main.totalTime * 2 * anim.rotation));
@@ -49,14 +43,12 @@ namespace HellTrail.Core.Combat.Abilities
             whiteOut.timePerFrame = 460;
             whiteOut.color = Color.White;
             whiteOut.opacity = -1.0f;
-            whiteOut.onAnimationPlay += (_, f) =>
-            {
+            whiteOut.onAnimationPlay += (_, f) => {
                 caster.opacity *= 0.965f;
                 battle.bg.color = Color.Lerp(battle.bg.color, Color.Black, 0.017f);
                 whiteOut.opacity += 0.0085f;
             };
-            whiteOut.onAnimationEnd += (_, f) =>
-            {
+            whiteOut.onAnimationEnd += (_, f) => {
                 caster.opacity = 1.0f;
                 battle.bg.color = oldBgColor;
                 CameraManager.GetCamera.centre = new Vector2(160, 90);
@@ -71,12 +63,9 @@ namespace HellTrail.Core.Combat.Abilities
             seq.Add(new AddAnimationSequence(anim));
             seq.Add(new DelaySequence(180));
             seq.Add(new AddAnimationSequence(whiteOut));
-            seq.Add(new OneActionSequence(() =>
-            {
-                foreach (var target in targets)
-                {
-                    Sequence subSeq = new(battle)
-                    {
+            seq.Add(new OneActionSequence(() => {
+                foreach (var target in targets) {
+                    Sequence subSeq = new(battle) {
                         active = true
                     };
                     subSeq.Add(new MoveActorSequence(target, new Vector2(160, 90), 0.0085f));

@@ -1,4 +1,4 @@
-﻿namespace HellTrail.Core.Combat.Sequencer
+﻿namespace Casull.Core.Combat.Sequencer
 {
     public class SetActorAnimation(Unit actor, string animationName) : ISequenceAction
     {

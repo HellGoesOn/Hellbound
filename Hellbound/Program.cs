@@ -1,13 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-
-namespace HellTrail
+﻿namespace Casull
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            using (Main g = new())
-            {
+            using (Main g = new()) {
                 g.Run();
             }
         }

@@ -1,24 +1,16 @@
-﻿using HellTrail.Render;
-using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework;
 
-namespace HellTrail
+namespace Casull
 {
     public static class GameOptions
     {
         private static int resolutionMultiplier = 4;
 
-        public static int ResolutionMultiplier 
-        {
+        public static int ResolutionMultiplier {
             get => resolutionMultiplier;
-            set
-            {
+            set {
                 resolutionMultiplier = value;
-                if(resolutionMultiplier <= 0)
+                if (resolutionMultiplier <= 0)
                     resolutionMultiplier = 1;
                 ScreenWidth = 320 * resolutionMultiplier;
                 ScreenHeight = 180 * resolutionMultiplier;

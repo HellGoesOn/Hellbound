@@ -1,12 +1,7 @@
-﻿using HellTrail.Core.Combat.Sequencer;
+﻿using Casull.Core.Combat.Sequencer;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.Combat.Abilities
+namespace Casull.Core.Combat.Abilities
 {
     public class Megidolaon : Ability
     {
@@ -25,8 +20,7 @@ namespace HellTrail.Core.Combat.Abilities
             sequence.Add(new MoveActorSequence(caster, new Vector2(160, 90)));
             sequence.Add(new PlaySoundSequence("WhatDaDogDoin"));
             sequence.Add(new DelaySequence(60));
-            foreach (Unit target in targets)
-            {
+            foreach (Unit target in targets) {
                 var anim = new SpriteAnimation("TestAnimation",
                     [
                     new FrameData(0, 128, 32, 32),

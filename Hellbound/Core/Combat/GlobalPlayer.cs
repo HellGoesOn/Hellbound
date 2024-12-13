@@ -1,16 +1,10 @@
-﻿using HellTrail.Core.Combat.Abilities;
-using HellTrail.Core.Combat.Abilities.Fire;
-using HellTrail.Core.Combat.Items;
-using HellTrail.Core.Combat.Items.Consumables;
+﻿using Casull.Core.Combat.Abilities;
+using Casull.Core.Combat.Items;
+using Casull.Core.Combat.Items.Consumables;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Treeline.Core.Graphics;
 
-namespace HellTrail.Core.Combat
+namespace Casull.Core.Combat
 {
     public static class GlobalPlayer
     {
@@ -27,10 +21,6 @@ namespace HellTrail.Core.Combat
 
             protag.animations.Clear();
 
-            protag.abilities.Add(new Sukukaja());
-            protag.abilities.Add(new Sukunda());
-            protag.Stats.magic = 50;
-
             ProtagAnimations(protag);
 
             protag.resistances[ElementalType.DoT] = -0.5f;
@@ -38,23 +28,10 @@ namespace HellTrail.Core.Combat
 
 
             AddPartyMember(protag);
+            AddPartyMember(UnitDefinitions.Get("Slime"));
             //ActiveParty.Add(sidekick);
 
-            AddItem(new InfinitePizza());
-
-            AddItem(new Tomato()
-            {
-                count = 5
-            });
-
-            AddItem(new ChocolateBar()
-            {
-                count = 5
-            });
-
             AddItem(new AdrenalineShot() { count = 3 });
-            AddItem(new FireGem() { count = 3 });
-            AddItem(new TomeOfWisdom() { count = 3 });
         }
 
         public static void AddPartyMember(Unit newUnit)
@@ -67,21 +44,19 @@ namespace HellTrail.Core.Combat
         public static void DefaultBattleStations(List<Unit> units)
         {
             int i = 0;
-            for(i = units.Count-1; i >= 0; i--)
-            {
-                Unit unit = units[units.Count-1-i];
+            for (i = units.Count - 1; i >= 0; i--) {
+                Unit unit = units[units.Count - 1 - i];
                 unit.BattleStation = new Vector2(60 + 4 * i + 32 * (i % 2), 70 + 16 * i - 24 * (i % 2));
             }
         }
 
         public static void AddItem(Item newItem)
         {
-            if (_items.Any(x => x.name == newItem.name && x.count + newItem.count <= x.maxCount))
-            {
-                var item = _items.Find(x => x.name == newItem.name&& x.count + newItem.count <= x.maxCount);
+            if (_items.Any(x => x.name == newItem.name && x.count + newItem.count <= x.maxCount)) {
+                var item = _items.Find(x => x.name == newItem.name && x.count + newItem.count <= x.maxCount);
                 item.count += newItem.count;
-            } else
-            {
+            }
+            else {
                 _items.Add(newItem);
             }
         }
@@ -94,7 +69,7 @@ namespace HellTrail.Core.Combat
         // to do: create json file, pull from there instead
         public static void ProtagAnimations(Unit mc)
         {
-            SpriteAnimation idle = new("Dumbass_Idle", 
+            SpriteAnimation idle = new("Dumbass_Idle",
                 [
                 new FrameData(0, 0, 32, 32),
                 new FrameData(0, 32, 32, 32),
@@ -128,8 +103,7 @@ namespace HellTrail.Core.Combat
                 new FrameData(0, 96, 32, 32),
                 new FrameData(0, 96, 32, 32),
                 new FrameData(0, 64, 32, 32),
-                ])
-            {
+                ]) {
                 timePerFrame = 5,
                 nextAnimation = "Idle"
             };
@@ -156,16 +130,13 @@ namespace HellTrail.Core.Combat
                 new(0, 128, 32, 32),
                 new(0, 64, 32, 32),
                 new(0, 0, 32, 32),
-                ])
-            {
+                ]) {
                 timePerFrame = 6,
                 nextAnimation = "Idle",
-                onAnimationPlay = (_, f) =>
-                {
+                onAnimationPlay = (_, f) => {
                     Color[] clrs = { Color.Blue, Color.Cyan, Color.Turquoise, Color.LightBlue };
 
-                    for (int i = 0; i < 3; i++)
-                    {
+                    for (int i = 0; i < 3; i++) {
                         int xx = Main.rand.Next((int)(mc.size.X * 0.5f));
                         int yy = Main.rand.Next((int)(mc.size.Y));
                         float velX = Main.rand.Next(60, 120) * 0.001f * (Main.rand.Next(2) == 0 ? -1 : 1);
@@ -179,11 +150,9 @@ namespace HellTrail.Core.Combat
                         particle.scale = Vector2.One * Main.rand.Next(1, 3);
                     }
 
-                    if(_.currentFrame == 13)
-                    {
+                    if (_.currentFrame == 13) {
                         _.currentFrame = 14;
-                        for (int i = 0; i < 45; i++)
-                        {
+                        for (int i = 0; i < 45; i++) {
                             int xx = Main.rand.Next((int)(mc.size.X * 0.5f));
                             int yy = Main.rand.Next((int)(mc.size.Y));
                             float velX = Main.rand.Next(55, 135) * 0.01f;
@@ -199,8 +168,7 @@ namespace HellTrail.Core.Combat
                     }
                     GameOptions.MusicVolume *= 0.95f;
                 },
-                onAnimationEnd = (_, _) =>
-                {
+                onAnimationEnd = (_, _) => {
                     GameOptions.MusicVolume = GameOptions.OldMusicVolume;
                 }
             };

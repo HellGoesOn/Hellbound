@@ -1,15 +1,9 @@
-﻿using HellTrail.Core.Combat;
-using HellTrail.Render;
+﻿using Casull.Core.Combat;
+using Casull.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core
+namespace Casull.Core
 {
     public class SpriteAnimation
     {
@@ -43,15 +37,12 @@ namespace HellTrail.Core
 
         public void Update(Unit unit)
         {
-            if(++frameCounter > timePerFrame)
-            {
-                if(++currentFrame >= FrameCount)
-                {
-                    currentFrame = FrameCount-1;
+            if (++frameCounter > timePerFrame) {
+                if (++currentFrame >= FrameCount) {
+                    currentFrame = FrameCount - 1;
                     if (looping)
                         currentFrame = 0;
-                    else
-                    {
+                    else {
                         if (!finished)
                             onAnimationEnd?.Invoke(this, unit);
                         finished = true;
@@ -70,7 +61,7 @@ namespace HellTrail.Core
             finished = false;
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 scale = default)
+        public void Draw(SpriteBatch spriteBatch, Vector2 scale = default, bool asSolid = false)
         {
             if (scale == default)
                 scale = Vector2.One;
@@ -78,10 +69,10 @@ namespace HellTrail.Core
             Texture2D tex = Assets.GetTexture(texture);
             Vector2 origin = new Vector2(frameData[currentFrame].width, frameData[0].height) * 0.5f;
 
-            Renderer.Draw(tex, position, frameData[currentFrame].AsRect, color * opacity, rotation, origin, frameData[currentFrame].scale * scale, SpriteEffects.None, depth);
+            Renderer.Draw(tex, position, frameData[currentFrame].AsRect, color * opacity, rotation, origin, frameData[currentFrame].scale * scale, SpriteEffects.None, depth, asSolid);
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 position, Color color, float rotation, Vector2 scale = default, float? depth = null)
+        public void Draw(SpriteBatch spriteBatch, Vector2 position, Color color, float rotation, Vector2 scale = default, float? depth = null, bool asSolid = false)
         {
             depth ??= this.depth;
 
@@ -91,13 +82,12 @@ namespace HellTrail.Core
             Texture2D tex = Assets.GetTexture(texture);
             Vector2 origin = new Vector2(frameData[currentFrame].width, frameData[0].height) * 0.5f;
 
-            Renderer.Draw(tex, position, frameData[currentFrame].AsRect, color * opacity, rotation, origin, frameData[currentFrame].scale * scale, SpriteEffects.None, (float)depth);
+            Renderer.Draw(tex, position, frameData[currentFrame].AsRect, color * opacity, rotation, origin, frameData[currentFrame].scale * scale, SpriteEffects.None, (float)depth, asSolid);
         }
 
         public SpriteAnimation GetCopy()
         {
-            SpriteAnimation anim = new(texture, frameData)
-            {
+            SpriteAnimation anim = new(texture, frameData) {
                 timePerFrame = this.timePerFrame,
                 nextAnimation = this.nextAnimation,
                 looping = this.looping,
@@ -123,13 +113,13 @@ namespace HellTrail.Core
             this.scale = scale;
             if (scale == default)
                 this.scale = Vector2.One;
-            this.x = x; 
+            this.x = x;
             this.y = y;
-            this.width = width; 
+            this.width = width;
             this.height = height;
         }
 
-        public readonly Rectangle AsRect => new (x, y, width, height);
+        public readonly Rectangle AsRect => new(x, y, width, height);
 
         public override string ToString()
         {
@@ -140,11 +130,10 @@ namespace HellTrail.Core
         {
             string[] values = s.Split(' ');
 
-            if (!int.TryParse(values[0], out int x) 
+            if (!int.TryParse(values[0], out int x)
                 || !int.TryParse(values[1], out int y)
                 || !int.TryParse(values[2], out int width)
-                || !int.TryParse(values[3], out int height))
-            {
+                || !int.TryParse(values[3], out int height)) {
                 frameData = null;
                 return false;
             }

@@ -1,16 +1,9 @@
-﻿using HellTrail.Core;
-using HellTrail.Core.UI;
-using HellTrail.Extensions;
+﻿using Casull.Core;
+using Casull.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Render
+namespace Casull.Render
 {
     public static class Renderer
     {
@@ -45,7 +38,7 @@ namespace HellTrail.Render
             gd.SetRenderTarget(renderTarget);
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
             spriteBatch.Draw(WorldTarget, new Rectangle(0, 0, gdm.PreferredBackBufferWidth, gdm.PreferredBackBufferHeight), Color.White);
-            if(withInterface)
+            if (withInterface)
                 spriteBatch.Draw(UITarget, new Rectangle(0, 0, gdm.PreferredBackBufferWidth, gdm.PreferredBackBufferHeight), Color.White);
             spriteBatch.End();
 
@@ -130,8 +123,7 @@ namespace HellTrail.Render
         {
             _drawData.Sort(SortDrawData);
             StartSpriteBatch(sb, state: SamplerState.PointWrap, sortMode: SpriteSortMode.Deferred);
-            for (int i = 0; i < _drawData.Count; i++)
-            {
+            for (int i = 0; i < _drawData.Count; i++) {
                 DrawData dd = _drawData[i];
 
                 //UIManager.Debug($"{dd.texture.Name} :{dd.color.A} : {dd.color.ShaderFix(dd.solid).A}");

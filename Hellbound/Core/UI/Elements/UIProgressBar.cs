@@ -1,13 +1,8 @@
-﻿using HellTrail.Render;
+﻿using Casull.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.UI.Elements
+namespace Casull.Core.UI.Elements
 {
     public class UIProgressBar : UIElement
     {
@@ -29,8 +24,7 @@ namespace HellTrail.Core.UI.Elements
 
         public override void OnUpdate()
         {
-            if (currentValue != value)
-            {
+            if (currentValue != value) {
                 currentValue = MathHelper.Lerp(currentValue, value, moveSpeed);
 
                 if (Math.Abs(value - currentValue) <= 0.1f)
@@ -41,7 +35,7 @@ namespace HellTrail.Core.UI.Elements
 
         public override void OnDraw(SpriteBatch spriteBatch)
         {
-            Renderer.DrawRect(spriteBatch, GetPosition()-new Vector2(bgSize*0.5f), new Vector2(size.X, size.Y) + new Vector2(bgSize), bgColor, 0, Rotation);
+            Renderer.DrawRect(spriteBatch, GetPosition() - new Vector2(bgSize * 0.5f), new Vector2(size.X, size.Y) + new Vector2(bgSize), bgColor, 0, Rotation);
             Renderer.DrawRect(spriteBatch, GetPosition(), new Vector2(CalcValue(), size.Y), fillColor, 0, Rotation);
         }
 

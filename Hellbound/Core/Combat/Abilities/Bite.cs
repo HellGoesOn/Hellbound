@@ -1,12 +1,7 @@
-﻿using HellTrail.Core.Combat.Sequencer;
+﻿using Casull.Core.Combat.Sequencer;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.Combat.Abilities
+namespace Casull.Core.Combat.Abilities
 {
     public class Bite : Ability
     {

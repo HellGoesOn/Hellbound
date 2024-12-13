@@ -1,6 +1,6 @@
-﻿using HellTrail.Core.UI;
+﻿using Casull.Core.UI;
 
-namespace HellTrail.Core.DialogueSystem
+namespace Casull.Core.DialogueSystem
 {
     public class Dialogue
     {
@@ -18,9 +18,8 @@ namespace HellTrail.Core.DialogueSystem
             pages[currentPage].Update(this);
         }
 
-        public DialoguePage CurrentPage
-        { 
-            get => pages[currentPage]; 
+        public DialoguePage CurrentPage {
+            get => pages[currentPage];
         }
 
         public static Dialogue Create()

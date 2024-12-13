@@ -3,13 +3,8 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using SpriteFontPlus;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail
+namespace Casull
 {
     public static class Assets
     {
@@ -39,22 +34,19 @@ namespace HellTrail
 
             Textures.Clear();
 
-            foreach (string song in songs)
-            {
+            foreach (string song in songs) {
                 var songPath = Path.GetFileNameWithoutExtension(song);
                 Song resource = main.Content.Load<Song>("Assets/Audio/Music/" + songPath);
                 _songs.Add(songPath, resource);
             }
 
-            foreach (string sound in sounds)
-            {
+            foreach (string sound in sounds) {
                 var soundPath = Path.GetFileNameWithoutExtension(sound);
                 SoundEffect resource = main.Content.Load<SoundEffect>("Assets/Audio/Sounds/" + soundPath);
                 _sounds.Add(soundPath, resource);
             }
 
-            foreach (string texture in textures)
-            {
+            foreach (string texture in textures) {
                 var texturePath = Path.GetFileNameWithoutExtension(texture);
                 LoadTexture(texturePath, texture, main);
             }
@@ -92,7 +84,7 @@ namespace HellTrail
             );
 
             DefaultFont = fontBakeResult.CreateSpriteFont(main.GraphicsDevice);
-            
+
             fontBakeResult = TtfFontBaker.Bake(File.ReadAllBytes(Environment.CurrentDirectory + $"\\Assets\\{fontName}.ttf"),
                 30,
                 1024,
@@ -128,18 +120,15 @@ namespace HellTrail
 
         public static void Unload()
         {
-            foreach(Texture2D tex in Textures.Values)
-            {
+            foreach (Texture2D tex in Textures.Values) {
                 tex.Dispose();
             }
 
-            foreach (var song in _songs)
-            {
+            foreach (var song in _songs) {
                 song.Value.Dispose();
             }
 
-            foreach (var sound in _sounds)
-            {
+            foreach (var sound in _sounds) {
                 sound.Value.Dispose();
             }
 
@@ -155,8 +144,7 @@ namespace HellTrail
 
             str.Dispose();
 
-            if (loadedTexture != null)
-            {
+            if (loadedTexture != null) {
                 Textures.Add(id, loadedTexture);
                 return loadedTexture;
             }
@@ -166,8 +154,7 @@ namespace HellTrail
 
         public static Song GetSong(string v)
         {
-            if (_songs.TryGetValue(v, out Song r))
-            {
+            if (_songs.TryGetValue(v, out Song r)) {
                 return r;
             }
 
@@ -176,8 +163,7 @@ namespace HellTrail
 
         public static SoundEffect GetSound(string id)
         {
-            if (_sounds.TryGetValue(id, out SoundEffect result))
-            {
+            if (_sounds.TryGetValue(id, out SoundEffect result)) {
                 return result;
             }
 
@@ -188,8 +174,7 @@ namespace HellTrail
         {
             if (string.IsNullOrEmpty(id))
                 return Textures["Pixel"];
-            if(Textures.TryGetValue(id, out Texture2D texture))
-            {
+            if (Textures.TryGetValue(id, out Texture2D texture)) {
                 return texture;
             }
             return Textures["Pixel"];

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace HellTrail.Core.Combat.Sequencer
+namespace Casull.Core.Combat.Sequencer
 {
     public class HealTargetSqequence(Unit target, int amount) : ISequenceAction
     {
@@ -16,7 +16,7 @@ namespace HellTrail.Core.Combat.Sequencer
             target.Stats.HP = Math.Min(target.Stats.HP + amount, target.Stats.MaxHP);
             DamageNumber damageNumber = new(DamageType.Normal, $"+{amount}", target.position);
             damageNumber.color = Color.Lime;
-            battle.damageNumbers.Add(damageNumber);
+            battle?.damageNumbers.Add(damageNumber);
         }
     }
 }

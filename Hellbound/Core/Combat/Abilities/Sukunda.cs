@@ -1,14 +1,8 @@
-﻿using HellTrail.Core.Combat.Sequencer;
-using HellTrail.Core.Combat.Status;
-using HellTrail.Core.Combat.Status.Debuffs;
-using HellTrail.Core.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Casull.Core.Combat.Sequencer;
+using Casull.Core.Combat.Status;
+using Casull.Core.UI;
 
-namespace HellTrail.Core.Combat.Abilities
+namespace Casull.Core.Combat.Abilities
 {
     public class Sukunda : Ability
     {
@@ -23,23 +17,21 @@ namespace HellTrail.Core.Combat.Abilities
             Sequence sequence = CreateSequence(battle);
             sequence.Add(new SetActorAnimation(caster, "Cast"));
             sequence.Delay(60);
-            sequence.CustomAction(() =>
-                {
-                    //SoundEngine.PlaySound("SolarFlare");
-                    SoundEngine.PlaySound("Flash");
+            sequence.CustomAction(() => {
+                //SoundEngine.PlaySound("SolarFlare");
+                SoundEngine.PlaySound("Flash");
 
-                if (targets[0].HasStatus<SukukajaBuff>())
-                {
+                if (targets[0].HasStatus<SukukajaBuff>()) {
                     UIManager.combatUI.SetAbilityUsed("Accuracy & Evasion back to normal");
                     targets[0].RemoveAllEffects<SukukajaBuff>();
-                        sequence.Delay(60);
-                    } else
-                    {
-                        UIManager.combatUI.SetAbilityUsed("Accuracy & Evasion decreased!");
-                        sequence.AddStatusEffect(targets[0], new SukundaDebuff(), 600, canExtend: true);
-                        sequence.Delay(60);
-                    }
-                });
+                    sequence.Delay(60);
+                }
+                else {
+                    UIManager.combatUI.SetAbilityUsed("Accuracy & Evasion decreased!");
+                    sequence.AddStatusEffect(targets[0], new SukundaDebuff(), 600, canExtend: true);
+                    sequence.Delay(60);
+                }
+            });
         }
     }
 }

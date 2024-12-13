@@ -1,19 +1,11 @@
-﻿using HellTrail.Core.Combat;
-using HellTrail.Core.Combat.Status;
-using HellTrail.Core.UI.Elements;
-using HellTrail.Render;
+﻿using Casull.Core.Combat;
+using Casull.Core.UI.Elements;
+using Casull.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Treeline.Core.Graphics;
 
-namespace HellTrail.Core.UI.CombatUI
+namespace Casull.Core.UI.CombatUI
 {
     public class CombatUIState : UIState
     {
@@ -51,8 +43,7 @@ namespace HellTrail.Core.UI.CombatUI
         public CombatUIState()
         {
 
-            for(int i = 0; i < 5; i++)
-            {
+            for (int i = 0; i < 5; i++) {
                 var newBar = new UIProgressBar(new Vector2(100, 8), 0);
                 newBar.Visible = false;
                 newBar.fillColor = Color.LightSeaGreen;
@@ -69,8 +60,7 @@ namespace HellTrail.Core.UI.CombatUI
 
             levelUpElements = [];
             id = "combatUIState";
-            teamStatus = new()
-            {
+            teamStatus = new() {
                 //fillColor = Color.White * 0f,
                 //outlineColor = Color.White * 0f,
                 size = new Vector2(500, 140),
@@ -98,8 +88,7 @@ namespace HellTrail.Core.UI.CombatUI
             //    Position = new Vector2(16)
             //};
 
-            skillPanel = new UIPanel()
-            {
+            skillPanel = new UIPanel() {
                 size = new Vector2(400, 140),
             };
             skillPanel.SetPosition(16, Renderer.UIPreferedHeight - 150);
@@ -111,8 +100,7 @@ namespace HellTrail.Core.UI.CombatUI
             skillPanel.Append(skillDescription);
             skillPanel.Append(skillCost);
 
-            var panel = new UIPanel()
-            {
+            var panel = new UIPanel() {
                 size = new Vector2(Renderer.UIPreferedWidth - 8, 40),
             };
             panel.SetPosition(4, 4);
@@ -127,15 +115,13 @@ namespace HellTrail.Core.UI.CombatUI
             acceleration = 1;
             const string text = "1 MORE";
 
-            oneMorePanel = new()
-            {
+            oneMorePanel = new() {
                 fillColor = Color.Black,
                 outlineColor = Color.White,
-                size = new Vector2(Assets.CombatMenuFont.MeasureString(text).X * 1.25f, Assets.CombatMenuFont.MeasureString(text).Y*2) 
+                size = new Vector2(Assets.CombatMenuFont.MeasureString(text).X * 1.25f, Assets.CombatMenuFont.MeasureString(text).Y * 2)
             };
 
-            var textElement = new UIBorderedText(text)
-            {
+            var textElement = new UIBorderedText(text) {
                 font = Assets.CombatMenuFont,
                 origin = Assets.CombatMenuFont.MeasureString(text) * 0.5f
             };
@@ -153,15 +139,13 @@ namespace HellTrail.Core.UI.CombatUI
 
         public void CreatePortraits(Battle battle)
         {
-            foreach(UICombatPortrait p in portraits)
-            {
+            foreach (UICombatPortrait p in portraits) {
                 Disown(p);
             }
             portraits.Clear();
 
             float off = 0;
-            foreach (var unit in battle.playerParty)
-            {
+            foreach (var unit in battle.playerParty) {
                 UICombatPortrait newPortrait = new UICombatPortrait(unit.portraitCombat, unit.Stats.MaxHP, unit.Stats.MaxSP);
                 newPortrait.SetPosition(Renderer.UIPreferedWidth - 128 * battle.playerParty.Count + off, Renderer.UIPreferedHeight - 160);
                 off += 120;
@@ -177,8 +161,7 @@ namespace HellTrail.Core.UI.CombatUI
             }
 
             int index = 0;
-            foreach(var unit in battle.units.Where(x=>x.team == Team.Enemy))
-            {
+            foreach (var unit in battle.units.Where(x => x.team == Team.Enemy)) {
                 enemyHPBars[index].SetPosition(unit.BattleStation * 4 + new Vector2(-16, 40));
                 enemyHPBars[index].value = unit.Stats.HP;
                 enemyHPBars[index].maxValue = unit.Stats.MaxHP;
@@ -194,22 +177,18 @@ namespace HellTrail.Core.UI.CombatUI
         public override void Update()
         {
             var state = Main.instance.GetGameState();
-            visible = active =  state is Battle;
+            visible = active = state is Battle;
 
-            if (!active)
-            {
+            if (!active) {
                 return;
             }
 
-            if(levelUpElements.Count > 0 && showLevelUps)
-            {
-                if(GetElementById("LevelUp") == null)
-                {
+            if (levelUpElements.Count > 0 && showLevelUps) {
+                if (GetElementById("LevelUp") == null) {
                     Append(levelUpElements[0]);
                 }
 
-                if(Input.PressedKey([Keys.E, Keys.Enter]))
-                {
+                if (Input.PressedKey([Keys.E, Keys.Enter])) {
                     Disown(levelUpElements[0]);
                     levelUpElements.RemoveAt(0);
                 }
@@ -223,8 +202,7 @@ namespace HellTrail.Core.UI.CombatUI
             string partyStatus = "";
             string partyHP = "";
             string partySP = "";
-            foreach(Unit unit in (state as Battle).playerParty)
-            {
+            foreach (Unit unit in (state as Battle).playerParty) {
                 partyStatus += $"[ {unit.Stats.level} ]{(unit.name)}\n";
                 partyHP += $"HP: {unit.Stats.HP}/{unit.Stats.MaxHP}\n";
                 partySP += $"SP: {unit.Stats.SP}/{unit.Stats.MaxSP}\n";
@@ -234,8 +212,7 @@ namespace HellTrail.Core.UI.CombatUI
             teamHPText.text = partyHP;
             teamSPText.text = partySP;
 
-            if(showUsedAbilityTime > 0)
-            {
+            if (showUsedAbilityTime > 0) {
                 showUsedAbilityTime--;
                 var textSize = Assets.DefaultFont.MeasureString(usedAbilityText.text);
                 usedAbilityPanel.size = new Vector2(4 + textSize.X * 1.5f, textSize.Y * 2);
@@ -247,20 +224,18 @@ namespace HellTrail.Core.UI.CombatUI
                     usedAbilityPanel.Visible = false;
             }
 
-            if(isRunning)
-            {
+            if (isRunning) {
                 float xMin = 0;
                 float xMax = Renderer.UIPreferedWidth;
                 float rescaled = -1 + 2 * (oneMorePanel.GetPosition().X - xMin) / (xMax - xMin);
 
-                float speed = (rescaled*rescaled)*45+acceleration;
+                float speed = (rescaled * rescaled) * 45 + acceleration;
 
-                if(oneMorePanel.GetPosition().X > xMax * 0.5f - 120)
+                if (oneMorePanel.GetPosition().X > xMax * 0.5f - 120)
                     acceleration *= 1.2f;
                 oneMorePanel.SetPosition(oneMorePanel.GetPosition() + new Vector2(speed, 0));
 
-                if (oneMorePanel.GetPosition().X >= Renderer.UIPreferedWidth)
-                {
+                if (oneMorePanel.GetPosition().X >= Renderer.UIPreferedWidth) {
                     oneMorePanel.SetPosition(basePosition);
                     acceleration = 1f;
                     isRunning = false;
@@ -272,8 +247,7 @@ namespace HellTrail.Core.UI.CombatUI
         {
             IGameState state = Main.instance.GetGameState();
 
-            if (state is Battle battle)
-            {
+            if (state is Battle battle) {
                 DrawUI(spriteBatch, battle);
             }
 
@@ -287,8 +261,7 @@ namespace HellTrail.Core.UI.CombatUI
 
             skillPanel.Visible = activeBattle.menus.Count > 0 && !activeBattle.isPickingTarget;
 
-            foreach (Unit unit in activeBattle.units)
-            {
+            foreach (Unit unit in activeBattle.units) {
                 //    string buffs = "";
 
                 //    foreach (StatusEffect fx in unit.statusEffects)
@@ -300,25 +273,21 @@ namespace HellTrail.Core.UI.CombatUI
                 //    Vector2 finalPos = new Vector2((int)adjPos.X, (int)(adjPos.Y + 64));
                 //    spriteBatch.DrawBorderedString(Assets.SmallFont, buffs, finalPos, Color.White, Color.Black, 0f, orig, Vector2.One, SpriteEffects.None, 0);
 
-                if (activeBattle.isPickingTarget && activeBattle.TargetingWith != null)
-                {
+                if (activeBattle.isPickingTarget && activeBattle.TargetingWith != null) {
                     var targets = activeBattle.TryGetTargets(activeBattle.TargetingWith);
 
-                    if (targets.Contains(unit))
-                    {
+                    if (targets.Contains(unit)) {
                         var position = unit.position * 4;
                         spriteBatch.Draw(Assets.GetTexture("Cursor3"), new Vector2(position.X - 40, position.Y) + sway, null, Color.White, 0f, new Vector2(10, 0), 3f, SpriteEffects.None, 0f);
                     }
                 }
             }
 
-            foreach (var p in portraits)
-            {
+            foreach (var p in portraits) {
                 p.penisEnlargmentPills = activeBattle.ActingUnit != null && activeBattle.ActingUnit.portraitCombat == p.portrait;
             }
 
-            for (int i = 0; i < activeBattle.playerParty.Count; i++)
-            {
+            for (int i = 0; i < activeBattle.playerParty.Count; i++) {
                 var unit = activeBattle.playerParty[i];
 
                 portraits[i].penisEnlargmentPills = activeBattle.ActingUnit == unit && unit.portraitCombat == portraits[i].portrait;
@@ -362,8 +331,7 @@ namespace HellTrail.Core.UI.CombatUI
             //    }
             //}
 
-            foreach (DamageNumber number in activeBattle.damageNumbers)
-            {
+            foreach (DamageNumber number in activeBattle.damageNumbers) {
                 number.Draw(spriteBatch);
             }
 
@@ -377,12 +345,11 @@ namespace HellTrail.Core.UI.CombatUI
             //}
 
             int enemyHpBarIndex = 0;
-            foreach (var unit in activeBattle.units.Where(x => x.team == Team.Enemy))
-            {
+            foreach (var unit in activeBattle.units.Where(x => x.team == Team.Enemy)) {
                 var targetWith = activeBattle.TargetingWith;
                 enemyHPBars[enemyHpBarIndex].value = unit.Stats.HP;
                 enemyHPBars[enemyHpBarIndex].maxValue = unit.Stats.MaxHP;
-                enemyHPBars[enemyHpBarIndex].Visible = (activeBattle.unitsHitLastRound.Contains(unit) 
+                enemyHPBars[enemyHpBarIndex].Visible = (activeBattle.unitsHitLastRound.Contains(unit)
                     || (activeBattle.isPickingTarget && targetWith != null &&
                     (targetWith.CanTarget() == ValidTargets.Enemy
                     || targetWith.CanTarget() == ValidTargets.All

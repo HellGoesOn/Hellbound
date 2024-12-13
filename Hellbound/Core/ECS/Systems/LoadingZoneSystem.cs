@@ -1,19 +1,14 @@
-﻿using HellTrail.Core.ECS.Components;
-using HellTrail.Core.Overworld;
-using HellTrail.Render;
+﻿using Casull.Core.ECS.Components;
+using Casull.Core.Overworld;
+using Casull.Render;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.ECS
+namespace Casull.Core.ECS
 {
     public class LoadingZoneSystem : IExecute
     {
         readonly Group<Entity> _group;
-        public LoadingZoneSystem(Context context) 
+        public LoadingZoneSystem(Context context)
         {
             _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(LoadingZone), typeof(HasCollidedMarker)));
         }
@@ -22,8 +17,7 @@ namespace HellTrail.Core.ECS
         {
             var entities = _group.Entities;
 
-            for (int i = 0; i < entities.Count; i++)
-            {
+            for (int i = 0; i < entities.Count; i++) {
                 var entity = entities[i];
                 var id = entity.GetComponent<LoadingZone>();
                 var playerId = entity.GetComponent<HasCollidedMarker>();
@@ -33,8 +27,7 @@ namespace HellTrail.Core.ECS
                 if (!context.entities[playerId.otherId].HasComponent<PlayerMarker>())
                     continue;
 
-                if (gameState is World world)
-                {
+                if (gameState is World world) {
                     var dir = id.direction;
                     if (dir == Vector2.Zero)
                         dir = Vector2.UnitY;
@@ -43,8 +36,7 @@ namespace HellTrail.Core.ECS
                     Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes", id.nextZone);
                     var trans = Main.instance.ActiveWorld.context.entities[0].GetComponent<Transform>();
 
-                    if (id.newPosition != default)
-                    {
+                    if (id.newPosition != default) {
                         trans.position = id.newPosition;
                     }
 

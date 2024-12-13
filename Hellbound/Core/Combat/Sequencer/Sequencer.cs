@@ -1,15 +1,7 @@
-﻿using HellTrail.Core.Combat.Status;
-using HellTrail.Core.UI;
+﻿using Casull.Core.Combat.Status;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace HellTrail.Core.Combat.Sequencer
+namespace Casull.Core.Combat.Sequencer
 {
     public class Sequence
     {
@@ -46,10 +38,8 @@ namespace HellTrail.Core.Combat.Sequencer
 
             Actions[currentAction].Update(Actors, battle);
 
-            if (Actions[currentAction].IsFinished())
-            {
-                if (++currentAction >= Actions.Count)
-                {
+            if (Actions[currentAction].IsFinished()) {
+                if (++currentAction >= Actions.Count) {
                     isFinished = true;
                     currentAction = 0;
                 }

@@ -1,11 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.Combat.Items.Consumables
+namespace Casull.Core.Combat.Items.Consumables
 {
     public class Thunderfury : Item
     {
@@ -18,8 +13,7 @@ namespace HellTrail.Core.Combat.Items.Consumables
             //iconRotation = MathHelper.PiOver4;
             iconOrigin = new Vector2(26, 24);
 
-            onViewed = (item) =>
-            {
+            onViewed = (item) => {
                 item.iconScale *= 1.05f;
             };
         }

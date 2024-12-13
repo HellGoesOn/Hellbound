@@ -1,13 +1,8 @@
-﻿using HellTrail.Render;
+﻿using Casull.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.UI
+namespace Casull.Core.UI
 {
     public class UIPanel : UIElement
     {

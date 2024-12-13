@@ -1,15 +1,8 @@
-﻿using HellTrail.Core;
-using HellTrail.Render;
+﻿using Casull.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail
+namespace Casull
 {
     public partial class Input
     {
@@ -34,28 +27,24 @@ namespace HellTrail
             Keys[] oldKeys = _oldKBState.GetPressedKeys();
             MouseState state = Mouse.GetState();
 
-            if (Main.instance.IsActive)
-            {
+            if (Main.instance.IsActive) {
                 HandleMouse(state);
 
-                for (int i = 0; i < keys.Length; i++)
-                {
+                for (int i = 0; i < keys.Length; i++) {
                     if (oldKeys.Length <= 0 || !oldKeys.Contains(keys[i]))
                         OnKeyPressed?.Invoke(keys[i]);
                 }
 
-                for (int i = 0; i < keys.Length; i++)
-                {
+                for (int i = 0; i < keys.Length; i++) {
                     OnKeyHeld?.Invoke(keys[i]);
                 }
 
-                for (int i = 0; i < oldKeys.Length; i++)
-                {
+                for (int i = 0; i < oldKeys.Length; i++) {
                     if (keys.Length <= 0 || !keys.Contains(oldKeys[i]))
                         OnKeyReleased?.Invoke(oldKeys[i]);
                 }
             }
-      
+
             //_oldPos = ScaledMousePos;
             _oldMBState = Mouse.GetState();
             _oldKBState = Keyboard.GetState();
@@ -63,73 +52,59 @@ namespace HellTrail
 
         private static void HandleMouse(MouseState state)
         {
-            if(state.ScrollWheelValue != _oldMBState.ScrollWheelValue)
-            {
+            if (state.ScrollWheelValue != _oldMBState.ScrollWheelValue) {
                 OnMouseWheel?.Invoke(state.ScrollWheelValue, _oldMBState.ScrollWheelValue);
             }
 
-            if (state.LeftButton == ButtonState.Pressed && _oldMBState.LeftButton == ButtonState.Released)
-            {
+            if (state.LeftButton == ButtonState.Pressed && _oldMBState.LeftButton == ButtonState.Released) {
                 OnMousePressed?.Invoke(MouseButton.Left);
             }
 
-            if (state.RightButton == ButtonState.Pressed && _oldMBState.RightButton == ButtonState.Released)
-            {
+            if (state.RightButton == ButtonState.Pressed && _oldMBState.RightButton == ButtonState.Released) {
                 OnMousePressed?.Invoke(MouseButton.Right);
             }
 
-            if (state.MiddleButton == ButtonState.Pressed && _oldMBState.MiddleButton == ButtonState.Released)
-            {
+            if (state.MiddleButton == ButtonState.Pressed && _oldMBState.MiddleButton == ButtonState.Released) {
                 OnMousePressed?.Invoke(MouseButton.Middle);
             }
 
-            if(state.LeftButton == ButtonState.Pressed)
-            {
+            if (state.LeftButton == ButtonState.Pressed) {
                 OnMouseHeld?.Invoke(MouseButton.Left);
             }
 
-            if(state.RightButton == ButtonState.Pressed)
-            {  
+            if (state.RightButton == ButtonState.Pressed) {
                 OnMouseHeld?.Invoke(MouseButton.Right);
             }
 
-            if(state.MiddleButton == ButtonState.Pressed)
-            {
+            if (state.MiddleButton == ButtonState.Pressed) {
                 OnMouseHeld?.Invoke(MouseButton.Middle);
             }
 
-            if (state.LeftButton == ButtonState.Released && _oldMBState.LeftButton == ButtonState.Pressed)
-            {
+            if (state.LeftButton == ButtonState.Released && _oldMBState.LeftButton == ButtonState.Pressed) {
                 OnMouseReleased?.Invoke(MouseButton.Left);
             }
 
-            if (state.RightButton == ButtonState.Released && _oldMBState.RightButton == ButtonState.Pressed)
-            {
+            if (state.RightButton == ButtonState.Released && _oldMBState.RightButton == ButtonState.Pressed) {
                 OnMouseReleased?.Invoke(MouseButton.Right);
             }
 
-            if (state.MiddleButton == ButtonState.Released && _oldMBState.MiddleButton == ButtonState.Pressed)
-            {
+            if (state.MiddleButton == ButtonState.Released && _oldMBState.MiddleButton == ButtonState.Pressed) {
                 OnMouseReleased?.Invoke(MouseButton.Middle);
             }
         }
 
         public static bool IsWindowActive => Main.instance.IsActive;
 
-        public static Vector2 Adjustment
-            {
-            get
-            {
+        public static Vector2 Adjustment {
+            get {
                 var mx = Main.instance.gdm.PreferredBackBufferWidth / Renderer.PreferedWidth;
                 var my = Main.instance.gdm.PreferredBackBufferHeight / Renderer.PreferedHeight;
                 return new Vector2(mx, my);
             }
-            }
+        }
 
-        public static Vector2 MousePosition
-        {
-            get
-            {
+        public static Vector2 MousePosition {
+            get {
                 MouseState state = Mouse.GetState();
                 var adjusted = new Vector2(state.X, state.Y);
                 var gameState = Main.instance.GetGameState();
@@ -139,10 +114,8 @@ namespace HellTrail
             }
         }
 
-        public static Vector2 UIMousePosition
-        {
-            get
-            {
+        public static Vector2 UIMousePosition {
+            get {
                 MouseState state = Mouse.GetState();
                 float mx = Main.instance.gdm.PreferredBackBufferWidth / (float)Renderer.UIPreferedWidth;
                 float my = Main.instance.gdm.PreferredBackBufferHeight / (float)Renderer.UIPreferedHeight;

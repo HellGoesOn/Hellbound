@@ -1,17 +1,12 @@
-﻿using HellTrail.Core.UI;
+﻿using Casull.Core.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.Combat.Status
+namespace Casull.Core.Combat.Status
 {
     public class SukundaDebuff : StatusEffect
     {
-        public SukundaDebuff() 
+        public SukundaDebuff()
         {
             name = "Sukunda";
             description = "Lowered accuracy";

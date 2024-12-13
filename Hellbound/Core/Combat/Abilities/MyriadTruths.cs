@@ -1,12 +1,7 @@
-﻿using HellTrail.Core.Combat.Sequencer;
+﻿using Casull.Core.Combat.Sequencer;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.Combat.Abilities
+namespace Casull.Core.Combat.Abilities
 {
     public class MyriadTruths : Ability
     {
@@ -26,12 +21,9 @@ namespace HellTrail.Core.Combat.Abilities
             sequence.Add(new MoveActorSequence(caster, new Vector2(160, 90)));
             sequence.Add(new SetActorAnimation(caster, "Cast"));
             sequence.Add(new DelaySequence(60));
-            sequence.Add(new OneActionSequence(() =>
-            {
-                foreach (Unit target in targets)
-                {
-                    Sequence subSeq = new(battle)
-                    {
+            sequence.Add(new OneActionSequence(() => {
+                foreach (Unit target in targets) {
+                    Sequence subSeq = new(battle) {
                         active = true
                     };
                     subSeq.Add(new DoDamageSequence(caster, target, 25, ElementalType.Almighty));

@@ -1,15 +1,8 @@
-﻿using HellTrail.Core.ECS.Components;
-using HellTrail.Core.Overworld;
-using HellTrail.Extensions;
-using HellTrail.Render;
+﻿using Casull.Core.ECS.Components;
+using Casull.Core.Overworld;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.ECS
+namespace Casull.Core.ECS
 {
     public class TileCollisionSystem : IExecute
     {
@@ -23,8 +16,7 @@ namespace HellTrail.Core.ECS
         public void Execute(Context context)
         {
             var entities = _group.Entities;
-            for (int i = 0; i < entities.Count; i++)
-            {
+            for (int i = 0; i < entities.Count; i++) {
                 const int TILE_SIZE = DisplayTileLayer.TILE_SIZE;
                 var entity = entities[i];
 
@@ -51,8 +43,7 @@ namespace HellTrail.Core.ECS
                     new(-1, 1)
                 };
 
-                for (int k = 0; k < tilesToCheck.Length; k++)
-                {
+                for (int k = 0; k < tilesToCheck.Length; k++) {
                     Vector2 tilePosition = (floored + tilesToCheck[k]);
 
                     if (tilePosition.X < 0 || tilePosition.X >= tileMap.width
@@ -61,7 +52,7 @@ namespace HellTrail.Core.ECS
 
                     bool solidTile = tileMap.GetTileElevation((int)tilePosition.X, (int)tilePosition.Y) != transform.layer;
 
-                    Color clr =  solidTile ? Color.Red : Color.Lime;
+                    Color clr = solidTile ? Color.Red : Color.Lime;
 
                     float entityMinX = transform.position.X - box.origin.X;
                     float entityMaxX = transform.position.X - box.origin.X + box.width;
@@ -71,16 +62,14 @@ namespace HellTrail.Core.ECS
                     float tileMinX = tilePosition.X * TILE_SIZE;
                     float tileMaxX = tilePosition.X * TILE_SIZE + TILE_SIZE;
                     float tileMinY = tilePosition.Y * TILE_SIZE;
-                    float tileMaxY = tilePosition.Y *TILE_SIZE + TILE_SIZE;
+                    float tileMaxY = tilePosition.Y * TILE_SIZE + TILE_SIZE;
 
-                    if (solidTile)
-                    {
+                    if (solidTile) {
                         bool xAxisCollision = !(entityMaxX < tileMinX || tileMaxX < entityMinX);
                         bool yAxisCollision = !(entityMaxY < tileMinY || tileMaxY < entityMinY);
 
 
-                        if (solidTile && xAxisCollision && yAxisCollision)
-                        {
+                        if (solidTile && xAxisCollision && yAxisCollision) {
                             clr = Color.Orange;
 
                             // Determine which side of the entity collided
@@ -90,26 +79,23 @@ namespace HellTrail.Core.ECS
                             float overlapBottom = tileMaxY - entityMinY;
 
                             // Resolve the collision by determining which overlap is smallest
-                            if (overlapLeft < overlapRight && overlapLeft < overlapTop && overlapLeft < overlapBottom)
-                            {
+                            if (overlapLeft < overlapRight && overlapLeft < overlapTop && overlapLeft < overlapBottom) {
                                 // Collision on the left side, push entity right
                                 transform.position.X = tileMinX - box.width + box.origin.X;
                                 velocity.X = 0;
-                            } else if (overlapRight < overlapLeft && overlapRight < overlapTop && overlapRight < overlapBottom)
-                            {
+                            }
+                            else if (overlapRight < overlapLeft && overlapRight < overlapTop && overlapRight < overlapBottom) {
                                 // Collision on the right side, push entity left
                                 transform.position.X = tileMaxX + box.origin.X;
                                 velocity.X = 0;
-                            } 
-                            
-                            if (overlapTop <= overlapLeft && overlapTop <= overlapRight && overlapTop < overlapBottom)
-                            {
+                            }
+
+                            if (overlapTop <= overlapLeft && overlapTop <= overlapRight && overlapTop < overlapBottom) {
                                 // Collision on the top side, push entity down
                                 transform.position.Y = tileMinY + offsetHack.Y - box.height * 0.5f;
                                 velocity.Y = 0;
-                            } 
-                            else if (overlapBottom <= overlapLeft && overlapBottom <= overlapRight && overlapBottom < overlapTop)
-                            {
+                            }
+                            else if (overlapBottom <= overlapLeft && overlapBottom <= overlapRight && overlapBottom < overlapTop) {
                                 // Collision on the bottom side, push entity up
                                 transform.position.Y = tileMaxY + box.height * 0.5f + offsetHack.Y;
                                 velocity.Y = 0;

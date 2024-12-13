@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace HellTrail.Render
+namespace Casull.Render
 {
     public readonly struct DrawData : IComparable
     {
@@ -16,7 +16,7 @@ namespace HellTrail.Render
         public readonly float depth;
         public readonly bool solid;
 
-        public DrawData(Texture2D texture, Vector2 position, Rectangle? source, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects spriteEffects,  float depth, bool solid = false)
+        public DrawData(Texture2D texture, Vector2 position, Rectangle? source, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects spriteEffects, float depth, bool solid = false)
         {
             this.source = source;
             this.texture = texture;

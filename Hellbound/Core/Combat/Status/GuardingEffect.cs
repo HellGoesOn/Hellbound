@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HellTrail.Core.Combat.Status
+﻿namespace Casull.Core.Combat.Status
 {
     public class GuardingEffect : StatusEffect
     {
@@ -23,7 +17,7 @@ namespace HellTrail.Core.Combat.Status
 
         public override void OnTurnEnd(Unit unit, Battle battle)
         {
-            base.OnTurnEnd(unit, battle); 
+            base.OnTurnEnd(unit, battle);
             turnsLeft--;
         }
     }

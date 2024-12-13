@@ -1,19 +1,11 @@
-﻿using HellTrail.Core.Combat;
-using HellTrail.Core.ECS.Components;
-using HellTrail.Core.UI;
-using HellTrail.Extensions;
-using Microsoft.Xna.Framework;
-using System.Collections;
-using System.ComponentModel;
+﻿using Microsoft.Xna.Framework;
 using System.Globalization;
-using System.Net.WebSockets;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
 
-namespace HellTrail.Core.ECS
+namespace Casull.Core.ECS
 {
     public static partial class ComponentIO
     {
@@ -36,9 +28,8 @@ namespace HellTrail.Core.ECS
             else
                 sb.Append(";");
 
-            for(int i = 0; i < fields.Length; i++)
-            {
-                FieldToText(component, sb, fields[i], i == fields.Length-1);
+            for (int i = 0; i < fields.Length; i++) {
+                FieldToText(component, sb, fields[i], i == fields.Length - 1);
             }
 
             if (fields.Length > 0)
@@ -51,20 +42,17 @@ namespace HellTrail.Core.ECS
         [Obsolete("Method is obsolete, please use New_FieldToText")]
         public static void FieldToText(IComponent component, StringBuilder sb, FieldInfo field, bool isLast = true)
         {
-            if (field.FieldType.IsArray)
-            {
+            if (field.FieldType.IsArray) {
                 sb.Append('{');
-                if (field.GetValue(component) is Array values)
-                {
-                    for (int index = 0; index < values.Length; index++)
-                    {
+                if (field.GetValue(component) is Array values) {
+                    for (int index = 0; index < values.Length; index++) {
                         sb.Append($"\"{values.GetValue(index)}\"{(index == values.Length - 1 ? "" : ", ")}");
                     }
                 }
                 sb.Append($"}}{(isLast ? "" : "; ")}");
 
-            } else
-            {
+            }
+            else {
                 sb.Append($"\"{field.GetValue(component)}\"{(isLast ? "" : "; ")}");
             }
         }
@@ -91,8 +79,7 @@ namespace HellTrail.Core.ECS
 
             string[] values = Regex.Split(value, "; ", RegexOptions.Singleline);
 
-            for (int i= 0; i < fields.Length; i++)
-            {
+            for (int i = 0; i < fields.Length; i++) {
                 if (values.Length > i)
                     TextToFieldValue(fields[i], instance, values[i]);
                 else
@@ -103,28 +90,25 @@ namespace HellTrail.Core.ECS
 
         public static void SetDefaultField(IComponent component, FieldInfo field)
         {
-            if(field.FieldType == typeof(Color))
-            {
+            if (field.FieldType == typeof(Color)) {
                 field.SetValue(component, Color.White);
             }
-            else if(field.FieldType.IsGenericTypeDefinition)
-            {
+            else if (field.FieldType.IsGenericTypeDefinition) {
                 Type[] types = field.FieldType.GetGenericArguments();
 
                 dynamic dict = Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(types));
 
                 field.SetValue(component, dict);
             }
-            else if (field.FieldType.IsArray)
-            {
+            else if (field.FieldType.IsArray) {
                 var elementType = field.FieldType.GetElementType();
                 var emptyObject = elementType == typeof(string) ? string.Empty : Activator.CreateInstance(elementType);
                 var arr = Array.CreateInstance(elementType, 1);
                 arr.SetValue(emptyObject, 0);
                 field.SetValue(component, arr);
-            } else
-            {
-                if(field.FieldType == typeof(string))
+            }
+            else {
+                if (field.FieldType == typeof(string))
                     field.SetValue(component, string.Empty);
                 else
                     field.SetValue(component, RuntimeHelpers.GetUninitializedObject(field.FieldType));
@@ -149,14 +133,12 @@ namespace HellTrail.Core.ECS
             //else
             //    sb.Append(";");
 
-            for(int i = 0; i < fields.Length; i++)
-            {
+            for (int i = 0; i < fields.Length; i++) {
                 var field = fields[i];
                 sb.Append(New_FieldToText(field, component));
 
-                if(i < fields.Length - 1)
-                    { 
-                    sb.Append("; "); 
+                if (i < fields.Length - 1) {
+                    sb.Append("; ");
                 }
             }
 
@@ -173,28 +155,25 @@ namespace HellTrail.Core.ECS
             CultureInfo currentCulture = CultureInfo.CurrentCulture;
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-            if (field.FieldType.IsArray)
-            {
+            if (field.FieldType.IsArray) {
                 sb.Append('[');
                 var values = field.GetValue(instance) as Array;
-                for(int i = 0; i < values.Length; i++)
-                {
+                for (int i = 0; i < values.Length; i++) {
                     string appendage = "";
                     if (values.GetValue(i) != null)
                         appendage = values.GetValue(i).ToString();
-                        sb.Append(appendage + $"{(i == values.Length - 1 ? "" : ", ")}");
+                    sb.Append(appendage + $"{(i == values.Length - 1 ? "" : ", ")}");
                 }
                 sb.Append(']');
-            } else if (field.FieldType.IsGenericType && field.FieldType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
-            {
+            }
+            else if (field.FieldType.IsGenericType && field.FieldType.GetGenericTypeDefinition() == typeof(Dictionary<,>)) {
                 Type[] types = field.FieldType.GetGenericArguments();
 
                 sb.Append('[');
 
                 dynamic dict = Convert.ChangeType(field.GetValue(instance), typeof(Dictionary<,>).MakeGenericType(types));
                 int index = 0;
-                foreach(var kvp in dict)
-                {
+                foreach (var kvp in dict) {
                     sb.Append($"{kvp.Key}=[{kvp.Value}]");
                     index++;
 
@@ -204,12 +183,10 @@ namespace HellTrail.Core.ECS
 
                 sb.Append(']');
             }
-            else if(field.FieldType == typeof(string))
-            {
+            else if (field.FieldType == typeof(string)) {
                 sb.Append($"\"{field.GetValue(instance)}\"");
             }
-            else
-            {
+            else {
                 sb.Append(field.GetValue(instance).ToString());
             }
 
@@ -238,10 +215,9 @@ namespace HellTrail.Core.ECS
 
             IComponent instance = (IComponent)RuntimeHelpers.GetUninitializedObject(type);
 
-            for(int i = 0; i < fields.Length; i++)
-            {
+            for (int i = 0; i < fields.Length; i++) {
                 var field = fields[i];
-                if(valuesSeparatedPerField.Length <= i)
+                if (valuesSeparatedPerField.Length <= i)
                     TextToFieldValue(field, instance, Activator.CreateInstance(field.FieldType).ToString());
                 else
                     TextToFieldValue(field, instance, valuesSeparatedPerField[i]);
@@ -256,14 +232,12 @@ namespace HellTrail.Core.ECS
 
         public static TryParserContainer FindTryParser(Type type)
         {
-            if (_tryParserCache.TryGetValue(type, out TryParserContainer tryParser))
-            {
+            if (_tryParserCache.TryGetValue(type, out TryParserContainer tryParser)) {
                 return tryParser;
             }
-                
+
             var nativeImpl = type.GetMethod("TryParse", new[] { typeof(string), type.MakeByRefType() });
-            if (nativeImpl != null)
-            {
+            if (nativeImpl != null) {
                 TryParserContainer container = new(nativeImpl, true);
                 _tryParserCache.Add(type, container);
                 return container;
@@ -271,7 +245,7 @@ namespace HellTrail.Core.ECS
 
             Assembly assembly = Assembly.GetEntryAssembly();
 
-             var query = from ftype in assembly.GetTypes() // search for custom implementation that's not extension
+            var query = from ftype in assembly.GetTypes() // search for custom implementation that's not extension
                         where !type.IsGenericType && type.IsSealed
                         from method in ftype.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
                         where method.GetParameters().Length >= 2
@@ -287,9 +261,8 @@ namespace HellTrail.Core.ECS
                         where method.GetParameters().Length >= 2 && method.GetParameters()[0].ParameterType == type
                         select method;
 
-            if (query.Any())
-            {
-                _tryParserCache.Add(type, new (query.First(), false));
+            if (query.Any()) {
+                _tryParserCache.Add(type, new(query.First(), false));
             }
 
             return new(query.First(), false);
@@ -298,12 +271,11 @@ namespace HellTrail.Core.ECS
         public static bool InvokeTryParser(TryParserContainer parser, out object result, string parsedString, Type targetType)
         {
             object[] parameters = [parsedString, Activator.CreateInstance(targetType)];
-            if (parser.isNativeImplementation && parser.methodInfo.Invoke(null, parameters) != null)
-            {
+            if (parser.isNativeImplementation && parser.methodInfo.Invoke(null, parameters) != null) {
                 result = parameters[1];
                 return true;
-            } else if(parser.methodInfo != null)
-            {
+            }
+            else if (parser.methodInfo != null) {
                 parser.methodInfo.Invoke(null, parameters);
                 result = parameters[1];
                 return true;
@@ -345,8 +317,7 @@ namespace HellTrail.Core.ECS
             CultureInfo currentCulture = CultureInfo.CurrentCulture;
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-            if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>))
-            {
+            if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>)) {
                 string[] splitInput = Regex.Match(value, @"\[(.*)\]").Groups[1].Value.Split(", ");
                 Type[] types = t.GetGenericArguments();
                 dynamic dic = typeof(Dictionary<,>).MakeGenericType(types);
@@ -359,8 +330,7 @@ namespace HellTrail.Core.ECS
 
                 //TryParse(values[0], valueType, out dynamic result);
                 dynamic v = FindTryParser(valueType);
-                for (int i = 0; i < keys.Length; i++)
-                {
+                for (int i = 0; i < keys.Length; i++) {
                     dynamic result = RuntimeHelpers.GetUninitializedObject(valueType);
                     InvokeTryParser(v, out result, values[i], valueType);
 
@@ -368,8 +338,8 @@ namespace HellTrail.Core.ECS
                 }
 
                 field.SetValue(instance, dict);
-            } else if (field.FieldType.IsArray)
-            {
+            }
+            else if (field.FieldType.IsArray) {
                 //if (values.Length <= i)
                 //    continue;
 
@@ -380,23 +350,20 @@ namespace HellTrail.Core.ECS
 
                 var arr = Array.CreateInstance(elementType, elements.Length);
 
-                if (elements.Length <= 1 && string.IsNullOrWhiteSpace(elements[0]))
-                {
+                if (elements.Length <= 1 && string.IsNullOrWhiteSpace(elements[0])) {
                     arr = Array.CreateInstance(elementType, 1);
                     arr.SetValue(default, 0);
                     field.SetValue(instance, arr);
                     return;
                 }
 
-                for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
-                {
+                for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++) {
                     string noQuotes = BetweenSwirlyBracketsRegex().Replace(elements[elementIndex], "");
-                    if (elementType.GetInterface("IConvertible") != null)
-                    {
+                    if (elementType.GetInterface("IConvertible") != null) {
                         var element = Convert.ChangeType(noQuotes, elementType);
                         arr.SetValue(element, elementIndex);
-                    } else
-                    {
+                    }
+                    else {
                         dynamic element = RuntimeHelpers.GetUninitializedObject(elementType);
                         var parser = FindTryParser(elementType);
                         InvokeTryParser(parser, out element, noQuotes, elementType);
@@ -405,19 +372,17 @@ namespace HellTrail.Core.ECS
                 }
                 field.SetValue(instance, Convert.ChangeType(arr, field.FieldType));
             }
-            else if (field.FieldType == typeof(Color))
-            {
+            else if (field.FieldType == typeof(Color)) {
                 field.SetValue(instance, Color.White);
-            } else
-            {
+            }
+            else {
                 string noQuotes = BetweenSwirlyBracketsRegex().Replace(value, "");
                 dynamic element = field.FieldType == typeof(string) ? string.Empty : RuntimeHelpers.GetUninitializedObject(field.FieldType);
 
-                if (field.FieldType.GetInterface("IConvertible") != null)
-                {
+                if (field.FieldType.GetInterface("IConvertible") != null) {
                     element = Convert.ChangeType(noQuotes, field.FieldType);
-                } else
-                {
+                }
+                else {
                     var parser = FindTryParser(field.FieldType);
                     InvokeTryParser(parser, out element, noQuotes, field.FieldType);
                 }

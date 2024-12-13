@@ -1,11 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.Combat.Items
+namespace Casull.Core.Combat.Items
 {
     public abstract class Item : ICanTarget
     {
@@ -48,8 +43,7 @@ namespace HellTrail.Core.Combat.Items
 
         public void Use(Unit caster, Battle battle, List<Unit> targets)
         {
-            if(count > 0)
-            {
+            if (count > 0) {
                 OnUse(caster, battle, targets);
 
                 if (consumable)

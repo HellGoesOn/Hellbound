@@ -1,13 +1,9 @@
-﻿using HellTrail.Core.Combat.Abilities;
-using HellTrail.Core.Combat.Abilities.Fire;
+﻿using Casull.Core.Combat.Abilities;
+using Casull.Core.Combat.Abilities.Fire;
+using Casull.Core.Combat.Items.Consumables;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.Combat
+namespace Casull.Core.Combat
 {
     public static class UnitDefinitions
     {
@@ -22,14 +18,18 @@ namespace HellTrail.Core.Combat
             protag.sprite = "Dumbass";
             protag.portrait = "MCPortrait";
             protag.portraitCombat = "MCPortrait_Combat";
-            protag.resistances[ElementalType.Elec] = 0.5f; 
-            protag.resistances[ElementalType.Wind] = -0.5f; 
+            protag.resistances[ElementalType.Elec] = 0.5f;
+            protag.resistances[ElementalType.Wind] = -0.5f;
 
             protag.abilities.Add(new BasicAttack());
             protag.abilities.Add(new Agi());
             protag.abilities.Add(new Dia());
             protag.statsGrowth = new CombatStats(0.5f, 1.5f, 10, 7, 0.15f);
-            protag.Stats.speed = 7;
+            protag.Stats.speed = 6.5f;
+
+            protag.Learns(30, new Singularity());
+            protag.Learns(3, new Maragi());
+
             GlobalPlayer.ProtagAnimations(protag);
 
             Unit peas = DefineUnit("Peas");
@@ -41,16 +41,29 @@ namespace HellTrail.Core.Combat
             peas.BattleStation = new Vector2(90, 90);
 
             Unit slime = DefineUnit("Slime");
+            slime.Stats.MaxHP = 40;
             slime.name = "Slime";
             slime.ai = new BasicAI();
             slime.resistances[ElementalType.Phys] = 0.20f;
             slime.resistances[ElementalType.Fire] = -0.5f;
-            var ooze = new BasicAttack()
-            {
+            var ooze = new BasicAttack() {
                 Name = "Ooze",
                 baseDamage = 10
             };
             slime.abilities.Add(ooze);
+
+            slime.Drops(100, new Tomato(), 1, 3);
+            slime.Drops(50, new DragonSlayer());
+
+            Unit EXPSlime = DefineUnit("EXPSlime");
+            EXPSlime.name = "Weird Slime";
+            EXPSlime.ai = new BasicAI();
+            EXPSlime.resistances[ElementalType.Phys] = 0.20f;
+            EXPSlime.resistances[ElementalType.Fire] = -50f;
+            EXPSlime.abilities.Add(ooze);
+            EXPSlime.Stats.value = 10000;
+
+
             Unit dog = DefineUnit("Dog");
             dog.resistances[ElementalType.Almighty] = -1.0f;
             dog.name = "Dog";
@@ -58,22 +71,18 @@ namespace HellTrail.Core.Combat
             dog.portrait = "DogPortrait2";
             dog.portraitCombat = "DogPortrait_Combat";
             dog.ai = new BasicAI();
-            dog.abilities.Add(new BasicAttack()
-            {
+            dog.abilities.Add(new BasicAttack() {
                 Name = "Bite",
                 baseDamage = 10
             });
             dog.abilities.Add(new Agi());
             dog.abilities.Add(new Maragi());
             dog.abilities.Add(new Dia());
-            dog.animations.Add("Idle", new SpriteAnimation("WhatDaDogDoin2", [new FrameData(0, 0, 32, 32)])
-            {
+            dog.animations.Add("Idle", new SpriteAnimation("WhatDaDogDoin2", [new FrameData(0, 0, 32, 32)]) {
             });
-            dog.animations.Add("Victory", new SpriteAnimation("WhatDaDogDoin2", [new FrameData(0, 0, 32, 32)])
-            {
+            dog.animations.Add("Victory", new SpriteAnimation("WhatDaDogDoin2", [new FrameData(0, 0, 32, 32)]) {
                 onAnimationPlay = (_, f)
-                =>
-                {
+                => {
                     f.position = f.BattleStation + new Vector2(0, (float)Math.Cos(Main.totalTime * 1.5f));
                     _.scale = new Vector2((float)Math.Sin(Main.totalTime * 2), 1);
                 }

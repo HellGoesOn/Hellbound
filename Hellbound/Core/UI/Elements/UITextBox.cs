@@ -1,16 +1,11 @@
-﻿using HellTrail.Render;
+﻿using Casull.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SDL2;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.UI.Elements
+namespace Casull.Core.UI.Elements
 {
     public class UITextBox : UIElement
     {
@@ -45,8 +40,7 @@ namespace HellTrail.Core.UI.Elements
             maxCharacters = 16;
             capturesMouse = true;
 
-            onLoseParent += (sender) =>
-            {
+            onLoseParent += (sender) => {
                 this.onTextSubmit = null;
                 this.onTextChange = null;
             };
@@ -61,18 +55,16 @@ namespace HellTrail.Core.UI.Elements
 
         public override void OnDraw(SpriteBatch spriteBatch)
         {
-            Renderer.DrawRect(spriteBatch, GetPosition() - new Vector2(2), size+new Vector2(4), boxInnerColor);  
+            Renderer.DrawRect(spriteBatch, GetPosition() - new Vector2(2), size + new Vector2(4), boxInnerColor);
             Renderer.DrawRect(spriteBatch, GetPosition(), size, boxBorderColor);
 
-            if (!string.IsNullOrEmpty(myText))
-            {
+            if (!string.IsNullOrEmpty(myText)) {
                 float sizeX = font.MeasureString(myText).X;
 
                 //int maxRange = (int)(maxCharacters * 0.5f);
-                string shownText = isEditing ? myText : sizeX > size.X - 16 ? "..." : myText; 
+                string shownText = isEditing ? myText : sizeX > size.X - 16 ? "..." : myText;
 
-                if(isEditing && sizeX > size.X - 16)
-                {
+                if (isEditing && sizeX > size.X - 16) {
                     var newSize = font.MeasureString(myText) + new Vector2(32, 16);
                     Renderer.DrawRect(spriteBatch, GetPosition() - new Vector2(2), newSize + new Vector2(4), boxInnerColor);
                     Renderer.DrawRect(spriteBatch, GetPosition(), newSize, boxBorderColor);
@@ -82,14 +74,12 @@ namespace HellTrail.Core.UI.Elements
                 //Renderer.DrawBorderedString(spriteBatch, font, $"{heldTime}\n" + lastKeyStroked.ToString(), GetPosition() + new Vector2(8, -64), color, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);
 
             }
-            if (isEditing)
-            {
+            if (isEditing) {
                 int cursor = Math.Clamp(cursorPosition, 0, myText.Length);
                 float size = string.IsNullOrWhiteSpace(myText) ? 0 : font.MeasureString(myText[0..cursor]).X;
                 float opacity = (float)Math.Abs(Math.Sin(Main.totalTime * 0.25f));
 
-                if(cursorSize > 0 && cursorPosition >= 0)
-                {
+                if (cursorSize > 0 && cursorPosition >= 0) {
                     Range range = new(new Index(cursorPosition), new(Math.Clamp(cursorPosition + cursorSize, 0, myText.Length)));
                     Vector2 newSize = font.MeasureString(myText[range]);
                     Renderer.DrawRect(spriteBatch, GetPosition() + new Vector2(8 + size, 8), newSize, Color.Cyan * 0.25f);
@@ -103,10 +93,8 @@ namespace HellTrail.Core.UI.Elements
         {
             isEditing = !isEditing;
             sneakyDelay = 1;
-            if (isEditing)
-            {
-                if (clearOnBeginTyping)
-                {
+            if (isEditing) {
+                if (clearOnBeginTyping) {
                     myText = "";
                 }
 
@@ -122,12 +110,11 @@ namespace HellTrail.Core.UI.Elements
                 Input.OnMousePressed += MousePress;
                 Input.isTyping = true;
             }
-            else
-            {
+            else {
                 Input.OnKeyReleased -= ReleaseKey;
                 Input.OnKeyHeld -= HeldKey;
                 Input.OnKeyPressed -= PressKey;
-                Input.OnMousePressed -= MousePress; 
+                Input.OnMousePressed -= MousePress;
                 Input.isTyping = false;
             }
 
@@ -160,12 +147,11 @@ namespace HellTrail.Core.UI.Elements
             if (key != Keys.LeftShift && key != Keys.RightShift)
                 heldTime++;
 
-            if (heldTime > allowedRepeatRate)
-            {
+            if (heldTime > allowedRepeatRate) {
                 PressKey(key);
             }
 
-            if(key != Keys.LeftShift && key != Keys.RightShift)
+            if (key != Keys.LeftShift && key != Keys.RightShift)
                 lastKeyStroked = key;
         }
 
@@ -176,18 +162,14 @@ namespace HellTrail.Core.UI.Elements
 
         private void PressKey(Keys key)
         {
-            if (isEditing)
-            {
-                if(key == Keys.Up)
-                {
-                    if(parent is UIElement element)
-                    {
+            if (isEditing) {
+                if (key == Keys.Up) {
+                    if (parent is UIElement element) {
                         var boxes = element.children.Where(x => x is UITextBox).ToList();
 
                         var myIndex = boxes.IndexOf(this);
 
-                        if(myIndex-1 >= 0)
-                        {
+                        if (myIndex - 1 >= 0) {
                             MousePress(MouseButton.Left);
                             boxes[myIndex - 1].Click();
                             return;
@@ -195,16 +177,13 @@ namespace HellTrail.Core.UI.Elements
                     }
                 }
 
-                if (key == Keys.Down)
-                {
-                    if (parent is UIElement element)
-                    {
+                if (key == Keys.Down) {
+                    if (parent is UIElement element) {
                         var boxes = element.children.Where(x => x is UITextBox).ToList();
 
                         var myIndex = boxes.IndexOf(this);
 
-                        if (myIndex + 1 < boxes.Count)
-                        {
+                        if (myIndex + 1 < boxes.Count) {
                             MousePress(MouseButton.Left);
                             boxes[myIndex + 1].Click();
                             return;
@@ -214,148 +193,121 @@ namespace HellTrail.Core.UI.Elements
 
                 cursorPosition = Math.Clamp(cursorPosition, 0, Math.Max(0, myText.Length));
                 string keyValue = "";
-                if (key == Keys.Enter)
-                {
+                if (key == Keys.Enter) {
                     MousePress(MouseButton.Left);
                 }
-                else if(key == Keys.OemQuestion)
-                {
+                else if (key == Keys.OemQuestion) {
                     AddCharacter("/");
                 }
-                else if (key == Keys.OemPipe)
-                {
+                else if (key == Keys.OemPipe) {
                     AddCharacter("\\");
                 }
-                else if(key == Keys.C && Input.HeldKey(Keys.LeftControl))
-                {
+                else if (key == Keys.C && Input.HeldKey(Keys.LeftControl)) {
                     if (cursorSize > 0)
-                        SDL.SDL_SetClipboardText(myText.Substring(cursorPosition, Math.Clamp(cursorSize, 0, myText.Length-1)));
+                        SDL.SDL_SetClipboardText(myText.Substring(cursorPosition, Math.Clamp(cursorSize, 0, myText.Length - 1)));
                 }
-                else if (key == Keys.Right && Input.HeldKey(Keys.LeftShift))
-                {
+                else if (key == Keys.Right && Input.HeldKey(Keys.LeftShift)) {
                     cursorSize = Math.Clamp(++cursorSize, 0, myText.Length);
-                } else if(key == Keys.Left && Input.HeldKey(Keys.LeftShift))
-                {
+                }
+                else if (key == Keys.Left && Input.HeldKey(Keys.LeftShift)) {
                     cursorPosition--;
                     cursorSize = Math.Clamp(++cursorSize, 0, myText.Length);
                 }
-                else if(key == Keys.OemOpenBrackets)
-                {
+                else if (key == Keys.OemOpenBrackets) {
                     if (Input.HeldKey(Keys.LeftShift))
                         AddCharacter("[");
                     else
                         AddCharacter("{");
-                } 
-                else if (key == Keys.OemCloseBrackets)
-                {
+                }
+                else if (key == Keys.OemCloseBrackets) {
                     if (Input.HeldKey(Keys.LeftShift))
                         AddCharacter("]");
                     else
                         AddCharacter("}");
                 }
-                else if(key == Keys.D9 && Input.HeldKey(Keys.LeftShift))
-                {
+                else if (key == Keys.D9 && Input.HeldKey(Keys.LeftShift)) {
                     AddCharacter("(");
-                } 
-                else if (key == Keys.D0 && Input.HeldKey(Keys.LeftShift))
-                {
+                }
+                else if (key == Keys.D0 && Input.HeldKey(Keys.LeftShift)) {
                     AddCharacter(")");
                 }
-                else if(key == Keys.Delete)
-                {
-                    if (myText.Length > 0)
-                    {
-                        myText = myText.Remove(Math.Clamp(cursorPosition+1, 0, myText.Length - 1), 1);
+                else if (key == Keys.Delete) {
+                    if (myText.Length > 0) {
+                        myText = myText.Remove(Math.Clamp(cursorPosition + 1, 0, myText.Length - 1), 1);
                         onTextChange?.Invoke(this);
                     }
                 }
-                else if (key == Keys.Back)
-                {
-                    if (myText.Length > 0)
-                    {
-                        if (cursorSize > 0)
-                        {
+                else if (key == Keys.Back) {
+                    if (myText.Length > 0) {
+                        if (cursorSize > 0) {
                             cursorPosition -= cursorSize;
                             myText = myText.Remove(Math.Clamp(cursorPosition, 0, myText.Length - 1), cursorSize);
                             cursorSize = 0;
                             onTextChange?.Invoke(this);
-                        } else
-                        {
+                        }
+                        else {
                             cursorPosition--;
                             myText = myText.Remove(Math.Clamp(cursorPosition, 0, myText.Length - 1), 1);
                             onTextChange?.Invoke(this);
                         }
                     }
                 }
-                else if(key== Keys.OemMinus)
-                {
+                else if (key == Keys.OemMinus) {
                     if (Input.HeldKey(Keys.LeftShift))
                         AddCharacter("_");
                     else
                         AddCharacter("-");
                 }
-                else if(key == Keys.OemPlus)
-                {
+                else if (key == Keys.OemPlus) {
                     if (Input.HeldKey(Keys.LeftShift))
                         AddCharacter("=");
                     else
-                    AddCharacter("+");
+                        AddCharacter("+");
                 }
-                else if (key == Keys.OemSemicolon)
-                {
+                else if (key == Keys.OemSemicolon) {
                     AddCharacter(";");
-                } 
-                else if (key == Keys.OemQuotes)
-                {
+                }
+                else if (key == Keys.OemQuotes) {
                     if (Input.HeldKey(Keys.LeftShift) || Input.HeldKey(Keys.RightShift))
                         AddCharacter("\"");
                     else
                         AddCharacter("\'");
-                } 
-                else if (key >= Keys.D0 && key <= Keys.D9)
-                {
+                }
+                else if (key >= Keys.D0 && key <= Keys.D9) {
                     keyValue = Regex.Replace(key.ToString(), "[^0-9]", "");
                     AddCharacter(keyValue);
-                } 
-                else if (key == Keys.OemPeriod)
-                {
+                }
+                else if (key == Keys.OemPeriod) {
                     keyValue = ".";
                     AddCharacter(keyValue);
-                } 
-                else if (key == Keys.OemComma)
-                {
+                }
+                else if (key == Keys.OemComma) {
                     keyValue = ",";
                     AddCharacter(keyValue);
-                } 
-                else if (key == Keys.Space)
-                {
+                }
+                else if (key == Keys.Space) {
                     keyValue = " ";
                     AddCharacter(keyValue);
-                } 
-                else if (key == Keys.Left)
-                {
+                }
+                else if (key == Keys.Left) {
                     cursorSize = 0;
                     cursorPosition--;
-                } 
-                else if (key == Keys.Right)
-                {
+                }
+                else if (key == Keys.Right) {
                     cursorSize = 0;
                     cursorPosition++;
-                } 
-                else if(key == Keys.V && Input.HeldKey(Keys.LeftControl))
-                {
+                }
+                else if (key == Keys.V && Input.HeldKey(Keys.LeftControl)) {
                     string text = SDL.SDL_GetClipboardText();
                     AddCharacter(text);
                     cursorPosition += text.Length;
                     cursorSize = 0;
                 }
-                else if(key == Keys.A && Input.HeldKey(Keys.LeftControl))
-                {
+                else if (key == Keys.A && Input.HeldKey(Keys.LeftControl)) {
                     cursorPosition = 0;
                     cursorSize = myText.Length;
                 }
-                else if ((key >= Keys.A && key <= Keys.Z) || key == Keys.OemComma || key == Keys.OemPeriod)
-                {
+                else if ((key >= Keys.A && key <= Keys.Z) || key == Keys.OemComma || key == Keys.OemPeriod) {
                     keyValue = key.ToString();
                     if (!Input.HeldKey(Keys.LeftShift) && !Input.HeldKey(Keys.RightShift))
                         keyValue = keyValue.ToLower();
@@ -370,10 +322,9 @@ namespace HellTrail.Core.UI.Elements
             if (myText.Length >= maxCharacters)
                 return;
 
-            if(cursorSize > 0)
-            {
+            if (cursorSize > 0) {
                 myText.Remove(cursorPosition, cursorSize);
-                cursorPosition = Math.Clamp(cursorPosition-cursorSize, 0, myText.Length);
+                cursorPosition = Math.Clamp(cursorPosition - cursorSize, 0, myText.Length);
                 cursorSize = 0;
             }
 

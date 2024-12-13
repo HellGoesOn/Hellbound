@@ -1,8 +1,8 @@
-﻿using HellTrail.Core.Combat.Sequencer;
-using HellTrail.Core.Combat.Status;
-using HellTrail.Core.UI;
+﻿using Casull.Core.Combat.Sequencer;
+using Casull.Core.Combat.Status;
+using Casull.Core.UI;
 
-namespace HellTrail.Core.Combat.Abilities
+namespace Casull.Core.Combat.Abilities
 {
     public class Masukukaja : Ability
     {
@@ -18,16 +18,13 @@ namespace HellTrail.Core.Combat.Abilities
             Sequence sequence = CreateSequence(battle);
             sequence.Add(new SetActorAnimation(caster, "Cast"));
             sequence.Delay(60);
-            sequence.CustomAction(() =>
-            {
-                foreach (Unit target in targets)
-                {
-                    if (target.HasStatus<SukundaDebuff>())
-                    {
+            sequence.CustomAction(() => {
+                foreach (Unit target in targets) {
+                    if (target.HasStatus<SukundaDebuff>()) {
                         UIManager.combatUI.SetAbilityUsed("Accuracy & Evasion back to normal");
                         target.RemoveAllEffects<SukundaDebuff>();
-                    } else
-                    {
+                    }
+                    else {
                         UIManager.combatUI.SetAbilityUsed("Accuracy & Evasion increased!");
                         sequence.AddStatusEffect(target, new SukukajaBuff(), 600, canExtend: true);
                     }

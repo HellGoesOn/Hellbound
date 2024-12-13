@@ -1,12 +1,7 @@
-﻿using HellTrail.Core;
+﻿using Casull.Core;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail
+namespace Casull
 {
     public interface IGameState
     {

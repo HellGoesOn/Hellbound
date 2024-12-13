@@ -1,19 +1,13 @@
-﻿using HellTrail.Core.Combat.Abilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Casull.Core.Combat.Abilities;
 
-namespace HellTrail.Core.Combat.AI
+namespace Casull.Core.Combat.AI
 {
     public class SequentialAI : BasicAI
     {
         private int currentAbility;
         public override void MakeDecision(Unit whoAmI, Battle battle)
         {
-            if (whoAmI.abilities.Count > 0)
-            {
+            if (whoAmI.abilities.Count > 0) {
                 Ability abilityToUse = whoAmI.abilities[currentAbility];
 
                 var getTargets = battle.units.Where(GetSelector(abilityToUse, whoAmI)).ToList();
@@ -23,8 +17,7 @@ namespace HellTrail.Core.Combat.AI
 
                 abilityToUse.Use(whoAmI, battle, getTargets);
 
-                if (++currentAbility >= whoAmI.abilities.Count)
-                {
+                if (++currentAbility >= whoAmI.abilities.Count) {
                     currentAbility = 0;
                 }
 

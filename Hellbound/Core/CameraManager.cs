@@ -1,14 +1,8 @@
-﻿using HellTrail.Render;
+﻿using Casull.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core
+namespace Casull.Core
 {
     public static class CameraManager
     {
@@ -29,7 +23,7 @@ namespace HellTrail.Core
             combatCamera.speed = 1f;
             combatCamera.centre = new Vector2(160, 90);
             cameras.Add(combatCamera);
-            
+
             overworldCamera = new Camera(new Viewport(0, 0, Renderer.PreferedWidth, Renderer.PreferedHeight));
             overworldCamera.zoom = 1f;
             overworldCamera.speed = 1f;
@@ -45,17 +39,14 @@ namespace HellTrail.Core
 
         public static void Update()
         {
-            foreach (var cam in cameras)
-            {
+            foreach (var cam in cameras) {
                 cam.Update();
             }
         }
 
-        public static Camera GetCamera
-        {
-            get
-            {
-                if(cameras.Count > 0)
+        public static Camera GetCamera {
+            get {
+                if (cameras.Count > 0)
                     return cameras[currentCamera];
 
                 return null;

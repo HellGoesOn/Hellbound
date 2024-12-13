@@ -1,11 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.ECS.Components
+namespace Casull.Core.ECS.Components
 {
     public class TestComponent : IComponent
     {
@@ -14,7 +9,7 @@ namespace HellTrail.Core.ECS.Components
         public Vector2[] testField4;
         public int testField3;
 
-        public TestComponent(int testField, int[] testField2, Vector2[] testField4, int testField3 )
+        public TestComponent(int testField, int[] testField2, Vector2[] testField4, int testField3)
         {
             this.testField = testField;
             this.testField2 = testField2;

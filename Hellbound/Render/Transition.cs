@@ -1,12 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Render
+namespace Casull.Render
 {
     public class Transition
     {
@@ -14,7 +9,7 @@ namespace HellTrail.Render
         public float scale = 1.0f;
         public float swirl = 0.0f;
         public bool finished;
-        public Transition(RenderTarget2D target) 
+        public Transition(RenderTarget2D target)
         {
             scale = 1.0f;
             this.target = target;
@@ -22,8 +17,7 @@ namespace HellTrail.Render
 
         public virtual void Update()
         {
-            if (scale <= 0.0f)
-            {
+            if (scale <= 0.0f) {
                 finished = true;
                 return;
             }
@@ -65,10 +59,10 @@ namespace HellTrail.Render
         public override void DoDraw(SpriteBatch spriteBatch)
         {
             Color clr = Color.Lerp(Color.White, Color.Black, fadeOut);
-            if(fadeOut <= 1.0f)
+            if (fadeOut <= 1.0f)
                 spriteBatch.Draw(target, Vector2.Zero, clr);
             else
-                spriteBatch.Draw(Assets.GetTexture("Pixel"), new Rectangle(0, 0, target.Width, target.Height), Color.Black * (1.0f-fadeIn));
+                spriteBatch.Draw(Assets.GetTexture("Pixel"), new Rectangle(0, 0, target.Width, target.Height), Color.Black * (1.0f - fadeIn));
         }
     }
 
@@ -144,27 +138,23 @@ namespace HellTrail.Render
 
             var origin = new Vector2(target.Width, target.Height) * 0.5f;
 
-            if(direction.X > 0)
-            {
+            if (direction.X > 0) {
                 origin = new Vector2(target.Width, 0);
             }
-            if (direction.X < 0)
-            {
+            if (direction.X < 0) {
                 origin = new Vector2(0, 0);
             }
-            if (direction.Y > 0)
-            {
+            if (direction.Y > 0) {
                 origin = new Vector2(0, target.Height);
             }
 
-            if (direction.Y < 0)
-            {
+            if (direction.Y < 0) {
                 origin = new Vector2(0, -target.Height);
             }
 
 
 
-            spriteBatch.Draw(target, Vector2.Zero+origin, null, Color.White, 0f, origin, scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(target, Vector2.Zero + origin, null, Color.White, 0f, origin, scale, SpriteEffects.None, 0f);
             //spriteBatch.Draw(Assets.GetTexture("Pixel"), currentPosition, new Rectangle(0, 0, (int)(target.Width * 2f), (int)(target.Width * 2f)), Color.Black);
         }
     }
@@ -180,8 +170,7 @@ namespace HellTrail.Render
 
         public override void Update()
         {
-            if(opacity <= 0.8f && scale <= 2)
-            {
+            if (opacity <= 0.8f && scale <= 2) {
                 scale += 0.005f;
             }
 
@@ -210,8 +199,7 @@ namespace HellTrail.Render
 
         public override void Update()
         {
-            if (moveAmount >= target.Width)
-            {
+            if (moveAmount >= target.Width) {
                 finished = true;
                 return;
             }

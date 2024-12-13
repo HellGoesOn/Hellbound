@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HellTrail.Core.Combat
+﻿namespace Casull.Core.Combat
 {
     public class ElementalResistances
     {
@@ -15,13 +8,12 @@ namespace HellTrail.Core.Combat
         /// </summary>
         private readonly float[] values = [0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f];
 
-        public float this[ElementalType type]
-        {
+        public float this[ElementalType type] {
             get => values[(int)type];
-            set {  values[(int)type] = value; }
+            set { values[(int)type] = value; }
         }
         public ElementalResistances()
-        { 
+        {
         }
 
         public ElementalResistances(float phys, float fire, float ice, float elec, float wind, float almighty)
@@ -36,8 +28,7 @@ namespace HellTrail.Core.Combat
 
         public ElementalResistances GetCopy()
         {
-            return new ElementalResistances()
-            {
+            return new ElementalResistances() {
                 [ElementalType.Phys] = this[ElementalType.Phys],
                 [ElementalType.Fire] = this[ElementalType.Fire],
                 [ElementalType.Ice] = this[ElementalType.Ice],

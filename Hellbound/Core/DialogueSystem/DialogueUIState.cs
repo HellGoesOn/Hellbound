@@ -1,15 +1,8 @@
-﻿using Cyotek.Drawing.BitmapFont;
-using HellTrail.Core.UI;
-using HellTrail.Extensions;
-using HellTrail.Render;
+﻿using Casull.Core.UI;
+using Casull.Render;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.DialogueSystem
+namespace Casull.Core.DialogueSystem
 {
     public class DialogueUIState : UIState
     {
@@ -27,42 +20,36 @@ namespace HellTrail.Core.DialogueSystem
         {
             id = "dialogueUIState";
             portrait = new UIPortrait(null);
-            portrait.SetPosition(new Vector2(Renderer.UIPreferedWidth * 0.5f, Renderer.UIPreferedHeight-240));
+            portrait.SetPosition(new Vector2(Renderer.UIPreferedWidth * 0.5f, Renderer.UIPreferedHeight - 240));
 
-            darkeningPanel = new UIPanel()
-            {
+            darkeningPanel = new UIPanel() {
                 size = new Vector2(Renderer.UIPreferedWidth, Renderer.UIPreferedHeight),
                 fillColor = Color.Black * 0.25f,
                 outlineColor = Color.Black * 0.25f
             };
             Append(darkeningPanel);
             Append(portrait);
-            dialoguePanel = new UIPanel()
-            {
+            dialoguePanel = new UIPanel() {
                 size = new Vector2(Renderer.UIPreferedWidth - 64, 180),
             };
             dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight - 180 - 16));
-            dialogueText = new UIBorderedText("")
-            {
+            dialogueText = new UIBorderedText("") {
                 lineBreak = 80,
             };
             Append(dialoguePanel);
             dialoguePanel.SetPosition(16);
 
-            speakerPanel = new UIPanel()
-            {
+            speakerPanel = new UIPanel() {
                 size = new Vector2(180, 40),
             };
             dialoguePanel.Append(speakerPanel);
             speakerPanel.SetPosition(new Vector2(16, -48));
 
-            speakerText = new UIBorderedText("")
-            {
+            speakerText = new UIBorderedText("") {
             };
             dialoguePanel.Append(dialogueText);
             speakerPanel.SetPosition(new Vector2(16, 8));
-            actionsText = new("[E] Next")
-            {
+            actionsText = new("[E] Next") {
             };
             dialoguePanel.Append(actionsText);
             actionsText.SetPosition(new Vector2(16, 140));
@@ -78,8 +65,7 @@ namespace HellTrail.Core.DialogueSystem
         {
             base.Update();
 
-            if (dialogues.Count > 0)
-            {
+            if (dialogues.Count > 0) {
                 visible = true;
 
                 DialoguePage page = dialogues[0].CurrentPage;
@@ -96,13 +82,11 @@ namespace HellTrail.Core.DialogueSystem
 
                 dialogues[0].Update();
 
-                if(dialogues[0].hasEnded)
-                {
+                if (dialogues[0].hasEnded) {
                     dialogues.RemoveAt(0);
                 }
             }
-            else
-            {
+            else {
                 visible = false;
             }
         }

@@ -1,17 +1,8 @@
-﻿using HellTrail.Core.Combat;
-using HellTrail.Core.DialogueSystem;
-using HellTrail.Core.ECS.Components;
-using HellTrail.Core.UI;
-using HellTrail.Extensions;
-using Microsoft.Xna.Framework;
+﻿using Casull.Core.ECS.Components;
+using Casull.Core.UI;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.ECS
+namespace Casull.Core.ECS
 {
     public class ReadPlayerInputSystem : IExecute
     {
@@ -27,8 +18,7 @@ namespace HellTrail.Core.ECS
             bool dontListen = Main.instance.transitions.Count > 0 || UIManager.dialogueUI.dialogues.Count > 0;
             var entities = _group.Entities;
 
-            for (int i = 0; i < entities.Count; i++)
-            {
+            for (int i = 0; i < entities.Count; i++) {
 
                 var entity = entities[i];
                 Velocity vel = entity.GetComponent<Velocity>();
@@ -43,8 +33,7 @@ namespace HellTrail.Core.ECS
                 if (Input.HeldKey(Keys.S) && !dontListen) vel.Y += speed;
                 if (Input.HeldKey(Keys.D) && !dontListen) vel.X += speed;
 
-                if (entity.HasComponent<NewAnimationComponent>())
-                {
+                if (entity.HasComponent<NewAnimationComponent>()) {
                     var anim = entity.GetComponent<NewAnimationComponent>();
 
                     if (vel.value.Length() > 0)
@@ -53,8 +42,7 @@ namespace HellTrail.Core.ECS
                         anim.currentAnimation = "Idle";
                 }
 
-                if (vel.X != 0)
-                {
+                if (vel.X != 0) {
                     if (vel.X < 0)
                         entity.GetComponent<TextureComponent>().scale.X = -1;
                     else

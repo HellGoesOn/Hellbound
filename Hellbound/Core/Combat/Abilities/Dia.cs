@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HellTrail.Core.Combat.Sequencer;
+﻿using Casull.Core.Combat.Sequencer;
 
-namespace HellTrail.Core.Combat.Abilities
+namespace Casull.Core.Combat.Abilities
 {
     public class Dia : Ability
     {
@@ -15,6 +10,7 @@ namespace HellTrail.Core.Combat.Abilities
             canTarget = ValidTargets.Ally;
             elementalType = ElementalType.Healing;
             spCost = 3;
+            canUseOutOfCombat = true;
         }
 
         protected override void UseAbility(Unit caster, Battle battle, List<Unit> targets)

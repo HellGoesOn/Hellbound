@@ -1,14 +1,9 @@
-﻿using HellTrail.Extensions;
-using HellTrail.Render;
+﻿using Casull.Extensions;
+using Casull.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.UI
+namespace Casull.Core.UI
 {
     public class UIBorderedText : UIElement
     {
@@ -37,8 +32,7 @@ namespace HellTrail.Core.UI
         {
             base.OnUpdate();
 
-            if(text != oldText || !firstSplit)
-            {
+            if (text != oldText || !firstSplit) {
                 size = font.MeasureString(brokenText);
                 firstSplit = true;
                 oldText = text;
@@ -48,7 +42,7 @@ namespace HellTrail.Core.UI
 
         public override void OnDraw(SpriteBatch spriteBatch)
         {
-            if(firstSplit)
+            if (firstSplit)
                 Renderer.DrawBorderedString(spriteBatch, font, brokenText, GetPosition(), color, borderColor, Rotation, origin, scale, SpriteEffects.None, 0);
         }
     }

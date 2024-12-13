@@ -1,23 +1,16 @@
-﻿using HellTrail.Core.ECS;
-using HellTrail.Core.Editor;
-using HellTrail.Core.Overworld;
-using HellTrail.Render;
+﻿using Casull.Core.ECS;
+using Casull.Core.Overworld;
+using Casull.Render;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.UI.Elements
+namespace Casull.Core.UI.Elements
 {
     public class UISaveFileElement<T> : UIElement
     {
         IFileHandler<T> fileHandler;
         public UISaveFileElement(IFileHandler<T> handler, string defaultPath)
         {
-            onLoseParent = (sender) =>
-            {
+            onLoseParent = (sender) => {
                 fileHandler = null;
             };
             font = Assets.Arial;
@@ -33,49 +26,40 @@ namespace HellTrail.Core.UI.Elements
             filePath.myText = defaultPath;
             filePath.maxCharacters = 500;
 
-            UIPanel panel = new()
-            {
+            UIPanel panel = new() {
                 size = new Vector2(300, 200)
             };
             panel.Append(fileName);
 
-            UIBorderedText accept = new("Save")
-            {
+            UIBorderedText accept = new("Save") {
                 capturesMouse = true,
                 size = font.MeasureString("Save"),
-                onMouseEnter = (sender) =>
-                {
+                onMouseEnter = (sender) => {
                     (sender as UIBorderedText).color = Color.Yellow;
                 },
-                onMouseLeave = (sender) =>
-                {
+                onMouseLeave = (sender) => {
                     (sender as UIBorderedText).color = Color.White;
                 }
 
             };
-            UIBorderedText cancel = new("Cancel")
-            {
+            UIBorderedText cancel = new("Cancel") {
                 capturesMouse = true,
                 size = font.MeasureString("Cancel"),
-                onMouseEnter = (sender) =>
-                {
+                onMouseEnter = (sender) => {
                     (sender as UIBorderedText).color = Color.Yellow;
                 },
-                onMouseLeave = (sender) =>
-                {
+                onMouseLeave = (sender) => {
                     (sender as UIBorderedText).color = Color.White;
                 }
             };
 
             accept.SetPosition(16, panel.size.Y - 16 - accept.size.Y);
-            accept.onClick = (sender) =>
-            {
+            accept.onClick = (sender) => {
                 fileHandler.Save(filePath.myText, fileName.myText);
                 parent.Disown(this);
             };
             cancel.SetPosition(panel.size.X - 16 - cancel.size.X, panel.size.Y - 16 - cancel.size.Y);
-            cancel.onClick = (sender) =>
-            {
+            cancel.onClick = (sender) => {
                 parent.Disown(this);
             };
 
@@ -124,8 +108,7 @@ namespace HellTrail.Core.UI.Elements
 
         public void Save(string path, string name)
         {
-            if(!Directory.Exists(Environment.CurrentDirectory + path))
-            {
+            if (!Directory.Exists(Environment.CurrentDirectory + path)) {
                 Directory.CreateDirectory(Environment.CurrentDirectory + path);
             }
 

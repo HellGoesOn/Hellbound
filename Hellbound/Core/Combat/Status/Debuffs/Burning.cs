@@ -1,14 +1,9 @@
-﻿using HellTrail.Core.Combat.Sequencer;
+﻿using Casull.Core.Combat.Sequencer;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Treeline.Core.Graphics;
 
-namespace HellTrail.Core.Combat.Status.Debuffs
+namespace Casull.Core.Combat.Status.Debuffs
 {
     public class Burning : StatusEffect
     {
@@ -35,8 +30,8 @@ namespace HellTrail.Core.Combat.Status.Debuffs
         }
 
         public override void UpdateVisuals(SpriteBatch spriteBatch, Unit unit, Battle battle)
-        {   
-            Color[] clrs = { Color.Red, Color.Yellow, Color.Orange, Color.Crimson};
+        {
+            Color[] clrs = { Color.Red, Color.Yellow, Color.Orange, Color.Crimson };
 
             int xx = Main.rand.Next((int)(unit.size.X));
             int yy = Main.rand.Next((int)(unit.size.Y));
@@ -45,7 +40,7 @@ namespace HellTrail.Core.Combat.Status.Debuffs
             var particle = ParticleManager.NewParticleAdditive(new Vector3(unit.position + new Vector2(-unit.size.X * 0.5f + xx, unit.size.Y * 0.25f), 0), new Vector3(velX, 0, velY), 90);
             particle.color = clrs[Main.rand.Next(clrs.Length)];
             particle.endColor = Color.Black;
-            particle.scale = Vector2.One * Main.rand.Next(1,3);
+            particle.scale = Vector2.One * Main.rand.Next(1, 3);
             particle.weight = 0.01f;
         }
     }

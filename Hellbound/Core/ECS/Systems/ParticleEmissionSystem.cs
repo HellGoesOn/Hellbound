@@ -1,14 +1,9 @@
-﻿using HellTrail.Core.ECS.Components;
+﻿using Casull.Core.ECS.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Treeline.Core.Graphics;
 
-namespace HellTrail.Core.ECS
+namespace Casull.Core.ECS
 {
     public class ParticleEmissionSystem : IDraw
     {
@@ -23,8 +18,7 @@ namespace HellTrail.Core.ECS
         {
             var entities = _group.Entities;
 
-            for (int i = 0; i < entities.Count; i++)
-            {
+            for (int i = 0; i < entities.Count; i++) {
                 var entity = entities[i];
 
                 Transform position = entity.GetComponent<Transform>();
@@ -48,18 +42,16 @@ namespace HellTrail.Core.ECS
                 Vector2 offset = emitter.offset + new Vector2(x, y);
 
                 if (!emitter.additive)
-                    for (int j = 0; j < emitter.amountPerFrame; j++)
-                    {
-                        Particle part = ParticleManager.NewParticle(new Vector3(position.position + offset, 0), new Vector3(velocity.X, velocity.Y, 0 ), emitter.lifeTime);
+                    for (int j = 0; j < emitter.amountPerFrame; j++) {
+                        Particle part = ParticleManager.NewParticle(new Vector3(position.position + offset, 0), new Vector3(velocity.X, velocity.Y, 0), emitter.lifeTime);
                         part.color = clr;
                         part.scale = scale;
                         part.diesToGravity = false;
                         part.castShadow = true;
                     }
                 else
-                    for (int j = 0; j < emitter.amountPerFrame; j++)
-                    {
-                        Particle part = ParticleManager.NewParticleAdditive(new Vector3(position.position + offset, 0), new Vector3(velocity.X, velocity.Y, 0 ), emitter.lifeTime);
+                    for (int j = 0; j < emitter.amountPerFrame; j++) {
+                        Particle part = ParticleManager.NewParticleAdditive(new Vector3(position.position + offset, 0), new Vector3(velocity.X, velocity.Y, 0), emitter.lifeTime);
                         part.color = clr;
                         part.scale = scale;
                         part.diesToGravity = false;

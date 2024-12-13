@@ -1,16 +1,14 @@
-﻿using HellTrail.Core.Combat.Abilities;
+﻿using Casull.Core.Combat.Abilities;
 
-namespace HellTrail.Core.Combat
+namespace Casull.Core.Combat
 {
     public class BasicAI
     {
         public virtual void MakeDecision(Unit whoAmI, Battle battle)
         {
-            if (whoAmI.abilities.Count > 0)
-            {
+            if (whoAmI.abilities.Count > 0) {
                 var updatedList = whoAmI.abilities.Where(x => x.CanCast(whoAmI)).ToList();
-                if (updatedList.Count > 0)
-                {
+                if (updatedList.Count > 0) {
                     Ability abilityToUse = updatedList[battle.rand.Next(updatedList.Count)];
 
                     var getTargets = battle.units.Where(GetSelector(abilityToUse, whoAmI)).ToList();

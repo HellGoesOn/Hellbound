@@ -1,13 +1,8 @@
-﻿using HellTrail.Render;
+﻿using Casull.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.UI.Elements
+namespace Casull.Core.UI.Elements
 {
     public class UIAnimatedPanel : UIElement
     {
@@ -28,8 +23,7 @@ namespace HellTrail.Core.UI.Elements
             panelColor = Color.DarkBlue;
             borderColor = Color.White;
 
-            switch(style)
-            {
+            switch (style) {
                 case AnimationStyle.Vertical:
                     this.size.X = targetSize.X;
                     break;
@@ -42,16 +36,14 @@ namespace HellTrail.Core.UI.Elements
 
         public override void OnUpdate()
         {
-            if (size != targetSize && !isClosed && !suspended)
-            {
+            if (size != targetSize && !isClosed && !suspended) {
                 size = Vector2.Lerp(size, targetSize, openSpeed);
-                switch (style)
-                {
+                switch (style) {
                     case AnimationStyle.Vertical:
                         if (size.Y >= targetSize.Y - 8)
                             size = targetSize;
                         break;
-                        case AnimationStyle.Horizontal:
+                    case AnimationStyle.Horizontal:
                         if (size.X >= targetSize.X - 8)
                             size = targetSize;
                         break;
@@ -64,16 +56,13 @@ namespace HellTrail.Core.UI.Elements
 
 
 
-            if (isClosed || suspended)
-            {
-                switch (style)
-                {
+            if (isClosed || suspended) {
+                switch (style) {
                     case AnimationStyle.Vertical:
-                        if(size.Y >= 0.001f)
-                        size.Y = MathHelper.Lerp(size.Y, 0, openSpeed);
+                        if (size.Y >= 0.001f)
+                            size.Y = MathHelper.Lerp(size.Y, 0, openSpeed);
 
-                        if (size.Y < targetSize.Y * openSpeed * 0.05f && isClosed)
-                        {
+                        if (size.Y < targetSize.Y * openSpeed * 0.05f && isClosed) {
                             size.Y = 0;
                             this.parent.Disown(this);
                         }
@@ -82,8 +71,7 @@ namespace HellTrail.Core.UI.Elements
                         if (size.X >= 0.001f)
                             size.X = MathHelper.Lerp(size.X, 0, openSpeed);
 
-                        if (size.X < targetSize.X * openSpeed * 0.05f && isClosed)
-                        {
+                        if (size.X < targetSize.X * openSpeed * 0.05f && isClosed) {
                             size.X = 0;
                             this.parent.Disown(this);
                         }
@@ -92,8 +80,7 @@ namespace HellTrail.Core.UI.Elements
                         if (size.Y >= 0.001f && size.X >= 0.001f)
                             size = Vector2.Lerp(size, Vector2.Zero, openSpeed);
 
-                        if(size.X < targetSize.X * openSpeed * 0.05f && size.Y < targetSize.Y * openSpeed * 0.05f && isClosed)
-                        {
+                        if (size.X < targetSize.X * openSpeed * 0.05f && size.Y < targetSize.Y * openSpeed * 0.05f && isClosed) {
 
                             this.parent.Disown(this);
                         }

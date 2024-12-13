@@ -1,14 +1,8 @@
-﻿using HellTrail.Render;
+﻿using Casull.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace HellTrail.Core.Combat
+namespace Casull.Core.Combat
 {
     public class DamageNumber
     {
@@ -24,14 +18,11 @@ namespace HellTrail.Core.Combat
         public Color color;
         private DamageType damageType;
 
-        public DamageType DamageType 
-        { 
+        public DamageType DamageType {
             get => damageType;
-            set
-            {
+            set {
                 damageType = value;
-                switch (damageType)
-                {
+                switch (damageType) {
                     case DamageType.Normal:
                         text = damage.ToString();
                         break;
@@ -101,6 +92,6 @@ namespace HellTrail.Core.Combat
         Resisted,
         Blocked,
         Repelled,
-        
+
     }
 }

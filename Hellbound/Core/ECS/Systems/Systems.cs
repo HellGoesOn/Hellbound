@@ -1,11 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.ECS
+namespace Casull.Core.ECS
 {
     public class Systems : IExecute, IDraw
     {
@@ -17,8 +12,8 @@ namespace HellTrail.Core.ECS
 
         public void AddSystem(ISystem system)
         {
-            if(system is IExecute executeSystem) _executeSystems.Add(executeSystem);
-            if(system is IDraw drawSystem) _drawSystems.Add(drawSystem);
+            if (system is IExecute executeSystem) _executeSystems.Add(executeSystem);
+            if (system is IDraw drawSystem) _drawSystems.Add(drawSystem);
 
             _allSystems.Add(system);
             _enabledSystems.Add(system.GetType(), true);
@@ -26,8 +21,7 @@ namespace HellTrail.Core.ECS
 
         public void Execute(Context context)
         {
-            for (int i = 0; i < _executeSystems.Count; i++)
-            {
+            for (int i = 0; i < _executeSystems.Count; i++) {
                 if (_enabledSystems[_executeSystems[i].GetType()])
                     _executeSystems[i].Execute(context);
             }
@@ -35,8 +29,7 @@ namespace HellTrail.Core.ECS
 
         public void Draw(Context context, SpriteBatch spriteBatch)
         {
-            for (int i = 0; i < _drawSystems.Count; i++)
-            {
+            for (int i = 0; i < _drawSystems.Count; i++) {
                 if (_enabledSystems[_drawSystems[i].GetType()])
                     _drawSystems[i].Draw(context, spriteBatch);
             }

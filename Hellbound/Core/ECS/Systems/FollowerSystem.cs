@@ -1,11 +1,6 @@
-﻿using HellTrail.Core.ECS.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Casull.Core.ECS.Components;
 
-namespace HellTrail.Core.ECS
+namespace Casull.Core.ECS
 {
     public class FollowerSystem : IExecute
     {
@@ -20,8 +15,7 @@ namespace HellTrail.Core.ECS
         {
             var entities = _group.Entities;
 
-            for (int i = 0; i < entities.Count; i++)
-            {
+            for (int i = 0; i < entities.Count; i++) {
                 Entity entity = entities[i];
 
                 var fc = entity.GetComponent<FollowingOther>();

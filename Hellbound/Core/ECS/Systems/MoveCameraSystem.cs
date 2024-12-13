@@ -1,16 +1,7 @@
-﻿using HellTrail.Core.ECS.Components;
-using HellTrail.Core.Overworld;
-using HellTrail.Core.UI;
-using HellTrail.Extensions;
+﻿using Casull.Core.ECS.Components;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.ECS
+namespace Casull.Core.ECS
 {
     public class MoveCameraSystem : IExecute
     {
@@ -25,8 +16,7 @@ namespace HellTrail.Core.ECS
         {
             var entities = _group.Entities;
 
-            for (int i = 0; i < entities.Count; i++)
-            {
+            for (int i = 0; i < entities.Count; i++) {
                 var entity = entities[i];
 
                 var transform = entity.GetComponent<Transform>();

@@ -1,12 +1,7 @@
-﻿using HellTrail.Core.ECS.Components;
-using HellTrail.Core.Overworld;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Casull.Core.ECS.Components;
+using Casull.Core.Overworld;
 
-namespace HellTrail.Core.ECS
+namespace Casull.Core.ECS
 {
     public class KillBasedOnFlagSystem : IExecute
     {
@@ -21,11 +16,10 @@ namespace HellTrail.Core.ECS
         {
             var entities = _group.Entities;
 
-            for (int i = 0; i < entities.Count; i++)
-            {
+            for (int i = 0; i < entities.Count; i++) {
                 var getFlag = entities[i].GetComponent<DiesIfFlagRaised>();
 
-                if(World.flags.Contains(getFlag.flag))
+                if (World.flags.Contains(getFlag.flag))
                     context.Destroy(entities[i]);
             }
         }

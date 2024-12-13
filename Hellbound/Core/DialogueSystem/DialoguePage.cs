@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace HellTrail.Core.DialogueSystem
+namespace Casull.Core.DialogueSystem
 {
     public class DialoguePage
     {
@@ -35,31 +35,25 @@ namespace HellTrail.Core.DialogueSystem
 
         public void Update(Dialogue dialogue)
         {
-            if (!finishedScrolling && ++elapsedTime >= timePerLetter)
-            {
+            if (!finishedScrolling && ++elapsedTime >= timePerLetter) {
                 if (Input.HeldKey(Keys.E))
                     progress += 4;
 
-                if(++progress >= text.Length)
-                {
+                if (++progress >= text.Length) {
                     progress = text.Length;
                     finishedScrolling = true;
                 }
                 elapsedTime = 0;
             }
 
-            if (finishedScrolling && Input.PressedKey(Keys.E))
-            {
-                if(responses.Count > 0)
-                {
+            if (finishedScrolling && Input.PressedKey(Keys.E)) {
+                if (responses.Count > 0) {
                     responses[currentResponse].OnUseResponse(dialogue);
                 }
-                else
-                {
+                else {
                     onPageEnd?.Invoke(dialogue);
-                    if(++dialogue.currentPage > dialogue.pages.Count-1)
-                    {
-                        dialogue.currentPage = dialogue.pages.Count-1;
+                    if (++dialogue.currentPage > dialogue.pages.Count - 1) {
+                        dialogue.currentPage = dialogue.pages.Count - 1;
                         dialogue.hasEnded = true;
                     }
                 }

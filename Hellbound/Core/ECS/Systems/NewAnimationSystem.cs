@@ -1,17 +1,10 @@
-﻿using HellTrail.Core.ECS.Components;
-using HellTrail.Core.Overworld;
-using HellTrail.Core.UI;
-using HellTrail.Render;
+﻿using Casull.Core.ECS.Components;
+using Casull.Core.Overworld;
+using Casull.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace HellTrail.Core.ECS
+namespace Casull.Core.ECS
 {
     public class NewAnimationSystem : IDraw
     {
@@ -28,8 +21,7 @@ namespace HellTrail.Core.ECS
 
             int count = entities.Count;
 
-            for (int i = 0; i < count; i++)
-            {
+            for (int i = 0; i < count; i++) {
                 var entity = entities[i];
 
                 var animations = entity.GetComponent<NewAnimationComponent>();
@@ -46,22 +38,18 @@ namespace HellTrail.Core.ECS
 
                 var frame = new Frame(0, 0, 0, 0, 0);
 
-                if (hasAnim)
-                {
+                if (hasAnim) {
                     startIndex = animations.CurrentAnimation.start;
                     endIndex = animations.CurrentAnimation.end;
                 }
 
-                if (animations.currentFrame < startIndex || animations.currentFrame > endIndex)
-                {
+                if (animations.currentFrame < startIndex || animations.currentFrame > endIndex) {
                     animations.elapsedTime = 0;
                     animations.currentFrame = startIndex;
                 }
 
-                if (++animations.elapsedTime > timeUntilNext)
-                {
-                    if (++animations.currentFrame > endIndex)
-                    {
+                if (++animations.elapsedTime > timeUntilNext) {
+                    if (++animations.currentFrame > endIndex) {
                         animations.currentFrame = startIndex;
                     }
 

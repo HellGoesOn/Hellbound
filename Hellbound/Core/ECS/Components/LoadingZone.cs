@@ -1,11 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.ECS.Components
+namespace Casull.Core.ECS.Components
 {
     public class LoadingZone : IComponent
     {
@@ -15,8 +10,7 @@ namespace HellTrail.Core.ECS.Components
         public LoadingZone(string nextZone, Vector2 direction = default, Vector2 newPosition = default)
         {
             this.direction = direction;
-            if (direction == default)
-            {
+            if (direction == default) {
                 this.direction = -Vector2.UnitY;
             }
             this.newPosition = newPosition;

@@ -1,12 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Extensions
+namespace Casull.Extensions
 {
     public static class ColorEXT
     {
@@ -19,7 +14,7 @@ namespace HellTrail.Extensions
         // sadly nothing i can do about it while still using spriteBatch
         public static Color ShaderFix(this Color c, bool fullBright)
         {
-            if(fullBright)
+            if (fullBright)
                 return c.ShaderFix(ShaderParam.FullBright);
 
             return c.ShaderFix(ShaderParam.None);

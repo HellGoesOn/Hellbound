@@ -1,18 +1,13 @@
-﻿using HellTrail.Core.Combat;
-using HellTrail.Core.Combat.Abilities;
-using HellTrail.Core.Combat.Scripting;
-using HellTrail.Core.DialogueSystem;
-using HellTrail.Core.ECS.Components;
-using HellTrail.Core.Overworld;
-using HellTrail.Render;
+﻿using Casull.Core.Combat;
+using Casull.Core.Combat.Abilities;
+using Casull.Core.Combat.Scripting;
+using Casull.Core.DialogueSystem;
+using Casull.Core.ECS.Components;
+using Casull.Core.Overworld;
+using Casull.Render;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.ECS
+namespace Casull.Core.ECS
 {
     public class CreateBattleOnContactSystem : IExecute
     {
@@ -25,8 +20,7 @@ namespace HellTrail.Core.ECS
 
         public void Execute(Context context)
         {
-            for(int i = 0; i < _group.Entities.Count; i++)
-            {
+            for (int i = 0; i < _group.Entities.Count; i++) {
                 Entity entity = _group.Entities[i];
                 int otherId = entity.GetComponent<HasCollidedMarker>().otherId;
                 Entity otherEntity = context.entities[otherId];
@@ -45,8 +39,7 @@ namespace HellTrail.Core.ECS
                 List<Unit> trialUnits = [];
                 BattleBackground bg = new(component.bgName);
                 int offset = 0;
-                foreach(var unit in enemyDefintions)
-                {
+                foreach (var unit in enemyDefintions) {
                     Unit enemy = UnitDefinitions.Get(unit);
                     enemy.scale.X *= -1;
                     enemyUnits.Add(enemy);
@@ -57,68 +50,55 @@ namespace HellTrail.Core.ECS
                     offset++;
                 }
 
-                if (trialDefinitions != null)
-                {
-                    foreach (var unit in trialDefinitions)
-                    {
-                        if(unit != null)
+                if (trialDefinitions != null) {
+                    foreach (var unit in trialDefinitions) {
+                        if (unit != null)
                             trialUnits.Add(UnitDefinitions.Get(unit));
                     }
                     GlobalPlayer.DefaultBattleStations(trialUnits);
                 }
 
-                
+
                 Battle battle = Battle.Create(enemyUnits, trialUnits.Count > 0 ? trialUnits : null);
                 Main.instance.battle = battle;
                 battle.bg = bg;
-                battle.OnBattleEnd = () =>
-                {
+                battle.OnBattleEnd = () => {
                     context.Destroy(entity.id);
                     SoundEngine.StartMusic("ChangingSeasons", true);
-                    foreach (Unit unit in GlobalPlayer.ActiveParty)
-                    {
+                    foreach (Unit unit in GlobalPlayer.ActiveParty) {
                         unit.currentAnimation = unit.defaultAnimation;
                     }
                 };
 
-                Script triedToHitThePeas = new()
-                {
-                    condition = (b) =>
-                    {
+                Script triedToHitThePeas = new() {
+                    condition = (b) => {
                         Unit unit = b.unitsHitLastRound.FirstOrDefault(x => x.name == "Peas");
                         return unit != null && unit.Stats.HP == unit.Stats.MaxHP && b.State == BattleState.VictoryCheck;
                     },
-                    action = (b) =>
-                    {
-                        var page1Portrait = new Portrait("EndLife", new FrameData(0, 0, 32, 32))
-                        {
+                    action = (b) => {
+                        var page1Portrait = new Portrait("EndLife", new FrameData(0, 0, 32, 32)) {
                             scale = new Vector2(-16, 16)
                         };
-                        var page3Portrait = new Portrait("EndLife", new FrameData(0, 32, 32, 32))
-                        {
+                        var page3Portrait = new Portrait("EndLife", new FrameData(0, 32, 32, 32)) {
                             scale = new Vector2(16, 16)
                         };
                         Dialogue dialogue = Dialogue.Create();
-                        DialoguePage page = new()
-                        {
+                        DialoguePage page = new() {
                             portraits = [page1Portrait],
                             title = battle.playerParty[0].name,
                             text = "It's completely impervious to our attacks.."
                         };
-                        DialoguePage page2 = new()
-                        {
+                        DialoguePage page2 = new() {
                             title = "Peas",
                             text = "(Pea noises)"
                         };
-                        DialoguePage page3 = new()
-                        {
+                        DialoguePage page3 = new() {
                             portraits = [page3Portrait],
                             title = battle.playerParty[0].name,
                             text = "There's only one thing that could work.."
                         };
                         dialogue.pages.AddRange([page, page2, page3]);
-                        var disturb = new Disturb()
-                        {
+                        var disturb = new Disturb() {
                             spCost = 0,
                             canTarget = ValidTargets.Enemy
                         };

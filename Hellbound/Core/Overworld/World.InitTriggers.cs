@@ -1,62 +1,47 @@
-﻿using HellTrail.Core.Combat;
-using HellTrail.Core.DialogueSystem;
-using HellTrail.Core.ECS.Components;
-using HellTrail.Core.UI;
-using HellTrail.Render;
+﻿using Casull.Core.Combat;
+using Casull.Core.DialogueSystem;
+using Casull.Core.ECS.Components;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.Overworld
+namespace Casull.Core.Overworld
 {
     public partial class World
     {
         public static void InitTriggers()
         {
-            Trigger whatTheFuckDialogue = new("diag1")
-            {
-                action = (world) =>
-            {
-                var d = Dialogue.Create();
+            Trigger whatTheFuckDialogue = new("diag1") {
+                action = (world) => {
+                    var d = Dialogue.Create();
 
-                var firstPage = new DialoguePage
-                {
-                    text = "A lovely day today innit?",
-                    title = $"{GlobalPlayer.ActiveParty[0].name}"
-                };
+                    var firstPage = new DialoguePage {
+                        text = "A lovely day today innit?",
+                        title = $"{GlobalPlayer.ActiveParty[0].name}"
+                    };
 
-                var secondPage = new DialoguePage
-                {
-                    textColor = Color.Yellow,
-                    text = "Sure hope nothing bad happens",
-                    title = $"{GlobalPlayer.ActiveParty[0].name}"
-                };
+                    var secondPage = new DialoguePage {
+                        textColor = Color.Yellow,
+                        text = "Sure hope nothing bad happens",
+                        title = $"{GlobalPlayer.ActiveParty[0].name}"
+                    };
 
-                d.pages.AddRange([firstPage, secondPage]);
-            }
+                    d.pages.AddRange([firstPage, secondPage]);
+                }
             };
 
             whatTheFuckDialogue.condition = (w) => false;
 
             triggers.Add(whatTheFuckDialogue);
 
-            Trigger whatTheFuckDialogue2 = new("diag2")
-            {
-                action = (world) =>
-                {
+            Trigger whatTheFuckDialogue2 = new("diag2") {
+                action = (world) => {
                     var d = Dialogue.Create();
 
-                    var firstPage = new DialoguePage
-                    {
+                    var firstPage = new DialoguePage {
                         text = "By the heavens, what an ugly bastard",
                         title = $"{GlobalPlayer.ActiveParty[0].name}"
                     };
 
-                    var secondPage = new DialoguePage
-                    {
+                    var secondPage = new DialoguePage {
                         text = "I should slay it for its own good",
                         title = $"{GlobalPlayer.ActiveParty[0].name}"
                     };
@@ -69,10 +54,8 @@ namespace HellTrail.Core.Overworld
 
             triggers.Add(whatTheFuckDialogue2);
 
-            Trigger recruitDog = new("recruitDog")
-            {
-                action = (world) =>
-                {
+            Trigger recruitDog = new("recruitDog") {
+                action = (world) => {
                     var d = Dialogue.Create();
 
                     d.pages.AddRange(
@@ -103,7 +86,7 @@ namespace HellTrail.Core.Overworld
                             title = "Wolfie",
                             onPageEnd = (dial) => {
                                 var e = Main.instance.ActiveWorld.context.entities.First(x=>x.enabled && x.HasComponent<TextureComponent>() && x.GetComponent<TextureComponent>().textureName == "WhatDaDogDoin2");
-                                if (e != null)        
+                                if (e != null)
                                     Main.instance.ActiveWorld.context.Destroy(e);
                                 GlobalPlayer.AddPartyMember(UnitDefinitions.Get("Dog"));
                                 flags.Add("recruittedDog");

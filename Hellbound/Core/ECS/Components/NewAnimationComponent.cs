@@ -1,13 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.ECS.Components
+namespace Casull.Core.ECS.Components
 {
     public class NewAnimationComponent : IComponent
     {
@@ -51,8 +45,7 @@ namespace HellTrail.Core.ECS.Components
         public static bool TryParse(string s, ref Animation result)
         {
             string[] values = Regex.Replace(s, "[^0-9 ]", "").Split(" ");
-            if(values.Length < 2 || !int.TryParse(values[0], out int a) || !int.TryParse(values[1], out int b))
-            {
+            if (values.Length < 2 || !int.TryParse(values[0], out int a) || !int.TryParse(values[1], out int b)) {
                 result = default;
                 return false;
             }
@@ -82,14 +75,13 @@ namespace HellTrail.Core.ECS.Components
         public static bool TryParse(string input, ref Frame result)
         {
             string[] values = Regex.Replace(input, "[^0-9 ]", "").Split(" ");
-            if (values.Length < 5 
-                || !int.TryParse(values[0], out int x) 
+            if (values.Length < 5
+                || !int.TryParse(values[0], out int x)
                 || !int.TryParse(values[1], out int y)
                 || !int.TryParse(values[2], out int w)
                 || !int.TryParse(values[3], out int h)
                 || !int.TryParse(values[4], out int tun)
-                )
-            {
+                ) {
                 result = default;
                 return false;
             }

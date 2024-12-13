@@ -1,21 +1,11 @@
-﻿using HellTrail.Core.Combat;
-using HellTrail.Core.Combat.Items;
-using HellTrail.Core.DialogueSystem;
-using HellTrail.Core.ECS;
-using HellTrail.Core.ECS.Components;
-using HellTrail.Core.UI;
-using HellTrail.Core.UI.Elements;
-using HellTrail.Render;
+﻿using Casull.Core.Combat;
+using Casull.Core.UI;
+using Casull.Core.UI.Elements;
+using Casull.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.Overworld
+namespace Casull.Core.Overworld
 {
     public class OverworldUIState : UIState
     {
@@ -27,8 +17,8 @@ namespace HellTrail.Core.Overworld
         public UIScrollableMenu optionMenu;
 
         public int lastTarget;
-        
-        public OverworldUIState() 
+
+        public OverworldUIState()
         {
             //debugText = new("");
             //Append(debugText);
@@ -38,8 +28,7 @@ namespace HellTrail.Core.Overworld
         {
             base.Update();
 
-            if (Input.PressedKey(Keys.Escape) && optionMenu == null && Main.instance.GetGameState() is World)
-            {
+            if (Input.PressedKey(Keys.Escape) && optionMenu == null && Main.instance.GetGameState() is World) {
                 Main.instance.ActiveWorld.paused = true;
 
                 UIAnimatedPanel blackBarTop = new UIAnimatedPanel(new Vector2(Renderer.UIPreferedWidth, 160));
@@ -68,17 +57,14 @@ namespace HellTrail.Core.Overworld
                 if (angry)
                     mainOptions = ["Continue"];
 
-                optionMenu = new UIScrollableMenu(angry ? 1 : 5, mainOptions)
-                {
+                optionMenu = new UIScrollableMenu(angry ? 1 : 5, mainOptions) {
                     drawArrows = false,
                     openSpeed = 0.15f,
                     onSelectOption = (sender)
-                    =>
-                    {
+                    => {
                         var optionMenuBox = (UIScrollableMenu)sender;
 
-                        switch (optionMenuBox.CurrentOption)
-                        {
+                        switch (optionMenuBox.CurrentOption) {
                             case "Continue":
                                 optionMenuBox.closed = true;
                                 optionMenu = null;
@@ -88,13 +74,11 @@ namespace HellTrail.Core.Overworld
 
                                 List<string> items = [];
 
-                                foreach (var item in GlobalPlayer.Inventory)
-                                {
+                                foreach (var item in GlobalPlayer.Inventory) {
                                     items.Add($"{item.count} x {item.name}");
                                 }
 
-                                var InventoryMenu = new UIScrollableMenu(12, items.ToArray())
-                                {
+                                var InventoryMenu = new UIScrollableMenu(12, items.ToArray()) {
                                     id = "inventoryMenu"
                                 };
 
@@ -110,38 +94,30 @@ namespace HellTrail.Core.Overworld
                                 descriptionPanel.Append(uiPicture);
                                 description.SetPosition(16, 160);
 
-                                InventoryMenu.onUpdate = (sender) =>
-                                {
-                                    if (Input.PressedKey([Keys.Escape, Keys.Q]) && (sender as UIScrollableMenu).focused)
-                                    {
+                                InventoryMenu.onUpdate = (sender) => {
+                                    if (Input.PressedKey([Keys.Escape, Keys.Q]) && (sender as UIScrollableMenu).focused) {
                                         InventoryMenu.focused = false;
                                         InventoryMenu.closed = true;
                                         descriptionPanel.isClosed = true;
                                     }
                                 };
 
-                                InventoryMenu.onSelectOption = (sender) =>
-                                {
+                                InventoryMenu.onSelectOption = (sender) => {
                                     var item = GlobalPlayer.Inventory[InventoryMenu.currentSelectedOption];
 
-                                    if (item.canUseOutOfBattle)
-                                    {
-                                        switch (item.canTarget)
-                                        {
+                                    if (item.canUseOutOfBattle) {
+                                        switch (item.canTarget) {
                                             case ValidTargets.World:
                                                 item.Use(GlobalPlayer.ActiveParty[0], null, GlobalPlayer.ActiveParty);
                                                 break;
                                             case ValidTargets.DownedAlly:
                                             case ValidTargets.Ally:
                                                 InventoryMenu.focused = false;
-                                                if (item.aoe)
-                                                {
+                                                if (item.aoe) {
                                                     var useOnAll = new UIScrollableMenu(2, "Cancel", "Use");
                                                     useOnAll.openSpeed = 0.35f;
-                                                    useOnAll.onSelectOption = (sender) =>
-                                                    {
-                                                        switch (useOnAll.CurrentOption)
-                                                        {
+                                                    useOnAll.onSelectOption = (sender) => {
+                                                        switch (useOnAll.CurrentOption) {
                                                             case "Cancel":
                                                                 useOnAll.closed = true;
                                                                 break;
@@ -153,16 +129,14 @@ namespace HellTrail.Core.Overworld
                                                         }
                                                     };
 
-                                                    useOnAll.onLoseParent = (sender) =>
-                                                    {
-                                                        InventoryMenu.focused = true; 
+                                                    useOnAll.onLoseParent = (sender) => {
+                                                        InventoryMenu.focused = true;
                                                         lastTarget = (sender as UIScrollableMenu).currentSelectedOption;
                                                         InventoryMenu.focused = true;
                                                         var oldCount = InventoryMenu.options.Count;
                                                         InventoryMenu.options = GlobalPlayer.Inventory.Select(item => $"{item.count} x {item.name}").ToList();
 
-                                                        if (InventoryMenu.options.Count != oldCount)
-                                                        {
+                                                        if (InventoryMenu.options.Count != oldCount) {
                                                             InventoryMenu.currentSelectedOption = InventoryMenu.options.Count - 1;
                                                             InventoryMenu.onChangeOption?.Invoke(InventoryMenu);
                                                         }
@@ -175,18 +149,15 @@ namespace HellTrail.Core.Overworld
                                                 }
                                                 List<string> allyNames = GlobalPlayer.ActiveParty.Select(x => x.name).ToList();
 
-                                                var allySelect = new UIScrollableMenu(4, [.. allyNames])
-                                                {
+                                                var allySelect = new UIScrollableMenu(4, [.. allyNames]) {
                                                     openSpeed = 0.25f,
-                                                    onLoseParent = (sender) =>
-                                                    {
+                                                    onLoseParent = (sender) => {
                                                         lastTarget = (sender as UIScrollableMenu).currentSelectedOption;
                                                         InventoryMenu.focused = true;
                                                         var oldCount = InventoryMenu.options.Count;
                                                         InventoryMenu.options = GlobalPlayer.Inventory.Select(item => $"{item.count} x {item.name}").ToList();
 
-                                                        if (InventoryMenu.options.Count != oldCount)
-                                                        {
+                                                        if (InventoryMenu.options.Count != oldCount) {
                                                             InventoryMenu.currentSelectedOption = InventoryMenu.options.Count - 1;
                                                             InventoryMenu.onChangeOption?.Invoke(InventoryMenu);
                                                         }
@@ -199,20 +170,18 @@ namespace HellTrail.Core.Overworld
                                                 allySelect.Append(selectText);
                                                 selectText.SetPosition(20, -14);
 
-                                                allySelect.onUpdate = (sender) =>
-                                                {
+                                                allySelect.onUpdate = (sender) => {
                                                     if (Input.PressedKey([Keys.Escape, Keys.Q]) && (sender as UIScrollableMenu).focused)
                                                         allySelect.closed = true;
                                                 };
 
-                                                allySelect.onSelectOption = (sender) =>
-                                                {
+                                                allySelect.onSelectOption = (sender) => {
                                                     var item = GlobalPlayer.Inventory[InventoryMenu.currentSelectedOption];
                                                     var target = GlobalPlayer.ActiveParty[allySelect.currentSelectedOption];
-                                                    if ((!target.Downed && item.canTarget == ValidTargets.Ally) || (target.Downed && item.canTarget == ValidTargets.DownedAlly))
-                                                    {
+                                                    if ((!target.Downed && item.canTarget == ValidTargets.Ally) || (target.Downed && item.canTarget == ValidTargets.DownedAlly)) {
                                                         item.Use(target, null, [target]);
-                                                    } else
+                                                    }
+                                                    else
                                                         SoundEngine.PlaySound("MeepMerp");
                                                     allySelect.closed = true;
 
@@ -228,30 +197,27 @@ namespace HellTrail.Core.Overworld
                                     }
                                 };
 
-                                InventoryMenu.onChangeOption = (sender) =>
-                                {
-                                    if (GlobalPlayer.Inventory.Count > 0)
-                                    {
+                                InventoryMenu.onChangeOption = (sender) => {
+                                    if (GlobalPlayer.Inventory.Count > 0) {
                                         var item = GlobalPlayer.Inventory[InventoryMenu.currentSelectedOption];
-                                        if (!string.IsNullOrWhiteSpace(item.icon))
-                                        {
+                                        if (!string.IsNullOrWhiteSpace(item.icon)) {
                                             uiPicture.frames = item.frames;
                                             uiPicture.textureName = item.icon;
                                             uiPicture.scale = item.iconScale;
-                                            uiPicture.rotation = item.iconRotation;
+                                            uiPicture.Rotation = item.iconRotation;
                                             uiPicture.origin = item.iconOrigin;
 
                                             item.onViewed?.Invoke(item);
 
                                             uiPicture.SetPosition(descriptionPanel.size.X * 0.5f, 64);
-                                        } else
-                                        {
+                                        }
+                                        else {
                                             uiPicture.frames = null;
                                             uiPicture.textureName = "";
                                         }
                                         description.text = item.description;
-                                    } else
-                                    {
+                                    }
+                                    else {
                                         uiPicture.frames = null;
                                         uiPicture.textureName = "";
                                         uiPicture.scale = Vector2.One;
@@ -261,8 +227,7 @@ namespace HellTrail.Core.Overworld
                                     }
                                 };
 
-                                InventoryMenu.onLoseParent += (sender) =>
-                                {
+                                InventoryMenu.onLoseParent += (sender) => {
                                     optionMenuBox.focused = true;
                                 };
 
@@ -280,31 +245,160 @@ namespace HellTrail.Core.Overworld
 
 
                                 var partyMemberMenu = new UIScrollableMenu(4, partyMemberNames);
-                                partyMemberMenu.SetPosition(160, 240);
+                                partyMemberMenu.SetPosition(200, 240);
                                 partyMemberMenu.openSpeed = 0.25f;
 
-                                partyMemberMenu.onLoseParent += (sender) =>
-                                {
+
+                                partyMemberMenu.onLoseParent += (sender) => {
                                     optionMenuBox.focused = true;
                                 };
 
-                                var memberPanel = new UIAnimatedPanel(new Vector2(600, 400), UIAnimatedPanel.AnimationStyle.FourWay);
+                                var memberPanel = new UIAnimatedPanel(new Vector2(600, 240), UIAnimatedPanel.AnimationStyle.FourWay);
                                 memberPanel.openSpeed = 0.25f;
-                                memberPanel.SetPosition(partyMemberMenu.GetPosition() + new Vector2(200, -120));
+                                memberPanel.SetPosition(partyMemberMenu.GetPosition() + new Vector2(160, -120));
 
                                 var portrait = new UICombatPortrait("", 0, 0);
                                 portrait.SetPosition(16, 32);
                                 memberPanel.Append(portrait);
-                                partyMemberMenu.onUpdate = (sender) =>
-                                {
-                                    if (Input.PressedKey([Keys.Escape, Keys.Q]))
-                                    {
+                                partyMemberMenu.onUpdate = (sender) => {
+                                    if (Input.PressedKey([Keys.Escape, Keys.Q]) && partyMemberMenu.focused) {
                                         memberPanel.isClosed = true;
                                         partyMemberMenu.closed = true;
                                     }
+
+                                    var target = GlobalPlayer.ActiveParty[partyMemberMenu.currentSelectedOption];
+
+                                    portrait.SetValues(target.Stats.HP, target.Stats.SP, target.Stats.MaxHP, target.Stats.MaxSP);
                                 };
 
+                                partyMemberMenu.onSelectOption = (sender) => {
+                                    partyMemberMenu.focused = false;
+                                    var unit = GlobalPlayer.ActiveParty[partyMemberMenu.currentSelectedOption];
+                                    string[] attackNames = unit.abilities.Select(x => x.Name).ToArray();
+                                    int[] unusable = unit.abilities.Where(x => !x.canUseOutOfCombat).Select(x => unit.abilities.IndexOf(x)).ToArray();
 
+                                    var attacks = new UIScrollableMenu(4, attackNames) {
+                                        Padding = 32
+                                    };
+                                    attacks.openSpeed = 0.25f;
+                                    attacks.SetPosition(memberPanel.GetPosition() + new Vector2(0, memberPanel.targetSize.Y));
+                                    attacks.unavailableOptions.AddRange(unusable);
+                                    attacks.notAvailableColor = Color.DarkSlateGray;
+                                    attacks.onUnavailableSelectOption = (_) => { SoundEngine.PlaySound("MeepMerp"); };
+
+                                    attacks.onSelectOption = (sender) => {
+                                        List<string> allyNames = GlobalPlayer.ActiveParty.Select(x => x.name).ToList();
+                                        attacks.focused = false;
+                                        var allySelect = new UIScrollableMenu(4, [.. allyNames]) {
+                                            openSpeed = 0.25f,
+                                            onLoseParent = (sender) => {
+                                                lastTarget = (sender as UIScrollableMenu).currentSelectedOption;
+                                                attacks.focused = true;
+                                            }
+                                        };
+
+                                        var selectText = new UIBorderedText("Use on..");
+                                        selectText.color = new Color(57, 255, 20);
+                                        allySelect.drawArrows = false;
+                                        allySelect.Append(selectText);
+                                        selectText.SetPosition(20, -14);
+
+                                        allySelect.onUpdate = (sender) => {
+                                            if (Input.PressedKey([Keys.Escape, Keys.Q]) && (sender as UIScrollableMenu).focused)
+                                                allySelect.closed = true;
+                                        };
+
+                                        allySelect.onSelectOption = (sender) => {
+                                            var item = GlobalPlayer.ActiveParty[partyMemberMenu.currentSelectedOption].abilities[attacks.currentSelectedOption];
+                                            var target = GlobalPlayer.ActiveParty[allySelect.currentSelectedOption];
+                                            var caster = GlobalPlayer.ActiveParty[partyMemberMenu.currentSelectedOption];
+                                            if ((!target.Downed && item.canTarget == ValidTargets.Ally) || (target.Downed && item.canTarget == ValidTargets.DownedAlly)) {
+                                                item.Use(caster, null, [target]);
+                                            }
+                                            else
+                                                SoundEngine.PlaySound("MeepMerp");
+                                            allySelect.closed = true;
+
+                                        };
+                                        allySelect.SetPosition(attacks.targetSize.X * 0.5f - allySelect.targetSize.X * 0.5f, attacks.targetSize.Y * 0.5f - allySelect.targetSize.Y * 0.5f);
+
+                                        allySelect.currentSelectedOption = Math.Clamp(lastTarget, 0, GlobalPlayer.ActiveParty.Count - 1);
+                                        allySelect.onChangeOption?.Invoke(allySelect);
+
+                                        attacks.Append(allySelect);
+                                    };
+
+                                    var attackDescriptionPanel = new UIAnimatedPanel(new Vector2(384, attacks.targetSize.Y + 32));
+                                    attackDescriptionPanel.openSpeed = 0.35f;
+                                    attackDescriptionPanel.SetPosition(attacks.GetPosition() + new Vector2(attacks.targetSize.X, 0));
+                                    var attackDescriptionText = new UIBorderedText("");
+
+                                    attackDescriptionText.SetPosition(8);
+
+                                    var attackCost = new UIBorderedText("");
+                                    attackCost.SetPosition(8, 140);
+                                    attacks.ExtraSpacing = 8;
+                                    attackDescriptionPanel.Append(attackCost);
+
+                                    attacks.onUpdate = (sender) => {
+                                        if (Input.PressedKey(Keys.Q) && attacks.focused) {
+                                            attackDescriptionPanel.isClosed = attacks.closed = true;
+                                        }
+                                    };
+
+                                    UIPicture[] pic = new UIPicture[8];
+
+                                    for (int i = 0; i < attacks.OptionWindowMax; i++) {
+                                        pic[i] = new UIPicture("ElementsIconsFramed");
+                                        pic[i].SetPosition(8, 10 + 32 * i + 4 * i);
+                                        attacks.Append(pic[i]);
+                                    }
+
+                                    attacks.onLoseParent = (sender) => 
+                                    {
+                                        partyMemberMenu.focused = true;
+                                    };
+
+                                    attacks.onChangeOption = (sender) => {
+                                        for (int i = 0; i < pic.Length; i++) {
+                                            if (pic[i] == null)
+                                                continue;
+
+                                            var ableism = unit.abilities.Count > attacks.OptionWindowMin + i ? unit.abilities[attacks.OptionWindowMin + i] : null;
+                                            if (ableism != null) {
+                                                pic[i].frames = [new FrameData(0, 32 * (int)ableism.elementalType, 32, 32)];
+                                            }
+                                            else {
+                                                pic[i].frames = [new(0, 32 * 9, 32, 32)];
+                                            }
+                                        }
+
+                                        var ability = unit.abilities[attacks.currentSelectedOption];
+                                        attackDescriptionText.text = ability.Description;
+
+                                        string cost = "Cost: ";
+                                        if (ability.hpCost > 0)
+                                            cost += $"{ability.hpCost} HP ";
+
+                                        if (ability.spCost > 0)
+                                            cost += $"{ability.spCost} SP\n";
+
+                                        if (ability.spCost <= 0 && ability.hpCost <= 0)
+                                            cost = "";
+                                        attackCost.text = cost;
+                                    };
+
+                                    if (unit.lastAbilityIndex < attacks.options.Count) {
+                                        attacks.currentSelectedOption = unit.lastAbilityIndex;
+                                        attacks.onChangeOption?.Invoke(attacks);
+                                    }
+
+
+                                    attackDescriptionPanel.Append(attackDescriptionText);
+
+                                    Append(attackDescriptionPanel);
+                                    Append(attacks);
+                                };
 
                                 //var memberName = new UIBorderedText("");
                                 //memberName.SetPosition(16);
@@ -314,6 +408,13 @@ namespace HellTrail.Core.Overworld
                                 //var memberStats = new UIBorderedText("");
                                 //memberStats.SetPosition(120, 16);
                                 //memberPanel.Append(memberStats);
+
+                                var xxx = 130;
+                                var yyy = 120;
+
+                                var nextSkill = new UIBorderedText("");
+                                nextSkill.SetPosition(xxx-10, 64);
+                                memberPanel.Append(nextSkill);
 
                                 var memberLevel = new UIBorderedText("");
                                 memberLevel.SetPosition(120, 16);
@@ -331,76 +432,78 @@ namespace HellTrail.Core.Overworld
 
                                 var magicStatText = new UIBorderedText("Magic");
                                 memberPanel.Append(magicStatText);
-                                var xxx = 130;
-                                magicStatText.SetPosition(xxx, 64);
+                                magicStatText.SetPosition(xxx, yyy);
 
-                                var magicStatBar = new UIProgressBar(new Vector2(210, magicStatText.font.MeasureString("Y").Y - 8), 0);
-                                magicStatBar.SetPosition(240, 70);
+                                var magicStatBar = new UIProgressBar(new Vector2(100, magicStatText.font.MeasureString("Y").Y - 8), 0);
+                                magicStatBar.SetPosition(240, yyy);
                                 magicStatBar.fillColor = Color.Yellow;
                                 magicStatBar.maxValue = 99;
                                 memberPanel.Append(magicStatBar);
 
                                 var magicStatValueText = new UIBorderedText("");
-                                magicStatValueText.SetPosition(240 + magicStatBar.size.X, 64);
+                                magicStatValueText.SetPosition(240 + magicStatBar.size.X, yyy+34);
                                 memberPanel.Append(magicStatValueText);
 
                                 var strStatText = new UIBorderedText("Strength");
                                 memberPanel.Append(strStatText);
-                                strStatText.SetPosition(xxx, 104);
+                                strStatText.SetPosition(xxx, yyy + 34);
 
-                                var strStatBar = new UIProgressBar(new Vector2(210, magicStatText.font.MeasureString("Y").Y - 8), 0);
-                                strStatBar.SetPosition(240, 110);
+                                var strStatBar = new UIProgressBar(new Vector2(100, magicStatText.font.MeasureString("Y").Y - 8), 0);
+                                strStatBar.SetPosition(240, yyy + 36);
                                 strStatBar.fillColor = Color.Yellow;
                                 strStatBar.maxValue = 99;
                                 memberPanel.Append(strStatBar);
 
                                 var strStatValueText = new UIBorderedText("");
-                                strStatValueText.SetPosition(240 + strStatBar.size.X, 104);
+                                strStatValueText.SetPosition(240 + strStatBar.size.X, yyy + 34);
                                 memberPanel.Append(strStatValueText);
 
                                 var spdStatText = new UIBorderedText("Speed");
                                 memberPanel.Append(spdStatText);
-                                spdStatText.SetPosition(xxx, 144);
+                                spdStatText.SetPosition(xxx, yyy + 70);
 
-                                var spdStatBar = new UIProgressBar(new Vector2(210, magicStatText.font.MeasureString("Y").Y - 8), 0);
-                                spdStatBar.SetPosition(240, 150);
+                                var spdStatBar = new UIProgressBar(new Vector2(100, magicStatText.font.MeasureString("Y").Y - 8), 0);
+                                spdStatBar.SetPosition(240, yyy + 74);
                                 spdStatBar.fillColor = Color.Yellow;
                                 spdStatBar.maxValue = 99;
                                 memberPanel.Append(spdStatBar);
 
                                 var spdStatValueText = new UIBorderedText("");
-                                spdStatValueText.SetPosition(240 + spdStatBar.size.X, 144);
+                                spdStatValueText.SetPosition(240 + spdStatBar.size.X, yyy + 74);
                                 memberPanel.Append(spdStatValueText);
 
                                 var affinities = new UIBorderedText("Affinities");
                                 memberPanel.Append(affinities);
-                                affinities.SetPosition(new Vector2(xxx, 184));
+                                affinities.SetPosition(new Vector2(420, yyy));
 
                                 UIPicture[] affinityTypes = new UIPicture[7];
                                 UIPicture[] elementalIcons = new UIPicture[7];
-                                for (int i = 0; i < 7; i++)
-                                {
+                                for (int i = 0; i < 7; i++) {
                                     var affinityElementPic = new UIPicture("AffinityTypeFramed", [new(0, 0, 32, 32)]);
-                                    affinityElementPic.SetPosition(xxx + i * 64 + 4 * i - 64, 224 + 64);
-                                    affinityElementPic.scale = new Vector2(2);
+                                    affinityElementPic.SetPosition(380 + i * 32 + 4 * i - 32, yyy + 32);
+                                    affinityElementPic.scale = new Vector2(1);
                                     memberPanel.Append(affinityElementPic);
                                     affinityTypes[i] = affinityElementPic;
                                 }
 
-                                for (int i = 0; i < 7; i++)
-                                {
+                                for (int i = 0; i < 7; i++) {
                                     var loadedIcons = "ElementsIconsFramed";
                                     var affinityElementPic = new UIPicture(loadedIcons, [new(0, 32 * i, 32, 32)]);
-                                    affinityElementPic.SetPosition(xxx + i * 64 + 4 * i - 64, 224);
-                                    affinityElementPic.scale = new Vector2(2);
+                                    affinityElementPic.SetPosition(380 + i * 32 + 4 * i - 32, yyy + 64);
+                                    affinityElementPic.scale = new Vector2(1);
                                     memberPanel.Append(affinityElementPic);
                                     elementalIcons[i] = affinityElementPic;
                                 }
 
 
-                                partyMemberMenu.onChangeOption = (sender) =>
-                                {
+                                partyMemberMenu.onChangeOption = (sender) => {
                                     var selectedMember = GlobalPlayer.ActiveParty[partyMemberMenu.currentSelectedOption];
+
+                                    string nextSkillText = "Next Skill: -";
+                                    if (selectedMember.learnableAbilities.Count > 0)
+                                        nextSkillText = $"Next Skill: {selectedMember.learnableAbilities[0].abilityToLearn.Name} at LVL {selectedMember.learnableAbilities[0].requiredLevel}";
+                                    nextSkill.text = nextSkillText;
+
                                     portrait.SetValues(selectedMember.Stats.HP, selectedMember.Stats.SP, selectedMember.Stats.MaxHP, selectedMember.Stats.MaxSP);
                                     portrait.picture.textureName = selectedMember.portrait;
                                     portrait.picture.frames = [new FrameData(0, 0, 32, 32)];
@@ -417,20 +520,19 @@ namespace HellTrail.Core.Overworld
                                     expBar.maxValue = selectedMember.Stats.toNextLevel;
 
                                     magicStatBar.value = selectedMember.Stats.magic;
-                                    magicStatValueText.text = $"{selectedMember.Stats.magic}";
-                                    magicStatValueText.SetPosition(240 + magicStatBar.size.X - magicStatValueText.font.MeasureString(magicStatValueText.text).X, 64);
+                                    magicStatValueText.text = $"{(int)selectedMember.Stats.magic}";
+                                    magicStatValueText.SetPosition(240 + magicStatBar.size.X - magicStatValueText.font.MeasureString(magicStatValueText.text).X, yyy);
 
                                     strStatBar.value = selectedMember.Stats.strength;
-                                    strStatValueText.text = $"{selectedMember.Stats.strength}";
-                                    strStatValueText.SetPosition(240 + strStatBar.size.X - strStatValueText.font.MeasureString(strStatValueText.text).X, 104);
+                                    strStatValueText.text = $"{(int)selectedMember.Stats.strength}";
+                                    strStatValueText.SetPosition(240 + strStatBar.size.X - strStatValueText.font.MeasureString(strStatValueText.text).X, yyy+34);
 
                                     spdStatBar.value = selectedMember.Stats.speed;
-                                    spdStatValueText.text = $"{selectedMember.Stats.speed}";
-                                    spdStatValueText.SetPosition(240 + strStatBar.size.X - strStatValueText.font.MeasureString(strStatValueText.text).X, 144);
+                                    spdStatValueText.text = $"{(int)selectedMember.Stats.speed}";
+                                    spdStatValueText.SetPosition(240 + strStatBar.size.X - strStatValueText.font.MeasureString(spdStatValueText.text).X, yyy+74);
 
 
-                                    for(int i = 0; i < 7; i++)
-                                    {
+                                    for (int i = 0; i < 7; i++) {
 
                                         var getValue = selectedMember.resistances[(ElementalType)i];
 
@@ -454,8 +556,7 @@ namespace HellTrail.Core.Overworld
                                         affinityTypes[i].frames = newFrames;
                                     }
 
-                                    if (selectedMember.Downed)
-                                    {
+                                    if (selectedMember.Downed) {
                                         portrait.picture.tint = Color.DarkGray;
                                     }
                                 };
@@ -470,8 +571,7 @@ namespace HellTrail.Core.Overworld
 
                                 var settings = new UIScrollableMenu(4, ["Very biiiiiiiiiiiiiiiiiiiig text", "Music Volume", "Resolution", "Back"]);
                                 settings.openSpeed = 0.25f;
-                                settings.onChangeOption = (sender) =>
-                                {
+                                settings.onChangeOption = (sender) => {
                                     settings.options[0] = $"Game Volume: {Math.Round(GameOptions.GeneralVolume * 100)}%";
                                     settings.options[1] = $"Music Volume: {Math.Round(GameOptions.MusicVolume * 100)}%";
                                     settings.options[2] = $"Resolution: {GameOptions.ScreenWidth}x{GameOptions.ScreenHeight}";
@@ -479,10 +579,8 @@ namespace HellTrail.Core.Overworld
 
                                 settings.SetPosition(Renderer.UIPreferedWidth * 0.5f - settings.targetSize.X * 0.5f, Renderer.UIPreferedHeight * 0.5f - settings.targetSize.Y * 0.5f);
 
-                                settings.onSelectOption = (sender) =>
-                                {
-                                    switch (settings.CurrentOption)
-                                    {
+                                settings.onSelectOption = (sender) => {
+                                    switch (settings.CurrentOption) {
                                         case "Back":
                                             settings.closed = true; break;
                                     }
@@ -490,15 +588,13 @@ namespace HellTrail.Core.Overworld
 
                                 settings.onLoseParent = (sender) => { optionMenu.focused = true; };
 
-                                settings.onUpdate = (sender) =>
-                                {
-                                    if (Input.HeldKey(Keys.A) || Input.HeldKey(Keys.D))
-                                    {
+                                settings.onUpdate = (sender) => {
+                                    if (Input.HeldKey(Keys.A) || Input.HeldKey(Keys.D)) {
                                         _heldTimer++;
                                         if (_heldTimer >= _repeatRate && _repeatRate > 5)
                                             _repeatRate--;
-                                    } else
-                                    {
+                                    }
+                                    else {
                                         _repeatRate = 15;
                                         _heldTimer = 0;
                                     }
@@ -509,11 +605,9 @@ namespace HellTrail.Core.Overworld
                                     if (Input.PressedKey([Keys.Escape, Keys.Q]))
                                         settings.closed = true;
 
-                                    if(Input.PressedKey(Keys.D) || (Input.HeldKey(Keys.D) && _heldTimer >= _repeatRate))
-                                    {
+                                    if (Input.PressedKey(Keys.D) || (Input.HeldKey(Keys.D) && _heldTimer >= _repeatRate)) {
                                         _heldTimer = 0;
-                                        switch(settings.currentSelectedOption)
-                                        {
+                                        switch (settings.currentSelectedOption) {
                                             case 0:
                                                 GameOptions.GeneralVolume += 0.01f;
                                                 break;
@@ -527,11 +621,9 @@ namespace HellTrail.Core.Overworld
                                         }
                                     }
 
-                                    if (Input.PressedKey(Keys.A) || (Input.HeldKey(Keys.A) && _heldTimer >= _repeatRate))
-                                    {
+                                    if (Input.PressedKey(Keys.A) || (Input.HeldKey(Keys.A) && _heldTimer >= _repeatRate)) {
                                         _heldTimer = 0;
-                                        switch (settings.currentSelectedOption)
-                                        {
+                                        switch (settings.currentSelectedOption) {
                                             case 0:
                                                 GameOptions.GeneralVolume -= 0.01f;
                                                 break;
@@ -539,8 +631,7 @@ namespace HellTrail.Core.Overworld
                                                 GameOptions.MusicVolume -= 0.01f;
                                                 break;
                                             case 2:
-                                                if (GameOptions.ResolutionMultiplier - 1 >= 1)
-                                                {
+                                                if (GameOptions.ResolutionMultiplier - 1 >= 1) {
                                                     GameOptions.ResolutionMultiplier -= 1;
                                                     Main.instance.UpdateResolution();
                                                 }
@@ -562,15 +653,13 @@ namespace HellTrail.Core.Overworld
 
                                 //Main.angerCounter++;
 
-                                if (Main.instance.spiritsAngered)
-                                {
+                                if (Main.instance.spiritsAngered) {
                                     optionMenuBox.panelColor = Color.DarkRed;
-                                    if (SoundEngine.IsMusicPlaying)
-                                    {
+                                    if (SoundEngine.IsMusicPlaying) {
                                         SoundEngine.StopMusic(doNotRestart: true);
                                         options = ["Is this really that interesting to you?"];
-                                    } else
-                                    {
+                                    }
+                                    else {
                                         options = ["You didn't want to quit before, did something change hmm?"];
                                     }
                                 }
@@ -581,22 +670,18 @@ namespace HellTrail.Core.Overworld
                                 confirm.openSpeed = 0.25f;
                                 sender.Append(confirm);
                                 confirm.onSelectOption = (_)
-                                =>
-                                {
-                                    if (confirm.currentSelectedOption == 1)
-                                    {
+                                => {
+                                    if (confirm.currentSelectedOption == 1) {
                                         optionMenu.closed = true;
-                                        optionMenu.onLoseParent += (sender) =>
-                                        {
+                                        optionMenu.onLoseParent += (sender) => {
                                             GameStateManager.SetState(GameState.MainMenu, new BlackFadeInFadeOut(Renderer.SaveFrame(true)));
                                         };
-                                    } else
-                                    {
+                                    }
+                                    else {
                                         confirm.closed = true;
                                     }
                                 };
-                                confirm.onUpdate = (_) =>
-                                {
+                                confirm.onUpdate = (_) => {
                                     if (Input.PressedKey([Keys.Escape, Keys.Q]))
                                         confirm.closed = true;
                                 };
@@ -619,8 +704,7 @@ namespace HellTrail.Core.Overworld
                 navigation.Append(new UIBorderedText("ESC./Q -> Close/Cancel, W/S -> Move, E -> Select/Confirm").SetPosition(16));
                 navigation.SetFont(Assets.DefaultFont);
 
-                optionMenu.onLoseParent += (sender) =>
-                {
+                optionMenu.onLoseParent += (sender) => {
                     navigation.isClosed = true;
                     //Main.angerCounter = 0;
                     Main.instance.ActiveWorld.paused = false;
@@ -630,10 +714,8 @@ namespace HellTrail.Core.Overworld
                     blackBarBot.isClosed = true;
                 };
 
-                optionMenu.onUpdate = (sender) =>
-                {
-                    if (Input.PressedKey([Keys.Escape, Keys.Q]) && optionMenu != null && optionMenu.focused)
-                    {
+                optionMenu.onUpdate = (sender) => {
+                    if (Input.PressedKey([Keys.Escape, Keys.Q]) && optionMenu != null && optionMenu.focused) {
                         navigation.isClosed = true;
                         optionMenu.closed = true;
                     }

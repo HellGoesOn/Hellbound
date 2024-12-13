@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace HellTrail.Core.ECS
+namespace Casull.Core.ECS
 {
     public static partial class ComponentIO
     {

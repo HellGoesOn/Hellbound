@@ -1,13 +1,7 @@
-﻿using HellTrail.Render;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.UI.Elements
+namespace Casull.Core.UI.Elements
 {
     public enum WindowButtonType
     {
@@ -51,8 +45,7 @@ namespace HellTrail.Core.UI.Elements
             spriteBatch.Draw(tex, this.GetPosition(), new Rectangle(0, 16 * (int)buttonType, 16, 16), color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0);
 
             Vector2 size = font.MeasureString(hoverText) + new Vector2(16);
-            if (isMouseHovering)
-            {
+            if (isMouseHovering) {
                 UIManager.tooltipText = hoverText;
             }
         }

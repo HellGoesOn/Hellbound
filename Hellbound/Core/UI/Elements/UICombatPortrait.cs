@@ -1,11 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.UI.Elements
+namespace Casull.Core.UI.Elements
 {
     public class UICombatPortrait : UIElement
     {
@@ -27,7 +22,7 @@ namespace HellTrail.Core.UI.Elements
 
         public float lerpSpeed = 1;
 
-        public UICombatPortrait(string portrait, int maxHp, int maxSp) 
+        public UICombatPortrait(string portrait, int maxHp, int maxSp)
         {
             this.portrait = portrait;
             picture = new UIPicture(portrait);
@@ -52,11 +47,11 @@ namespace HellTrail.Core.UI.Elements
             spText.SetPosition(0, 118);
 
             hpValueText = new UIBorderedText("");
-            hpValueText.SetPosition(36, 76);
+            hpValueText.SetPosition(36, 80);
             hpValueText.color = Color.LightSeaGreen;
             spValueText = new UIBorderedText("");
             spValueText.color = Color.HotPink;
-            spValueText.SetPosition(36, 126);
+            spValueText.SetPosition(36, 118);
 
 
             hpBar = new UIProgressBar(new Vector2(100, 8), maxHp);
@@ -80,24 +75,20 @@ namespace HellTrail.Core.UI.Elements
         {
             base.OnUpdate();
 
-            if(!penisEnlargmentPills)
-            {
+            if (!penisEnlargmentPills) {
                 picture.scale = Vector2.Lerp(picture.scale, new Vector2(3), 0.12f);
             }
-            else
-            {
+            else {
                 picture.scale = Vector2.Lerp(picture.scale, new Vector2(4), 0.12f);
             }
 
-            if(hpCurrentValue != hpTargetValue)
-            {
+            if (hpCurrentValue != hpTargetValue) {
                 hpCurrentValue = (int)Math.Clamp(hpCurrentValue + Math.Sign(hpTargetValue - hpCurrentValue) * lerpSpeed, 0, int.MaxValue);
 
-                if(Math.Abs(hpCurrentValue - hpTargetValue) <= lerpSpeed * 0.5f)
+                if (Math.Abs(hpCurrentValue - hpTargetValue) <= lerpSpeed * 0.5f)
                     hpCurrentValue = hpTargetValue;
-            } 
-            if(spCurrentValue != spTargetValue)
-            {
+            }
+            if (spCurrentValue != spTargetValue) {
                 spCurrentValue = (int)Math.Clamp(spCurrentValue + Math.Sign(spTargetValue - spCurrentValue) * lerpSpeed, 0, int.MaxValue);
                 if (Math.Abs(spCurrentValue - spTargetValue) <= lerpSpeed * 0.5f)
                     spCurrentValue = spTargetValue;

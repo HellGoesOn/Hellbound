@@ -1,14 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HellTrail.Extensions;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
-namespace HellTrail.Core
+namespace Casull.Core
 {
     public class Camera
     {
@@ -38,7 +31,7 @@ namespace HellTrail.Core
         public void Clamp(Vector2 min, Vector2 max)
         {
             Vector2 vec = new Vector2(view.Width, view.Height) / zoom;
-            centre = Vector2.Clamp(centre, min+vec * 0.5f, max - vec*0.5f);
+            centre = Vector2.Clamp(centre, min + vec * 0.5f, max - vec * 0.5f);
         }
 
         public Matrix Inverse => Matrix.Invert(transform);

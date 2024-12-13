@@ -1,11 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.ECS.Components
+namespace Casull.Core.ECS.Components
 {
     public class ParticleEmitter : IComponent
     {
@@ -22,9 +17,9 @@ namespace HellTrail.Core.ECS.Components
         public Color[] color;
         public bool additive;
 
-        public ParticleEmitter(int amountPerFrame, int lifeTime, int randMinX, int randMaxX, int randMinY, int randMaxY, Vector2 dir, Vector2[] scales, Color[] color, Vector2? offset = null, Vector2? randomOffset = null,  bool additive = false)
+        public ParticleEmitter(int amountPerFrame, int lifeTime, int randMinX, int randMaxX, int randMinY, int randMaxY, Vector2 dir, Vector2[] scales, Color[] color, Vector2? offset = null, Vector2? randomOffset = null, bool additive = false)
         {
-            this.lifeTime = lifeTime; 
+            this.lifeTime = lifeTime;
             this.randMinX = randMinX;
             this.randMaxX = randMaxX;
             this.randMinY = randMinY;

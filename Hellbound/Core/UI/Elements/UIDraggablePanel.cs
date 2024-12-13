@@ -1,16 +1,10 @@
-﻿using HellTrail.Render;
-using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework;
 
-namespace HellTrail.Core.UI.Elements
+namespace Casull.Core.UI.Elements
 {
     public class UIDraggablePanel : UIPanel
     {
-        public UIDraggablePanel() 
+        public UIDraggablePanel()
         {
             capturesMouse = true;
         }
@@ -29,7 +23,7 @@ namespace HellTrail.Core.UI.Elements
         {
             Input.OnMouseHeld -= Drag;
             Input.OnMouseReleased -= StopDrag;
-        }   
+        }
 
         private void Drag(MouseButton button)
         {

@@ -1,12 +1,7 @@
-﻿using HellTrail.Core.UI;
-using HellTrail.Render;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Casull.Core.UI;
+using Casull.Render;
 
-namespace HellTrail
+namespace Casull
 {
     public static class GameStateManager
     {
@@ -18,12 +13,10 @@ namespace HellTrail
         {
             Main.instance.transitions.Add(transition ?? new(Renderer.SaveFrame()));
             _nextState = newState;
-            switch(newState)
-            {
+            switch (newState) {
                 case GameState.MainMenu:
                     var state = UIManager.GetStateByName("MainMenu");
-                    if (state != null)
-                    {
+                    if (state != null) {
                         (state as MainMenuUI).mainMenu = null;
                         UIManager.UIStates.Remove(state);
                     }
@@ -43,8 +36,7 @@ namespace HellTrail
 
         public static void Update()
         {
-            if(_nextState != GameState.Dummy)
-            {
+            if (_nextState != GameState.Dummy) {
                 State = _nextState;
                 _nextState = GameState.Dummy;
             }

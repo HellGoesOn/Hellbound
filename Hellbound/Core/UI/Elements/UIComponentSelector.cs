@@ -1,14 +1,8 @@
-﻿using HellTrail.Core.ECS;
+﻿using Casull.Core.ECS;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.UI.Elements
+namespace Casull.Core.UI.Elements
 {
     public class UIComponentSelector : UIElement
     {
@@ -20,14 +14,12 @@ namespace HellTrail.Core.UI.Elements
             font = Assets.Arial;
             _entity = entity;
 
-            this.onLoseParent = (sender) =>
-            {
+            this.onLoseParent = (sender) => {
                 _entity = null;
             };
 
             UIPanel panel = new();
-            searcher = new UITextBox()
-            {
+            searcher = new UITextBox() {
                 font = Assets.Arial,
                 clearOnBeginTyping = true,
                 myText = "Type to search",
@@ -42,32 +34,27 @@ namespace HellTrail.Core.UI.Elements
             float y = 0;
             float x = 0;
             List<UIElement> buffer = [];
-            foreach (string name in Context.ComponentNameById.Values)
-            {
-                UIBorderedText componentName = new(name)
-                {
+            foreach (string name in Context.ComponentNameById.Values) {
+                UIBorderedText componentName = new(name) {
                     font = Assets.Arial,
                     capturesMouse = true,
                     id = name,
                     size = font.MeasureString(name),
-                    onMouseEnter = (sender) =>
-                    {
+                    onMouseEnter = (sender) => {
                         (sender as UIBorderedText).color = Color.Yellow;
                     },
-                    onMouseLeave = (sender) =>
-                    {
+                    onMouseLeave = (sender) => {
                         (sender as UIBorderedText).color = Color.White;
                     }
                 };
                 buffer.Add(componentName);
 
-                if(componentName.size.X + 32 > x)
+                if (componentName.size.X + 32 > x)
                     x = componentName.size.X + 32;
 
                 componentName.id = name;
                 componentName.SetPosition(6, 6 + y);
-                componentName.onClick = (sender) =>
-                {
+                componentName.onClick = (sender) => {
                     Type type = Context.ComponentTypeByName[sender.id];
                     AddComponent(type);
                     parent.Disown(this);
@@ -76,8 +63,7 @@ namespace HellTrail.Core.UI.Elements
 
             }
 
-            foreach (UIElement element in buffer)
-            {
+            foreach (UIElement element in buffer) {
                 element.size.X = x;
                 panel.Append(element);
             }
@@ -85,7 +71,7 @@ namespace HellTrail.Core.UI.Elements
             buffer.Clear();
             buffer = null;
             panel.size.X = x + 24;
-            panel.size.Y = y+4;
+            panel.size.Y = y + 4;
 
             Append(panel);
         }
@@ -94,18 +80,16 @@ namespace HellTrail.Core.UI.Elements
         {
             base.OnUpdate();
 
-            if(makeAttempt)
-            {
+            if (makeAttempt) {
                 makeAttempt = false;
 
                 var type = Context.ComponentTypeByName.FirstOrDefault(x => x.Key.ToLower().Contains(attemptedPick.ToLower())).Value;
 
-                if (!string.IsNullOrWhiteSpace(attemptedPick) && type != null)
-                {
+                if (!string.IsNullOrWhiteSpace(attemptedPick) && type != null) {
                     AddComponent(type);
                     parent.Disown(this);
-                } else
-                {
+                }
+                else {
                     searcher.myText = "Not Found";
                 }
             }

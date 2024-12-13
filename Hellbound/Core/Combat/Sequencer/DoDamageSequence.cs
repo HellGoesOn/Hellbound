@@ -1,7 +1,7 @@
-﻿using HellTrail.Core.Combat.Status;
+﻿using Casull.Core.Combat.Status;
 using Microsoft.Xna.Framework;
 
-namespace HellTrail.Core.Combat.Sequencer
+namespace Casull.Core.Combat.Sequencer
 {
     public class DoDamageSequence : ISequenceAction
     {
@@ -37,19 +37,18 @@ namespace HellTrail.Core.Combat.Sequencer
 
             int statBonus = type == ElementalType.DoT ? 1 : type == ElementalType.Phys ? (int)Math.Sqrt(caster.Stats.strength) : (int)Math.Sqrt(caster.Stats.magic);
 
-            int damageTaken = (int)(damage*statBonus * (1 - target.resistances[type]) * guardFactor);
+            int damageTaken = (int)(damage * statBonus * (1 - target.resistances[type]) * guardFactor);
 
-            float finalAccuracy = accuracy * caster.Stats.accuracy * (1.0f-target.Stats.evasion);
+            float finalAccuracy = accuracy * caster.Stats.accuracy * (1.0f - target.Stats.evasion);
 
             DamageNumber damageNumber;
 
             int rng = battle.rand.Next(101);
 
-            if (rng > finalAccuracy)
-            {
+            if (rng > finalAccuracy) {
                 dealtDamage = false;
                 damageNumber = new(DamageType.Normal, "MISS", target.position);
-                battle.damageNumbers.Add(damageNumber);
+                battle?.damageNumbers.Add(damageNumber);
                 return;
             }
 
@@ -71,8 +70,7 @@ namespace HellTrail.Core.Combat.Sequencer
             }
             else if (damageTaken > damage * statBonus) // weakness hit
             {
-                if (!battle.unitsHitLastRound.Contains(target) && !target.HasStatus<GuardingEffect>())
-                {
+                if (!battle.unitsHitLastRound.Contains(target) && !target.HasStatus<GuardingEffect>()) {
                     battle.weaknessHitLastRound = true;
                 }
                 shakeAmount = 0.32f;
@@ -92,16 +90,13 @@ namespace HellTrail.Core.Combat.Sequencer
                 caster.Stats.HP = Math.Max(0, caster.Stats.HP - damageTaken);
                 float casterResist = caster.resistances[type];
                 DamageType repelledType = DamageType.Normal;
-                if (casterResist > 0 && casterResist < 1)
-                {
+                if (casterResist > 0 && casterResist < 1) {
                     repelledType = DamageType.Resisted;
                 }
-                else if (casterResist < 0)
-                {
+                else if (casterResist < 0) {
                     repelledType = DamageType.Weak;
                 }
-                else if (casterResist >= 1)
-                {
+                else if (casterResist >= 1) {
                     repelledType = DamageType.Blocked;
                 }
 
@@ -115,15 +110,14 @@ namespace HellTrail.Core.Combat.Sequencer
                 damageNumber.position = (target.position + offset);
             }
 
-            if (dealtDamage)
-            {
+            if (dealtDamage) {
                 target.Stats.HP = Math.Max(0, target.Stats.HP - damageTaken);
                 if (target.HasStatus<GuardingEffect>())
                     target.RemoveAllEffects<GuardingEffect>();
             }
             // TO-DO: add elem types, reaction to repel/block/resist/weak;
-            battle.unitsHitLastRound.Add(target);
-            battle.damageNumbers.Add(damageNumber);
+            battle?.unitsHitLastRound.Add(target);
+            battle?.damageNumbers.Add(damageNumber);
 
             target.shake += shakeAmount;
         }

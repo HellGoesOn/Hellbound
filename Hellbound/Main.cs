@@ -1,28 +1,21 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Casull.Core;
+using Casull.Core.Combat;
+using Casull.Core.Combat.Abilities;
+using Casull.Core.Combat.Scripting;
+using Casull.Core.Combat.Sequencer;
+using Casull.Core.DialogueSystem;
+using Casull.Core.ECS;
+using Casull.Core.ECS.Components;
+using Casull.Core.Overworld;
+using Casull.Core.UI;
+using Casull.Render;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HellTrail.Render;
 using Microsoft.Xna.Framework.Input;
-using HellTrail.Core.Combat;
-using HellTrail.Core;
-using HellTrail.Core.UI;
-using HellTrail.Core.Combat.Abilities;
-using Treeline.Core.Graphics;
-using HellTrail.Core.Combat.Abilities.Fire;
-using HellTrail.Core.Combat.AI;
-using HellTrail.Core.Overworld;
-using HellTrail.Core.DialogueSystem;
-using HellTrail.Core.Combat.Scripting;
-using HellTrail.Core.ECS;
-using HellTrail.Core.ECS.Components;
-using Microsoft.Xna.Framework.Input.Touch;
 using System.Globalization;
+using Treeline.Core.Graphics;
 
-namespace HellTrail
+namespace Casull
 {
     public class Main : Game
     {
@@ -39,11 +32,11 @@ namespace HellTrail
 
         public MainMenu mainMenu;
 
-        public World ActiveWorld
-        {
+        public List<Sequence> outOfBoundsSequences = [];
+
+        public World ActiveWorld {
             get => activeWorld;
-            set
-            {
+            set {
                 activeWorld = value;
 #if DEBUG
                 UIManager.RelaunchEditor();
@@ -64,7 +57,7 @@ namespace HellTrail
             gdm = new GraphicsDeviceManager(this);
             this.IsMouseVisible = true;
             this.IsFixedTimeStep = true;
-            this.Window.Title = "Hell Trail";
+            this.Window.Title = "Casull";
         }
 
         protected override void Initialize()
@@ -91,27 +84,23 @@ namespace HellTrail
 
             //IComponent component = ComponentIO.New_Deserialize(crime);
             //GetGameState().GetCamera().centre = GlobalPlayer.ActiveParty[0].position;
-            
+
             mainMenu = new MainMenu();
 
 
-            if (File.Exists(Environment.CurrentDirectory + "\\config.cfg"))
-            {
+            if (File.Exists(Environment.CurrentDirectory + "\\config.cfg")) {
                 var oldCulture = Thread.CurrentThread.CurrentCulture;
                 Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
                 var options = File.ReadAllText(Environment.CurrentDirectory + "\\config.cfg").Split(Environment.NewLine);
 
-                if (options.Length >= 1 && int.TryParse(options[0], out var x))
-                {
+                if (options.Length >= 1 && int.TryParse(options[0], out var x)) {
                     GameOptions.ResolutionMultiplier = x;
                     UpdateResolution();
                 }
-                if (options.Length >= 2 && float.TryParse(options[1], out var y))
-                {
+                if (options.Length >= 2 && float.TryParse(options[1], out var y)) {
                     GameOptions.GeneralVolume = Math.Clamp(y, 0.0f, 1.0f);
                 }
-                if (options.Length >= 3 && float.TryParse(options[2], out var z))
-                {
+                if (options.Length >= 3 && float.TryParse(options[2], out var z)) {
                     GameOptions.MusicVolume = Math.Clamp(z, 0.0f, 1.0f);
                 }
 
@@ -136,45 +125,42 @@ namespace HellTrail
             ParticleManager.Initialize();
             World.InitTriggers();
 
-        //    Dialogue dialogue = Dialogue.Create();
-        //    UIManager.dialogueUI.dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight * 0.5f));
-        //    DialoguePage[] pages =
-        //        [
-        //        new()
-        //    {
-        //        fillColor = Color.Transparent,
-        //        borderColor = Color.Transparent,
-        //        textColor = Color.Cyan,
-        //        text = "(This 'Hell' guy just keeps going on..)",
-        //        onPageEnd = (_) =>
-        //        {
-        //            UIManager.dialogueUI.dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight - 180 - 16));
-        //        }
-        //    }
-        //];
-        //    dialogue.pages.AddRange(pages);
+            //    Dialogue dialogue = Dialogue.Create();
+            //    UIManager.dialogueUI.dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight * 0.5f));
+            //    DialoguePage[] pages =
+            //        [
+            //        new()
+            //    {
+            //        fillColor = Color.Transparent,
+            //        borderColor = Color.Transparent,
+            //        textColor = Color.Cyan,
+            //        text = "(This 'Hell' guy just keeps going on..)",
+            //        onPageEnd = (_) =>
+            //        {
+            //            UIManager.dialogueUI.dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight - 180 - 16));
+            //        }
+            //    }
+            //];
+            //    dialogue.pages.AddRange(pages);
 
             ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", "Hills3");
         }
 
         internal void StartBattle(bool onStone = false)
         {
-            if(battle != null)
-            {
+            if (battle != null) {
                 battle = null;
             }
             GameStateManager.SetState(GameState.Combat, new TrippingBalls(Renderer.SaveFrame()));
             List<Unit> list = [];
             var slimeList = activeWorld.context.entities.Where(x => x != null && x.enabled && x.HasComponent<TextureComponent>() && x.GetComponent<TextureComponent>().textureName == "Slime3");
-            for (int i = 0; i < slimeList.Count(); i++)
-            {
+            for (int i = 0; i < slimeList.Count(); i++) {
                 Unit slime = UnitDefinitions.Get("Slime");
                 slime.BattleStation = new Vector2(220 + i * 8 + ((i / 3) * 24), 60 + i * 32 - (i / 3 * 86));
                 list.Add(slime);
             }
 
-            Unit peas = new()
-            {
+            Unit peas = new() {
                 sprite = "Peas",
                 name = "Peas",
                 resistances = new ElementalResistances(1f, 1f, 1f, 1f, 1f, 0f),
@@ -188,56 +174,44 @@ namespace HellTrail
 
 
             battle = Battle.Create(list);
-            var endBattle = () =>
-            {
-                foreach (var item in slimeList)
-                {
+            var endBattle = () => {
+                foreach (var item in slimeList) {
                     activeWorld.context.Destroy(item);
                 }
             };
             battle.OnBattleEnd = endBattle;
-            if (onStone)
-            {
+            if (onStone) {
                 //list.Add(peas);
                 battle.SetUnits(list, [peas]);
-                Script triedToHitThePeas = new()
-                {
-                    condition = (b) =>
-                    {
+                Script triedToHitThePeas = new() {
+                    condition = (b) => {
                         Unit unit = b.unitsHitLastRound.FirstOrDefault(x => x.name == "Peas");
                         return unit != null && unit.Stats.HP == unit.Stats.MaxHP && b.State == BattleState.VictoryCheck;
                     },
-                    action = (b) =>
-                    {
-                        var page1Portrait = new Portrait("EndLife", new FrameData(0, 0, 32, 32))
-                        {
+                    action = (b) => {
+                        var page1Portrait = new Portrait("EndLife", new FrameData(0, 0, 32, 32)) {
                             scale = new Vector2(-16, 16)
                         };
-                        var page3Portrait = new Portrait("EndLife", new FrameData(0, 32, 32, 32))
-                        {
+                        var page3Portrait = new Portrait("EndLife", new FrameData(0, 32, 32, 32)) {
                             scale = new Vector2(16, 16)
                         };
                         Dialogue dialogue = Dialogue.Create();
-                        DialoguePage page = new()
-                        {
+                        DialoguePage page = new() {
                             portraits = [page1Portrait],
                             title = battle.playerParty[0].name,
                             text = "It's completely impervious to our attacks.."
                         };
-                        DialoguePage page2 = new()
-                        {
+                        DialoguePage page2 = new() {
                             title = "Peas",
                             text = "(Pea noises)"
                         };
-                        DialoguePage page3 = new()
-                        {
+                        DialoguePage page3 = new() {
                             portraits = [page3Portrait],
                             title = battle.playerParty[0].name,
                             text = "There's only one thing that could work.."
                         };
                         dialogue.pages.AddRange([page, page2, page3]);
-                        var disturb = new Disturb()
-                        {
+                        var disturb = new Disturb() {
                             hpCost = battle.playerParty[0].Stats.HP - 1,
                             spCost = 0,
                             canTarget = ValidTargets.All
@@ -283,23 +257,25 @@ namespace HellTrail
             //if (angerCounter >= 15)
             //    spiritsAngered = true;
 
+            foreach (var seq in outOfBoundsSequences)
+                seq.Update();
+
+            outOfBoundsSequences.RemoveAll(x => x.isFinished);
+
             totalTime += gameTime.ElapsedGameTime.TotalMilliseconds * 0.01f;
             GetGameState()?.Update();
-            if(Input.PressedKey(Keys.F1))
-            {
+            if (Input.PressedKey(Keys.F1)) {
                 GameStateManager.SetState(GameState.Combat, new TrippingBalls(Renderer.SaveFrame()));
                 StartBattle();
             }
 
-            if (Input.PressedKey(Keys.F3))
-            {
+            if (Input.PressedKey(Keys.F3)) {
                 GameOptions.ResolutionMultiplier++;
                 gdm.PreferredBackBufferWidth = GameOptions.ScreenWidth;
                 gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
                 gdm.ApplyChanges();
             }
-            if (Input.PressedKey(Keys.F4))
-            {
+            if (Input.PressedKey(Keys.F4)) {
                 GameOptions.ResolutionMultiplier--;
                 gdm.PreferredBackBufferWidth = GameOptions.ScreenWidth;
                 gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
@@ -313,8 +289,7 @@ namespace HellTrail
             CameraManager.Update();
             ParticleManager.Update();
 
-            foreach (Transition transition in transitions)
-            {
+            foreach (Transition transition in transitions) {
                 transition.Update();
 
                 if (transition.finished)
@@ -333,8 +308,7 @@ namespace HellTrail
 
             base.Draw(gameTime);
 
-            if (!onceAndNeverAgain)
-            {
+            if (!onceAndNeverAgain) {
                 GraphicsDevice.Clear(Color.Black);
                 onceAndNeverAgain = true;
             }
@@ -356,13 +330,12 @@ namespace HellTrail
 
             GraphicsDevice.SetRenderTarget(null);
 
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone); 
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);
             spriteBatch.Draw(Renderer.WorldTarget, new Rectangle(0, 0, (int)GameOptions.ScreenWidth, (int)GameOptions.ScreenHeight), Color.White);
             spriteBatch.Draw(Renderer.UITarget, new Rectangle(0, 0, (int)GameOptions.ScreenWidth, (int)GameOptions.ScreenHeight), Color.White);
 
 
-            foreach (Transition transition in transitions)
-            {
+            foreach (Transition transition in transitions) {
                 transition.Draw(spriteBatch);
             }
             spriteBatch.End();
@@ -411,8 +384,7 @@ namespace HellTrail
 
         public IGameState GetGameState()
         {
-            return GameStateManager.State switch
-            {
+            return GameStateManager.State switch {
                 GameState.Overworld => activeWorld,
                 GameState.Combat => battle,
                 GameState.MainMenu => mainMenu,

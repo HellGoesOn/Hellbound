@@ -1,16 +1,9 @@
-﻿using HellTrail.Core.ECS.Components;
-using HellTrail.Core.UI;
-using HellTrail.Render;
+﻿using Casull.Core.ECS.Components;
+using Casull.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace HellTrail.Core.ECS
+namespace Casull.Core.ECS
 {
     public class DrawTransformBoxSystem : IDraw
     {
@@ -24,13 +17,12 @@ namespace HellTrail.Core.ECS
         public void Draw(Context context, SpriteBatch spriteBatch)
         {
             var entities = _group.Entities;
-            for (int i = 0; i < entities.Count; i++)
-            {
+            for (int i = 0; i < entities.Count; i++) {
                 var entity = entities[i];
                 Transform transform = entity.GetComponent<Transform>();
 
                 float depth = 10000f;
-                Renderer.DrawRectToWorld(transform.ToDraw-new Vector2(4), new Vector2(8), Color.Lime, depth);
+                Renderer.DrawRectToWorld(transform.ToDraw - new Vector2(4), new Vector2(8), Color.Lime, depth);
             }
         }
     }

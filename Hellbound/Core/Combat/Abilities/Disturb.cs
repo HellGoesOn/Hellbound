@@ -1,13 +1,8 @@
-﻿using HellTrail.Core.Combat.Sequencer;
-using HellTrail.Core.Combat.Status.Debuffs;
+﻿using Casull.Core.Combat.Sequencer;
+using Casull.Core.Combat.Status.Debuffs;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.Combat.Abilities
+namespace Casull.Core.Combat.Abilities
 {
     public class Disturb : Ability
     {
@@ -23,8 +18,7 @@ namespace HellTrail.Core.Combat.Abilities
         {
             base.UseAbility(caster, battle, targets);
 
-            if (targets[0].name == "Peas")
-            {
+            if (targets[0].name == "Peas") {
                 Sequence sequence = CreateSequence(battle);
                 sequence.Add(new MoveActorSequence(caster, new Vector2(160, 90)));
                 sequence.Add(new SetActorAnimation(caster, "Special"));
@@ -33,19 +27,16 @@ namespace HellTrail.Core.Combat.Abilities
                 sequence.Add(new PlaySoundSequence("Exodia", 1));
                 sequence.Add(new PlaySoundSequence("FinalFlash", 1));
                 sequence.Add(new DelaySequence(90));
-                foreach(Unit unit in targets)
-                {
+                foreach (Unit unit in targets) {
                     sequence.Delay(10);
                     sequence.DoDamage(caster, unit, 99999, ElementalType.Almighty);
                 }
-            } 
-            else
-            {
+            }
+            else {
                 Sequence sequence = CreateSequence(battle);
                 sequence.Add(new SetActorAnimation(caster, "Cast"));
                 sequence.Add(new DelaySequence(20));
-                foreach (var target in targets)
-                {
+                foreach (var target in targets) {
                     sequence.Add(new ApplyEffectSequence(sequence, target, new Fear(), 95, true));
                 }
                 sequence.Add(new DelaySequence(20));

@@ -1,13 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace HellTrail.Extensions
+namespace Casull.Extensions
 {
     public static class Vector2Ext
     {
@@ -26,7 +21,7 @@ namespace HellTrail.Extensions
 
         public static Vector2 SafeNormalize(this Vector2 v, Vector2 defaultValue = default)
         {
-            if(v == Vector2.Zero || float.IsNaN(v.X)  || float.IsNaN(v.Y))
+            if (v == Vector2.Zero || float.IsNaN(v.X) || float.IsNaN(v.Y))
                 return defaultValue;
 
             return Vector2.Normalize(v);

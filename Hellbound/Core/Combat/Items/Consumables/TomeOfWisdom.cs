@@ -1,15 +1,10 @@
-﻿using HellTrail.Core.UI;
-using HellTrail.Core.UI.Elements;
-using HellTrail.Render;
+﻿using Casull.Core.UI;
+using Casull.Core.UI.Elements;
+using Casull.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.Combat.Items.Consumables
+namespace Casull.Core.Combat.Items.Consumables
 {
     public class TomeOfWisdom : Item
     {
@@ -25,32 +20,27 @@ namespace HellTrail.Core.Combat.Items.Consumables
         {
             var normalizedName = caster.name.ToLower();
 
-            if (caster.name == "Dog")
-            {
+            if (caster.name == "Dog") {
                 SoundEngine.PlaySound("MeepMerp", 0.75f);
 
                 var panel = new UIAnimatedPanel(new Vector2(600, 132));
                 panel.Append(new UIBorderedText("Unfortunately, even the goodest of boys cannot read.\nNeither can you, but that's your fault. Lazybum.", 36).SetPosition(16));
 
                 var inventoryMenu = (UIManager.overworldUI.GetElementById("inventoryMenu") as UIScrollableMenu);
-                if (Main.instance.GetGameState() is Battle)
-                {
+                if (Main.instance.GetGameState() is Battle) {
                     inventoryMenu = (UIManager.combatUI.GetElementById("inventoryMenu") as UIScrollableMenu);
                 }
 
                 panel.openSpeed = 0.25f;
 
-                panel.onUpdate = (sender) =>
-                {
+                panel.onUpdate = (sender) => {
                     inventoryMenu.focused = false;
-                    if (Input.PressedKey([Keys.Escape, Keys.E, Keys.Q]))
-                    {
+                    if (Input.PressedKey([Keys.Escape, Keys.E, Keys.Q])) {
                         panel.isClosed = true;
                     }
                 };
 
-                panel.onLoseParent = (sender) =>
-                {
+                panel.onLoseParent = (sender) => {
                     inventoryMenu.focused = true;
                 };
 
@@ -60,16 +50,14 @@ namespace HellTrail.Core.Combat.Items.Consumables
 
 
                 count++;
-            } 
+            }
             else if (normalizedName.Contains("slicey") || normalizedName.Contains("slicer") || normalizedName.Contains("neckslicer")
-                || normalizedName.Contains("cheesyalice"))
-            {
+                || normalizedName.Contains("cheesyalice")) {
                 SoundEngine.PlaySound("LvlUp", 0.75f);
                 caster.Stats.EXP += 1001;
                 caster.TryLevelUp(true);
             }
-            else
-            {
+            else {
                 SoundEngine.PlaySound("MeepMerp", 0.75f);
 
                 var panel = new UIAnimatedPanel(new Vector2(600, 132));
@@ -77,24 +65,20 @@ namespace HellTrail.Core.Combat.Items.Consumables
 
                 var inventoryMenu = (UIManager.overworldUI.GetElementById("inventoryMenu") as UIScrollableMenu);
 
-                if(Main.instance.GetGameState() is Battle)
-                {
+                if (Main.instance.GetGameState() is Battle) {
                     inventoryMenu = (UIManager.combatUI.GetElementById("inventoryMenu") as UIScrollableMenu);
                 }
 
                 panel.openSpeed = 0.25f;
 
-                panel.onUpdate = (sender) =>
-                {
+                panel.onUpdate = (sender) => {
                     inventoryMenu.focused = false;
-                    if (Input.PressedKey([Keys.Escape, Keys.E, Keys.Q]))
-                    {
+                    if (Input.PressedKey([Keys.Escape, Keys.E, Keys.Q])) {
                         panel.isClosed = true;
                     }
                 };
 
-                panel.onLoseParent = (sender) =>
-                {
+                panel.onLoseParent = (sender) => {
                     inventoryMenu.focused = true;
                 };
 

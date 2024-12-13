@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace HellTrail.Core.Combat.Sequencer
+namespace Casull.Core.Combat.Sequencer
 {
     public class MoveActorSequence : ISequenceAction
     {

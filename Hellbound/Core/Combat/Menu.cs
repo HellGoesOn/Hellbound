@@ -1,14 +1,7 @@
-﻿using HellTrail.Render;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.Combat
+namespace Casull.Core.Combat
 {
     public class Menu
     {
@@ -38,8 +31,7 @@ namespace HellTrail.Core.Combat
             if (!active)
                 return;
 
-            if(Input.PressedKey(Keys.S))
-            {
+            if (Input.PressedKey(Keys.S)) {
                 OldOption = selectedOption;
                 ++selectedOption;
                 onChangeOption?.Invoke();
@@ -49,8 +41,7 @@ namespace HellTrail.Core.Combat
                 onChangeOption?.Invoke();
             }
 
-            if (Input.PressedKey(Keys.W))
-            {
+            if (Input.PressedKey(Keys.W)) {
                 OldOption = selectedOption;
                 --selectedOption;
                 onChangeOption?.Invoke();
@@ -59,8 +50,7 @@ namespace HellTrail.Core.Combat
 
             }
 
-            if (Input.PressedKey(Keys.D))
-            {
+            if (Input.PressedKey(Keys.D)) {
                 OldOption = selectedOption;
                 selectedOption += sideStep;
                 onChangeOption?.Invoke();
@@ -70,8 +60,7 @@ namespace HellTrail.Core.Combat
                 onChangeOption?.Invoke();
             }
 
-            if (Input.PressedKey(Keys.A))
-            {
+            if (Input.PressedKey(Keys.A)) {
                 OldOption = selectedOption;
                 selectedOption -= sideStep;
                 onChangeOption?.Invoke();
@@ -80,22 +69,18 @@ namespace HellTrail.Core.Combat
 
             }
 
-            if ((Input.PressedKey(Keys.E) || (Input.LMBClicked && mouseEnabled)) && (items.Count <= 0 || items[selectedOption].canSelect))
-            {
+            if ((Input.PressedKey(Keys.E) || (Input.LMBClicked && mouseEnabled)) && (items.Count <= 0 || items[selectedOption].canSelect)) {
                 onSelectOption?.Invoke();
                 if (items.Count > 0)
                     items[selectedOption].onConfirmOption?.Invoke();
             }
 
-            if (mouseEnabled)
-            {
+            if (mouseEnabled) {
                 var tryMouse = items.FirstOrDefault(x => OptionContainsMouse(x));
-                if (tryMouse != null)
-                {
+                if (tryMouse != null) {
                     selectedOption = tryMouse.index;
 
-                    if (selectedOption != OldOption)
-                    {
+                    if (selectedOption != OldOption) {
                         onChangeOption?.Invoke();
                         OldOption = selectedOption;
                     }
@@ -105,21 +90,17 @@ namespace HellTrail.Core.Combat
             if (items.Count <= 0)
                 selectedOption = 0;
 
-            if (Input.PressedKey(Keys.Q) || (Input.RMBClicked && mouseEnabled))
-            {
+            if (Input.PressedKey(Keys.Q) || (Input.RMBClicked && mouseEnabled)) {
                 onCancel?.Invoke();
                 if (parentMenu != null)
                     parentMenu.active = true;
             }
         }
 
-        public List<string> OptionNames
-        {
-            get
-            {
+        public List<string> OptionNames {
+            get {
                 List<string> names = [];
-                foreach (var item in items)
-                {
+                foreach (var item in items) {
                     names.Add(item.name);
                 }
 
@@ -129,8 +110,7 @@ namespace HellTrail.Core.Combat
 
         public MenuOption AddOption(string name, Action action)
         {
-            MenuOption option = new()
-            {
+            MenuOption option = new() {
                 index = items.Count,
                 name = name,
                 onConfirmOption = action
@@ -149,13 +129,13 @@ namespace HellTrail.Core.Combat
         public bool OptionContainsMouse(MenuOption option)
         {
             int height = (int)(GetSize.Y);
-            var rect = new Rectangle((int)position.X, (int)position.Y + height * option.index, (int)GetSize.X+4, height);
-            var mousePoint = new Point((int)Input.MousePosition.X * 4, (int)Input.MousePosition.Y *4);
+            var rect = new Rectangle((int)position.X, (int)position.Y + height * option.index, (int)GetSize.X + 4, height);
+            var mousePoint = new Point((int)Input.MousePosition.X * 4, (int)Input.MousePosition.Y * 4);
 
             return rect.Contains(mousePoint);
         }
 
-        public class MenuOption 
+        public class MenuOption
         {
             public int index;
             public bool canSelect = true;

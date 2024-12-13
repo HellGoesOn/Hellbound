@@ -1,4 +1,4 @@
-﻿namespace HellTrail.Core.Combat.Sequencer
+﻿namespace Casull.Core.Combat.Sequencer
 {
     public class DelaySequence : ISequenceAction
     {
@@ -16,6 +16,9 @@
 
         public void Update(List<Unit> actors, Battle battle)
         {
+            if (battle == null)
+                timeLeft = 0;
+
             timeLeft--;
         }
     }

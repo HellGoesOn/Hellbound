@@ -1,9 +1,8 @@
-﻿using HellTrail.Core.Combat.Status;
-using HellTrail.Core.Combat.Status.Debuffs;
-using HellTrail.Core.UI;
+﻿using Casull.Core.Combat.Status;
+using Casull.Core.UI;
 using Microsoft.Xna.Framework;
 
-namespace HellTrail.Core.Combat.Sequencer
+namespace Casull.Core.Combat.Sequencer
 {
     public class ApplyEffectSequence(Sequence sequence, Unit target, StatusEffect effect, int chance = 100, bool requiresDamageDealt = false, bool canStack = false, bool canExtend = false) : ISequenceAction
     {
@@ -22,22 +21,21 @@ namespace HellTrail.Core.Combat.Sequencer
 
         public void Update(List<Unit> actors, Battle battle)
         {
-            if (requiresDamageDealt)
-            {
+            if(battle == null) return;  
+
+            if (requiresDamageDealt) {
                 int myIndex = mySequence.Actions.IndexOf(this);
-                if (myIndex >= 1 && mySequence.Actions[myIndex - 1] is DoDamageSequence test && !test.dealtDamage)
-                {
+                if (myIndex >= 1 && mySequence.Actions[myIndex - 1] is DoDamageSequence test && !test.dealtDamage) {
                     return;
                 }
             }
 
-            if (battle.rand.Next(101) <= chance)
-            {
-                if (canExtendStack && target.HasStatus(effect.name))
-                {
+            if (battle.rand.Next(101) <= chance) {
+                if (canExtendStack && target.HasStatus(effect.name)) {
                     UIManager.combatUI.SetAbilityUsed($"{effect.name} duration extended by {effect.turnsLeft} turns!");
                     target.ExtendEffect(effect);
-                } else if (canStack)
+                }
+                else if (canStack)
                     target.AddEffect(effect);
                 else
                     target.AddReplaceEffect(effect);

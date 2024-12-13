@@ -1,18 +1,11 @@
-﻿using HellTrail.Core.Combat.Abilities;
-using HellTrail.Core.Combat.Status;
-using HellTrail.Core.UI;
-using HellTrail.Core.UI.CombatUI;
+﻿using Casull.Core.Combat.Abilities;
+using Casull.Core.Combat.Items;
+using Casull.Core.Combat.Status;
+using Casull.Core.UI;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.ConstrainedExecution;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.Combat
+namespace Casull.Core.Combat
 {
     public class Unit
     {
@@ -29,8 +22,8 @@ namespace HellTrail.Core.Combat
         public Team team;
         private Vector2 battleStation;
         public Vector2 position;
-        public Vector2 size = new (32);
-        public Vector2 scale = new (1);
+        public Vector2 size = new(32);
+        public Vector2 scale = new(1);
         public BasicAI ai = null;
         private CombatStats _stats;
         public CombatStats Stats { get => _stats; }
@@ -38,6 +31,8 @@ namespace HellTrail.Core.Combat
         public CombatStats statsGrowth;
         public ElementalResistances resistances;
         public List<Ability> abilities;
+        public List<ItemDrop> loot;
+        public List<LearnableAbility> learnableAbilities;
         public List<StatusEffect> statusEffects;
         public Dictionary<string, SpriteAnimation> animations = new();
 
@@ -45,7 +40,9 @@ namespace HellTrail.Core.Combat
 
         public Unit()
         {
+            loot = [];
             abilities = [];
+            learnableAbilities = [];
             statusEffects = [];
             baseStats = new CombatStats();
             _stats = new CombatStats();
@@ -76,45 +73,58 @@ namespace HellTrail.Core.Combat
 
             var oldStats = Stats.GetCopy();
 
+            float hpPercentage = _stats.HP / (float)_stats.MaxHP;
+            float spPercentage = _stats.SP / (float)_stats.MaxSP;
+
             _stats.level++;
             _stats += statsGrowth;
-            _stats.HP = Stats.MaxHP;
-            _stats.SP = Stats.MaxSP;
+            _stats.HP = (int)(Stats.MaxHP * hpPercentage);
+            _stats.SP = (int)(Stats.MaxSP * spPercentage);
             _stats.EXP -= Stats.toNextLevel;
-            _stats.toNextLevel = (int)(_stats.toNextLevel * 1.12f);
-            if(!silent)
-            UIManager.combatUI.CreateLevelUp(name, oldStats, _stats);
+            _stats.toNextLevel = (int)(_stats.toNextLevel * 1.25f);
+            if (!silent)
+                UIManager.combatUI.CreateLevelUp(name, oldStats, _stats);
             TryLevelUp(silent);
 
+            TryLearnLevelUpAbilites();
+
             return true;
+        }
+
+        public void TryLearnLevelUpAbilites()
+        {
+            foreach (LearnableAbility ability in learnableAbilities) {
+
+                if(Stats.level >= ability.requiredLevel) {
+                    abilities.Add(ability.abilityToLearn);
+                }
+            }
+
+            learnableAbilities.RemoveAll(x => x.requiredLevel <= Stats.level);
         }
 
         // unit should not be updating its own logic outside of combat system
         // therefore this should only be used for visuals;
         public void UpdateVisuals()
         {
-            if (Downed && opacity > 0)
-            {
+            if (Downed && opacity > 0) {
                 opacity -= 0.02f;
 
                 if (opacity < 0)
                     opacity = 0;
             }
-            else if(opacity < 1.2f && !Downed)
-            {
+            else if (opacity < 1.2f && !Downed) {
                 opacity += 0.02f;
-            }    
+            }
 
-            if (shake > 0)
-            {
+            if (shake > 0) {
                 shake -= 0.01f;
 
                 if (shake <= 0)
                     shake = 0;
             }
 
-            if(animations.TryGetValue(currentAnimation, out var anim))
-            {
+            if (animations.TryGetValue(currentAnimation, out var anim)) {
                 anim.position = position;
                 anim.depth = depth;
                 anim.color = Downed ? Color.Crimson : Color.White;
@@ -122,26 +132,22 @@ namespace HellTrail.Core.Combat
                 anim.rotation = rotation;
                 anim.Update(this);
 
-                if (anim.finished)
-                {
+                if (anim.finished) {
                     anim.Reset();
                     currentAnimation = string.IsNullOrWhiteSpace(anim.nextAnimation) ? currentAnimation : anim.nextAnimation;
                 }
             }
 
-            foreach (Ability ability in abilities)
-            {
+            foreach (Ability ability in abilities) {
                 ability.AdjustCosts(this);
             }
         }
 
         public bool Downed => Stats.HP <= 0;
 
-        public Vector2 BattleStation
-        {
+        public Vector2 BattleStation {
             get => battleStation;
-            set
-            {
+            set {
                 position = battleStation = value;
             }
         }
@@ -169,8 +175,7 @@ namespace HellTrail.Core.Combat
 
         public void AddReplaceEffect<T>(T effect) where T : StatusEffect
         {
-            if (this.HasStatus(effect.name))
-            {
+            if (this.HasStatus(effect.name)) {
                 this.RemoveAllEffects(effect.name);
             }
 
@@ -185,8 +190,7 @@ namespace HellTrail.Core.Combat
 
         public void ClearEffects()
         {
-            foreach(var effect in statusEffects)
-            {
+            foreach (var effect in statusEffects) {
                 effect.OnRemove(this);
             }
 
@@ -195,10 +199,8 @@ namespace HellTrail.Core.Combat
 
         public void RemoveAllEffects<T>() where T : StatusEffect
         {
-            for (int i = statusEffects.Count - 1; i >= 0; i--)
-            {
-                if (statusEffects[i] is T)
-                {
+            for (int i = statusEffects.Count - 1; i >= 0; i--) {
+                if (statusEffects[i] is T) {
                     statusEffects[i].OnRemove(this);
                     statusEffects.RemoveAt(i);
                 }
@@ -207,10 +209,8 @@ namespace HellTrail.Core.Combat
 
         public void RemoveAllEffects(string name)
         {
-            for (int i = statusEffects.Count - 1; i >= 0; i--)
-            {
-                if (statusEffects[i].name == name)
-                {
+            for (int i = statusEffects.Count - 1; i >= 0; i--) {
+                if (statusEffects[i].name == name) {
                     statusEffects[i].OnRemove(this);
                     statusEffects.RemoveAt(i);
                 }
@@ -229,7 +229,7 @@ namespace HellTrail.Core.Combat
 
         public bool HasStatus(string name)
         {
-            return statusEffects.Any(x=>x.name == name);
+            return statusEffects.Any(x => x.name == name);
         }
 
         public void ExtendEffect<T>(T effect) where T : StatusEffect
@@ -252,23 +252,65 @@ namespace HellTrail.Core.Combat
             copy.currentAnimation = currentAnimation;
             copy.defaultAnimation = defaultAnimation;
 
-            foreach (var anim in animations)
-            {
+            foreach (var ab in learnableAbilities) {
+                FieldInfo[] fields = ab.abilityToLearn.GetType().GetFields();
+                Ability finalAbility = (Ability)Activator.CreateInstance(ab.abilityToLearn.GetType());
+                foreach (var field in fields) {
+                    field.SetValue(finalAbility, field.GetValue(finalAbility));
+                }
+                copy.learnableAbilities.Add(new(ab.requiredLevel, finalAbility));
+
+
+            }
+
+            foreach (var ab in loot) {
+                FieldInfo[] fields = ab.item.GetType().GetFields();
+                Item finalItem = (Item)Activator.CreateInstance(ab.item.GetType());
+                foreach (var field in fields) {
+                    field.SetValue(finalItem, field.GetValue(ab.item));
+                }
+                copy.loot.Add(new (ab.chance, finalItem, ab.min, ab.max));
+            }
+
+            copy.TryLearnLevelUpAbilites();
+
+            foreach (var anim in animations) {
                 copy.animations.Add(anim.Key, anim.Value.GetCopy());
             }
 
-            foreach (var ab in abilities)
-            {
+            foreach (var ab in abilities) {
                 FieldInfo[] fields = ab.GetType().GetFields();
                 Ability finalAbility = (Ability)Activator.CreateInstance(ab.GetType());
-                foreach (var field in fields)
-                {
+                foreach (var field in fields) {
                     field.SetValue(finalAbility, field.GetValue(ab));
                 }
                 copy.abilities.Add(finalAbility);
+
+
             }
 
             return copy;
+        }
+
+        public void Learns(int atLevel, Ability abilityToLearn)
+        {
+            learnableAbilities.Add(new(atLevel, abilityToLearn));
+
+            learnableAbilities.Sort(Compare);
+        }
+
+        public void Drops(int chance, Item item, int min = 1, int max = 1)
+        {
+            loot.Add(new(chance, item, min, max));
+        }
+
+        public int Compare(LearnableAbility a, LearnableAbility b) 
+        {
+            if(a.requiredLevel > b.requiredLevel)
+                return 1;
+            if(a.requiredLevel < b.requiredLevel) 
+                return -1;
+            return 0;
         }
 
     }

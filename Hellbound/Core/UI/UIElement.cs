@@ -1,12 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.UI
+namespace Casull.Core.UI
 {
     public class UIElement : IUIElement
     {
@@ -34,11 +29,9 @@ namespace HellTrail.Core.UI
         internal List<UIElement> _childrenToDisown = [];
         public IUIElement parent;
         public SpriteFont font = Assets.DefaultFont;
-        public bool Visible
-        {
+        public bool Visible {
             get => visible;
-            set
-            {
+            set {
                 visible = value;
 
                 foreach (UIElement child in children)
@@ -51,18 +44,15 @@ namespace HellTrail.Core.UI
             if (!active)
                 return;
 
-            isMouseHovering = false; 
+            isMouseHovering = false;
 
-            if (capturesMouse)
-            {
+            if (capturesMouse) {
                 var mpos = Input.UIMousePosition;
-                if (mpos.X >= GetPosition().X && mpos.X <= GetPosition().X + size.X*scale.X
-                    && mpos.Y >= GetPosition().Y && mpos.Y <= GetPosition().Y + size.Y * scale.Y)
-                {
+                if (mpos.X >= GetPosition().X && mpos.X <= GetPosition().X + size.X * scale.X
+                    && mpos.Y >= GetPosition().Y && mpos.Y <= GetPosition().Y + size.Y * scale.Y) {
                     isMouseHovering = true;
 
-                    if (isMouseHovering && !capturedMouseLastFrame)
-                    {
+                    if (isMouseHovering && !capturedMouseLastFrame) {
                         onMouseEnter?.Invoke(this);
                     }
 
@@ -70,13 +60,12 @@ namespace HellTrail.Core.UI
                 }
             }
 
-            if(capturedMouseLastFrame && !isMouseHovering)
-            {
+            if (capturedMouseLastFrame && !isMouseHovering) {
                 onMouseLeave?.Invoke(this);
             }
 
 
-            if(PreUpdateChildren())
+            if (PreUpdateChildren())
                 foreach (UIElement child in children)
                     child.Update();
 
@@ -84,7 +73,7 @@ namespace HellTrail.Core.UI
 
             onUpdate?.Invoke(this);
 
-            foreach(UIElement child in _childrenToDisown)
+            foreach (UIElement child in _childrenToDisown)
                 children.Remove(child);
 
             _childrenToDisown.Clear();
@@ -104,9 +93,8 @@ namespace HellTrail.Core.UI
 
             OnDraw(spriteBatch);
 
-            if(PreDrawChildren(spriteBatch))
-                foreach (UIElement child in children)
-                {
+            if (PreDrawChildren(spriteBatch))
+                foreach (UIElement child in children) {
                     child.Draw(spriteBatch);
                 }
         }
@@ -144,7 +132,7 @@ namespace HellTrail.Core.UI
             var newElement = (element as UIElement);
             newElement.parent = this;
 
-            if(font != Assets.DefaultFont)
+            if (font != Assets.DefaultFont)
                 newElement.font = this.font;
             children.Add(newElement);
 
@@ -158,8 +146,7 @@ namespace HellTrail.Core.UI
 
             var killedElement = (element as UIElement);
             killedElement.onLoseParent?.Invoke(killedElement);
-            if (!plannedToAdopt)
-            {
+            if (!plannedToAdopt) {
                 killedElement.onMouseEnter = null;
                 killedElement.onMouseLeave = null;
                 killedElement.onClick = null;
@@ -167,26 +154,22 @@ namespace HellTrail.Core.UI
                 killedElement.onLoseParent = null;
             }
             killedElement.parent = null;
-            _childrenToDisown.Add(killedElement); 
+            _childrenToDisown.Add(killedElement);
         }
 
-        public void DisownById(string id) => Disown(children.Find(x=>x.id == id));
+        public void DisownById(string id) => Disown(children.Find(x => x.id == id));
 
         public void SetFont(SpriteFont font)
         {
             this.font = font;
-            foreach (UIElement child in children)
-            { child.SetFont(font); }
+            foreach (UIElement child in children) { child.SetFont(font); }
         }
 
 
         private float rotation;
-        public float Rotation
-        {
-            get
-            {
-                if (parent is UIElement element)
-                {
+        public float Rotation {
+            get {
+                if (parent is UIElement element) {
                     return element.Rotation + rotation;
                 }
 
@@ -210,8 +193,7 @@ namespace HellTrail.Core.UI
             else
                 _positionAnchor = position;
 
-            foreach (UIElement child in children)
-            {
+            foreach (UIElement child in children) {
                 child.RecalcPosition();
             }
 

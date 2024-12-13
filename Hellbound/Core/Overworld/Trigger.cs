@@ -1,4 +1,4 @@
-﻿namespace HellTrail.Core.Overworld
+﻿namespace Casull.Core.Overworld
 {
     public class Trigger(string id)
     {
@@ -12,8 +12,7 @@
 
         public bool TryRunScript(World world)
         {
-            if (condition?.Invoke(world) == true)
-            {
+            if (condition?.Invoke(world) == true) {
                 activated = true;
                 action?.Invoke(world);
 

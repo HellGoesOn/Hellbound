@@ -1,18 +1,9 @@
-﻿using HellTrail.Core.ECS;
-using HellTrail.Core.ECS.Components;
-using HellTrail.Core.UI;
-using HellTrail.Extensions;
-using HellTrail.Render;
+﻿using Casull.Extensions;
+using Casull.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.Overworld
+namespace Casull.Core.Overworld
 {
     public class TileMap
     {
@@ -25,18 +16,26 @@ namespace HellTrail.Core.Overworld
 
         public static void Init()
         {
-            TileDefinitions.Add("Stone", new(1, 100, "Stone", Vector2.Zero));
-            TileDefinitions.Add("Path", new(2, 6, "GrassBase", "Path2", Vector2.Zero));
-            TileDefinitions.Add("Grass", new(3, 5, "GrassBase", "GrassTile", Vector2.Zero));
-            TileDefinitions.Add("DarkGrass", new(4, 1, "GrassBase", "DarkGrass", Vector2.Zero));
-            TileDefinitions.Add("Cliff", new(5, 0, "GrassBase", "CliffTest", new Vector2(0, -16))
-            {
-                elevation = 1
-            }); 
-            TileDefinitions.Add("StoneWall", new(6, 2, "Stone", "StoneWall", new Vector2(0, -16))
-            {
-                elevation = 1
-            });
+            DefineTile("Stone", 100, "Stone", offset: Vector2.Zero);
+            DefineTile("Grass", 5, "GrassBase", "GrassTile", Vector2.Zero);
+            DefineTile("Path", 6, "GrassBase", "Path2", Vector2.Zero);
+            DefineTile("Road", 2, "GrassBase", "RoadTile", Vector2.Zero);
+            DefineTile("DarkGrass", 1, "GrassBase", "DarkGrass", Vector2.Zero);
+            DefineTile("Cliff", 0, "GrassBase", "CliffTest", new Vector2(0, -16), 1);
+            DefineTile("StoneWall", 2, "Stone", "StoneWall", new Vector2(0, -16), 1);
+        }
+
+        public static void DefineTile(string name, int weight, string baseTexture, string tileTexture = "NULLA TERRA", Vector2 offset = default, int elevation = 0)
+        {
+            if(tileTexture != "NULLA TERRA")
+                TileDefinitions.Add(name, new(TileDefinitions.Count, weight, baseTexture, tileTexture, offset) {
+                    elevation = elevation
+                });
+            else
+                TileDefinitions.Add(name, new(TileDefinitions.Count, weight, baseTexture, offset) {
+                    elevation = elevation
+                });
+
         }
 
         public int width;
@@ -59,22 +58,17 @@ namespace HellTrail.Core.Overworld
             _elevationMap = new int[width, height];
             _displayTiles = [];
 
-            foreach (var tile in TileDefinitions.Values.OrderBy(x => x.weight))
-            {
-                if (tile.sheetName != tile.textureName)
-                {
-                    _displayTiles.Add(new DisplayTileLayer(tile, width, height)
-                    {
+            foreach (var tile in TileDefinitions.Values.OrderBy(x => x.weight)) {
+                if (tile.sheetName != tile.textureName) {
+                    _displayTiles.Add(new DisplayTileLayer(tile, width, height) {
                         baseTexture = Assets.GetTexture(tile.textureName),
                         tileSheet = Assets.GetTexture(tile.sheetName)
                     });
                 }
             }
 
-            for (int i = 0; i < height; i++)
-            {
-                for (int j = 0; j < width; j++)
-                {
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
                     SetTile(TileDefinitions["Stone"], j, i);
                 }
             }
@@ -89,8 +83,7 @@ namespace HellTrail.Core.Overworld
             int cy = Math.Clamp(y, 0, height - 1);
             _physicalTiles[cx, cy] = tile.id;
             _elevationMap[cx, cy] = tile.elevation;
-            foreach (var layer in _displayTiles)
-            {
+            foreach (var layer in _displayTiles) {
                 layer.SetTile(tile, cx, cy);
             }
             didBakeTexture = false;
@@ -98,18 +91,15 @@ namespace HellTrail.Core.Overworld
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            for (int i = 0; i < height; i++)
-            {
-                for (int j = 0; j < width; j++)
-                {
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
                     Texture2D tex = Assets.GetTexture(GetById(_physicalTiles[j, i]).textureName);
                     Renderer.Draw(tex, new Vector2(j * DisplayTileLayer.TILE_SIZE, i * DisplayTileLayer.TILE_SIZE).ToInt(), null, Color.White, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, _elevationMap[j, i]);
                     //Renderer.Draw(Assets.GetTexture("Frame2"), new Vector2(j * DisplayTileLayer.TILE_SIZE, i * DisplayTileLayer.TILE_SIZE), null, Color.White, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
                 }
             }
 
-            foreach (var displayLayer in _displayTiles)
-            {
+            foreach (var displayLayer in _displayTiles) {
                 displayLayer.Draw();
             }
 
@@ -170,16 +160,14 @@ namespace HellTrail.Core.Overworld
             this.width = width;
             this.height = height;
             _tiles = new int[this.width, this.height];
-            elevationMap = new int[this.width+1, this.height+1];
-            _displayedTiles = new Vector2[this.width+1, this.height+1];
+            elevationMap = new int[this.width + 1, this.height + 1];
+            _displayedTiles = new Vector2[this.width + 1, this.height + 1];
         }
 
         public void Draw()
         {
-            for (int i = 0; i < height+1; i++)
-            {
-                for (int j = 0; j < width + 1; j++)
-                {
+            for (int i = 0; i < height + 1; i++) {
+                for (int j = 0; j < width + 1; j++) {
                     int x = (int)MathF.Floor(_displayedTiles[j, i].X);
                     int y = (int)MathF.Floor(_displayedTiles[j, i].Y);
                     float depth = i * TILE_SIZE + (elevationMap[j, i] * TILE_SIZE + 12 * elevationMap[j, i]) + myTile.weight * 0.0001f + myTile.drawOffset.Y;
@@ -193,20 +181,19 @@ namespace HellTrail.Core.Overworld
         public void SetTile(TileDefinition tile, int x, int y)
         {
             _tiles[x, y] = tile.id == myTile.id ? 1 : 0;
-                    
+
             SetDisplayTile(x, y, tile.id == myTile.id ? tile.elevation : -1);
         }
 
         public void SetDisplayTile(int x, int y, int elevation = 0)
         {
-            for (int i = 0; i < Neighbors.Length; i++)
-            {
+            for (int i = 0; i < Neighbors.Length; i++) {
                 int xx = x + (int)Neighbors[i].X;
                 int yy = y + (int)Neighbors[i].Y;
                 int cx = Math.Clamp(xx, 0, width);
                 int cy = Math.Clamp(yy, 0, height);
 
-                if(elevation != -1)
+                if (elevation != -1)
                     elevationMap[cx, cy] = elevation;
                 _displayedTiles[cx, cy] = GetDisplayTile(xx, yy);
             }
@@ -290,8 +277,7 @@ namespace HellTrail.Core.Overworld
 
         public readonly bool Equals(TilePattern other)
         {
-            for (int i = 0; i < pattern.Length; i++)
-            {
+            for (int i = 0; i < pattern.Length; i++) {
                 if (other.pattern[i] != pattern[i])
                     return false;
             }

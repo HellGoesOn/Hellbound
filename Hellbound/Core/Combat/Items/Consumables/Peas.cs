@@ -1,14 +1,9 @@
-﻿using HellTrail.Core.UI;
-using HellTrail.Core.UI.Elements;
-using HellTrail.Render;
+﻿using Casull.Core.UI;
+using Casull.Core.UI.Elements;
+using Casull.Render;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.Combat.Items.Consumables
+namespace Casull.Core.Combat.Items.Consumables
 {
     public class PeasItem : Item
     {
@@ -35,13 +30,12 @@ namespace HellTrail.Core.Combat.Items.Consumables
             disturbingThePeace.origin = new(131, 100);
             disturbingThePeace.scale *= 4;
             disturbingThePeace.tint = Color.White * 0.0f;
-            disturbingThePeace.onUpdate = (sender) =>
-            {
+            disturbingThePeace.onUpdate = (sender) => {
                 if (opacity < 0.5f)
                     opacity += 0.005f;
 
-                if(opacity >= 0)
-                disturbingThePeace.tint = Color.White * opacity;
+                if (opacity >= 0)
+                    disturbingThePeace.tint = Color.White * opacity;
             };
             disturbingThePeace.SetPosition(Renderer.UIPreferedWidth * 0.5f, Renderer.UIPreferedHeight * 0.5f);
 

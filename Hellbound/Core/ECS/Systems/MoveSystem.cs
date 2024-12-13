@@ -1,15 +1,6 @@
-﻿using HellTrail.Core.ECS.Components;
-using HellTrail.Core.Overworld;
-using HellTrail.Extensions;
-using HellTrail.Render;
-using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Casull.Core.ECS.Components;
 
-namespace HellTrail.Core.ECS
+namespace Casull.Core.ECS
 {
     public class MoveSystem : IExecute
     {
@@ -24,10 +15,9 @@ namespace HellTrail.Core.ECS
         {
             var entities = _group.Entities;
 
-            for (int i = 0; i < entities.Count; i++)
-            {
+            for (int i = 0; i < entities.Count; i++) {
                 var entity = entities[i];
-                
+
                 var velocity = entity.GetComponent<Velocity>();
 
                 var transform = entity.GetComponent<Transform>();

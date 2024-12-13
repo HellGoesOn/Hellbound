@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HellTrail.Core.Combat.Items.Consumables
+﻿namespace Casull.Core.Combat.Items.Consumables
 {
     public class Tomato : Item
     {

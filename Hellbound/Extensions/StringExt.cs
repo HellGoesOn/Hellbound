@@ -1,14 +1,8 @@
-﻿using HellTrail.Core;
+﻿using Casull.Core;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace HellTrail.Extensions
+namespace Casull.Extensions
 {
     public static class StringExt
     {
@@ -33,8 +27,7 @@ namespace HellTrail.Extensions
             if (!int.TryParse(values[0], out int R)
                 || !int.TryParse(values[1], out int G)
                 || !int.TryParse(values[2], out int B)
-                || !int.TryParse(values[3], out int A))
-                {
+                || !int.TryParse(values[3], out int A)) {
                 color = null;
 
                 return false;

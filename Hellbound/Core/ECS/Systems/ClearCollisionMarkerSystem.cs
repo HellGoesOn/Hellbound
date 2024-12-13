@@ -1,11 +1,6 @@
-﻿using HellTrail.Core.ECS.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Casull.Core.ECS.Components;
 
-namespace HellTrail.Core.ECS
+namespace Casull.Core.ECS
 {
     public class ClearCollisionMarkerSystem : IExecute
     {
@@ -18,8 +13,7 @@ namespace HellTrail.Core.ECS
 
         public void Execute(Context context)
         {
-            for (int i = 0; i < _group.Count; i++)
-            {
+            for (int i = 0; i < _group.Count; i++) {
                 Entity e = _group[i];
 
                 e.RemoveComponent<HasCollidedMarker>();

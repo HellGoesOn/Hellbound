@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
-namespace HellTrail.Core.ECS
+namespace Casull.Core.ECS
 {
     public struct IndexTuple
     {
@@ -26,8 +21,7 @@ namespace HellTrail.Core.ECS
         public static bool TryParse(string input, out IndexTuple? indexTuple)
         {
             string[] split = Regex.Replace(input, "[^0-9 ]", "").Split(" ");
-            if(split.Length < 2 || !int.TryParse(split[0], out int a) || !int.TryParse(split[1], out int b))
-            {
+            if (split.Length < 2 || !int.TryParse(split[0], out int a) || !int.TryParse(split[1], out int b)) {
                 indexTuple = null;
                 return false;
             }

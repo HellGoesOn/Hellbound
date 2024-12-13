@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace HellTrail.Core.ECS
+namespace Casull.Core.ECS
 {
     public class Context
     {
@@ -22,8 +17,7 @@ namespace HellTrail.Core.ECS
             IEnumerable<Type> types = Assembly.GetExecutingAssembly().GetTypes().Where(x => (x.IsValueType || x.IsClass) && x.GetInterface("IComponent") != null);
             _maxComponents = types.Count();
             int id = 0;
-            foreach (Type type in types)
-            {
+            foreach (Type type in types) {
                 ComponentId.Add(type, id);
                 ComponentIdByName.Add(type.Name, id);
                 ComponentNameById.Add(id, type.Name);
@@ -65,31 +59,24 @@ namespace HellTrail.Core.ECS
             _entityPool = new Stack<Entity>();
             componentPools = new Stack<IComponent>[_maxComponents];
 
-            for (int i = 0; i < _maxComponents; i++)
-            {
+            for (int i = 0; i < _maxComponents; i++) {
                 componentPools[i] = new Stack<IComponent>();
             }
 
-            _onComponentAdded = (entity, component) =>
-            {
-                foreach(var group in _groups)
-                {
+            _onComponentAdded = (entity, component) => {
+                foreach (var group in _groups) {
                     group.Value.HandleEntity(entity);
                 }
             };
 
-            _onComponentChanged = (entity, component) =>
-            {
-                foreach (var group in _groups)
-                {
+            _onComponentChanged = (entity, component) => {
+                foreach (var group in _groups) {
                     group.Value.HandleEntity(entity);
                 }
             };
 
-            _onComponentRemoved = (entity, component) =>
-            {
-                foreach (var group in _groups)
-                {
+            _onComponentRemoved = (entity, component) => {
+                foreach (var group in _groups) {
                     group.Value.HandleEntity(entity);
                 }
             };
@@ -97,14 +84,12 @@ namespace HellTrail.Core.ECS
 
         public Entity Create()
         {
-            if (!_entityPool.TryPeek(out Entity entity))
-            {
-                entity = new(entityCount, _maxComponents)
-                {
+            if (!_entityPool.TryPeek(out Entity entity)) {
+                entity = new(entityCount, _maxComponents) {
                     enabled = true
                 };
-            } else
-            {
+            }
+            else {
                 _entityPool.Pop();
                 entity.Reuse(entity.id);
             }
@@ -112,10 +97,8 @@ namespace HellTrail.Core.ECS
             entity.OnComponentAdded += _onComponentAdded;
             entity.OnComponentRemoved += _onComponentRemoved;
             entity.OnComponentChanged += _onComponentChanged;
-            entity.OnDestroy += (e) =>
-            {
-                foreach (var group in _groups)
-                {
+            entity.OnDestroy += (e) => {
+                foreach (var group in _groups) {
                     group.Value.HandleEntity(e);
                 }
                 e.InternalDestroy();
@@ -132,22 +115,19 @@ namespace HellTrail.Core.ECS
             Entity e = Create();
             IComponent[] components = entity.GetAllComponents();
 
-            foreach (IComponent component in components)
-            {
+            foreach (IComponent component in components) {
                 Type type = component.GetType();
                 FieldInfo[] infos = type.GetFields();
 
                 object[] ctorParams = new object[infos.Length];
 
-                for(int i = 0; i < infos.Length; i++)
-                {
+                for (int i = 0; i < infos.Length; i++) {
                     ctorParams[i] = infos[i].GetValue(component);
                 }
 
                 IComponent componentCopy = (IComponent)RuntimeHelpers.GetUninitializedObject(type);
 
-                for (int i = 0; i < infos.Length; i++)
-                {
+                for (int i = 0; i < infos.Length; i++) {
                     infos[i].SetValue(componentCopy, ctorParams[i]);
                 }
 
@@ -159,18 +139,15 @@ namespace HellTrail.Core.ECS
 
         public void Armaggedon()
         {
-            for(int i = entities.Length-1; i >= 0; i--)
-            {
+            for (int i = entities.Length - 1; i >= 0; i--) {
                 if (entities[i] != null)
                     Destroy(entities[i].id);
             }
 
-            while (_entityPool.Count > 0)
-            {
+            while (_entityPool.Count > 0) {
                 _entityPool.Pop();
             }
-            while(activeEntityIds.Count > 0)
-            {
+            while (activeEntityIds.Count > 0) {
                 activeEntityIds.Pop();
             }
             /*
@@ -189,8 +166,7 @@ namespace HellTrail.Core.ECS
 
             e.Destroy(this);
 
-            foreach (var group in _groups)
-            {
+            foreach (var group in _groups) {
                 group.Value.HandleEntity(e);
             }
 
@@ -204,8 +180,7 @@ namespace HellTrail.Core.ECS
         public string ListEntities()
         {
             StringBuilder sb = new();
-            foreach (Entity e in entities.Where(x => x != null && x.enabled))
-            {
+            foreach (Entity e in entities.Where(x => x != null && x.enabled)) {
                 sb.AppendLine(e.ToString());
             }
 
@@ -216,11 +191,9 @@ namespace HellTrail.Core.ECS
 
         public Group<Entity> GetGroup(Matcher<Entity> matcher)
         {
-            if(!_groups.TryGetValue(matcher, out var group))
-            {
+            if (!_groups.TryGetValue(matcher, out var group)) {
                 group = new Group<Entity>(matcher);
-                for(int i = 0; i < entityCount; i++)
-                {
+                for (int i = 0; i < entityCount; i++) {
                     group.HandleEntity(entities[i]);
                 }
 
@@ -230,12 +203,9 @@ namespace HellTrail.Core.ECS
             return group;
         }
 
-        public int LastActiveEntity
-        {
-            get
-            {
-                if(activeEntityIds.TryPeek(out int e))
-                {
+        public int LastActiveEntity {
+            get {
+                if (activeEntityIds.TryPeek(out int e)) {
                     return e;
                 }
 
