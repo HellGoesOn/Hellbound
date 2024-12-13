@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Casull.Core.ECS.Components;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -103,6 +104,8 @@ namespace Casull.Core.ECS
                 }
                 e.InternalDestroy();
             };
+
+            entity.AddComponent(new Tags());
 
             entities[entity.id] = entity;
             activeEntityIds.Push(entity.id);

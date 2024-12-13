@@ -40,8 +40,8 @@ namespace Casull.Core.Combat.Abilities.Fire
                     }
                 }
             }));
-            sequence.Add(new DoDamageSequence(caster, targets[0], 12, ElementalType.Fire));
-            sequence.Add(new ApplyEffectSequence(sequence, targets[0], new Burning(), 100, true));
+            sequence.Add(new DoDamageSequence(caster, targets[0], 12, elementalType, accuracy));
+            sequence.Add(new ApplyEffectSequence(sequence, targets[0], new Burning(), accuracy - 20, true));
             sequence.Add(new DelaySequence(20));
             sequence.Add(new MoveActorSequence(caster, caster.BattleStation));
         }

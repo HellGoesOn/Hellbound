@@ -122,7 +122,7 @@ namespace Casull
                 ++transitionDelay;
                 if (positionY > 0 && transitionDelay >= 180)
                     positionY -= 5f;
-#if RELEASE
+#if DEBUG
                 if(transitionDelay >= 1) {
 #else
                     if (transitionDelay >= 240) {

@@ -356,12 +356,12 @@ namespace Casull.Core.Combat
                 Color clr = unit.Downed ? Color.Crimson : Color.White;
                 Vector2 position = unit.position + new Vector2(unit.shake * Main.rand.Next(2) % 2 == 0 ? 1 : -1, 0f);
                 if (unit.animations.TryGetValue(unit.currentAnimation, out var anim)) {
-                    anim.position = position;
+                    anim.position = position+unit.origin;
                     anim.Draw(spriteBatch, unit.scale * anim.scale);
 
                 }
                 else {
-                    Renderer.Draw(Assets.GetTexture(unit.sprite), new Vector2((int)(position.X), (int)(position.Y)), null, clr * unit.opacity, 0f, new Vector2(16), unit.scale, SpriteEffects.None, unit.depth);
+                    Renderer.Draw(Assets.GetTexture(unit.sprite), new Vector2((int)(position.X), (int)(position.Y)) + unit.origin, null, clr * unit.opacity, 0f, new Vector2(16), unit.scale, SpriteEffects.None, unit.depth);
                     //Renderer.DrawRect(spriteBatch, unit.position-unit.size*0.5f, unit.size, 1, Color.Orange * 0.25f);
                 }
 
@@ -373,7 +373,7 @@ namespace Casull.Core.Combat
 
             if (ActingUnit != null) {
                 Color clr = ActingUnit.team == Team.Player ? ActingUnit.ai != null ? Color.Yellow : Color.Lime : Color.Red;
-                Renderer.Draw(Assets.GetTexture("Arrow"), new Vector2((int)(ActingUnit.position.X), (int)(ActingUnit.position.Y) - 24 + (float)Math.Cos(Main.totalTime)), null, clr * ActingUnit.opacity, 0f, new Vector2(5, 3.5f), new Vector2((float)Math.Sin(Main.totalTime * 0.75f), 1f), SpriteEffects.None, 1f);
+                Renderer.Draw(Assets.GetTexture("Arrow"), new Vector2((int)(ActingUnit.position.X), (int)(ActingUnit.position.Y) - 24 + (float)Math.Cos(Main.totalTime)) + ActingUnit.origin, null, clr * ActingUnit.opacity, 0f, new Vector2(5, 3.5f), new Vector2((float)Math.Sin(Main.totalTime * 0.75f), 1f), SpriteEffects.None, 1f);
             }
             foreach (SpriteAnimation animation in fieldAnimations) {
                 animation.Draw(spriteBatch);

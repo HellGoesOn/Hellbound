@@ -12,6 +12,7 @@ namespace Casull.Core.Combat.Abilities
         public ValidTargets canTarget;
         public int hpCost;
         public int spCost;
+        public int accuracy = 95;
 
         public ElementalType elementalType = ElementalType.None;
 

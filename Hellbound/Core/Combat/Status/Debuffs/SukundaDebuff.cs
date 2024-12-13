@@ -11,6 +11,7 @@ namespace Casull.Core.Combat.Status
             name = "Sukunda";
             description = "Lowered accuracy";
             turnsLeft = 3;
+            debuff = true;
         }
 
         public override void OnApply(Unit unit)

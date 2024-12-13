@@ -10,6 +10,7 @@ namespace Casull.Core.Combat.Status.Debuffs
             turnsLeft = 4;
             name = "Fear";
             description = "High chance to miss a turn";
+            debuff = true;
         }
 
         public override void OnTurnBegin(Unit unit, Battle battle)

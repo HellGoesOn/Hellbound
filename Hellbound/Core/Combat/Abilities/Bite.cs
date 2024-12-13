@@ -29,7 +29,7 @@ namespace Casull.Core.Combat.Abilities
             sequence.Add(new SetActorAnimation(caster, "Cast"));
             sequence.Add(new DelaySequence(20));
             sequence.Add(new PlaySoundSequence("GunShot"));
-            sequence.Add(new DoDamageSequence(caster, targets[0], 25));
+            sequence.Add(new DoDamageSequence(caster, targets[0], 25, elementalType, accuracy));
             sequence.Add(new DelaySequence(20));
             sequence.Add(new MoveActorSequence(caster, caster.BattleStation));
         }

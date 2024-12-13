@@ -21,6 +21,8 @@ namespace Casull.Core.Combat
 
             protag.animations.Clear();
 
+            protag.ai = new BasicAI();
+
             ProtagAnimations(protag);
 
             protag.resistances[ElementalType.DoT] = -0.5f;
@@ -28,7 +30,6 @@ namespace Casull.Core.Combat
 
 
             AddPartyMember(protag);
-            AddPartyMember(UnitDefinitions.Get("Slime"));
             //ActiveParty.Add(sidekick);
 
             AddItem(new AdrenalineShot() { count = 3 });

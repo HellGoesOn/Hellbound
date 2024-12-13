@@ -24,6 +24,7 @@ namespace Casull.Core.Combat
         public Vector2 position;
         public Vector2 size = new(32);
         public Vector2 scale = new(1);
+        public Vector2 origin;
         public BasicAI ai = null;
         private CombatStats _stats;
         public CombatStats Stats { get => _stats; }
@@ -103,6 +104,17 @@ namespace Casull.Core.Combat
             learnableAbilities.RemoveAll(x => x.requiredLevel <= Stats.level);
         }
 
+        public void SetLevel(int level)
+        {
+            if(level > Stats.level)
+            for(int i = Stats.level; i < level; i++) {
+                    Stats.EXP = Stats.toNextLevel;
+                    TryLevelUp(true);
+            }
+
+            TryLearnLevelUpAbilites();
+        }
+
         // unit should not be updating its own logic outside of combat system
         // therefore this should only be used for visuals;
         public void UpdateVisuals()
@@ -136,6 +148,9 @@ namespace Casull.Core.Combat
                     anim.Reset();
                     currentAnimation = string.IsNullOrWhiteSpace(anim.nextAnimation) ? currentAnimation : anim.nextAnimation;
                 }
+            }
+            else {
+                currentAnimation = defaultAnimation;
             }
 
             foreach (Ability ability in abilities) {
@@ -237,6 +252,8 @@ namespace Casull.Core.Combat
             statusEffects.First(x => x.name == effect.name).turnsLeft += effect.turnsLeft;
         }
 
+        public Vector2 GetPosition() => position + origin;
+
         public Unit GetCopy()
         {
             Unit copy = new();
@@ -251,21 +268,22 @@ namespace Casull.Core.Combat
             copy.resistances = resistances.GetCopy();
             copy.currentAnimation = currentAnimation;
             copy.defaultAnimation = defaultAnimation;
+            copy.origin = origin;
 
             foreach (var ab in learnableAbilities) {
                 FieldInfo[] fields = ab.abilityToLearn.GetType().GetFields();
                 Ability finalAbility = (Ability)Activator.CreateInstance(ab.abilityToLearn.GetType());
+
                 foreach (var field in fields) {
                     field.SetValue(finalAbility, field.GetValue(finalAbility));
                 }
                 copy.learnableAbilities.Add(new(ab.requiredLevel, finalAbility));
-
-
             }
 
             foreach (var ab in loot) {
                 FieldInfo[] fields = ab.item.GetType().GetFields();
                 Item finalItem = (Item)Activator.CreateInstance(ab.item.GetType());
+
                 foreach (var field in fields) {
                     field.SetValue(finalItem, field.GetValue(ab.item));
                 }
@@ -281,12 +299,11 @@ namespace Casull.Core.Combat
             foreach (var ab in abilities) {
                 FieldInfo[] fields = ab.GetType().GetFields();
                 Ability finalAbility = (Ability)Activator.CreateInstance(ab.GetType());
+
                 foreach (var field in fields) {
                     field.SetValue(finalAbility, field.GetValue(ab));
                 }
                 copy.abilities.Add(finalAbility);
-
-
             }
 
             return copy;

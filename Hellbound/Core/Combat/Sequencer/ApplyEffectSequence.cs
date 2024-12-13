@@ -31,15 +31,24 @@ namespace Casull.Core.Combat.Sequencer
             }
 
             if (battle.rand.Next(101) <= chance) {
+                if (effect.debuff && target.HasStatus<GuardingEffect>()) {
+
+                    battle.damageNumbers.Add(new(DamageType.Normal, $"BLOCKED", (target.position - new Vector2(0, 12))));
+                    return;
+                }
+
                 if (canExtendStack && target.HasStatus(effect.name)) {
                     UIManager.combatUI.SetAbilityUsed($"{effect.name} duration extended by {effect.turnsLeft} turns!");
                     target.ExtendEffect(effect);
                 }
-                else if (canStack)
-                    target.AddEffect(effect);
-                else
-                    target.AddReplaceEffect(effect);
+                else {
 
+
+                    if (canStack)
+                        target.AddEffect(effect);
+                    else
+                        target.AddReplaceEffect(effect);
+                }
                 DamageNumber damageNumber = new(DamageType.Normal, $"+{effect.name}", (target.position - new Vector2(0, 12)));
                 battle.damageNumbers.Add(damageNumber);
             }

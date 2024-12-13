@@ -9,6 +9,8 @@ namespace Casull.Core.Combat.Status
         public string name = "???";
         public string description = "???";
 
+        public bool debuff;
+
         public virtual void OnApply(Unit unit)
         {
         }

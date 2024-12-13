@@ -5,13 +5,14 @@ using Microsoft.Xna.Framework;
 
 namespace Casull.Core.Combat
 {
-    public static class UnitDefinitions
+    public static partial class UnitDefinitions
     {
         private readonly static Dictionary<string, Unit> _definitions = [];
         public static void DefineUnits()
         {
             Unit placeHolder = DefineUnit("Dud");
             placeHolder.Stats.HP = 0;
+            placeHolder.Stats.value = 0;
 
             Unit protag = DefineUnit("Doorkun");
             protag.name = "Doorkun";
@@ -27,8 +28,7 @@ namespace Casull.Core.Combat
             protag.statsGrowth = new CombatStats(0.5f, 1.5f, 10, 7, 0.15f);
             protag.Stats.speed = 6.5f;
 
-            protag.Learns(30, new Singularity());
-            protag.Learns(3, new Maragi());
+            protag.Learns(2, new Sukukaja());
 
             GlobalPlayer.ProtagAnimations(protag);
 
@@ -65,6 +65,7 @@ namespace Casull.Core.Combat
 
 
             Unit dog = DefineUnit("Dog");
+            dog.Learns(3, new Sukunda());
             dog.resistances[ElementalType.Almighty] = -1.0f;
             dog.name = "Dog";
             dog.sprite = "WhatDaDogDoin2";
@@ -76,7 +77,6 @@ namespace Casull.Core.Combat
                 baseDamage = 10
             });
             dog.abilities.Add(new Agi());
-            dog.abilities.Add(new Maragi());
             dog.abilities.Add(new Dia());
             dog.animations.Add("Idle", new SpriteAnimation("WhatDaDogDoin2", [new FrameData(0, 0, 32, 32)]) {
             });
@@ -87,6 +87,10 @@ namespace Casull.Core.Combat
                     _.scale = new Vector2((float)Math.Sin(Main.totalTime * 2), 1);
                 }
             });
+
+
+            dog.SetLevel(3);
+            DefineSunFlowerBoss();
         }
 
         private static Unit DefineUnit(string name)

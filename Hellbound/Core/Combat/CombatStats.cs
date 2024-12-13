@@ -9,7 +9,7 @@ namespace Casull.Core.Combat
         public float evasion;
         private int maxHP;
         public int SP;
-        public int MaxSP;
+        private int maxSP;
         public float strength;
         public float magic;
         public int EXP;
@@ -19,6 +19,7 @@ namespace Casull.Core.Combat
         public float speed;
 
         public int MaxHP { get => maxHP; set => maxHP = HP = value; }
+        public int MaxSP { get => maxSP; set => maxSP = SP = value; }
 
         public CombatStats()
         {
@@ -28,8 +29,8 @@ namespace Casull.Core.Combat
             EXP = 0;
             toNextLevel = 40;
             level = 1;
-            HP = MaxHP = 60;
-            SP = MaxSP = 30;
+            MaxHP = HP = 60;
+            MaxSP = SP = 30;
             strength = 3;
             magic = 3;
             speed = 6.0f;
@@ -64,10 +65,10 @@ namespace Casull.Core.Combat
         public CombatStats GetCopy()
         {
             return new CombatStats() {
-                HP = this.HP,
-                SP = this.SP,
                 MaxHP = this.MaxHP,
                 MaxSP = this.MaxSP,
+                HP = this.HP,
+                SP = this.SP,
                 EXP = this.EXP,
                 strength = this.strength,
                 magic = this.magic,

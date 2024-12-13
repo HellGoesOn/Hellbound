@@ -85,7 +85,9 @@ Entity_5
 	{
 		CollisionBox{16; 8; {X:8 Y:-4}}
 
-		CreateBattleOnContact{"TestBG2"; [Slime, Slime, Slime]; []}
+		CreateBattleOnContact{"TestBG2"; [Dud, Sunflower]; []}
+		
+		Tags {["Sunflower"]}
 
 		DanceDanceDance{0}
 

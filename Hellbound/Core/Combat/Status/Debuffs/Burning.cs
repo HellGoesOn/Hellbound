@@ -12,6 +12,7 @@ namespace Casull.Core.Combat.Status.Debuffs
             name = "Burn";
             description = "Takes fire damage at the beginning of the turn";
             turnsLeft = 3;
+            debuff = true;
         }
 
         public override void OnTurnBegin(Unit unit, Battle battle)
