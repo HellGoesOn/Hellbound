@@ -1,5 +1,6 @@
 ﻿using Casull.Core.Combat;
 using Casull.Core.DialogueSystem;
+using Casull.Core.ECS;
 using Casull.Core.ECS.Components;
 using Microsoft.Xna.Framework;
 
@@ -104,6 +105,62 @@ namespace Casull.Core.Overworld
             recruitDog.condition = (w) => false;
 
             triggers.Add(recruitDog);
+
+            Trigger triggerSunflower = new Trigger("sunflowerTransform") {
+                repeatadble = true
+            };
+            triggerSunflower.condition = (w) => false;
+            triggerSunflower.action = (w) => {
+                var entity = w.context.entities.FirstOrDefault(x => x.HasComponent<Tags>() && x.GetComponent<Tags>().Has("Sunflower"));
+
+                if(entity != null) {
+                    entity.AddComponent(new CameraMarker());
+
+                    if (entity.HasComponent<NewAnimationComponent>()) {
+                        var anim = entity.GetComponent<NewAnimationComponent>();
+
+                        anim.currentAnimation = "Transformation";
+                    }
+                }
+            };
+
+            Trigger sunflowerFight = new Trigger("sunflowerFight") {
+                repeatadble = true
+            };
+
+            sunflowerFight.condition = (w) => {
+
+                if (flags.Contains("SunflowerIsDead")) {
+                    sunflowerFight.repeatadble = false;
+                    sunflowerFight.activated = true;
+                    return false;
+                }
+                    
+
+                var e = w.context.entities.FirstOrDefault(x => x != null && x.enabled && x.HasComponent<Tags>() && x.GetComponent<Tags>().Has("Sunflower") && x.HasComponent<NewAnimationComponent>());
+
+                if (e != null) {
+                    var anim = e.GetComponent<NewAnimationComponent>();
+                    if (anim.currentAnimation == "Transformation" && anim.currentFrame == 18) {
+                        return true;
+                    }
+                }
+
+                return false;
+            };
+
+            sunflowerFight.action = (w) => {
+
+                var player = w.context.entities.FirstOrDefault(x => x.HasComponent<PlayerMarker>());
+                var sunflower = w.context.entities.FirstOrDefault(x => x.HasComponent<Tags>() && x.GetComponent<Tags>().Has("BossFight"));
+                if (player != null && sunflower != null) {
+                    sunflower.GetComponent<Transform>().position = player.GetComponent<Transform>().position;
+                }
+
+            };
+
+            triggers.Add(triggerSunflower);
+            triggers.Add(sunflowerFight);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Casull.Core.Combat.Abilities;
+using Casull.Core.Combat.Abilities.Fire;
 using Casull.Core.Combat.Items;
 using Casull.Core.Combat.Items.Consumables;
 using Microsoft.Xna.Framework;
@@ -13,6 +14,8 @@ namespace Casull.Core.Combat
 
         public static List<Unit> ActiveParty { get => party; set => party = value; }
 
+        public static List<CombatStats> preBattleStats = [];
+
         public static List<Item> Inventory => _items;
 
         public static void Init()
@@ -20,8 +23,6 @@ namespace Casull.Core.Combat
             Unit protag = UnitDefinitions.Get("Doorkun");
 
             protag.animations.Clear();
-
-            protag.ai = new BasicAI();
 
             ProtagAnimations(protag);
 
@@ -59,6 +60,22 @@ namespace Casull.Core.Combat
             }
             else {
                 _items.Add(newItem);
+            }
+
+            newItem.OnObtain();
+        }
+
+        public static void ResetToPrebattle()
+        {
+            for(int i = 0; i < ActiveParty.Count; i++) {
+                var unit = ActiveParty[i];
+                unit.Stats.HP = preBattleStats[i].HP;
+                unit.Stats.MaxHP = preBattleStats[i].MaxHP;
+                unit.Stats.SP = preBattleStats[i].SP;
+                unit.Stats.MaxSP = preBattleStats[i].MaxSP;
+                unit.Stats.EXP = preBattleStats[i].EXP;
+                unit.Stats.toNextLevel = preBattleStats[i].toNextLevel;
+                unit.Stats.level = preBattleStats[i].level;
             }
         }
 

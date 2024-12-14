@@ -34,14 +34,20 @@ namespace Casull.Core.ECS
 
                     Main.instance.transitions.Add(new BlackFadeInFadeOut(Renderer.SaveFrame(true)));
                     Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes", id.nextZone);
-                    var trans = Main.instance.ActiveWorld.context.entities[0].GetComponent<Transform>();
 
-                    if (id.newPosition != default) {
-                        trans.position = id.newPosition;
+                    var player = Main.instance.ActiveWorld.context.entities.FirstOrDefault(x=> x.HasComponent<PlayerMarker>());
+
+                    if (player != null) {
+                        var trans = player.GetComponent<Transform>();
+                        if (id.newPosition != default) {
+                            trans.position = id.newPosition;
+                        }
+
+                        Main.instance.ActiveWorld.GetCamera().centre = trans.position;
+                        Main.lastTransitionPosition = trans.position;
                     }
-
-                    Main.instance.ActiveWorld.GetCamera().centre = trans.position;
                     break;
+
                 }
             }
         }

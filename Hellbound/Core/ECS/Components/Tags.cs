@@ -14,5 +14,7 @@ namespace Casull.Core.ECS.Components
         {
             this.tags = tags;
         }
+
+        public bool Has(string tag) => tags.Contains(tag);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Casull.Core.Combat.Abilities;
 using Casull.Core.Combat.Abilities.Fire;
+using Casull.Core.Combat.Abilities.Wind;
 using Casull.Core.Combat.Items.Consumables;
 using Microsoft.Xna.Framework;
 
@@ -65,7 +66,9 @@ namespace Casull.Core.Combat
 
 
             Unit dog = DefineUnit("Dog");
-            dog.Learns(3, new Sukunda());
+
+            dog.Learns(4, new Sukunda());
+
             dog.resistances[ElementalType.Almighty] = -1.0f;
             dog.name = "Dog";
             dog.sprite = "WhatDaDogDoin2";
@@ -76,7 +79,7 @@ namespace Casull.Core.Combat
                 Name = "Bite",
                 baseDamage = 10
             });
-            dog.abilities.Add(new Agi());
+            dog.abilities.Add(new Garu());
             dog.abilities.Add(new Dia());
             dog.animations.Add("Idle", new SpriteAnimation("WhatDaDogDoin2", [new FrameData(0, 0, 32, 32)]) {
             });
@@ -88,8 +91,8 @@ namespace Casull.Core.Combat
                 }
             });
 
-
             dog.SetLevel(3);
+
             DefineSunFlowerBoss();
         }
 

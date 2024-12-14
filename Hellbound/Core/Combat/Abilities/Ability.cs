@@ -13,6 +13,7 @@ namespace Casull.Core.Combat.Abilities
         public int hpCost;
         public int spCost;
         public int accuracy = 95;
+        public int baseDamage;
 
         public ElementalType elementalType = ElementalType.None;
 

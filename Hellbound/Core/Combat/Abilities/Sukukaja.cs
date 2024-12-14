@@ -22,12 +22,12 @@ namespace Casull.Core.Combat.Abilities
                 if (targets[0].HasStatus<SukundaDebuff>()) {
                     UIManager.combatUI.SetAbilityUsed("Accuracy & Evasion back to normal");
                     targets[0].RemoveAllEffects<SukundaDebuff>();
-                    sequence.Delay(60);
+                    sequence.Delay(90);
                 }
                 else {
                     UIManager.combatUI.SetAbilityUsed("Accuracy & Evasion increased!");
                     sequence.AddStatusEffect(targets[0], new SukukajaBuff(), 600, canExtend: true);
-                    sequence.Delay(60);
+                    sequence.Delay(90);
                 }
             });
         }

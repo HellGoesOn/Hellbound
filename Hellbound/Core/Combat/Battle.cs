@@ -3,6 +3,8 @@ using Casull.Core.Combat.Items;
 using Casull.Core.Combat.Scripting;
 using Casull.Core.Combat.Sequencer;
 using Casull.Core.Combat.Status;
+using Casull.Core.ECS.Components;
+using Casull.Core.Overworld;
 using Casull.Core.UI;
 using Casull.Core.UI.Elements;
 using Casull.Extensions;
@@ -113,6 +115,10 @@ namespace Casull.Core.Combat
         {
             units.Clear();
             unitsNoSpeedSort.Clear();
+
+            GlobalPlayer.preBattleStats.Clear();
+            GlobalPlayer.preBattleStats.AddRange(GlobalPlayer.ActiveParty.Select(x => x.Stats.GetCopy()));
+
             if (trialCharacters != null) {
                 playerParty = trialCharacters;
                 units.AddRange(trialCharacters);
@@ -144,6 +150,9 @@ namespace Casull.Core.Combat
 
                 troll += 6;
                 this.sequences.Add(sequence);
+
+                foreach (var anim in unit.animations)
+                    anim.Value.Reset();
             }
 
             UIManager.combatUI.CreatePortraits(this);
@@ -273,14 +282,54 @@ namespace Casull.Core.Combat
 
                     if (timer >= 240) {
                         if (!showedRestartOptions) {
-                            UIScrollableMenu options = new UIScrollableMenu(3, ["Restart from zone entrance", "Retry battle", "Quit q_q"]);
-                            options.drawArrows = false;
-                            options.panelColor = Color.Transparent;
-                            options.borderColor = Color.Transparent;
-                            options.SetPosition(new Vector2(Renderer.UIPreferedWidth, Renderer.UIPreferedHeight) * 0.5f - wowYouSuck.font.MeasureString(wowYouSuck2.text) * 0.5f + new Vector2(0, 80));
+                            GameStateManager.SetState(GameState.Overworld, new BlackFadeInFadeOut(Renderer.SaveFrame(true)));
 
-                            UIManager.combatUI.Append(options);
-                            showedRestartOptions = true;
+                            GlobalPlayer.ResetToPrebattle();
+                            SoundEngine.StartMusic("ChangingSeasons", true);
+                            Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", Main.currentZone);
+
+                            UIManager.combatUI.Disown(skillIssue);
+
+                            var player = Main.instance.ActiveWorld.context.entities.FirstOrDefault(x => x.HasComponent<PlayerMarker>());
+
+                            if (player != null)
+                            {
+                                player.GetComponent<Transform>().position = Main.lastTransitionPosition;
+                            }
+
+                            //UIScrollableMenu options = new UIScrollableMenu(2, ["Continue", "Quit q_q"]);
+                            //options.drawArrows = false;
+                            //options.panelColor = Color.Transparent;
+                            //options.borderColor = Color.Transparent;
+                            //options.SetPosition(new Vector2(Renderer.UIPreferedWidth, Renderer.UIPreferedHeight) * 0.5f - wowYouSuck.font.MeasureString(wowYouSuck2.text) * 0.5f + new Vector2(0, 80));
+
+                            //options.onSelectOption = (sender) => {
+                            //    switch (options.CurrentOption) {
+                            //        case "Continue":
+                            //            GameStateManager.SetState(GameState.Overworld, new BlackFadeInFadeOut(Renderer.SaveFrame()));
+
+                            //            GlobalPlayer.ActiveParty.Clear();
+                            //            foreach(Unit u in GlobalPlayer.preBattleParty) {
+                            //                GlobalPlayer.AddPartyMember(u);
+                            //            }
+                            //            GlobalPlayer.preBattleParty.Clear();
+                            //            SoundEngine.StartMusic("ChangingSeasons", true);
+                            //            Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", Main.currentZone);
+
+                            //            break;
+
+                            //        case "Quit q_q":
+                            //            GameStateManager.SetState(GameState.MainMenu, new BlackFadeInFadeOut(Renderer.SaveFrame()));
+                            //            break;
+                            //    }
+
+                            //    options.closed = true;
+                            //    UIManager.combatUI.Disown(skillIssue);
+                            //    UIManager.combatUI.Disown(options);
+                            //};
+
+                            //UIManager.combatUI.Append(options);
+                            //showedRestartOptions = true;
                         }
                     }
 
@@ -317,6 +366,8 @@ namespace Casull.Core.Combat
 
                 UIManager.combatUI.Append(victoryDeclaration);
                 showedVictory = true;
+
+                GlobalPlayer.preBattleStats.Clear();
             }
 
             if (Input.PressedKey([Keys.E, Keys.Enter]) && UIManager.combatUI.levelUpElements.Count <= 0) {
@@ -353,8 +404,15 @@ namespace Casull.Core.Combat
             }
 
             foreach (Unit unit in units) {
-                Color clr = unit.Downed ? Color.Crimson : Color.White;
+                Color clr = Color.White;
                 Vector2 position = unit.position + new Vector2(unit.shake * Main.rand.Next(2) % 2 == 0 ? 1 : -1, 0f);
+
+                if (unit.Downed && unit.currentAnimation != "Dead") {
+                    unit.animations.TryGetValue("Dead", out var deadass);
+                    deadass?.Reset();
+                    unit.currentAnimation = "Dead";
+                }
+
                 if (unit.animations.TryGetValue(unit.currentAnimation, out var anim)) {
                     anim.position = position+unit.origin;
                     anim.Draw(spriteBatch, unit.scale * anim.scale);
@@ -826,6 +884,7 @@ namespace Casull.Core.Combat
         public void BeginAction()
         {
             if (ActingUnit.Downed) {
+                ActingUnit.currentAnimation = "Death";
                 State = BattleState.VictoryCheck;
                 return;
             }
@@ -930,20 +989,23 @@ namespace Casull.Core.Combat
                         expValue += unit.Stats.value;
                     }
 
-                    foreach(ItemDrop drop in unit.loot) {
-                        if(rand.Next(101) <= drop.chance) {
-                            drop.item.count = rand.Next(drop.min, drop.max+1);
+                    foreach (ItemDrop drop in unit.loot) {
+                        if (rand.Next(101) <= drop.chance) {
+                            drop.item.count = rand.Next(drop.min, drop.max + 1);
                             drops.Add(drop.item);
                         }
                     }
 
-                    Sequence seq = new(this) {
-                        active = true
-                    };
+                    if (!unit.Downed) {
+                        Sequence seq = new(this) {
+                            active = true
+                        };
 
-                    seq.Add(new SetActorAnimation(unit, "Victory"));
 
-                    this.sequences.Add(seq);
+                        seq.Add(new SetActorAnimation(unit, "Victory"));
+
+                        this.sequences.Add(seq);
+                    }
                 }
 
                 foreach (Item item in drops) {

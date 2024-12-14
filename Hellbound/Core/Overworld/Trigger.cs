@@ -4,6 +4,8 @@
     {
         public bool activated;
 
+        public bool repeatadble;
+
         public string id = id;
 
         public Func<World, bool> condition;
@@ -28,5 +30,5 @@
         }
     }
 
-    public delegate void Action(World world);
+    public delegate void WorldAction(World world);
 }

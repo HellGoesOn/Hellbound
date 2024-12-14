@@ -32,6 +32,7 @@ namespace Casull.Core.ECS
                     if (trigger != null) {
                         trigger.Activate(world);
                         entity.RemoveComponent<TripWire>();
+                        entity.RemoveComponent<CollisionBox>();
                     }
                 }
             }

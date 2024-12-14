@@ -9,7 +9,7 @@ namespace Casull.Core.ECS
 
         public MoveCameraSystem(Context context)
         {
-            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(Transform), typeof(CameraMarker), typeof(Velocity)));
+            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(Transform), typeof(CameraMarker)));
         }
 
         public void Execute(Context context)
@@ -20,10 +20,9 @@ namespace Casull.Core.ECS
                 var entity = entities[i];
 
                 var transform = entity.GetComponent<Transform>();
-                var velocity = entity.GetComponent<Velocity>();
                 Camera cam = Main.instance.GetGameState().GetCamera();
 
-                var value = (transform.position + velocity.value - cam.centre) * cam.speed;
+                var value = (transform.position - cam.centre) * cam.speed;
 
                 cam.centre += value;
                 cam.Clamp(Vector2.Zero, new Vector2(30) * 32);

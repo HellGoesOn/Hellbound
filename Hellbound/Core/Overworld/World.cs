@@ -20,6 +20,12 @@ namespace Casull.Core.Overworld
 
         public static List<string> flags = [];
 
+        public static void RaiseFlag(string flag)
+        {
+            if(!flags.Contains(flag))
+                flags.Add(flag);
+        }
+
         public Texture2D mapTexture;
 
         //public TileMap tileMap;
@@ -69,9 +75,12 @@ namespace Casull.Core.Overworld
             foreach (var trigger in triggers) {
                 if (!paused)
                     trigger.TryRunScript(this);
+
+                if (trigger.repeatadble && trigger.activated)
+                    trigger.activated = false;
             }
 
-            triggers.RemoveAll(x => x.activated);
+            triggers.RemoveAll(x => x.activated && !x.repeatadble);
 
             if (Input.PressedKey(Keys.F7)) {
                 Stream stream = File.OpenWrite(GameOptions.WorldDirectory + "World.png");
@@ -186,6 +195,8 @@ namespace Casull.Core.Overworld
 
             if (!string.IsNullOrWhiteSpace(text.Substring(entityCT.Length + tileText.Length)))
                 Entity.DeserializeAll(text[(entityCT.Length + tileText.Length)..], world.context);
+
+            Main.currentZone = name;
 
             return world;
         }

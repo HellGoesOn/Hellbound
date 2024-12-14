@@ -1,5 +1,9 @@
 ﻿using Casull.Core.Combat.Abilities;
+using Casull.Core.Combat.Abilities.Fire;
+using Casull.Core.Combat.Abilities.Unique;
+using Casull.Core.Combat.Abilities.Wind;
 using Casull.Core.Combat.AI;
+using Casull.Core.Combat.Items;
 using Casull.Core.Combat.Items.Consumables;
 using Microsoft.Xna.Framework;
 using System;
@@ -20,6 +24,55 @@ namespace Casull.Core.Combat
 
             const int frame = 48;
 
+            var death = new SpriteAnimation("Sunflower_Dead",
+                [
+                new(0, 0, frame, frame),
+                new(0, 0, frame, frame),
+                new(0, 0, frame, frame),
+                new(0, 0, frame, frame),
+                new(0, 0, frame, frame),
+                new(0, 0, frame, frame),
+                new(0, 0, frame, frame),
+                new(0, 0, frame, frame),
+                new(0, 0, frame, frame),
+                new(0, 0, frame, frame),
+                new(0, 0, frame, frame),
+                new(0, 0, frame, frame),
+                new(0, 0, frame, frame),
+                new(0, 0, frame, frame),
+                new(0, 0, frame, frame),
+                new(0, 0, frame, frame),
+                new(0, 0, frame, frame),
+                new(0, 0, frame, frame),
+                new(0, frame, frame, frame),
+                new(0, frame * 2, frame, frame),
+                ]
+                ) {
+                scale = new Vector2(-1, 1),
+                timePerFrame = 4,
+                looping = false
+            };
+
+            var kick = new SpriteAnimation("Sunflower_Kick",
+                [
+                new(0, 0, frame, frame),
+                new(0, frame, frame, frame),
+                new(0, frame * 2, frame, frame),
+                new(0, frame * 3, frame, frame),
+                new(0, frame * 3, frame, frame),
+                new(0, frame * 3, frame, frame),
+                new(0, 0, frame, frame),
+                ]
+                ) {
+                timePerFrame = 6,
+                nextAnimation = "Idle"
+            };
+
+            kick.onAnimationPlay = (sender, unit) => {
+                if (sender.currentFrame >= 3 && sender.currentFrame < sender.FrameCount-1)
+                    unit.position.X += Math.Sign(unit.scale.X) * 4f;
+            };
+
             var transformation = new SpriteAnimation("Sunflower_TrueIdle",
                 [
                 new(0, 0, frame, frame),
@@ -30,17 +83,39 @@ namespace Casull.Core.Combat
                 looping = true,
             };
 
-            var cast = new SpriteAnimation("Sunflower_SolarFlare",
+            var cast = new SpriteAnimation("Sunflower_Cast",
                 [
                 new(0, 0, frame, frame),
                 new(0, frame, frame, frame),
-                new(0, frame * 2, frame, frame),
+                new(0, frame, frame, frame),
+                new(0, frame, frame, frame),
+                new(0, frame, frame, frame),
+                new(0, frame, frame, frame),
+                new(0, frame, frame, frame),
                 new(0, frame * 2, frame, frame),
                 new(0, frame * 3, frame, frame),
+                new(0, frame * 2, frame, frame),
+                new(0, frame * 3, frame, frame),
+                new(0, frame * 2, frame, frame),
+                new(0, frame * 3, frame, frame),
+                new(0, frame * 2, frame, frame),
+                new(0, frame * 3, frame, frame),
+                new(0, frame * 2, frame, frame),
+                new(0, frame * 3, frame, frame),
+                new(0, frame * 2, frame, frame),
+                new(0, frame * 3, frame, frame),
+                new(0, frame * 2, frame, frame),
                 new(0, frame * 3, frame, frame),
                 ]) {
-                timePerFrame = 6,
+                timePerFrame = 2,
                 nextAnimation = "Idle",
+            };
+
+            cast.onAnimationPlay = (sender, _) => {
+                if (sender.currentFrame == 3) {
+                    SoundEngine.PlaySound("Blender");
+                    sender.currentFrame++;
+                }
             };
 
             var solarFlare = new SpriteAnimation("Sunflower_SolarFlare",
@@ -49,6 +124,8 @@ namespace Casull.Core.Combat
                 new(0, frame, frame, frame),
                 new(0, frame * 2, frame, frame),
                 new(0, frame * 2, frame, frame),
+                new(0, frame * 2, frame, frame),
+                new(0, frame * 3, frame, frame),
                 new(0, frame * 3, frame, frame),
                 new(0, frame * 3, frame, frame),
                 new(0, frame * 3, frame, frame),
@@ -60,7 +137,7 @@ namespace Casull.Core.Combat
             };
 
             solarFlare.onAnimationPlay = (sender, unit) => {
-                if (sender.currentFrame == 3) {
+                if (sender.currentFrame == 4) {
                     SoundEngine.PlaySound("SolarFlare");
                     sender.currentFrame++;
                 }
@@ -69,10 +146,12 @@ namespace Casull.Core.Combat
             sunFlower.animations.Add("Idle", transformation);
             sunFlower.animations.Add("Cast", cast);
             sunFlower.animations.Add("SolarFlare", solarFlare);
+            sunFlower.animations.Add("Sunflower_Kick", kick);
+            sunFlower.animations.Add("Dead", death);
             sunFlower.defaultAnimation = "Idle";
             sunFlower.size = new Vector2(48, 48);
 
-            sunFlower.Stats.MaxHP = 500;
+            sunFlower.Stats.MaxHP = 1500;
             sunFlower.Stats.MaxSP = 150;
             sunFlower.Stats.value = 500;
             sunFlower.Stats.speed = 15;
@@ -89,26 +168,31 @@ namespace Casull.Core.Combat
                 Name = "Bob & Weave"
             });
 
-            sunFlower.abilities.Add(new BasicAttack() {
+            sunFlower.abilities.Add(new Garu() {
                 Name = "Wind Gust",
-                elementalType = ElementalType.Wind,
-                baseDamage = 10,
+                baseDamage = 25,
                 accuracy = 75
             });
 
-            sunFlower.abilities.Add(new BasicAttack() {
+            sunFlower.abilities.Add(new SunflowerKick() {
                 Name = "Sunflower Kick",
-                baseDamage = 12,
+                baseDamage = 30,
                 accuracy = 50
             });
 
-            sunFlower.abilities.Add(new BasicAttack() {
-                Name = "Sunflower Kick",
-                baseDamage = 12,
+            sunFlower.abilities.Add(new SunflowerKick() {
+                Name = "Sunflower Punch",
+                baseDamage = 30,
                 accuracy = 50
             });
 
-            sunFlower.Drops(100, new Tomato(), 10, 10);
+            sunFlower.abilities.Add(new Garu() {
+                Name = "Wind Gust",
+                baseDamage = 25,
+                accuracy = 75
+            });
+
+            sunFlower.Drops(100, new SunflowerHead(), 1, 1);
 
             sunFlower.ai = new SequentialAI();
         }

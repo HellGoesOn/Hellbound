@@ -13,6 +13,7 @@ namespace Casull.Core.Combat.Abilities.Fire
             aoe = true;
             canTarget = ValidTargets.Enemy;
             elementalType = ElementalType.Fire;
+            baseDamage = 12;
         }
 
         protected override void UseAbility(Unit caster, Battle battle, List<Unit> targets)
@@ -26,7 +27,7 @@ namespace Casull.Core.Combat.Abilities.Fire
             foreach (Unit target in targets) {
                 sequence.Add(new DelaySequence(5));
                 sequence.Add(new PlaySoundSequence("GunShot"));
-                sequence.Add(new DoDamageSequence(caster, target, 12, ElementalType.Fire));
+                sequence.Add(new DoDamageSequence(caster, target, baseDamage, ElementalType.Fire));
                 sequence.Add(new ApplyEffectSequence(sequence, target, new Burning(), 95, true));
                 sequence.Add(new OneActionSequence(() => {
                     for (int i = 0; i < 250; i++) {

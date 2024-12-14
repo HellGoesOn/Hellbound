@@ -59,6 +59,11 @@ namespace Casull.Core.Combat.Items
             Accessory,
         }
 
+        public virtual void OnObtain()
+        {
+
+        }
+
 
         public ValidTargets CanTarget() => canTarget;
 

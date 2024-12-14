@@ -43,7 +43,7 @@ namespace Casull.Core.ECS
         public bool HasComponent<T>()
         {
             int id = Context.ComponentId[typeof(T)];
-            return _components[id] != null;
+            return _components != null && _components[id] != null;
         }
 
         public bool HasComponents(params int[] indexes)

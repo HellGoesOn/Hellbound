@@ -36,6 +36,7 @@
     <None Remove="Assets\Audio\Sounds\senzu.wav" />
     <None Remove="Assets\Audio\Sounds\SolarFlare.wav" />
     <None Remove="Assets\Audio\Sounds\WhatDaDogDoin.wav" />
+    <None Remove="Assets\Blender.wav" />
     <None Remove="Assets\BossMusic.ogg" />
     <None Remove="Assets\Dumbass.png" />
     <None Remove="Assets\Effects\Test.xnb" />

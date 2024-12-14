@@ -26,6 +26,8 @@ namespace Casull
         internal static Random rand;
         internal bool spiritsAngered;
         internal static int angerCounter;
+        internal static string currentZone = "";
+        internal static Vector2 lastTransitionPosition;
 
         public Battle battle;
         private World activeWorld;
@@ -39,6 +41,7 @@ namespace Casull
             set {
                 activeWorld = value;
 #if DEBUG
+                if(activeWorld != null)
                 UIManager.RelaunchEditor();
 #endif
             }

@@ -72,7 +72,7 @@ namespace Casull.Core.Combat
             if (_stats.EXP < Stats.toNextLevel)
                 return false;
 
-            var oldStats = Stats.GetCopy();
+            //var oldStats = Stats.GetCopy();
 
             float hpPercentage = _stats.HP / (float)_stats.MaxHP;
             float spPercentage = _stats.SP / (float)_stats.MaxSP;
@@ -83,8 +83,9 @@ namespace Casull.Core.Combat
             _stats.SP = (int)(Stats.MaxSP * spPercentage);
             _stats.EXP -= Stats.toNextLevel;
             _stats.toNextLevel = (int)(_stats.toNextLevel * 1.25f);
-            if (!silent)
-                UIManager.combatUI.CreateLevelUp(name, oldStats, _stats);
+            _stats.toNextLevel = Math.Clamp(_stats.toNextLevel, 0, 99999999);
+            //if (!silent)
+            //    UIManager.combatUI.CreateLevelUp(name, oldStats, _stats);
             TryLevelUp(silent);
 
             TryLearnLevelUpAbilites();
@@ -115,18 +116,23 @@ namespace Casull.Core.Combat
             TryLearnLevelUpAbilites();
         }
 
+        bool setDead;
         // unit should not be updating its own logic outside of combat system
         // therefore this should only be used for visuals;
         public void UpdateVisuals()
         {
-            if (Downed && opacity > 0) {
-                opacity -= 0.02f;
+            if (Downed) {
+                if (!animations.ContainsKey("Dead")) {
+                    if (opacity > 0.0f)
+                        opacity -= 0.02f;
 
-                if (opacity < 0)
-                    opacity = 0;
+                    if (opacity < 0)
+                        opacity = 0;
+                }
             }
             else if (opacity < 1.2f && !Downed) {
                 opacity += 0.02f;
+                setDead = false;
             }
 
             if (shake > 0) {
@@ -139,12 +145,11 @@ namespace Casull.Core.Combat
             if (animations.TryGetValue(currentAnimation, out var anim)) {
                 anim.position = position;
                 anim.depth = depth;
-                anim.color = Downed ? Color.Crimson : Color.White;
                 anim.opacity = opacity;
                 anim.rotation = rotation;
                 anim.Update(this);
 
-                if (anim.finished) {
+                if (anim.finished && currentAnimation != "Dead") {
                     anim.Reset();
                     currentAnimation = string.IsNullOrWhiteSpace(anim.nextAnimation) ? currentAnimation : anim.nextAnimation;
                 }
@@ -261,7 +266,8 @@ namespace Casull.Core.Combat
             copy.sprite = sprite;
             copy.portrait = portrait;
             copy.portraitCombat = portraitCombat;
-            copy.ai = ai;
+            if(ai != null)
+                copy.ai = (BasicAI)Activator.CreateInstance(ai.GetType());
             copy.animations = [];
             copy._stats = _stats.GetCopy();
             copy.statsGrowth = statsGrowth.GetCopy();
