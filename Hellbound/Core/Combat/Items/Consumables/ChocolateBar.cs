@@ -49,7 +49,7 @@ namespace Casull.Core.Combat.Items.Consumables
                 caster.Stats.HP = 0;
             }
             else {
-                SoundEngine.PlaySound("senzu", 0.75f);
+                SoundEngine.PlaySound("Heal", 0.75f);
                 caster.Stats.HP = Math.Clamp(caster.Stats.HP + 15, 0, caster.Stats.MaxHP);
             }
         }

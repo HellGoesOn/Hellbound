@@ -7,6 +7,8 @@ namespace Casull.Core.Overworld
 {
     public class TileMap
     {
+        public bool showGrid;
+
         public readonly static Dictionary<string, TileDefinition> TileDefinitions = [];
 
         public static TileDefinition GetById(int id)
@@ -46,6 +48,7 @@ namespace Casull.Core.Overworld
 
         private int[,] _physicalTiles;
         private int[,] _elevationMap;
+        public int[,] ElevationMap => _elevationMap;
         private List<DisplayTileLayer> _displayTiles;
 
         public TileMap(int width, int height)
@@ -82,11 +85,15 @@ namespace Casull.Core.Overworld
             int cx = Math.Clamp(x, 0, width - 1);
             int cy = Math.Clamp(y, 0, height - 1);
             _physicalTiles[cx, cy] = tile.id;
-            _elevationMap[cx, cy] = tile.elevation;
             foreach (var layer in _displayTiles) {
                 layer.SetTile(tile, cx, cy);
             }
             didBakeTexture = false;
+        }
+
+        public void SetTileElevation(int elevation, int x, int y)
+        {
+            _elevationMap[x, y] = elevation;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -95,7 +102,13 @@ namespace Casull.Core.Overworld
                 for (int j = 0; j < width; j++) {
                     Texture2D tex = Assets.GetTexture(GetById(_physicalTiles[j, i]).textureName);
                     Renderer.Draw(tex, new Vector2(j * DisplayTileLayer.TILE_SIZE, i * DisplayTileLayer.TILE_SIZE).ToInt(), null, Color.White, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, _elevationMap[j, i]);
-                    //Renderer.Draw(Assets.GetTexture("Frame2"), new Vector2(j * DisplayTileLayer.TILE_SIZE, i * DisplayTileLayer.TILE_SIZE), null, Color.White, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
+
+                    if (showGrid) {
+                        Renderer.Draw(Assets.GetTexture("Frame2"), new Vector2(j * DisplayTileLayer.TILE_SIZE, i * DisplayTileLayer.TILE_SIZE), null, Color.White, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1000f);
+                        Renderer.Draw(Assets.GetTexture("TileElevation"), new Vector2(j * DisplayTileLayer.TILE_SIZE, i * DisplayTileLayer.TILE_SIZE) + new Vector2(8), new Rectangle(0, 16 * GetTileElevation(j, i), 16, 16), Color.White, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1000f);
+
+
+                    }
                 }
             }
 

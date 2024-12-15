@@ -1,5 +1,6 @@
 ﻿using Casull.Core.ECS.Components;
 using Casull.Core.Overworld;
+using Casull.Extensions;
 using Casull.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

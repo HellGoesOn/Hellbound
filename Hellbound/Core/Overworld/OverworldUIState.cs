@@ -15,6 +15,8 @@ namespace Casull.Core.Overworld
         float _repeatRate;
 
         public UIScrollableMenu optionMenu;
+        UIAnimatedPanel blackBarTop;
+        UIAnimatedPanel blackBarBot;
 
         public int lastTarget;
 
@@ -22,6 +24,27 @@ namespace Casull.Core.Overworld
         {
             //debugText = new("");
             //Append(debugText);
+
+            blackBarTop = new UIAnimatedPanel(new Vector2(Renderer.UIPreferedWidth, 160));
+            blackBarTop.SetPosition(0, -80);
+            blackBarTop.borderColor = Color.Black;
+            blackBarTop.panelColor = Color.Black;
+            blackBarTop.suspended = true;
+
+
+            blackBarBot = new UIAnimatedPanel(new Vector2(Renderer.UIPreferedWidth, 160));
+            blackBarBot.SetPosition(0, Renderer.UIPreferedHeight - 80);
+            blackBarBot.borderColor = Color.Black;
+            blackBarBot.panelColor = Color.Black;
+            blackBarBot.suspended = true;
+
+            Append(blackBarTop);
+            Append(blackBarBot);
+        }
+
+        public void SetBlackBars(bool value)
+        {
+            blackBarTop.suspended = blackBarBot.suspended = !value;
         }
 
         public override void Update()
@@ -31,19 +54,7 @@ namespace Casull.Core.Overworld
             if (Input.PressedKey(Keys.Escape) && optionMenu == null && Main.instance.GetGameState() is World) {
                 Main.instance.ActiveWorld.paused = true;
 
-                UIAnimatedPanel blackBarTop = new UIAnimatedPanel(new Vector2(Renderer.UIPreferedWidth, 160));
-                blackBarTop.SetPosition(0, -80);
-                blackBarTop.borderColor = Color.Black;
-                blackBarTop.panelColor = Color.Black;
-
-
-                UIAnimatedPanel blackBarBot = new UIAnimatedPanel(new Vector2(Renderer.UIPreferedWidth, 160));
-                blackBarBot.SetPosition(0, Renderer.UIPreferedHeight - 80);
-                blackBarBot.borderColor = Color.Black;
-                blackBarBot.panelColor = Color.Black;
-
-                Append(blackBarTop);
-                Append(blackBarBot);
+                blackBarTop.suspended = blackBarBot.suspended = false;
 
                 UIPanel darkening = new();
                 darkening.fillColor = Color.Black * 0.5f;
@@ -710,8 +721,8 @@ namespace Casull.Core.Overworld
                     Main.instance.ActiveWorld.paused = false;
                     sender.parent.Disown(darkening);
                     optionMenu = null;
-                    blackBarTop.isClosed = true;
-                    blackBarBot.isClosed = true;
+                    blackBarTop.suspended = true;
+                    blackBarBot.suspended = true;
                 };
 
                 optionMenu.onUpdate = (sender) => {

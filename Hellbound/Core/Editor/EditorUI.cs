@@ -18,6 +18,7 @@ namespace Casull.Core.Editor
         public int selectedPanel;
         public int lastPanel;
         private int selectedTile = 1;
+        private int selectedHeight = 0;
         public UIPanel[] panels;
         string currentScene = "EmptyScene";
         Vector2 camAnchor;
@@ -188,10 +189,56 @@ namespace Casull.Core.Editor
             panels[2].Append(new UIBorderedText("Tile Placer") {
             }.SetPosition(32, 12));
 
+            UITextBox tileName = new UITextBox() {
+                myText = "Stone",
+            maxCharacters = 255
+            };
+            tileName.size = new Vector2(200, 40);
+            tileName.onTextSubmit = (sender) => {
+                var myText = tileName.myText;
+                var key = TileMap.TileDefinitions.Keys.FirstOrDefault(x => x.ToLower().Contains(tileName.myText.ToLower()));
+
+                if (key != default) {
+                    tileName.myText = key;
+                    selectedTile = TileMap.TileDefinitions[key].id;
+                }
+                else {
+                    tileName.myText = TileMap.TileDefinitions.Keys.Where(x => TileMap.TileDefinitions[x].id == selectedTile).FirstOrDefault();
+                }
+
+
+            };
+
+            UITextBox tileElevationText = new UITextBox() {
+                myText = "0",
+                maxCharacters = 10
+            };
+
+            tileElevationText.size = new Vector2(40, 40);
+            tileElevationText.onTextSubmit = (sender) => {
+
+                if (int.TryParse(tileElevationText.myText, out var height)) {
+                    selectedHeight = height;
+                }
+                else {
+                    tileElevationText.myText = selectedHeight.ToString();
+                }
+            };
+
+            tileName.SetPosition(32, 64);
+            tileElevationText.SetPosition(32 + tileName.size.X + 4, 64);
+            panels[2].Append(tileName);
+            panels[2].Append(tileElevationText);
+
             UICheckBox isPlacingTiles = new("Activate tile placement") {
                 panelColor = Color.DarkBlue,
                 drawsPanel = true,
-                onClick = (sender) => {
+                onClick = (UIElement sender) => {
+                    selectedTile = TileMap.TileDefinitions[tileName.myText].id;
+                    var element = panels[2].GetElementById("boxPlace") as UICheckBox;
+                    element.isChecked = false;
+                    Input.OnMousePressed -= OnStartDrawingTiles;
+                    Input.OnMouseReleased -= OnEndDrawingTiles;
 
                     if ((sender as UICheckBox).isChecked) {
                         Input.OnMouseHeld += PlaceTile;
@@ -201,22 +248,40 @@ namespace Casull.Core.Editor
                     }
                 }
             };
-            isPlacingTiles.SetPosition(12, 16);
+            isPlacingTiles.SetPosition(32, 40);
 
-            for (int i = 0; i < TileMap.TileDefinitions.Count; i++) {
-                string text = TileMap.TileDefinitions.Keys.ToList()[i];
-                UIBorderedText tileText = new(text) {
-                    id = $"tileId={TileMap.TileDefinitions[text].id}",
-                    size = Assets.Arial.MeasureString(text),
-                    onClick = (sender) => {
-                        selectedTile = int.Parse(Regex.Replace(sender.id, "[^0-9]", ""));
-                    },
-                    capturesMouse = true
-                };
-                tileText.SetPosition(new Vector2(16, 12 + Assets.Arial.MeasureString(text).Y + Assets.Arial.MeasureString(text).Y * i));
-                panels[2].Append(tileText);
-            }
+            UICheckBox boxPlace = new("Activate box placement") {
+                id = "boxPlace",
+                panelColor = Color.DarkBlue,
+                drawsPanel = true,
+                onClick = (sender) => {
+                    selectedTile = TileMap.TileDefinitions[tileName.myText].id;
+                    isPlacingTiles.isChecked = false;
+                    Input.OnMouseHeld -= PlaceTile;
+                    if ((sender as UICheckBox).isChecked) {
+                        Input.OnMousePressed += OnStartDrawingTiles;
+                        Input.OnMouseReleased += OnEndDrawingTiles;
+                    }
+                    else {
+                        Input.OnMousePressed -= OnStartDrawingTiles;
+                        Input.OnMouseReleased -= OnEndDrawingTiles;
+                    }
+                }
+            };
+            boxPlace.SetPosition(32 + isPlacingTiles.size.X + 2, 40);
+
+            UICheckBox showGrid = new("Show tile grid") {
+                panelColor = Color.DarkBlue,
+                drawsPanel = true,
+                onClick = (sender) => {
+                    Main.instance.ActiveWorld.tileMap.showGrid = !Main.instance.ActiveWorld.tileMap.showGrid;
+                }
+            };
+            showGrid.SetPosition(32 + isPlacingTiles.size.X + 4 + boxPlace.size.X, 40);
+
             panels[2].Append(isPlacingTiles);
+            panels[2].Append(showGrid);
+            panels[2].Append(boxPlace);
 
             panels[5].Append(new UIBorderedText("Scenes") {
             }.SetPosition(16, 12));
@@ -279,6 +344,38 @@ namespace Casull.Core.Editor
 
             foreach (UIPanel panel in panels) {
                 panel.SetFont(Assets.Arial);
+            }
+        }
+
+        Vector2 tileBoxBasePosition = new Vector2(-1);
+        private void OnStartDrawingTiles(MouseButton button)
+        {
+            if (button == MouseButton.Left && UIManager.hoveredElement == null) {
+                tileBoxBasePosition = Input.MousePosition / DisplayTileLayer.TILE_SIZE;
+                tileBoxBasePosition = tileBoxBasePosition.Floor();
+            }
+        }
+
+        private void OnEndDrawingTiles(MouseButton button)
+        {
+            if (button == MouseButton.Left && UIManager.hoveredElement == null) {
+
+                var tileMap = Main.instance.ActiveWorld.tileMap;
+                var startPosition = tileBoxBasePosition;
+                var endPosition = (Input.MousePosition / DisplayTileLayer.TILE_SIZE).Floor() + new Vector2(1) - startPosition;
+
+                var realStart = Vector2.Clamp(Vector2.Min(startPosition, startPosition+endPosition), Vector2.Zero, new Vector2(tileMap.width, tileMap.height));
+                var realEnd = Vector2.Clamp(Vector2.Max(startPosition, startPosition+endPosition), Vector2.Zero, new Vector2(tileMap.width, tileMap.height));
+
+                for(int i = (int)realStart.Y; i < (int)realEnd.Y; i++) {
+                    for (int j = (int)realStart.X; j < (int)realEnd.X; j++) {
+                        tileMap.SetTile(TileMap.GetById(selectedTile), j, i);
+                        tileMap.SetTileElevation(selectedHeight, j, i);
+                    }
+                }
+
+
+                tileBoxBasePosition = new Vector2(-1);
             }
         }
 
@@ -368,6 +465,9 @@ namespace Casull.Core.Editor
                 Input.OnMousePressed -= CreatePrefab;
                 Input.OnMouseHeld -= DragEntity;
                 Input.OnMouseReleased -= ReleaseEntity;
+                Input.OnMousePressed -= PlaceTile;
+                Input.OnMousePressed -= OnStartDrawingTiles;
+                Input.OnMouseReleased -= OnEndDrawingTiles;
                 subscribedEvent = false;
             }
         }
@@ -376,6 +476,14 @@ namespace Casull.Core.Editor
         {
             base.Draw(spriteBatch);
             //Renderer.DrawBorderedString(spriteBatch, Assets.Arial, $"{camAnchor}", Input.UIMousePosition, Color.White, Color.Black, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1f);
+
+            if(tileBoxBasePosition != new Vector2(-1)) {
+                var startPosition = tileBoxBasePosition * DisplayTileLayer.TILE_SIZE;
+                var endPosition = ((Input.MousePosition / DisplayTileLayer.TILE_SIZE).Floor() - tileBoxBasePosition) * DisplayTileLayer.TILE_SIZE;
+
+                var size = new Vector2(32) + endPosition;
+                Renderer.DrawRectToWorld(startPosition, size, Color.Red * 0.25f, float.MaxValue);
+            }
         }
 
         private void AnchorCam(MouseButton button)
@@ -429,6 +537,7 @@ namespace Casull.Core.Editor
             if (button == MouseButton.Left) {
                 World w = (con as World);
                 w.tileMap.SetTile(TileMap.GetById(selectedTile), (int)Input.MousePosition.X / DisplayTileLayer.TILE_SIZE, (int)Input.MousePosition.Y / DisplayTileLayer.TILE_SIZE);
+                w.tileMap.SetTileElevation(selectedHeight, (int)Input.MousePosition.X / DisplayTileLayer.TILE_SIZE, (int)Input.MousePosition.Y / DisplayTileLayer.TILE_SIZE);
             }
         }
 
@@ -437,11 +546,11 @@ namespace Casull.Core.Editor
             IGameState con = Main.instance.ActiveWorld;
             if (newValue > oldValue) {
                 //con.GetCamera().centre += con.GetCamera().centre * 0.1f;
-                con.GetCamera().zoom += 0.1f;
+                con.GetCamera().Zoom += 0.1f;
             }
             else {
                 //con.GetCamera().centre -= con.GetCamera().centre * 0.1f;
-                con.GetCamera().zoom -= 0.1f;
+                con.GetCamera().Zoom -= 0.1f;
             }
         }
 
@@ -453,7 +562,7 @@ namespace Casull.Core.Editor
             IGameState con = Main.instance.GetGameState();
 
             if (key == Keys.R) {
-                con.GetCamera().zoom = 4f;
+                con.GetCamera().Zoom = 4f;
             }
 
             if (Input.HeldKey(Keys.LeftControl) && key >= Keys.D1 && key <= Keys.D1 + panels.Length - 1) {

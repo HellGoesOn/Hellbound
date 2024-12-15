@@ -4,11 +4,11 @@ using Microsoft.Xna.Framework;
 namespace Casull.Core.ECS
 {
     // TO-DO: proper collision checks
-    public class BoxCollisionSystem : IExecute
+    public class ShitCollisionSystem : IExecute
     {
         readonly Group<Entity> _group;
 
-        public BoxCollisionSystem(Context context)
+        public ShitCollisionSystem(Context context)
         {
             _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(CollisionBox), typeof(Transform)));
         }
@@ -29,7 +29,13 @@ namespace Casull.Core.ECS
                     var secondBox = secondEntity.GetComponent<CollisionBox>();
                     var secondTransform = secondEntity.GetComponent<Transform>();
 
-                    if (CheckCollision(firstTransform.position - firstBox.origin, firstBox, secondTransform.position - secondBox.origin, secondBox)) {
+                    if (firstBox.radius > 0) {
+                        if (Vector2.Distance(firstTransform.position, secondTransform.position) <= firstBox.radius) {
+                            firstEntity.AddComponent(new HasCollidedMarker(secondEntity.id));
+                            secondEntity.AddComponent(new HasCollidedMarker(firstEntity.id));
+                        }
+                    }
+                    else if (CheckCollision(firstTransform.position - firstBox.origin, firstBox, secondTransform.position - secondBox.origin, secondBox)) {
                         firstEntity.AddComponent(new HasCollidedMarker(secondEntity.id));
                         secondEntity.AddComponent(new HasCollidedMarker(firstEntity.id));
                     }

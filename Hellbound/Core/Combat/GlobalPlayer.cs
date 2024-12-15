@@ -18,9 +18,11 @@ namespace Casull.Core.Combat
 
         public static List<Item> Inventory => _items;
 
+        public static Unit Copy(string name) => UnitDefinitions.Get(name);
+
         public static void Init()
         {
-            Unit protag = UnitDefinitions.Get("Doorkun");
+            Unit protag = Copy("Doorkun");
 
             protag.animations.Clear();
 
@@ -34,6 +36,7 @@ namespace Casull.Core.Combat
             //ActiveParty.Add(sidekick);
 
             AddItem(new AdrenalineShot() { count = 3 });
+            AddItem(new ChocolateBar());
         }
 
         public static void AddPartyMember(Unit newUnit)
@@ -45,10 +48,9 @@ namespace Casull.Core.Combat
 
         public static void DefaultBattleStations(List<Unit> units)
         {
-            int i = 0;
-            for (i = units.Count - 1; i >= 0; i--) {
+            for (int i = units.Count - 1; i >= 0; i--) {
                 Unit unit = units[units.Count - 1 - i];
-                unit.BattleStation = new Vector2(60 + 4 * i + 32 * (i % 2), 70 + 16 * i - 24 * (i % 2));
+                unit.BattleStation = new Vector2(70 + 4 * i + 32 * (i % 2), 80 + 16 * i - 24 * (i % 2));
             }
         }
 
@@ -76,6 +78,7 @@ namespace Casull.Core.Combat
                 unit.Stats.EXP = preBattleStats[i].EXP;
                 unit.Stats.toNextLevel = preBattleStats[i].toNextLevel;
                 unit.Stats.level = preBattleStats[i].level;
+                unit.Stats.accuracy = preBattleStats[i].accuracy;
             }
         }
 

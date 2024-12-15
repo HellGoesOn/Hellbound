@@ -31,7 +31,6 @@ namespace Casull.Core.UI
         public override void OnUpdate()
         {
             base.OnUpdate();
-
             if (text != oldText || !firstSplit) {
                 size = font.MeasureString(brokenText);
                 firstSplit = true;
@@ -42,6 +41,13 @@ namespace Casull.Core.UI
 
         public override void OnDraw(SpriteBatch spriteBatch)
         {
+            if (text != oldText || !firstSplit) {
+                size = font.MeasureString(brokenText);
+                firstSplit = true;
+                oldText = text;
+                brokenText = text.Splice(lineBreak);
+            }
+
             if (firstSplit)
                 Renderer.DrawBorderedString(spriteBatch, font, brokenText, GetPosition(), color, borderColor, Rotation, origin, scale, SpriteEffects.None, 0);
         }

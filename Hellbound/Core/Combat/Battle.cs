@@ -6,6 +6,7 @@ using Casull.Core.Combat.Status;
 using Casull.Core.ECS.Components;
 using Casull.Core.Overworld;
 using Casull.Core.UI;
+using Casull.Core.UI.CombatUI;
 using Casull.Core.UI.Elements;
 using Casull.Extensions;
 using Casull.Render;
@@ -17,8 +18,6 @@ namespace Casull.Core.Combat
 {
     public class Battle : IGameState
     {
-        int lastItemIndex, lastAbilityIndex;
-
         public int turnCount;
 
         public int _actingUnit;
@@ -93,7 +92,7 @@ namespace Casull.Core.Combat
             unitsHitLastRound = [];
             State = BattleState.BeginTurn;
             bg = new BattleBackground("TestBG");
-            GetCamera().zoom = 4f;
+            GetCamera().Zoom = 4f;
         }
 
         public static Battle Create(List<Unit> enemies, List<Unit> trialCharacters = null)
@@ -282,6 +281,7 @@ namespace Casull.Core.Combat
 
                     if (timer >= 240) {
                         if (!showedRestartOptions) {
+                            showedRestartOptions = true;
                             GameStateManager.SetState(GameState.Overworld, new BlackFadeInFadeOut(Renderer.SaveFrame(true)));
 
                             GlobalPlayer.ResetToPrebattle();
@@ -290,7 +290,7 @@ namespace Casull.Core.Combat
 
                             UIManager.combatUI.Disown(skillIssue);
 
-                            var player = Main.instance.ActiveWorld.context.entities.FirstOrDefault(x => x.HasComponent<PlayerMarker>());
+                            var player = Main.instance.ActiveWorld.context.GetAllEntities().FirstOrDefault(x => x.HasComponent<PlayerMarker>());
 
                             if (player != null)
                             {
@@ -462,7 +462,12 @@ namespace Casull.Core.Combat
 
         private void HandleMenus()
         {
-            var playerMenu = new UIScrollableMenu(3, "Attack", "Item", "Guard");
+            string[] options = ["Attack", "Item", "Guard"];
+            if (UIManager.combatUI.tutorialProgress <= UIManager.combatUI.tutorialCombatOptions.Count-1) {
+                options = UIManager.combatUI.tutorialCombatOptions[UIManager.combatUI.tutorialProgress];
+            }
+
+            var playerMenu = new UIScrollableMenu(options.Length, options);
             playerMenu.openSpeed = 0.25f;
 
             playerMenu.SetPosition(64, Renderer.UIPreferedHeight * 0.5f - playerMenu.targetSize.Y * 0.5f);

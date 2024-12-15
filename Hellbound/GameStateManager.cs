@@ -13,6 +13,9 @@ namespace Casull
         {
             Main.instance.transitions.Add(transition ?? new(Renderer.SaveFrame()));
             _nextState = newState;
+
+            SoundEngine.SetTargetVolume(1.0f);
+            SoundEngine.SetTargetMusicVolume(1.0f);
             switch (newState) {
                 case GameState.MainMenu:
                     var state = UIManager.GetStateByName("MainMenu");
@@ -27,6 +30,7 @@ namespace Casull
                     // transition to doing combat
                     break;
                 case GameState.Overworld:
+                    Main.instance.ActiveWorld.GetCamera().Zoom = 4f;
                     // transition to OW
                     break;
                 case GameState.CombatNew:

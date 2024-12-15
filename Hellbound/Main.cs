@@ -63,7 +63,7 @@ namespace Casull
             this.Window.Title = "Casull";
         }
 
-        protected override void Initialize()
+        protected unsafe override void Initialize()
         {
             /* This is a nice place to start up the engine, after
              * loading configuration stuff in the constructor
@@ -146,7 +146,7 @@ namespace Casull
             //];
             //    dialogue.pages.AddRange(pages);
 
-            ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", "Hills3");
+            ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", "Forest3");
         }
 
         internal void StartBattle(bool onStone = false)
@@ -156,7 +156,7 @@ namespace Casull
             }
             GameStateManager.SetState(GameState.Combat, new TrippingBalls(Renderer.SaveFrame()));
             List<Unit> list = [];
-            var slimeList = activeWorld.context.entities.Where(x => x != null && x.enabled && x.HasComponent<TextureComponent>() && x.GetComponent<TextureComponent>().textureName == "Slime3");
+            var slimeList = activeWorld.context.GetAllEntities().Where(x => x != null && x.enabled && x.HasComponent<TextureComponent>() && x.GetComponent<TextureComponent>().textureName == "Slime3");
             for (int i = 0; i < slimeList.Count(); i++) {
                 Unit slime = UnitDefinitions.Get("Slime");
                 slime.BattleStation = new Vector2(220 + i * 8 + ((i / 3) * 24), 60 + i * 32 - (i / 3 * 86));
@@ -259,6 +259,11 @@ namespace Casull
 
             //if (angerCounter >= 15)
             //    spiritsAngered = true;
+
+            if (World.cutscenes.Count > 0)
+                World.cutscenes[0].Update();
+
+            World.cutscenes.RemoveAll(x => x.Finished);
 
             foreach (var seq in outOfBoundsSequences)
                 seq.Update();

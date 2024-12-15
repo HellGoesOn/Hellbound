@@ -37,9 +37,8 @@ namespace Casull.Core.UI
             state.Append(debugText);
 
             UIStates.Add(combatUI);
-            UIStates.Add(dialogueUI);
-
             UIStates.Add(overworldUI);
+            UIStates.Add(dialogueUI);
             //RelaunchEditor();
         }
 
@@ -70,6 +69,7 @@ namespace Casull.Core.UI
         }
 
         public static void Debug(string text) => showInDebug.Add(text);
+        public static void Debug(object someObject) => showInDebug.Add(someObject.ToString());
 
         public static void Draw(SpriteBatch spriteBatch)
         {

@@ -41,7 +41,7 @@ namespace Casull.Core.ECS
 
         public int entityCount;
 
-        public Entity[] entities;
+        Entity[] entities;
 
         public Stack<IComponent>[] componentPools;
         private Stack<Entity> _entityPool;
@@ -81,6 +81,16 @@ namespace Casull.Core.ECS
                     group.Value.HandleEntity(entity);
                 }
             };
+        }
+
+        public Entity[] GetAllEntities() => entities;
+
+        public Entity GetById(int id)
+        {
+            if (id < 0 || id >= entities.Length)
+                return null;
+
+            return entities[id];
         }
 
         public Entity Create()

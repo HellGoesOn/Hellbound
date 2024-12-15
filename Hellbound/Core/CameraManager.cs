@@ -19,19 +19,19 @@ namespace Casull.Core
         public static void Initialize()
         {
             combatCamera = new Camera(new Viewport(0, 0, Renderer.PreferedWidth, Renderer.PreferedHeight));
-            combatCamera.zoom = 1f;
+            combatCamera.Zoom = 1f;
             combatCamera.speed = 1f;
             combatCamera.centre = new Vector2(160, 90);
             cameras.Add(combatCamera);
 
             overworldCamera = new Camera(new Viewport(0, 0, Renderer.PreferedWidth, Renderer.PreferedHeight));
-            overworldCamera.zoom = 1f;
+            overworldCamera.Zoom = 1f;
             overworldCamera.speed = 1f;
             overworldCamera.centre = new Vector2(160, 90);
             cameras.Add(overworldCamera);
 
             mainMenuCamera = new Camera(new Viewport(0, 0, Renderer.PreferedWidth, Renderer.PreferedHeight));
-            mainMenuCamera.zoom = 1f;
+            mainMenuCamera.Zoom = 1f;
             mainMenuCamera.speed = 1f;
             mainMenuCamera.centre = new Vector2(160, 90);
             cameras.Add(mainMenuCamera);

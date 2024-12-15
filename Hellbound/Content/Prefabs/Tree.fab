@@ -1,0 +1,11 @@
+Entity_20
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:69.75 Y:518}; 0; 0}
+
+	} ;

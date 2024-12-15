@@ -21,9 +21,15 @@ namespace Casull.Core.DialogueSystem
         public List<Response> responses = [];
         public List<Portrait> portraits = [];
         public ResponseDelegate onPageEnd;
+        public ResponseDelegate onPageBegin;
+
+        public Vector2 textScale;
+
+        bool began = false;
 
         public DialoguePage()
         {
+            textScale = Vector2.One;
             textColor = Color.White;
             speakerColor = Color.White;
             borderColor = Color.White;
@@ -35,6 +41,11 @@ namespace Casull.Core.DialogueSystem
 
         public void Update(Dialogue dialogue)
         {
+            if(!began) {
+                began = true;
+                onPageBegin?.Invoke(dialogue);
+            }
+
             if (!finishedScrolling && ++elapsedTime >= timePerLetter) {
                 if (Input.HeldKey(Keys.E))
                     progress += 4;

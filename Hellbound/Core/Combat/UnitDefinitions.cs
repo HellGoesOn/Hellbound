@@ -24,8 +24,6 @@ namespace Casull.Core.Combat
             protag.resistances[ElementalType.Wind] = -0.5f;
 
             protag.abilities.Add(new BasicAttack());
-            protag.abilities.Add(new Agi());
-            protag.abilities.Add(new Dia());
             protag.statsGrowth = new CombatStats(0.5f, 1.5f, 10, 7, 0.15f);
             protag.Stats.speed = 6.5f;
 

@@ -51,6 +51,11 @@ namespace Casull.Core.Combat.Sequencer
             Actions.Add(action);
         }
 
+        public void DoFor(Action action, int ticks)
+        {
+            Actions.Add(new ContiniousActionSequence(action, ticks));
+        }
+
         public void MoveActor(Unit whoToMove, Vector2 toWhere, float speed = 0.12f)
         {
             Actions.Add(new MoveActorSequence(whoToMove, toWhere, speed));

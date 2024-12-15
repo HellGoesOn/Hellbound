@@ -17,6 +17,7 @@ namespace Casull.Core.Combat.Sequencer
             DamageNumber damageNumber = new(DamageType.Normal, $"+{amount}", target.position);
             damageNumber.color = Color.Lime;
             battle?.damageNumbers.Add(damageNumber);
+            SoundEngine.PlaySound("Heal");
         }
     }
 }

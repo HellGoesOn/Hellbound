@@ -1,5 +1,6 @@
 ﻿using Casull.Core.ECS.Components;
 using Casull.Core.Overworld;
+using Microsoft.Xna.Framework;
 
 namespace Casull.Core.ECS
 {
@@ -9,7 +10,7 @@ namespace Casull.Core.ECS
 
         public TripWireSystem(Context context)
         {
-            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(HasCollidedMarker), typeof(TripWire)));
+            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(HasCollidedMarker), typeof(TripWire), typeof(Transform)));
         }
 
         public void Execute(Context context)
@@ -18,16 +19,18 @@ namespace Casull.Core.ECS
 
             for (int i = 0; i < entities.Count; i++) {
                 var entity = entities[i];
-                var id = entity.GetComponent<TripWire>().trigger;
+                var toTrigger = entity.GetComponent<TripWire>();
                 var playerId = entity.GetComponent<HasCollidedMarker>();
+
+                var myPosition = entity.GetComponent<Transform>();
 
                 var gameState = Main.instance.GetGameState();
 
-                if (!context.entities[playerId.otherId].HasComponent<PlayerMarker>())
+                if (context.GetById(playerId.otherId) != null && !context.GetById(playerId.otherId).HasComponent<PlayerMarker>())
                     continue;
 
                 if (gameState is World world) {
-                    var trigger = World.triggers.FirstOrDefault(x => x.id == id);
+                    var trigger = World.triggers.FirstOrDefault(x => x.id == toTrigger.trigger);
 
                     if (trigger != null) {
                         trigger.Activate(world);

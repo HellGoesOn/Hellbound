@@ -7,6 +7,7 @@ namespace Casull.Core.ECS.Components
         public int width;
         public int height;
         public Vector2 origin;
+        public float radius;
         public CollisionBox(int width, int height, Vector2? origin = null)
         {
             this.width = width;

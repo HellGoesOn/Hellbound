@@ -1,4 +1,5 @@
 ﻿using Casull.Core.ECS.Components;
+using Casull.Core.Overworld;
 using Microsoft.Xna.Framework;
 
 namespace Casull.Core.ECS
@@ -16,6 +17,9 @@ namespace Casull.Core.ECS
         {
             var entities = _group.Entities;
 
+            if (World.cutscenes.Count > 0)
+                return;
+
             for (int i = 0; i < entities.Count; i++) {
                 var entity = entities[i];
 
@@ -24,7 +28,7 @@ namespace Casull.Core.ECS
 
                 var value = (transform.position - cam.centre) * cam.speed;
 
-                cam.centre += value;
+                cam.centre += new Vector2(value.X, value.Y);
                 cam.Clamp(Vector2.Zero, new Vector2(30) * 32);
                 //cam.centre = cam.centre.ToInt();
 

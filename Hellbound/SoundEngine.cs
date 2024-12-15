@@ -13,6 +13,14 @@ namespace Casull
         private static int _stoppedFor;
         internal static bool doNotRestart;
 
+        internal static float hiddenVolumeTarget;
+        internal static float hiddenVolumeSpeed = 0.1f;
+        internal static float hiddenMusicVolumeTarget;
+        internal static float hiddenMusicVolumeSpeed = 0.1f;
+
+        internal static float hiddenVolume = 1.0f;
+        internal static float hiddenMusicVolume = 1.0f;
+
         public static void StartMusic(string name, bool loop)
         {
             _updatedSong = true;
@@ -32,9 +40,33 @@ namespace Casull
             IsMusicPlaying = false;
         }
 
+        public static void SetTargetVolume(float volume)
+        {
+            hiddenVolumeTarget = volume;
+        } 
+
+        public static void SetTargetMusicVolume(float volume)
+        {
+            hiddenMusicVolumeTarget = volume;
+        }
+
+        private static void UpdateVolume(ref float currentVolume, float targetVolume, float volumeSpeed)
+        {
+            if (currentVolume != targetVolume) {
+                currentVolume += volumeSpeed * Math.Sign(targetVolume - currentVolume);
+
+                if (Math.Abs(targetVolume - currentVolume) <= volumeSpeed) {
+                    currentVolume = targetVolume;
+                }
+            }
+        }
+
         public static void Update()
         {
-            MediaPlayer.Volume = GameOptions.MusicVolume;
+            UpdateVolume(ref hiddenVolume, hiddenVolumeTarget, hiddenVolumeSpeed);
+            UpdateVolume(ref hiddenMusicVolume, hiddenMusicVolumeTarget, hiddenMusicVolumeSpeed);
+
+            MediaPlayer.Volume = GameOptions.MusicVolume * hiddenMusicVolume;
 
             if (_stoppedFor > 0)
                 _stoppedFor--;
@@ -64,9 +96,9 @@ namespace Casull
         public static SoundEffectInstance PlaySound(string name, float volume = -1f)
         {
             if (volume == -1f)
-                volume = GameOptions.GeneralVolume;
+                volume = GameOptions.GeneralVolume * hiddenVolume;
             else
-                volume = GameOptions.GeneralVolume * volume;
+                volume = GameOptions.GeneralVolume * volume * hiddenVolume;
 
             var fx = Assets.GetSound(name)?.CreateInstance();
 

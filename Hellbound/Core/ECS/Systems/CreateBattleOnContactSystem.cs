@@ -23,7 +23,7 @@ namespace Casull.Core.ECS
             for (int i = 0; i < _group.Entities.Count; i++) {
                 Entity entity = _group.Entities[i];
                 int otherId = entity.GetComponent<HasCollidedMarker>().otherId;
-                Entity otherEntity = context.entities[otherId];
+                Entity otherEntity = context.GetById(otherId);
 
                 if (otherEntity == null || !otherEntity.enabled || !otherEntity.HasComponent<PlayerMarker>())
                     return;

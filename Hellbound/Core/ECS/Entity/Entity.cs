@@ -192,7 +192,7 @@ namespace Casull.Core.ECS
 
             Entity e;
             if (context != null) {
-                Entity checkExisting = context.entities[int.Parse(id)];
+                Entity checkExisting = context.GetById(int.Parse(id));
                 if (checkExisting != null && checkExisting.enabled) {
                     context.Destroy(checkExisting.id);
                 }

@@ -1,6 +1,7 @@
 ﻿using Casull.Core.UI;
 using Casull.Render;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Casull.Core.DialogueSystem
 {
@@ -58,13 +59,13 @@ namespace Casull.Core.DialogueSystem
             speakerPanel.SetPosition(16, -48);
             speakerText.SetPosition(16, 8);
 
+            //dialoguePanel.SetFont(Assets.Arial);
+
             dialoguePanel.SetPosition(16, Renderer.UIPreferedHeight - 16 - dialoguePanel.size.Y);
         }
 
-        public override void Update()
+        public override void Draw(SpriteBatch spriteBatch)
         {
-            base.Update();
-
             if (dialogues.Count > 0) {
                 visible = true;
 
@@ -72,7 +73,9 @@ namespace Casull.Core.DialogueSystem
                 speakerText.text = page.title;
                 speakerText.color = page.speakerColor;
                 dialogueText.text = page.VisibleText;
+                dialogueText.scale = page.textScale;
                 dialogueText.color = page.textColor;
+                dialogueText.lineBreak = (int)(80 / page.textScale.X);
                 dialoguePanel.fillColor = page.fillColor;
                 dialoguePanel.outlineColor = page.borderColor;
 
@@ -80,14 +83,22 @@ namespace Casull.Core.DialogueSystem
 
                 portrait.portrait = page.portraits;
 
+            }
+            else {
+                visible = false;
+            }
+            base.Draw(spriteBatch);
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            if (dialogues.Count > 0) {
                 dialogues[0].Update();
 
                 if (dialogues[0].hasEnded) {
                     dialogues.RemoveAt(0);
                 }
-            }
-            else {
-                visible = false;
             }
         }
     }

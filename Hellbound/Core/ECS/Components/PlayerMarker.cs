@@ -2,7 +2,7 @@
 {
     public class PlayerMarker : IComponent
     {
-        //public InputHandler onInput;
+        internal bool preserveSpeed;
 
         public PlayerMarker()
         {

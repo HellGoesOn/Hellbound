@@ -14,6 +14,9 @@
 
         public bool TryRunScript(World world)
         {
+            if (condition == null)
+                return false;
+
             if (condition?.Invoke(world) == true) {
                 activated = true;
                 action?.Invoke(world);

@@ -20,8 +20,8 @@ namespace Casull.Core.ECS
 
                 var fc = entity.GetComponent<FollowingOther>();
 
-                if (fc.otherId != -1 && context.entities[fc.otherId] != null && context.entities[fc.otherId].enabled && context.entities[fc.otherId].HasComponent<Transform>())
-                    entity.GetComponent<Transform>().position = context.entities[fc.otherId].GetComponent<Transform>().position;
+                if (fc.otherId != -1 && context.GetById(fc.otherId) != null && context.GetById(fc.otherId).enabled && context.GetById(fc.otherId).HasComponent<Transform>())
+                    entity.GetComponent<Transform>().position = context.GetById(fc.otherId).GetComponent<Transform>().position;
                 else
                     fc.otherId = -1;
             }

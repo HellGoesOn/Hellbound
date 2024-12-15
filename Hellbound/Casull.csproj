@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <Platforms>AnyCPU;x64</Platforms>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,6 +31,7 @@
     <None Remove="Assets\Audio\Sounds\CutIn.wav" />
     <None Remove="Assets\Audio\Sounds\Death.wav" />
     <None Remove="Assets\Audio\Sounds\Dies.wav" />
+    <None Remove="Assets\Audio\Sounds\Heal.wav" />
     <None Remove="Assets\Audio\Sounds\LvlUp.wav" />
     <None Remove="Assets\Audio\Sounds\MeepMerp.wav" />
     <None Remove="Assets\Audio\Sounds\NomNomNom.wav" />

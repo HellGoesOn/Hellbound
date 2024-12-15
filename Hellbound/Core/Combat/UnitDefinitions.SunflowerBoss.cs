@@ -42,8 +42,6 @@ namespace Casull.Core.Combat
                 new(0, 0, frame, frame),
                 new(0, 0, frame, frame),
                 new(0, 0, frame, frame),
-                new(0, 0, frame, frame),
-                new(0, 0, frame, frame),
                 new(0, frame, frame, frame),
                 new(0, frame * 2, frame, frame),
                 ]

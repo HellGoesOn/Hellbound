@@ -5,8 +5,6 @@ namespace Casull.Core.Combat.Abilities
 {
     public class BasicAttack : Ability
     {
-        public int baseDamage;
-
         public BasicAttack() : base("Basic Attack", "Light Phys damage to 1 foe.")
         {
             baseDamage = 25;

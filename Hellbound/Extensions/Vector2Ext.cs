@@ -19,6 +19,8 @@ namespace Casull.Extensions
             return new Vector2((int)MathF.Round(v.X), (int)MathF.Round(v.Y));
         }
 
+        public static Vector2 Floor(this Vector2 v) => new Vector2(MathF.Floor(v.X), MathF.Floor(v.Y));
+
         public static Vector2 SafeNormalize(this Vector2 v, Vector2 defaultValue = default)
         {
             if (v == Vector2.Zero || float.IsNaN(v.X) || float.IsNaN(v.Y))

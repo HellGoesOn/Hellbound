@@ -9,6 +9,8 @@ namespace Casull.Core.UI.CombatUI
 {
     public class CombatUIState : UIState
     {
+        public int tutorialProgress;
+ 
         private float acceleration;
 
         public bool isRunning;
@@ -39,6 +41,13 @@ namespace Casull.Core.UI.CombatUI
 
         public List<UIProgressBar> enemyHPBars = [];
         public List<UIBorderedText> enemyHPTexts = [];
+
+        public readonly List<string[]> tutorialCombatOptions = new(){
+            { ["Attack"] },
+            { ["Guard"] },
+            { ["Attack", "Guard"] },
+            { ["Item"] },
+        };
 
         public CombatUIState()
         {

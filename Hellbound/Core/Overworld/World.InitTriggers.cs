@@ -2,6 +2,7 @@
 using Casull.Core.DialogueSystem;
 using Casull.Core.ECS;
 using Casull.Core.ECS.Components;
+using Casull.Render;
 using Microsoft.Xna.Framework;
 
 namespace Casull.Core.Overworld
@@ -86,7 +87,7 @@ namespace Casull.Core.Overworld
                             text = "Touche. Alright I am in",
                             title = "Wolfie",
                             onPageEnd = (dial) => {
-                                var e = Main.instance.ActiveWorld.context.entities.First(x=>x.enabled && x.HasComponent<TextureComponent>() && x.GetComponent<TextureComponent>().textureName == "WhatDaDogDoin2");
+                                var e = Main.instance.ActiveWorld.context.GetAllEntities().First(x=>x.enabled && x.HasComponent<TextureComponent>() && x.GetComponent<TextureComponent>().textureName == "WhatDaDogDoin2");
                                 if (e != null)
                                     Main.instance.ActiveWorld.context.Destroy(e);
                                 GlobalPlayer.AddPartyMember(UnitDefinitions.Get("Dog"));
@@ -111,7 +112,7 @@ namespace Casull.Core.Overworld
             };
             triggerSunflower.condition = (w) => false;
             triggerSunflower.action = (w) => {
-                var entity = w.context.entities.FirstOrDefault(x => x.HasComponent<Tags>() && x.GetComponent<Tags>().Has("Sunflower"));
+                var entity = w.context.GetAllEntities().FirstOrDefault(x => x.HasComponent<Tags>() && x.GetComponent<Tags>().Has("Sunflower"));
 
                 if(entity != null) {
                     entity.AddComponent(new CameraMarker());
@@ -120,6 +121,9 @@ namespace Casull.Core.Overworld
                         var anim = entity.GetComponent<NewAnimationComponent>();
 
                         anim.currentAnimation = "Transformation";
+                        Main.instance.GetGameState().GetCamera().SetZoomTarget(6);
+                        SoundEngine.SetTargetMusicVolume(0.0f);
+                        SoundEngine.hiddenMusicVolumeSpeed = 0.01f;
                     }
                 }
             };
@@ -137,7 +141,7 @@ namespace Casull.Core.Overworld
                 }
                     
 
-                var e = w.context.entities.FirstOrDefault(x => x != null && x.enabled && x.HasComponent<Tags>() && x.GetComponent<Tags>().Has("Sunflower") && x.HasComponent<NewAnimationComponent>());
+                var e = w.context.GetAllEntities().FirstOrDefault(x => x != null && x.enabled && x.HasComponent<Tags>() && x.GetComponent<Tags>().Has("Sunflower") && x.HasComponent<NewAnimationComponent>());
 
                 if (e != null) {
                     var anim = e.GetComponent<NewAnimationComponent>();
@@ -151,8 +155,8 @@ namespace Casull.Core.Overworld
 
             sunflowerFight.action = (w) => {
 
-                var player = w.context.entities.FirstOrDefault(x => x.HasComponent<PlayerMarker>());
-                var sunflower = w.context.entities.FirstOrDefault(x => x.HasComponent<Tags>() && x.GetComponent<Tags>().Has("BossFight"));
+                var player = w.context.GetAllEntities().FirstOrDefault(x => x.HasComponent<PlayerMarker>());
+                var sunflower = w.context.GetAllEntities().FirstOrDefault(x => x.HasComponent<Tags>() && x.GetComponent<Tags>().Has("BossFight"));
                 if (player != null && sunflower != null) {
                     sunflower.GetComponent<Transform>().position = player.GetComponent<Transform>().position;
                 }
@@ -161,6 +165,166 @@ namespace Casull.Core.Overworld
 
             triggers.Add(triggerSunflower);
             triggers.Add(sunflowerFight);
+
+            var makeRun = AddTrigger("forceRun");
+            makeRun.repeatadble = false;
+
+            makeRun.action = (sender) => {
+
+                var entity = sender.context.GetAllEntities().FirstOrDefault(x => x != null && x.GetComponent<Tags>().Has("Player"));
+
+                if (entity != null) {
+                    var cutscene = new Cutscene();
+
+                    var diag = new Dialogue();
+                    var page1 = new DialoguePage() {
+                        text = "Welp..",
+                        title = GlobalPlayer.ActiveParty[0].name,
+                        portraits = [new("EndLife", new FrameData(0, 32, 32, 32))
+                        {
+                            scale = new Vector2(10)
+                        }]
+                    };
+                    var page2 = new DialoguePage() {
+                        text = "I have officially got myself lost..",
+                        title = GlobalPlayer.ActiveParty[0].name,
+                        portraits = [new("EndLife", new FrameData(0, 0, 32, 32))
+                        {
+                            scale = new Vector2(10)
+                        }]
+                    };
+                    var page3 = new DialoguePage() {
+                        text = "Its.. No-no-no, its--its all fine all good yeah..",
+                        title = GlobalPlayer.ActiveParty[0].name,
+                        portraits = [new("EndLife", new FrameData(0, 32, 32, 32))
+                        {
+                            scale = new Vector2(-10, 10)
+                        }]
+                    };
+                    var page4 = new DialoguePage() {
+                        text = "FUCK!",
+                        textColor = Color.Red,
+                        textScale = new Vector2(4),
+                        title = GlobalPlayer.ActiveParty[0].name,
+                        portraits = [new("Dumbass_Jump", new FrameData(0, 32, 32, 32))
+                        {
+                            scale = new Vector2(10, 10)
+                        }],
+                    }; 
+                    var page5 = new DialoguePage() {
+                        text = "God fucking damn it..",
+                        textColor = Color.Red,
+                        title = GlobalPlayer.ActiveParty[0].name,
+                        portraits = [new("Dumbass_Facepalm", new FrameData(0, 32, 32, 32))
+                        {
+                            scale = new Vector2(10, 10)
+                        }],
+                    }; 
+                    var page6 = new DialoguePage() {
+                        text = "I guess I'll just keep going on and eventually end up somewhere",
+                        textColor = Color.White,
+                        title = GlobalPlayer.ActiveParty[0].name,
+                        portraits = [new("Dumbass_Facepalm", new FrameData(0, 32, 32, 32))
+                        {
+                            scale = new Vector2(10, 10)
+                        }],
+                    };
+                    var page7 = new DialoguePage() {
+                        text = "Not the best plan I could have, but its the only one I get..",
+                        textColor = Color.White,
+                        title = GlobalPlayer.ActiveParty[0].name,
+                        portraits = [new("EndLife", new FrameData(0, 32, 32, 32))
+                        {
+                            scale = new Vector2(10, 10)
+                        }],
+                    };
+                    var page8 = new DialoguePage() {
+                        text = "..this day couldn't get any worse",
+                        textColor = Color.White,
+                        title = GlobalPlayer.ActiveParty[0].name,
+                        portraits = [new("EndLife", new FrameData(0, 0, 32, 32))
+                        {
+                            scale = new Vector2(10, 10)
+                        }],
+                    };
+                    diag.pages.AddRange(
+                        [
+                            page1,
+                            page2,
+                            page3,
+                            page4,
+                            page5,
+                            page6,
+                            page7,
+                            page8
+                        ]);
+                    cutscene.BeginTransition(new BlackFadeInFadeOut(Renderer.SaveFrame()));
+                    cutscene.Add(new SetPosition(entity, new Vector2(5 * 32, 14 * 32-10)));
+                    cutscene.Add(new SetComponent(entity, new PlayerMarker() { preserveSpeed = true}));
+                    cutscene.SetFollowing(entity, 1);
+                    cutscene.Add(new SetComponent(entity, new Velocity(1f, 0)));
+                    cutscene.Add(new Timer(180));
+                    cutscene.Add(new SetComponent(entity, new PlayerMarker() { preserveSpeed = false }));
+                    cutscene.Add(new StartDialogue(diag));
+                    cutscene.Add(new SpawnEntityFromPrefab(Main.instance.ActiveWorld.context, "Slime", new Vector2(18 * 32, 14 * 32 - 10), out var e));
+                    cutscene.Add(new FireAction(() => {
+                        e.GetComponent<TextureComponent>().scale = new Vector2(-1, 1);
+                    }));
+                    cutscene.SetFollowing(e, 0.05f);
+                    cutscene.Add(new SetComponent(e, new Velocity(-0.5f, 0)));
+                    cutscene.Add(new Timer(120));
+                    cutscene.Add(new SetComponent(e, new Velocity(0, 0)));
+                    cutscene.Add(new Timer(60));
+                    cutscene.SetFollowing(entity, 0.1f);
+
+                    var rage1 = new DialoguePage() {
+                        text = "Oh, would you look at that!",
+                        textColor = Color.White,
+                        title = GlobalPlayer.ActiveParty[0].name,
+                        portraits = [new("EndLife", new FrameData(0, 0, 32, 32))
+                        {
+                            scale = new Vector2(10, 10)
+                        }]
+                        }; 
+                    var rage2 = new DialoguePage() {
+                            text = "A punching bag to take out my UNYIELDING RAGE on",
+                            textColor = Color.Yellow,
+                            textScale = new Vector2(2),
+                            title = GlobalPlayer.ActiveParty[0].name,
+                            portraits = [new("EndLife", new FrameData(0, 0, 32, 32))
+                        {
+                            scale = new Vector2(10, 10)
+                        }]
+                        };
+                    var rage3 = new DialoguePage() {
+                        text = "GET YOUR SLIMY ASS OVER HERE, YOU CUNT",
+                        textColor = Color.Red,
+                        textScale = new Vector2(2),
+                        title = GlobalPlayer.ActiveParty[0].name,
+                        portraits = [new("EndLife", new FrameData(0, 0, 32, 32))
+                        {
+                            scale = new Vector2(10, 10)
+                        }]
+                    };
+                    cutscene.Add(new StartDialogue(new() {
+                        pages =
+                        [
+                            rage1, rage2, rage3
+                        ]
+                    }));
+                    cutscene.Add(new SetComponent(entity, new Velocity(2, 0)));
+                    cutscene.Add(new SetComponent(e, new Velocity(0.5f, 0)));
+                    cutscene.Add(new FireAction(() => {
+                        e.GetComponent<TextureComponent>().scale = new Vector2(1, 1);
+                    }));
+                    cutscene.Add(new SetComponent(entity, new PlayerMarker() { preserveSpeed = true }));
+                    cutscene.Add(new Timer(160));
+                    cutscene.Add(new SetComponent(entity, new PlayerMarker() { preserveSpeed = false }));
+
+
+                    StartCutscene(cutscene);
+                }
+            };
         }
     }
 }

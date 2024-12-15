@@ -45,7 +45,7 @@ namespace Casull.Core.Combat.Sequencer
 
             int rng = battle.rand.Next(101);
 
-            if (rng > finalAccuracy) {
+            if (rng > finalAccuracy && type != ElementalType.DoT) {
                 dealtDamage = false;
                 damageNumber = new(DamageType.Normal, "MISS", target.position);
                 battle?.damageNumbers.Add(damageNumber);

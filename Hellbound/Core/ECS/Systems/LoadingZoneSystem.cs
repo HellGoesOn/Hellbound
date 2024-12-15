@@ -24,7 +24,7 @@ namespace Casull.Core.ECS
 
                 var gameState = Main.instance.GetGameState();
 
-                if (!context.entities[playerId.otherId].HasComponent<PlayerMarker>())
+                if (context.GetById(playerId.otherId) != null && !context.GetById(playerId.otherId).HasComponent<PlayerMarker>())
                     continue;
 
                 if (gameState is World world) {
@@ -35,7 +35,7 @@ namespace Casull.Core.ECS
                     Main.instance.transitions.Add(new BlackFadeInFadeOut(Renderer.SaveFrame(true)));
                     Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes", id.nextZone);
 
-                    var player = Main.instance.ActiveWorld.context.entities.FirstOrDefault(x=> x.HasComponent<PlayerMarker>());
+                    var player = Main.instance.ActiveWorld.context.GetAllEntities().FirstOrDefault(x=> x.HasComponent<PlayerMarker>());
 
                     if (player != null) {
                         var trans = player.GetComponent<Transform>();

@@ -36,7 +36,7 @@ namespace Casull
             context = new Context();
             systems = new Systems();
             GetCamera().centre = new Vector2(160, 90);
-            GetCamera().zoom = 4f;
+            GetCamera().Zoom = 4f;
 
             bladeRunner = context.CopyFrom(EntitySaver.Load("\\Content\\Prefabs\\", "Dumbass"));
             systems.AddSystem(new NewAnimationSystem(context));
