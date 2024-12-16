@@ -147,6 +147,8 @@ namespace Casull
             //    dialogue.pages.AddRange(pages);
 
             ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", "Forest3");
+
+            lastTransitionPosition = ActiveWorld.context.GetAllEntities().FirstOrDefault(x => x.GetComponent<Tags>().Has("Player")).GetComponent<Transform>().position;
         }
 
         internal void StartBattle(bool onStone = false)

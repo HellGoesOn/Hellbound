@@ -1,6 +1,8 @@
 ﻿using Casull.Core.Combat.Abilities;
 using Casull.Core.Combat.Abilities.Fire;
+using Casull.Core.Combat.Abilities.Phys;
 using Casull.Core.Combat.Abilities.Wind;
+using Casull.Core.Combat.AI;
 using Casull.Core.Combat.Items.Consumables;
 using Microsoft.Xna.Framework;
 
@@ -14,6 +16,46 @@ namespace Casull.Core.Combat
             Unit placeHolder = DefineUnit("Dud");
             placeHolder.Stats.HP = 0;
             placeHolder.Stats.value = 0;
+
+            Unit bird = DefineUnit("Bird");
+            bird.sprite = "Chimken";
+            bird.name = "Eagle";
+            bird.Stats.MaxHP = 32;
+            bird.ai = new SequentialAI();
+            bird.abilities.AddRange([new Garu() {
+                spCost = 0,
+                baseDamage = 8
+            }, new BasicAttack()
+            {
+                Name = "Peck",
+                baseDamage = 8
+            }]);
+            bird.resistances[ElementalType.Fire] = -0.5f;
+
+            var birdAnim = new SpriteAnimation("Chimken", [new(0, 0, 32, 32)]);
+            birdAnim.onAnimationPlay = (sender, unit) => {
+                unit.position.Y += (float)Math.Cos(Main.totalTime*3);
+            }; 
+            
+            var birdBasicAttack = new SpriteAnimation("Chimken", [new(0, 0, 32, 32), new(0, 0, 32, 32), new(0, 0, 32, 32), new(0, 0, 32, 32), new(0, 0, 32, 32)]);
+            birdBasicAttack.timePerFrame = 20;
+            birdBasicAttack.looping = false;
+            birdBasicAttack.nextAnimation = "Idle";
+            birdBasicAttack.onAnimationPlay = (sender, unit) => {
+                if (sender.currentFrame == 0) {
+                    unit.position.Y -= 2f;
+                    unit.position.X -= Math.Sign(unit.scale.X) * 2f;
+                    return;
+                }
+                if (sender.currentFrame != sender.FrameCount) {
+                    unit.position.Y += 2f;
+                    unit.position.X += Math.Sign(unit.scale.X) * 4f;
+                }
+            };
+
+            bird.defaultAnimation = "Idle";
+            bird.animations.Add("Idle", birdAnim);
+            bird.animations.Add("BasicAttack", birdBasicAttack);
 
             Unit protag = DefineUnit("Doorkun");
             protag.name = "Doorkun";

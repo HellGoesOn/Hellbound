@@ -104,11 +104,12 @@ namespace Casull.Render
         public class BorderedText : IMarkdownTextDrawer
         {
             public Color borderColor = Color.Black;
+            public float opacity;
 
             public void Draw(SpriteFont font, string text,  Vector2 pos, Color clr, float rot, Vector2 orig, Vector2 scale, SpriteEffects sfx, float depth)
             {
                 var sb = Main.instance.spriteBatch;
-                sb.DrawBorderedString(font, text, pos, clr, borderColor, rot, orig, scale, sfx, depth);
+                sb.DrawBorderedString(font, text, pos, clr * opacity, borderColor * opacity, rot, orig, scale, sfx, depth);
             }
         }
 

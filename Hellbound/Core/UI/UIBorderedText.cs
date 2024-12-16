@@ -26,6 +26,8 @@ namespace Casull.Core.UI
         public Color color = Color.White;
         public Color borderColor = Color.Black;
 
+        public float opacity = 1.0f;
+
         public int lineBreak = -1;
 
         MarkdownText myText;
@@ -43,6 +45,7 @@ namespace Casull.Core.UI
                 myTextDrawer.borderColor = borderColor;
             }
             myTextDrawer.borderColor = borderColor;
+            myTextDrawer.opacity = opacity;
         }
 
         public override void OnDraw(SpriteBatch spriteBatch)
@@ -55,7 +58,7 @@ namespace Casull.Core.UI
             }
 
             if (firstSplit) {
-                myText.Draw(myTextDrawer, GetPosition(), font, Rotation, origin, color, scale);
+                myText.Draw(myTextDrawer, GetPosition(), font, Rotation, origin, color * opacity, scale);
                 //Renderer.DrawBorderedString(spriteBatch, font, brokenText, GetPosition(), color, borderColor, Rotation, origin, scale, SpriteEffects.None, 0);
             }
         }

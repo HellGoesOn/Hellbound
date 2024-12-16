@@ -245,7 +245,7 @@ namespace Casull.Core.Combat
                 var skillIssue = new UIPanel();
                 skillIssue.size = new Vector2(Renderer.UIPreferedWidth, Renderer.UIPreferedHeight);
 
-                var wowYouSuck = new UIBorderedText("Damn.. You actually suck..");
+                var wowYouSuck = new UIBorderedText("GAME OVER");
                 wowYouSuck.SetPosition(new Vector2(Renderer.UIPreferedWidth, Renderer.UIPreferedHeight) * 0.5f - wowYouSuck.font.MeasureString(wowYouSuck.text) * 0.5f);
                 wowYouSuck.color = Color.White * 0;
                 wowYouSuck.borderColor = Color.White * 0;
@@ -253,7 +253,7 @@ namespace Casull.Core.Combat
                 skillIssue.fillColor = Color.White * 0f;
 
 
-                var wowYouSuck2 = new UIBorderedText("Have you tried, like, opening your eyes maybe?");
+                var wowYouSuck2 = new UIBorderedText("Try grinding or changing your strategy.");
                 wowYouSuck2.SetPosition(new Vector2(Renderer.UIPreferedWidth, Renderer.UIPreferedHeight) * 0.5f - wowYouSuck.font.MeasureString(wowYouSuck2.text) * 0.5f + new Vector2(0, 40));
                 wowYouSuck2.color = Color.White * 0;
                 wowYouSuck2.borderColor = Color.White * 0;
@@ -267,7 +267,7 @@ namespace Casull.Core.Combat
                         wowYouSuck2.borderColor = Color.Lerp(wowYouSuck2.borderColor, Color.Black, 0.026f);
                     }
 
-                    if (timer >= 240) {
+                    if (timer >= 360) {
                         if (!showedRestartOptions) {
                             showedRestartOptions = true;
                             GameStateManager.SetState(GameState.Overworld, new BlackFadeInFadeOut(Renderer.SaveFrame(true)));

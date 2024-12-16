@@ -1,4 +1,5 @@
-﻿using Casull.Render;
+﻿using Casull.Core.UI;
+using Casull.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -97,8 +98,8 @@ namespace Casull
 
         public static Vector2 Adjustment {
             get {
-                var mx = Main.instance.gdm.PreferredBackBufferWidth / Renderer.PreferedWidth;
-                var my = Main.instance.gdm.PreferredBackBufferHeight / Renderer.PreferedHeight;
+                var mx = Renderer.PreferedWidth / (float)Main.instance.gdm.PreferredBackBufferWidth;
+                var my = Renderer.PreferedHeight / (float)Main.instance.gdm.PreferredBackBufferHeight;
                 return new Vector2(mx, my);
             }
         }
@@ -106,9 +107,9 @@ namespace Casull
         public static Vector2 MousePosition {
             get {
                 MouseState state = Mouse.GetState();
-                var adjusted = new Vector2(state.X, state.Y);
                 var gameState = Main.instance.GetGameState();
                 var cam = gameState.GetCamera();
+                var adjusted = new Vector2(state.X, state.Y) * Adjustment;
                 Vector2 v = Vector2.Transform(adjusted, cam.Inverse);
                 return v;
             }

@@ -309,6 +309,18 @@ namespace Casull.Core.Overworld
                 StartCutscene(cutscene);
 
             };
+
+            var pizza = AddTrigger("pizza");
+
+            pizza.condition = (sender) => false;
+
+            pizza.action = (sender) => {
+
+                GlobalPlayer.AddItem(new InfinitePizza());
+                SoundEngine.PlaySound("Pickup", 1f);
+                RaiseFlag("pizza");
+
+            };
         }
     }
 }

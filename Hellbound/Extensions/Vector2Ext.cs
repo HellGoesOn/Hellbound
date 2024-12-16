@@ -28,6 +28,16 @@ namespace Casull.Extensions
 
             return Vector2.Normalize(v);
         }
+
+        public static float ToRotation(this Vector2 v) => (float)Math.Atan2(v.Y, v.X);
+
+        public static Vector2 RotateBy(this Vector2 v, float rotation)
+        {
+            float xx = v.X * (float)Math.Cos(rotation) - v.Y * (float)Math.Sin(rotation);
+            float yy = v.X * (float)Math.Sin(rotation) + v.Y * (float)Math.Cos(rotation);
+
+            return new Vector2(xx, yy);
+        }
     }
 
 }

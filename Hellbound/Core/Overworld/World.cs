@@ -51,6 +51,7 @@ namespace Casull.Core.Overworld
             systems.AddSystem(new TileCollisionSystem(context));
             systems.AddSystem(new DDDSystem(context));
             systems.AddSystem(new ShitCollisionSystem(context));
+            systems.AddSystem(new InteractionSystem(context));
             systems.AddSystem(new TripWireSystem(context));
             systems.AddSystem(new LoadingZoneSystem(context));
             systems.AddSystem(new CreateBattleOnContactSystem(context));

@@ -27,6 +27,7 @@
     <None Remove="Assets\Audio\Music\ChangingSeasons.ogg" />
     <None Remove="Assets\Audio\Music\School Days.ogg" />
     <None Remove="Assets\Audio\Music\Victory.ogg" />
+    <None Remove="Assets\Audio\Sounds\AKShot.wav" />
     <None Remove="Assets\Audio\Sounds\Begin.wav" />
     <None Remove="Assets\Audio\Sounds\CutIn.wav" />
     <None Remove="Assets\Audio\Sounds\Death.wav" />
@@ -35,6 +36,7 @@
     <None Remove="Assets\Audio\Sounds\LvlUp.wav" />
     <None Remove="Assets\Audio\Sounds\MeepMerp.wav" />
     <None Remove="Assets\Audio\Sounds\NomNomNom.wav" />
+    <None Remove="Assets\Audio\Sounds\Pickup.wav" />
     <None Remove="Assets\Audio\Sounds\senzu.wav" />
     <None Remove="Assets\Audio\Sounds\SolarFlare.wav" />
     <None Remove="Assets\Audio\Sounds\WhatDaDogDoin.wav" />

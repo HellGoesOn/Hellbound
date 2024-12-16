@@ -33,11 +33,7 @@ namespace Casull.Core.ECS
         public T GetComponent<T>() where T : IComponent
         {
             int id = Context.ComponentId[typeof(T)];
-            if (HasComponent<T>()) {
-                return (T)_components[id];
-            }
-
-            throw new Exception($"{this} does not contain {typeof(T)}");
+            return (T)_components[id];
         }
 
         public bool HasComponent<T>()

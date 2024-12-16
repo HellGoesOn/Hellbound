@@ -17,6 +17,9 @@ namespace Casull.Core.Overworld
         public UIScrollableMenu optionMenu;
         UIAnimatedPanel blackBarTop;
         UIAnimatedPanel blackBarBot;
+        public UIBorderedText interactText;
+
+        public float interactTextOpacityTarget = 0.0f;
 
         public int lastTarget;
 
@@ -24,6 +27,13 @@ namespace Casull.Core.Overworld
         {
             //debugText = new("");
             //Append(debugText);
+
+            interactText = new UIBorderedText("Press <ffff00/[E]> to Interact");
+            interactText.SetPosition(Renderer.ScreenMiddle + new Vector2(0, 200)-(interactText.font.MeasureString("Press [E] to Interact") * 0.5f));
+            interactText.opacity = 0.0f;
+
+            Append(interactText);
+
 
             blackBarTop = new UIAnimatedPanel(new Vector2(Renderer.UIPreferedWidth, 160));
             blackBarTop.SetPosition(0, -80);
@@ -49,6 +59,14 @@ namespace Casull.Core.Overworld
 
         public override void Update()
         {
+            if (interactText.opacity != interactTextOpacityTarget) {
+                interactText.opacity += 0.1f * Math.Sign((interactTextOpacityTarget - interactText.opacity));
+
+                if (Math.Abs(interactTextOpacityTarget - interactText.opacity) <= 0.1f) {
+                    interactText.opacity = interactTextOpacityTarget;
+                }
+            }
+
             base.Update();
 
             if (Input.PressedKey(Keys.Escape) && optionMenu == null && Main.instance.GetGameState() is World && World.cutscenes.Count <= 0) {

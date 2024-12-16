@@ -31,13 +31,18 @@ namespace Casull.Core.ECS
 
                     if (firstBox.radius > 0) {
                         if (Vector2.Distance(firstTransform.position, secondTransform.position) <= firstBox.radius) {
-                            firstBox.CollidedWith.Add(secondEntity.id);
-                            secondBox.CollidedWith.Add(firstEntity.id);
+                            if(!firstBox.CollidedWith.Contains(secondEntity.id))
+                                firstBox.CollidedWith.Add(secondEntity.id);
+                            if (!secondBox.CollidedWith.Contains(firstEntity.id))
+                                secondBox.CollidedWith.Add(firstEntity.id);
                         }
                     }
                     else if (CheckCollision(firstTransform.position - firstBox.origin, firstBox, secondTransform.position - secondBox.origin, secondBox)) {
-                        firstBox.CollidedWith.Add(secondEntity.id);
-                        secondBox.CollidedWith.Add(firstEntity.id);
+
+                        if (!firstBox.CollidedWith.Contains(secondEntity.id))
+                            firstBox.CollidedWith.Add(secondEntity.id);
+                        if (!secondBox.CollidedWith.Contains(firstEntity.id))
+                            secondBox.CollidedWith.Add(firstEntity.id);
                     }
                 }
             }

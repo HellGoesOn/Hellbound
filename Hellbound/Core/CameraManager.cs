@@ -13,7 +13,6 @@ namespace Casull.Core
         public static Camera overworldCamera;
         public static Camera mainMenuCamera;
 
-
         public static List<Camera> cameras = new();
 
         public static void Initialize()

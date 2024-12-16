@@ -64,7 +64,7 @@ namespace Casull.Core
         public void Draw(SpriteBatch spriteBatch, Vector2 scale = default, bool asSolid = false)
         {
             if (scale == default)
-                scale = Vector2.One;
+                scale = this.scale;
 
             Texture2D tex = Assets.GetTexture(texture);
             Vector2 origin = new Vector2(frameData[currentFrame].width, frameData[0].height) * 0.5f;
