@@ -277,6 +277,7 @@ namespace Casull
                 StartBattle();
             }
 
+#if DEBUG
             if (Input.PressedKey(Keys.F3)) {
                 GameOptions.ResolutionMultiplier++;
                 gdm.PreferredBackBufferWidth = GameOptions.ScreenWidth;
@@ -289,7 +290,7 @@ namespace Casull
                 gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
                 gdm.ApplyChanges();
             }
-
+#endif
             GlobalPlayer.Update();
             UIManager.Update();
             Input.Update();
@@ -310,6 +311,7 @@ namespace Casull
         }
 
         bool onceAndNeverAgain;
+
         protected override void Draw(GameTime gameTime)
         {
             // Render stuff in here. Do NOT run game logic in here!

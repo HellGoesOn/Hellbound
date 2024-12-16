@@ -44,7 +44,7 @@ namespace Casull.Core.Editor
                     size = new Vector2(32),
                     capturesMouse = true
                 };
-                numPanel.SetPosition(new Vector2(34 + 34 * i, Renderer.UIPreferedHeight - 34));
+                numPanel.SetPosition(new Vector2(Renderer.PreferedWidth - numPanel.size.X * 6 + numPanel.size.X * i, 0));
 
                 numPanel.onClick = (sender) => {
                     lastPanel = selectedPanel;

@@ -10,7 +10,7 @@ namespace Casull.Core.ECS
         readonly Group<Entity> _group;
         public LoadingZoneSystem(Context context)
         {
-            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(LoadingZone), typeof(HasCollidedMarker)));
+            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(LoadingZone), typeof(CollisionBox)));
         }
 
         public void Execute(Context context)
@@ -20,34 +20,41 @@ namespace Casull.Core.ECS
             for (int i = 0; i < entities.Count; i++) {
                 var entity = entities[i];
                 var id = entity.GetComponent<LoadingZone>();
-                var playerId = entity.GetComponent<HasCollidedMarker>();
 
                 var gameState = Main.instance.GetGameState();
 
-                if (context.GetById(playerId.otherId) != null && !context.GetById(playerId.otherId).HasComponent<PlayerMarker>())
-                    continue;
+                var myBox = entity.GetComponent<CollisionBox>();
 
-                if (gameState is World world) {
-                    var dir = id.direction;
-                    if (dir == Vector2.Zero)
-                        dir = Vector2.UnitY;
+                foreach (int playerId in myBox.CollidedWith) {
 
-                    Main.instance.transitions.Add(new BlackFadeInFadeOut(Renderer.SaveFrame(true)));
-                    Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes", id.nextZone);
 
-                    var player = Main.instance.ActiveWorld.context.GetAllEntities().FirstOrDefault(x=> x.HasComponent<PlayerMarker>());
+                    if (context.GetById(playerId) != null && !context.GetById(playerId).HasComponent<PlayerMarker>())
+                        continue;
 
-                    if (player != null) {
-                        var trans = player.GetComponent<Transform>();
-                        if (id.newPosition != default) {
-                            trans.position = id.newPosition;
+                    if (gameState is World world) {
+                        var dir = id.direction;
+                        if (dir == Vector2.Zero)
+                            dir = Vector2.UnitY;
+
+                        Main.instance.transitions.Add(new BlackFadeInFadeOut(Renderer.SaveFrame(true)));
+                        Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes", id.nextZone);
+
+                        var player = Main.instance.ActiveWorld.context.GetAllEntities().FirstOrDefault(x => x.HasComponent<PlayerMarker>());
+
+                        if (player != null) {
+                            var trans = player.GetComponent<Transform>();
+                            var tex = player.GetComponent<TextureComponent>();
+                            if (id.newPosition != default) {
+                                trans.position = id.newPosition;
+                                tex.scale.X = id.direction.X;
+                            }
+
+                            Main.instance.ActiveWorld.GetCamera().centre = trans.position;
+                            Main.lastTransitionPosition = trans.position;
                         }
+                        break;
 
-                        Main.instance.ActiveWorld.GetCamera().centre = trans.position;
-                        Main.lastTransitionPosition = trans.position;
                     }
-                    break;
-
                 }
             }
         }

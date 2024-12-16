@@ -149,7 +149,7 @@ namespace Casull.Core.Combat
             sunFlower.defaultAnimation = "Idle";
             sunFlower.size = new Vector2(48, 48);
 
-            sunFlower.Stats.MaxHP = 1500;
+            sunFlower.Stats.MaxHP = 2500;
             sunFlower.Stats.MaxSP = 150;
             sunFlower.Stats.value = 500;
             sunFlower.Stats.speed = 15;

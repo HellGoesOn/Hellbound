@@ -2,11 +2,11 @@
 
 namespace Casull.Core.Combat.Items.Consumables
 {
-    public class FireGem : Item
+    public class Lighter : Item
     {
-        public FireGem() : base("Fire Gem", "Casts Agi on a single enemy target.")
+        public Lighter() : base("Lighter", "Does minor fire to a single enemy target.")
         {
-            icon = "FireGem";
+            icon = "Lighter";
             frames = [new FrameData(0, 0, 32, 32)];
             consumable = true;
             iconScale *= 3;
@@ -18,7 +18,8 @@ namespace Casull.Core.Combat.Items.Consumables
         {
             new Agi() {
                 hpCost = 0,
-                spCost = 0
+                spCost = 0,
+                accuracy = 600
             }.Use(caster, battle, targets, true);
         }
     }

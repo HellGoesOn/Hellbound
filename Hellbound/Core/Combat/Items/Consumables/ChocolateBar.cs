@@ -8,7 +8,7 @@ namespace Casull.Core.Combat.Items.Consumables
 {
     public class ChocolateBar : Item
     {
-        public ChocolateBar() : base("Chocolate Bar", "Tasty snack\n\n\"Chocholate?? CHOCHOLATE?! CHOCHOLATE!!!\"\n\nRestores 15 HP")
+        public ChocolateBar() : base("Chocolate Bar", "Tasty snack\n\n\"Chocholate?? CHOCHOLATE?! CHOCHOLATE!!!\"\n\nRestores 50 HP")
         {
             icon = "ChocolateBar";
             frames = [new FrameData(0, 0, 32, 32)];
@@ -50,7 +50,7 @@ namespace Casull.Core.Combat.Items.Consumables
             }
             else {
                 SoundEngine.PlaySound("Heal", 0.75f);
-                caster.Stats.HP = Math.Clamp(caster.Stats.HP + 15, 0, caster.Stats.MaxHP);
+                caster.Stats.HP = Math.Clamp(caster.Stats.HP + 50, 0, caster.Stats.MaxHP);
             }
         }
     }

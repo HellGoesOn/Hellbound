@@ -23,11 +23,6 @@ namespace Casull.Core.UI.CombatUI
 
         public Vector2 basePosition;
 
-        public UIBorderedText skillDescription;
-        public UIBorderedText skillCost;
-        public UIPanel skillPanel;
-        //public UIBorderedText debug;
-
         public UIPanel teamStatus;
         public UIBorderedText teamNamesText;
         public UIBorderedText teamHPText;
@@ -44,9 +39,10 @@ namespace Casull.Core.UI.CombatUI
 
         public readonly List<string[]> tutorialCombatOptions = new(){
             { ["Attack"] },
-            { ["Guard"] },
-            { ["Attack", "Guard"] },
             { ["Item"] },
+            { ["Attack", "Item"] },
+            { ["Guard"] },
+            { ["Attack", "Guard"] }
         };
 
         public CombatUIState()
@@ -97,18 +93,6 @@ namespace Casull.Core.UI.CombatUI
             //    Position = new Vector2(16)
             //};
 
-            skillPanel = new UIPanel() {
-                size = new Vector2(400, 140),
-            };
-            skillPanel.SetPosition(16, Renderer.UIPreferedHeight - 150);
-
-            skillDescription = new UIBorderedText("");
-            skillCost = new UIBorderedText("");
-            skillCost.SetPosition(new Vector2(12, 100));
-            skillDescription.SetPosition(new Vector2(12));
-            skillPanel.Append(skillDescription);
-            skillPanel.Append(skillCost);
-
             var panel = new UIPanel() {
                 size = new Vector2(Renderer.UIPreferedWidth - 8, 40),
             };
@@ -119,7 +103,6 @@ namespace Casull.Core.UI.CombatUI
             panel.Append(tutorialText);
 
             //this.Append(panel);
-            this.Append(skillPanel);
 
             acceleration = 1;
             const string text = "1 MORE";
@@ -267,8 +250,6 @@ namespace Casull.Core.UI.CombatUI
         public void DrawUI(SpriteBatch spriteBatch, Battle activeBattle)
         {
             Vector2 sway = new((float)Math.Sin(Main.totalTime), (float)Math.Cos(Main.totalTime));
-
-            skillPanel.Visible = activeBattle.menus.Count > 0 && !activeBattle.isPickingTarget;
 
             foreach (Unit unit in activeBattle.units) {
                 //    string buffs = "";

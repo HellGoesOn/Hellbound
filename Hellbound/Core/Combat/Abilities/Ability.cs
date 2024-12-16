@@ -6,7 +6,7 @@ namespace Casull.Core.Combat.Abilities
     public class Ability : ICanTarget
     {
         public string Name;
-        public string Description;
+        private string description;
         public bool aoe;
         public bool canUseOutOfCombat;
         public ValidTargets canTarget;
@@ -79,6 +79,31 @@ namespace Casull.Core.Combat.Abilities
         }
 
         public ValidTargets CanTarget() => canTarget;
+
+        public string GetHpCostString => $"<20b2aa/{hpCost} HP>";
+        public string GetSpCostString => $"<ff69b4/{spCost} SP>";
+
+        public string Description 
+            { 
+            get {
+
+                string[] hexValues = {
+                    "9c9792",
+                    "e3841e",
+                    "5cfffa",
+                    "f0da35",
+                    "18b50d"
+                };
+
+                var liarLiarPantsOnFire = description;
+                for (int i = 0; i < hexValues.Length; i++) {
+                    var name = Enum.GetName(typeof(ElementalType), i);
+                    liarLiarPantsOnFire = liarLiarPantsOnFire.Replace(name, $"<{hexValues[i]}/{name}>", StringComparison.OrdinalIgnoreCase);
+                }
+
+                return liarLiarPantsOnFire;
+            }
+            set => description = value; }
 
         public bool AoE() => aoe;
     }

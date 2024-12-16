@@ -5,7 +5,7 @@ namespace Casull.Core.Combat.Items
     public abstract class Item : ICanTarget
     {
         public string name;
-        public string description;
+        private string description;
         public string icon = "";
         public int count;
         public int maxCount = 99;
@@ -24,6 +24,28 @@ namespace Casull.Core.Combat.Items
 
         public ValidTargets canTarget = ValidTargets.Ally;
 
+        public string Description {
+            get {
+
+                string[] hexValues = {
+                    "9c9792",
+                    "e3841e",
+                    "5cfffa",
+                    "f0da35",
+                    "18b50d"
+                };
+
+                var liarLiarPantsOnFire = description;
+                for (int i = 0; i < hexValues.Length; i++) {
+                    var name = Enum.GetName(typeof(ElementalType), i);
+                    liarLiarPantsOnFire = liarLiarPantsOnFire.Replace(name, $"<{hexValues[i]}/{name}>", StringComparison.OrdinalIgnoreCase);
+                }
+
+                return liarLiarPantsOnFire;
+            }
+            set => description = value;
+        }
+
         public Item(string name, string description)
         {
             canUseOutOfBattle = true;
@@ -33,7 +55,7 @@ namespace Casull.Core.Combat.Items
             count = 1;
             frames = [];
             this.name = name;
-            this.description = description;
+            this.Description = description;
         }
 
         protected virtual void OnUse(Unit caster, Battle battle, List<Unit> targets)

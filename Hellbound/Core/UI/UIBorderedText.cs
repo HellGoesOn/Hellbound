@@ -28,28 +28,36 @@ namespace Casull.Core.UI
 
         public int lineBreak = -1;
 
+        MarkdownText myText;
+        Markdown.BorderedText myTextDrawer = new();
+
         public override void OnUpdate()
         {
             base.OnUpdate();
             if (text != oldText || !firstSplit) {
-                size = font.MeasureString(brokenText);
                 firstSplit = true;
                 oldText = text;
                 brokenText = text.Splice(lineBreak);
+                myText = brokenText;
+                size = font.MeasureString(brokenText);
+                myTextDrawer.borderColor = borderColor;
             }
+            myTextDrawer.borderColor = borderColor;
         }
 
         public override void OnDraw(SpriteBatch spriteBatch)
         {
             if (text != oldText || !firstSplit) {
-                size = font.MeasureString(brokenText);
                 firstSplit = true;
                 oldText = text;
-                brokenText = text.Splice(lineBreak);
+                myText = brokenText = text.Splice(lineBreak);
+                size = font.MeasureString(brokenText);
             }
 
-            if (firstSplit)
-                Renderer.DrawBorderedString(spriteBatch, font, brokenText, GetPosition(), color, borderColor, Rotation, origin, scale, SpriteEffects.None, 0);
+            if (firstSplit) {
+                myText.Draw(myTextDrawer, GetPosition(), font, Rotation, origin, color, scale);
+                //Renderer.DrawBorderedString(spriteBatch, font, brokenText, GetPosition(), color, borderColor, Rotation, origin, scale, SpriteEffects.None, 0);
+            }
         }
     }
 

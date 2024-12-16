@@ -1,0 +1,1116 @@
+[1000]
+[ 5 5 5 5 5 5 5 5 5 5 5 5 1 2 2 1 5 5 5 5 5 5 5 5 5 5 5 5 5 5 ]
+[ 5 5 5 5 5 5 5 5 5 4 4 4 1 2 2 1 4 4 4 5 5 5 5 5 5 5 5 5 5 5 ]
+[ 5 5 5 5 5 5 5 5 5 4 4 4 1 2 2 1 4 4 4 5 5 5 5 5 5 5 5 5 5 5 ]
+[ 5 5 5 5 5 5 4 4 4 4 4 4 1 2 2 1 4 4 4 4 4 4 5 5 5 5 5 5 5 5 ]
+[ 5 5 5 5 5 5 4 4 4 4 4 1 1 2 2 1 1 4 4 4 4 4 5 5 5 5 5 5 5 5 ]
+[ 5 5 5 5 5 4 4 1 1 1 1 1 1 2 2 1 1 1 1 1 1 4 5 5 5 5 5 5 5 5 ]
+[ 4 4 4 4 4 4 4 1 1 4 1 1 1 1 1 1 1 1 4 1 1 4 4 4 4 4 4 4 4 4 ]
+[ 4 4 4 4 4 4 1 1 4 4 1 1 1 1 1 1 1 1 4 4 1 1 4 4 4 4 4 4 4 4 ]
+[ 4 4 4 4 4 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 4 4 4 4 ]
+[ 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 4 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
+[ 2 2 2 2 2 2 2 2 1 1 4 4 4 4 4 4 4 4 1 1 2 2 2 2 2 2 2 2 2 2 ]
+[ 2 2 2 2 2 2 2 2 1 1 4 4 4 4 4 4 4 4 1 1 2 2 2 2 2 2 2 2 2 2 ]
+[ 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 4 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
+[ 4 4 4 4 4 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 4 4 4 4 ]
+[ 4 4 4 4 4 4 1 1 4 4 1 1 1 1 1 1 1 1 4 4 1 1 4 5 5 5 5 5 5 5 ]
+[ 5 5 5 5 5 4 4 1 1 4 1 1 1 1 1 1 1 1 4 1 1 4 4 5 5 5 5 5 5 5 ]
+[ 5 5 5 5 5 4 4 1 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 5 5 5 5 5 5 5 ]
+[ 5 5 5 5 5 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 5 5 5 5 5 5 5 ]
+[ 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 ]
+[ 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 ]
+[ 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 ]
+[ 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 ]
+[ 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 ]
+[ 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 ]
+[ 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 ]
+[ 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 ]
+[ 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 ]
+[ 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 ]
+[ 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 ]
+[ 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 ]
+Elevation
+[ 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
+[ 1 1 1 1 1 1 1 1 1 0 0 1 0 0 0 0 1 0 0 1 1 1 1 1 1 1 1 1 1 1 ]
+[ 1 1 1 1 1 1 1 1 1 0 0 1 0 0 0 0 1 0 0 1 1 1 1 1 1 1 1 1 1 1 ]
+[ 1 1 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 1 1 1 1 1 1 1 1 ]
+[ 1 1 1 1 1 1 0 1 1 1 1 0 0 0 0 0 0 1 1 1 1 0 1 1 1 1 1 1 1 1 ]
+[ 1 1 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 ]
+[ 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 ]
+[ 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 ]
+[ 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 ]
+[ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]
+[ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]
+[ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]
+[ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]
+[ 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 ]
+[ 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 ]
+[ 1 1 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 ]
+[ 1 1 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 1 1 1 1 1 1 ]
+[ 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 ]
+[ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
+[ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
+[ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
+[ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
+[ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
+[ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
+[ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
+[ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
+[ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
+[ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
+[ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
+[ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
+
+Entity_0
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:12.750885 Y:272.50018}; 0; 0}
+
+	} ;
+Entity_1
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:37.15416 Y:268.07706}; 0; 0}
+
+	} ;
+Entity_2
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:69.46181 Y:272.6924}; 0; 0}
+
+	} ;
+Entity_3
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:104.84639 Y:269.6155}; 0; 0}
+
+	} ;
+Entity_4
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:134.84633 Y:265.76935}; 0; 0}
+
+	} ;
+Entity_5
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:164.07707 Y:245.76938}; 0; 0}
+
+	} ;
+Entity_6
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:177.9232 Y:231.92325}; 0; 0}
+
+	} ;
+Entity_7
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:190.23088 Y:214.23096}; 0; 0}
+
+	} ;
+Entity_8
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:207.61557 Y:203.30779}; 0; 0}
+
+	} ;
+Entity_9
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:217.61554 Y:178.69243}; 0; 0}
+
+	} ;
+Entity_10
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:225.30783 Y:151.7694}; 0; 0}
+
+	} ;
+Entity_11
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:249.15396 Y:143.30786}; 0; 0}
+
+	} ;
+Entity_12
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:279.15393 Y:138.69249}; 0; 0}
+
+	} ;
+Entity_13
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:305.30774 Y:138.69249}; 0; 0}
+
+	} ;
+Entity_14
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:346.84613 Y:135.61557}; 0; 0}
+
+	} ;
+Entity_15
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:369.6155 Y:107.07698}; 0; 0}
+
+	} ;
+Entity_16
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:372.6924 Y:73.23088}; 0; 0}
+
+	} ;
+Entity_17
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:374.23087 Y:26.307861}; 0; 0}
+
+	} ;
+Entity_18
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:524.9999 Y:107.84621}; 0; 0}
+
+	} ;
+Entity_19
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:522.6922 Y:84.00009}; 0; 0}
+
+	} ;
+Entity_20
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:522.6922 Y:62.461655}; 0; 0}
+
+	} ;
+Entity_21
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:522.6922 Y:40.154007}; 0; 0}
+
+	} ;
+Entity_22
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:521.15375 Y:13.230957}; 0; 0}
+
+	} ;
+Entity_23
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:521.15375 Y:-2.9228668}; 0; 0}
+
+	} ;
+Entity_24
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:536.5383 Y:112.46159}; 0; 0}
+
+	} ;
+Entity_25
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:552.69214 Y:129.38464}; 0; 0}
+
+	} ;
+Entity_26
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:561.9229 Y:149.38461}; 0; 0}
+
+	} ;
+Entity_27
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:581.9229 Y:147.07693}; 0; 0}
+
+	} ;
+Entity_28
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:604.2305 Y:149.38461}; 0; 0}
+
+	} ;
+Entity_29
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:631.1536 Y:150.15384}; 0; 0}
+
+	} ;
+Entity_30
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:657.30743 Y:147.84616}; 0; 0}
+
+	} ;
+Entity_31
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:678.8458 Y:178.61536}; 0; 0}
+
+	} ;
+Entity_32
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:688.15375 Y:202.23093}; 0; 0}
+
+	} ;
+Entity_33
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:706.61523 Y:222.2309}; 0; 0}
+
+	} ;
+Entity_34
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:718.1537 Y:242.23088}; 0; 0}
+
+	} ;
+Entity_35
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:737.38446 Y:251.46164}; 0; 0}
+
+	} ;
+Entity_36
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:750.46136 Y:271.4616}; 0; 0}
+
+	} ;
+Entity_37
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:784.30743 Y:280.69238}; 0; 0}
+
+	} ;
+Entity_38
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:808.9228 Y:277.61545}; 0; 0}
+
+	} ;
+Entity_39
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:841.23047 Y:276.077}; 0; 0}
+
+	} ;
+Entity_40
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:868.9227 Y:276.077}; 0; 0}
+
+	} ;
+Entity_41
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:894.3073 Y:276.077}; 0; 0}
+
+	} ;
+Entity_42
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:922.7688 Y:272.23083}; 0; 0}
+
+	} ;
+Entity_43
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:956.6149 Y:273.00006}; 0; 0}
+
+	} ;
+Entity_44
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:751.8459 Y:423.7693}; 0; 0}
+
+	} ;
+Entity_45
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:796.4612 Y:425.30774}; 0; 0}
+
+	} ;
+Entity_46
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:773.3843 Y:427.61542}; 0; 0}
+
+	} ;
+Entity_47
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:821.07654 Y:429.15387}; 0; 0}
+
+	} ;
+Entity_48
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:854.92267 Y:429.92313}; 0; 0}
+
+	} ;
+Entity_49
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:894.1534 Y:429.15387}; 0; 0}
+
+	} ;
+Entity_50
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:933.3841 Y:429.15387}; 0; 0}
+
+	} ;
+Entity_51
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:967.23016 Y:429.15387}; 0; 0}
+
+	} ;
+Entity_52
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:733.38434 Y:456.84613}; 0; 0}
+
+	} ;
+Entity_53
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:707.99976 Y:479.92303}; 0; 0}
+
+	} ;
+Entity_54
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:685.69214 Y:496.0769}; 0; 0}
+
+	} ;
+Entity_55
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:679.53827 Y:534.5384}; 0; 0}
+
+	} ;
+Entity_56
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:671.846 Y:549.923}; 0; 0}
+
+	} ;
+Entity_57
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:640.30756 Y:554.5383}; 0; 0}
+
+	} ;
+Entity_58
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:602.61536 Y:552.9999}; 0; 0}
+
+	} ;
+Entity_59
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:565.6923 Y:554.5383}; 0; 0}
+
+	} ;
+Entity_60
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:530.30774 Y:552.9999}; 0; 0}
+
+	} ;
+Entity_61
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:508.00006 Y:551.4614}; 0; 0}
+
+	} ;
+Entity_62
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:470.3078 Y:550.6922}; 0; 0}
+
+	} ;
+Entity_63
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:415.6925 Y:552.9999}; 0; 0}
+
+	} ;
+Entity_64
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:379.5387 Y:555.30756}; 0; 0}
+
+	} ;
+Entity_65
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:437.23096 Y:556.846}; 0; 0}
+
+	} ;
+Entity_66
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:356.00006 Y:554.76904}; 0; 0}
+
+	} ;
+Entity_67
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:306.00015 Y:552.4614}; 0; 0}
+
+	} ;
+Entity_68
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:241.38486 Y:545.5383}; 0; 0}
+
+	} ;
+Entity_69
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:322.15396 Y:553.9999}; 0; 0}
+
+	} ;
+Entity_70
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:265.23096 Y:548.61523}; 0; 0}
+
+	} ;
+Entity_71
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:212.92334 Y:534.7691}; 0; 0}
+
+	} ;
+Entity_72
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:209.84644 Y:510.923}; 0; 0}
+
+	} ;
+Entity_73
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:206.00027 Y:487.8461}; 0; 0}
+
+	} ;
+Entity_74
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:182.15414 Y:478.61536}; 0; 0}
+
+	} ;
+Entity_75
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:172.9234 Y:458.6154}; 0; 0}
+
+	} ;
+Entity_76
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:146.00037 Y:434.76926}; 0; 0}
+
+	} ;
+Entity_77
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:97.53889 Y:427.07697}; 0; 0}
+
+	} ;
+Entity_78
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:26.000519 Y:424.7693}; 0; 0}
+
+	} ;
+Entity_79
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:-8.614819 Y:422.46158}; 0; 0}
+
+	} ;
+Entity_80
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:7.539009 Y:426.30774}; 0; 0}
+
+	} ;
+Entity_81
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:43.692802 Y:427.07697}; 0; 0}
+
+	} ;
+Entity_82
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:59.0774 Y:427.07697}; 0; 0}
+
+	} ;
+Entity_83
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:67.53892 Y:427.07697}; 0; 0}
+
+	} ;
+Entity_84
+	{
+		NewAnimationComponent{"Tree"; "Exist"; [Exist=[(0 0)]]; [{0 0 64 64 5}]}
+
+		Tags{[]}
+
+		TextureComponent{"Tree"; {X:32 Y:48}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:102.923485 Y:427.07697}; 0; 0}
+
+	} ;
+Entity_85
+	{
+		CameraMarker{}
+
+		CollisionBox{16; 10; {X:8 Y:-4}; 0}
+
+		NewAnimationComponent{"Dumbass"; "Idle"; [Idle=[(0 2)], Run=[(3 6)], Jump=[(6 7)]]; [{0 0 32 32 10}, {0 32 32 32 10}, {0 64 32 32 10}, {0 0 32 32 7}, {0 32 32 32 7}, {0 64 32 32 7}, {0 96 32 32 7}, {0 0 0 0 0}, {0 0 32 32 0}]}
+
+		PlayerMarker{}
+
+		Tags{[Player]}
+
+		TextureComponent{"Dumbass"; {X:16 Y:16}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:20.152943 Y:351.21063}; 0; 0}
+
+		Velocity{{X:0 Y:0}}
+
+	} ;
+Entity_86
+	{
+		CollisionBox{10; 500; {X:5 Y:250}; 0}
+
+		LoadingZone{"Forest3"; {X:950.25 Y:440.75}; {X:-1 Y:0}}
+
+		Tags{[]}
+
+		Transform{{X:0 Y:488.75}; 0; 0}
+
+	} ;
+Entity_87
+	{
+		NewAnimationComponent{"Sunflower"; "Bob"; [Bob=[(0 3)]]; [{0 0 48 48 15}, {0 48 48 48 15}, {0 96 48 48 15}, {0 144 48 48 15}]}
+
+		Tags{[]}
+
+		TextureComponent{"Sunflower_Bob"; {X:24 Y:36}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:412 Y:150}; 0; 0}
+
+	} ;
+Entity_88
+	{
+		NewAnimationComponent{"Sunflower"; "Bob"; [Bob=[(0 3)]]; [{0 0 48 48 15}, {0 48 48 48 15}, {0 96 48 48 15}, {0 144 48 48 15}]}
+
+		Tags{[]}
+
+		TextureComponent{"Sunflower_Bob"; {X:24 Y:36}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:485 Y:150}; 0; 0}
+
+	} ;
+Entity_89
+	{
+		NewAnimationComponent{"Sunflower"; "Bob"; [Bob=[(0 3)]]; [{0 0 48 48 15}, {0 48 48 48 15}, {0 96 48 48 15}, {0 144 48 48 15}]}
+
+		Tags{[]}
+
+		TextureComponent{"Sunflower_Bob"; {X:24 Y:36}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:412 Y:120}; 0; 0}
+
+	} ;
+Entity_90
+	{
+		NewAnimationComponent{"Sunflower"; "Bob"; [Bob=[(0 3)]]; [{0 0 48 48 15}, {0 48 48 48 15}, {0 96 48 48 15}, {0 144 48 48 15}]}
+
+		Tags{[]}
+
+		TextureComponent{"Sunflower_Bob"; {X:24 Y:36}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:485 Y:120}; 0; 0}
+
+	} ;
+Entity_91
+	{
+		NewAnimationComponent{"Sunflower"; "Bob"; [Bob=[(0 3)]]; [{0 0 48 48 15}, {0 48 48 48 15}, {0 96 48 48 15}, {0 144 48 48 15}]}
+
+		Tags{[]}
+
+		TextureComponent{"Sunflower_Bob"; {X:24 Y:36}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:412 Y:90}; 0; 0}
+
+	} ;
+Entity_92
+	{
+		NewAnimationComponent{"Sunflower"; "Bob"; [Bob=[(0 3)]]; [{0 0 48 48 15}, {0 48 48 48 15}, {0 96 48 48 15}, {0 144 48 48 15}]}
+
+		Tags{[]}
+
+		TextureComponent{"Sunflower_Bob"; {X:24 Y:36}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:485 Y:90}; 0; 0}
+
+	} ;
+Entity_93
+	{
+		NewAnimationComponent{"Sunflower"; "Bob"; [Bob=[(0 3)]]; [{0 0 48 48 15}, {0 48 48 48 15}, {0 96 48 48 15}, {0 144 48 48 15}]}
+
+		Tags{[]}
+
+		TextureComponent{"Sunflower_Bob"; {X:24 Y:36}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:412 Y:54}; 0; 0}
+
+	} ;
+Entity_94
+	{
+		NewAnimationComponent{"Sunflower"; "Bob"; [Bob=[(0 3)]]; [{0 0 48 48 15}, {0 48 48 48 15}, {0 96 48 48 15}, {0 144 48 48 15}]}
+
+		Tags{[]}
+
+		TextureComponent{"Sunflower_Bob"; {X:24 Y:36}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:485 Y:54}; 0; 0}
+
+	} ;

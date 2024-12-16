@@ -51,7 +51,7 @@ namespace Casull.Core.Overworld
         {
             base.Update();
 
-            if (Input.PressedKey(Keys.Escape) && optionMenu == null && Main.instance.GetGameState() is World) {
+            if (Input.PressedKey(Keys.Escape) && optionMenu == null && Main.instance.GetGameState() is World && World.cutscenes.Count <= 0) {
                 Main.instance.ActiveWorld.paused = true;
 
                 blackBarTop.suspended = blackBarBot.suspended = false;
@@ -63,12 +63,15 @@ namespace Casull.Core.Overworld
 
                 string[] mainOptions = ["Continue", "View Party", "Inventory", "Settings", "Quit"];
 
+                if(UIManager.combatUI.tutorialProgress < 1)
+                    mainOptions = ["Continue", "Settings", "Quit"];
+
                 bool angry = Main.instance.spiritsAngered;
 
                 if (angry)
                     mainOptions = ["Continue"];
 
-                optionMenu = new UIScrollableMenu(angry ? 1 : 5, mainOptions) {
+                optionMenu = new UIScrollableMenu(angry ? 1 : mainOptions.Length, mainOptions) {
                     drawArrows = false,
                     openSpeed = 0.15f,
                     onSelectOption = (sender)
@@ -226,7 +229,7 @@ namespace Casull.Core.Overworld
                                             uiPicture.frames = null;
                                             uiPicture.textureName = "";
                                         }
-                                        description.text = item.description;
+                                        description.text = item.Description;
                                     }
                                     else {
                                         uiPicture.frames = null;
@@ -389,10 +392,10 @@ namespace Casull.Core.Overworld
 
                                         string cost = "Cost: ";
                                         if (ability.hpCost > 0)
-                                            cost += $"{ability.hpCost} HP ";
+                                            cost += ability.GetHpCostString + " ";
 
                                         if (ability.spCost > 0)
-                                            cost += $"{ability.spCost} SP\n";
+                                            cost += ability.GetSpCostString;
 
                                         if (ability.spCost <= 0 && ability.hpCost <= 0)
                                             cost = "";

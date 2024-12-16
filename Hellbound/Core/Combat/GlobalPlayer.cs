@@ -1,5 +1,6 @@
 ﻿using Casull.Core.Combat.Abilities;
 using Casull.Core.Combat.Abilities.Fire;
+using Casull.Core.Combat.Abilities.Wind;
 using Casull.Core.Combat.Items;
 using Casull.Core.Combat.Items.Consumables;
 using Microsoft.Xna.Framework;
@@ -29,14 +30,12 @@ namespace Casull.Core.Combat
             ProtagAnimations(protag);
 
             protag.resistances[ElementalType.DoT] = -0.5f;
-            //protag.resistances[ElementalType.Phys] = 200f;
 
 
             AddPartyMember(protag);
             //ActiveParty.Add(sidekick);
 
-            AddItem(new AdrenalineShot() { count = 3 });
-            AddItem(new ChocolateBar());
+            AddItem(new ChocolateBar() { count = 3});
         }
 
         public static void AddPartyMember(Unit newUnit)

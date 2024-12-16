@@ -7,7 +7,7 @@ namespace Casull.Core.Combat.Abilities
     {
         public BasicAttack() : base("Basic Attack", "Light Phys damage to 1 foe.")
         {
-            baseDamage = 25;
+            baseDamage = 15;
             aoe = false;
             canTarget = ValidTargets.Enemy;
             elementalType = ElementalType.Phys;

@@ -40,19 +40,18 @@ namespace Casull.Core.Combat
             peas.BattleStation = new Vector2(90, 90);
 
             Unit slime = DefineUnit("Slime");
-            slime.Stats.MaxHP = 40;
+            slime.Stats.MaxHP = 36;
             slime.name = "Slime";
             slime.ai = new BasicAI();
             slime.resistances[ElementalType.Phys] = 0.20f;
             slime.resistances[ElementalType.Fire] = -0.5f;
             var ooze = new BasicAttack() {
                 Name = "Ooze",
-                baseDamage = 10
+                baseDamage = 6
             };
             slime.abilities.Add(ooze);
 
-            slime.Drops(100, new Tomato(), 1, 3);
-            slime.Drops(50, new DragonSlayer());
+            slime.Drops(100, new Tomato(), 1, 1);
 
             Unit EXPSlime = DefineUnit("EXPSlime");
             EXPSlime.name = "Weird Slime";

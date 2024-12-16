@@ -47,8 +47,20 @@ namespace Casull.Core.DialogueSystem
             }
 
             if (!finishedScrolling && ++elapsedTime >= timePerLetter) {
-                if (Input.HeldKey(Keys.E))
-                    progress += 4;
+                if (Input.HeldKey(Keys.E)) {
+                    for(int i = 0; i < 4; i++) {
+                        progress++;
+                        if (progress < text.Length && text[progress] == '<') {
+                            while (progress < text.Length && text[progress] != '>')
+                                progress++;
+                        }
+                    }
+                }
+
+                if (progress < text.Length && text[progress] == '<') {
+                    while(progress < text.Length && text[progress] != '>')
+                        progress++;
+                }
 
                 if (++progress >= text.Length) {
                     progress = text.Length;

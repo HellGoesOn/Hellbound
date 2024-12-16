@@ -8,15 +8,16 @@ namespace Casull.Core.ECS
 
         public ClearCollisionMarkerSystem(Context context)
         {
-            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(HasCollidedMarker)));
+            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(CollisionBox)));
         }
 
         public void Execute(Context context)
         {
             for (int i = 0; i < _group.Count; i++) {
                 Entity e = _group[i];
+                var box = e.GetComponent<CollisionBox>();
 
-                e.RemoveComponent<HasCollidedMarker>();
+                box.CollidedWith.Clear();
             }
         }
     }

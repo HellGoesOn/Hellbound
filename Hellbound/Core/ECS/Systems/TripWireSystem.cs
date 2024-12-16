@@ -10,7 +10,7 @@ namespace Casull.Core.ECS
 
         public TripWireSystem(Context context)
         {
-            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(HasCollidedMarker), typeof(TripWire), typeof(Transform)));
+            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(CollisionBox), typeof(TripWire), typeof(Transform)));
         }
 
         public void Execute(Context context)
@@ -20,22 +20,25 @@ namespace Casull.Core.ECS
             for (int i = 0; i < entities.Count; i++) {
                 var entity = entities[i];
                 var toTrigger = entity.GetComponent<TripWire>();
-                var playerId = entity.GetComponent<HasCollidedMarker>();
+                var myBox = entity.GetComponent<CollisionBox>();
+                foreach (var id in myBox.CollidedWith) {
 
-                var myPosition = entity.GetComponent<Transform>();
+                    if (context.GetById(id) != null && !context.GetById(id).HasComponent<PlayerMarker>())
+                        continue;
 
-                var gameState = Main.instance.GetGameState();
+                    var myPosition = entity.GetComponent<Transform>();
 
-                if (context.GetById(playerId.otherId) != null && !context.GetById(playerId.otherId).HasComponent<PlayerMarker>())
-                    continue;
+                    var gameState = Main.instance.GetGameState();
 
-                if (gameState is World world) {
-                    var trigger = World.triggers.FirstOrDefault(x => x.id == toTrigger.trigger);
+                    if (gameState is World world) {
+                        var trigger = World.triggers.FirstOrDefault(x => x.id == toTrigger.trigger);
 
-                    if (trigger != null) {
-                        trigger.Activate(world);
-                        entity.RemoveComponent<TripWire>();
-                        entity.RemoveComponent<CollisionBox>();
+                        if (trigger != null) {
+                            trigger.Activate(world);
+                            entity.RemoveComponent<TripWire>();
+                            entity.RemoveComponent<CollisionBox>();
+                            break;
+                        }
                     }
                 }
             }

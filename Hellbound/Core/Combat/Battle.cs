@@ -16,7 +16,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Casull.Core.Combat
 {
-    public class Battle : IGameState
+    public partial class Battle : IGameState
     {
         public int turnCount;
 
@@ -50,12 +50,6 @@ namespace Casull.Core.Combat
 
         public List<Func<Battle, bool>> winConditions;
 
-        public List<Menu> menus;
-
-        public List<Menu> menusToRemove;
-
-        public List<Menu> menusToAdd;
-
         public List<Sequence> sequences;
 
         public List<SpriteAnimation> fieldAnimations;
@@ -76,13 +70,10 @@ namespace Casull.Core.Combat
         float shadowOffset = 0.0f;
         Vector2 shadowPosition;
 
-        public Battle()
+        private Battle()
         {
             rand = new Random();
             winConditions = [];
-            menus = [];
-            menusToRemove = [];
-            menusToAdd = [];
             sequences = [];
             fieldAnimations = [];
             damageNumbers = [];
@@ -106,6 +97,8 @@ namespace Casull.Core.Combat
             battle.SetUnits(enemies, trialCharacters);
 
             battle.winConditions.Add(x => !x.units.Any(x => !x.Downed && x.team == Team.Enemy));
+
+            battle.InitTutorialScripts();
 
             return battle;
         }
@@ -159,11 +152,6 @@ namespace Casull.Core.Combat
 
         public void Update()
         {
-            foreach (var menu in menusToRemove) {
-                menus.Remove(menu);
-            }
-
-            menusToRemove.Clear();
             fieldAnimations.RemoveAll(x => x.finished);
 
             damageNumbers.RemoveAll(x => x.timeLeft <= 0);
@@ -296,40 +284,6 @@ namespace Casull.Core.Combat
                             {
                                 player.GetComponent<Transform>().position = Main.lastTransitionPosition;
                             }
-
-                            //UIScrollableMenu options = new UIScrollableMenu(2, ["Continue", "Quit q_q"]);
-                            //options.drawArrows = false;
-                            //options.panelColor = Color.Transparent;
-                            //options.borderColor = Color.Transparent;
-                            //options.SetPosition(new Vector2(Renderer.UIPreferedWidth, Renderer.UIPreferedHeight) * 0.5f - wowYouSuck.font.MeasureString(wowYouSuck2.text) * 0.5f + new Vector2(0, 80));
-
-                            //options.onSelectOption = (sender) => {
-                            //    switch (options.CurrentOption) {
-                            //        case "Continue":
-                            //            GameStateManager.SetState(GameState.Overworld, new BlackFadeInFadeOut(Renderer.SaveFrame()));
-
-                            //            GlobalPlayer.ActiveParty.Clear();
-                            //            foreach(Unit u in GlobalPlayer.preBattleParty) {
-                            //                GlobalPlayer.AddPartyMember(u);
-                            //            }
-                            //            GlobalPlayer.preBattleParty.Clear();
-                            //            SoundEngine.StartMusic("ChangingSeasons", true);
-                            //            Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", Main.currentZone);
-
-                            //            break;
-
-                            //        case "Quit q_q":
-                            //            GameStateManager.SetState(GameState.MainMenu, new BlackFadeInFadeOut(Renderer.SaveFrame()));
-                            //            break;
-                            //    }
-
-                            //    options.closed = true;
-                            //    UIManager.combatUI.Disown(skillIssue);
-                            //    UIManager.combatUI.Disown(options);
-                            //};
-
-                            //UIManager.combatUI.Append(options);
-                            //showedRestartOptions = true;
                         }
                     }
 
@@ -592,13 +546,14 @@ namespace Casull.Core.Combat
 
                             string cost = "Cost: ";
                             if (ability.hpCost > 0)
-                                cost += $"{ability.hpCost} HP ";
+                                cost += ability.GetHpCostString + " ";
 
                             if (ability.spCost > 0)
-                                cost += $"{ability.spCost} SP\n";
+                                cost += ability.GetSpCostString;
 
                             if (ability.spCost <= 0 && ability.hpCost <= 0)
                                 cost = "";
+
                             attackCost.text = cost;
                         };
 
@@ -691,9 +646,6 @@ namespace Casull.Core.Combat
                             descriptionPanel.openSpeed = 1f;
                             CloseInventory(InventoryMenu, descriptionPanel);
                             isPickingTarget = false;
-                            UIManager.combatUI.skillDescription.text = "";
-                            UIManager.combatUI.skillCost.text = "";
-                            ClearMenus();
                             item.Use(ActingUnit, this, TryGetTargets(item));
                             state = BattleState.DoAction;
                             playerMenu.closed = true;
@@ -833,7 +785,7 @@ namespace Casull.Core.Combat
                         uiPicture.frames = null;
                         uiPicture.textureName = "";
                     }
-                    description.text = item.description;
+                    description.text = item.Description;
                 }
                 else {
                     uiPicture.frames = null;
@@ -869,8 +821,6 @@ namespace Casull.Core.Combat
             InventoryMenu.closed = true;
             descriptionPanel.isClosed = true;
 
-            menus.Clear();
-
             if (doSequence) {
                 Sequence seq = CreateSequence(true);
                 seq.SetAnimation(ActingUnit, "Cast");
@@ -878,12 +828,6 @@ namespace Casull.Core.Combat
             }
 
             state = BattleState.DoAction;
-        }
-
-        private static void SetSkillDesc(Ability skill)
-        {
-            UIManager.combatUI.skillDescription.text = skill.Description.Splice(24);
-            UIManager.combatUI.skillCost.text = $"{(skill.hpCost > 0 ? $"Consumes {skill.hpCost} HP" : "")}{(skill.spCost > 0 ? $"Consumes {skill.spCost} SP" : "")}";
         }
 
         public void BeginAction()
@@ -961,21 +905,6 @@ namespace Casull.Core.Combat
             //{
             //    this.State = BattleState.BeginAction;
             //}
-
-            for (int i = 0; i < menus.Count; i++) {
-                menus[i].Update();
-            }
-
-            foreach (var menu in menusToRemove) {
-                menus.Remove(menu);
-            }
-
-            foreach (var menu in menusToAdd) {
-                menus.Add(menu);
-            }
-
-            menusToAdd.Clear();
-            menusToRemove.Clear();
         }
 
         public void VictoryCheck()
@@ -1045,21 +974,6 @@ namespace Casull.Core.Combat
             }
 
             State = BattleState.TurnProgression;
-        }
-
-        public void RemoveMenu(Menu menu)
-        {
-            menusToRemove.Add(menu);
-        }
-
-        public void ClearMenus()
-        {
-            menusToRemove.AddRange(menus);
-        }
-
-        public void AddMenu(Menu menu)
-        {
-            menusToAdd.Add(menu);
         }
 
         private List<Unit> _exposedTargets = [];

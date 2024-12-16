@@ -1,4 +1,5 @@
-﻿using Casull.Core.ECS;
+﻿using Casull.Core.Combat;
+using Casull.Core.ECS;
 using Casull.Core.UI;
 using Casull.Render;
 using Microsoft.Xna.Framework;
@@ -17,17 +18,19 @@ namespace Casull.Core.Overworld
 
         public Systems systems;
 
-        public static List<Trigger> triggers = [];
+        public readonly static List<Trigger> triggers = [];
 
-        public static List<string> flags = [];
+        public readonly static List<string> flags = [];
 
-        public static List<Cutscene> cutscenes = [];
+        public readonly static List<Cutscene> cutscenes = [];
 
         public static void RaiseFlag(string flag)
         {
             if(!flags.Contains(flag))
                 flags.Add(flag);
         }
+
+        public static bool CheckFlag(string flag) => flags.Contains(flag);
 
         public Texture2D mapTexture;
 

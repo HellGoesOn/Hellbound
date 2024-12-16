@@ -86,8 +86,6 @@ Entity_1
 
 		CreateBattleOnContact{"TestBG"; [Slime]; []}
 
-		HasCollidedMarker{4}
-
 		TextureComponent{"Slime3"; {X:16 Y:16}; {X:1 Y:1}}
 
 		Transform{{X:347.5 Y:461.5}; 0; 0}
@@ -100,24 +98,6 @@ Entity_2
 		LoadingZone{"Temp3"; {X:0 Y:0}; {X:1 Y:0}}
 
 		Transform{{X:-9 Y:543.5}; 0; 0}
-
-	} ;
-Entity_3
-	{
-		CollisionBox{10; 128; {X:5 Y:64}}
-
-		Transform{{X:104.75 Y:544.25}; 0; 0}
-
-		TripWire{"diag1"; 64}
-
-	} ;
-Entity_4
-	{
-		CollisionBox{128; 128; {X:64 Y:64}; 48}
-
-		Transform{{X:348.75 Y:462.5}; 0; 0}
-
-		TripWire{"diag2"}
 
 	} ;
 Entity_5
