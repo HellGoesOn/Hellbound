@@ -18,7 +18,7 @@ namespace Casull.Core.Combat.Abilities.Fire
 
         protected override void UseAbility(Unit caster, Battle battle, List<Unit> targets)
         {
-            battle.lastAction = $"{caster.name} used {Name}!";
+            battle.lastAction = $"{caster.name} used {name}!";
 
             Sequence sequence = CreateSequence(battle);
             sequence.Add(new SetActorAnimation(caster, "Cast"));

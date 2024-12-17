@@ -29,7 +29,7 @@ namespace Casull.Core.Editor
         public const int PANEL_HEIGHT = 300;
 
         Entity prefabEntity;
-        public EditorUI()
+        public EditorUI(string zoneName = "")
         {
             panels = new UIPanel[6];
             for (int i = 0; i < panels.Length; i++) {
@@ -283,8 +283,6 @@ namespace Casull.Core.Editor
             panels[2].Append(showGrid);
             panels[2].Append(boxPlace);
 
-            panels[5].Append(new UIBorderedText("Scenes") {
-            }.SetPosition(16, 12));
             //LoadScenes();
 
             UITextBox scenePath = new();
@@ -300,6 +298,21 @@ namespace Casull.Core.Editor
             sceneName.myText = "BaseScene";
             sceneName.SetFont(Assets.Arial);
             sceneName.SetPosition(256, 60);
+
+            var zoneNameText = new UIBorderedText("Zone Name:");
+            zoneNameText.SetPosition(12, 12);
+            panels[5].Append(zoneNameText);
+
+            var textboxZoneNameBox = new UITextBox() {
+                maxCharacters = 500,
+                myText = zoneName,
+            };
+            textboxZoneNameBox.size.X = 200;
+            textboxZoneNameBox.onTextSubmit = (sender) => {
+                Main.instance.ActiveWorld.zoneName = textboxZoneNameBox.myText;
+            };
+            textboxZoneNameBox.SetPosition(12 + zoneNameText.size.X, 4);
+            panels[5].Append(textboxZoneNameBox);
 
             var newText = new UIBorderedText("Load Scene") {
                 size = Assets.Arial.MeasureString("Load File"),

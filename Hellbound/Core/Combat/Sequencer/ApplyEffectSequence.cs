@@ -14,6 +14,8 @@ namespace Casull.Core.Combat.Sequencer
         public Sequence mySequence = sequence;
         public StatusEffect effect = effect;
 
+        public bool showMiss;
+
         public bool IsFinished()
         {
             return true;
@@ -51,6 +53,9 @@ namespace Casull.Core.Combat.Sequencer
                 }
                 DamageNumber damageNumber = new(DamageType.Normal, $"+{effect.name}", (target.position - new Vector2(0, 12)));
                 battle.damageNumbers.Add(damageNumber);
+            }
+            else if (showMiss) {
+                battle.damageNumbers.Add(new(DamageType.Normal, $"MISS", (target.position - new Vector2(0, 12))));
             }
         }
     }

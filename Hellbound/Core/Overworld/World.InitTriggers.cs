@@ -304,7 +304,7 @@ namespace Casull.Core.Overworld
                 var cutscene = new Cutscene();
                 cutscene.Add(new Timer(60));
                 cutscene.Add(new StartDialogue(unlockedInventory));
-                GlobalPlayer.AddItem(new Lighter() { count = 2});
+                GlobalPlayer.AddItem(new Lighter() { count = 3});
 
                 StartCutscene(cutscene);
 
@@ -320,6 +320,67 @@ namespace Casull.Core.Overworld
                 SoundEngine.PlaySound("Pickup", 1f);
                 RaiseFlag("pizza");
 
+            };
+
+            var meadowBirdAttack = AddTrigger("meadowBirdAttack");
+
+            meadowBirdAttack.repeatadble = true;
+
+            meadowBirdAttack.condition = (sender) => Main.currentZone == "ForestMeadow" && Main.instance.transitions.Count <= 0 && !CheckFlag("killedBird") && cutscenes.Count <= 0;
+
+            meadowBirdAttack.action = (sender) => {
+
+                var cutscene = new Cutscene();
+
+                var diag = new Dialogue();
+                var page = new DialoguePage() {
+                    text = "Okay, now I am getting somewhere I've yet to check out.",
+                    title = GlobalPlayer.ActiveParty[0].name,
+                    portraits = [new("Dumbass", new FrameData(0, 0, 32, 32))
+                        {
+                            scale = new Vector2(10)
+                        }]
+                };
+
+                var page2 = new DialoguePage() {
+                    text = "Doesn't seem too bad.",
+                    title = GlobalPlayer.ActiveParty[0].name,
+                    portraits = [new("Dumbass", new FrameData(0, 0, 32, 32))
+                        {
+                            scale = new Vector2(10)
+                        }]
+                };
+
+                var page3 = new DialoguePage() {
+                    text = "*HAWK*",
+                    title = "???"
+                };
+
+                var page4 = new DialoguePage() {
+                    text = "What was that?!",
+                    title = GlobalPlayer.ActiveParty[0].name,
+                    portraits = [new("Dumbass", new FrameData(0, 0, 32, 32))
+                        {
+                            scale = new Vector2(10)
+                        }]
+                };
+
+                var player = sender.context.GetAllEntities().FirstOrDefault(x => x.HasComponent<PlayerMarker>());
+
+                diag.pages.AddRange([page, page2, page3, page4]);
+
+                cutscene.Add(new Timer(120));
+                cutscene.Add(new StartDialogue(diag));
+                cutscene.Add(new SpawnEntityFromPrefab(sender.context, "Bird", Vector2.Zero, out var bird));
+                cutscene.Add(new FireAction(() => {
+                    bird.GetComponent<TextureComponent>().scale.X = -1;
+                }));
+                cutscene.Add(new SetComponent(bird, new Transform(player.GetComponent<Transform>().position + new Vector2(240, -34))));
+                cutscene.Add(new SetComponent(bird, new Velocity(-4, 0.5f)));
+                cutscene.SetFollowing(bird, 0.25f);
+                cutscene.Add(new Timer(120));
+
+                StartCutscene(cutscene);
             };
         }
     }

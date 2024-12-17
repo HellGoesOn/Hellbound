@@ -1,0 +1,13 @@
+Entity_1
+	{
+		CollisionBox{24; 24; {X:12 Y:12}}
+
+		CreateBattleOnContact{"TestBG"; [Bird]; []}
+		
+		Velocity{{0 0}}
+
+		TextureComponent{"Chimken"; {X:16 Y:16}; {X:1 Y:1}}
+
+		Transform{{X:347.5 Y:461.5}; 0; 0}
+
+	} ;

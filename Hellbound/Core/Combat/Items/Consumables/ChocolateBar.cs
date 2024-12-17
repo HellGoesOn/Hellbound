@@ -1,4 +1,5 @@
-﻿using Casull.Core.UI;
+﻿using Casull.Core.Combat.Abilities;
+using Casull.Core.UI;
 using Casull.Core.UI.Elements;
 using Casull.Render;
 using Microsoft.Xna.Framework;
@@ -49,8 +50,7 @@ namespace Casull.Core.Combat.Items.Consumables
                 caster.Stats.HP = 0;
             }
             else {
-                SoundEngine.PlaySound("Heal", 0.75f);
-                caster.Stats.HP = Math.Clamp(caster.Stats.HP + 50, 0, caster.Stats.MaxHP);
+                new Dia() { baseDamage = 50, spCost = 0 }.Use(caster, battle, targets, true);
             }
         }
     }

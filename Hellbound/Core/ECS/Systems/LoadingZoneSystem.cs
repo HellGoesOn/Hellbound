@@ -46,7 +46,10 @@ namespace Casull.Core.ECS
                             var tex = player.GetComponent<TextureComponent>();
                             if (id.newPosition != default) {
                                 trans.position = id.newPosition;
-                                tex.scale.X = id.direction.X;
+                                tex.scale.X = Math.Sign(id.direction.X);
+
+                                if (tex.scale.X <= 0)
+                                    tex.scale.X = 1;
                             }
 
                             Main.instance.ActiveWorld.GetCamera().centre = trans.position;

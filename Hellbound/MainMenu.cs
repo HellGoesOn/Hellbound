@@ -1,6 +1,7 @@
 ﻿using Casull.Core;
 using Casull.Core.ECS;
 using Casull.Core.ECS.Components;
+using Casull.Core.Overworld;
 using Casull.Core.UI;
 using Casull.Core.UI.Elements;
 using Casull.Render;
@@ -93,6 +94,8 @@ namespace Casull
             };
 
             UIManager.UIStates.Add(mainMenuUI);
+
+            UIManager.overworldUI.showNameTimer = 0;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -132,6 +135,10 @@ namespace Casull
                     UIManager.UIStates.Remove(state);
                     SoundEngine.StartMusic("ChangingSeasons", true);
                     GameStateManager.SetState(GameState.Overworld, new BlackFadeInFadeOut(Renderer.SaveFrame()));
+
+                    Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", "Forest3");
+
+                    Main.lastTransitionPosition = Main.instance.ActiveWorld.context.GetAllEntities().FirstOrDefault(x => x.GetComponent<Tags>().Has("Player")).GetComponent<Transform>().position;
                 }
             }
 

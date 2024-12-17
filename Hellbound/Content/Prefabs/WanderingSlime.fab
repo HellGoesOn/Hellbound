@@ -9,4 +9,6 @@ Entity_1
 		Transform{{X:347.5 Y:461.5}; 0; 0}
 		
 		Velocity{{X:0 Y:0}}
+		
+		WanderComponent{0.25; 60; 240; 60; 240; 640}
 	} ;

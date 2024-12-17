@@ -23,10 +23,32 @@ namespace Casull.Core.Overworld
 
         public int lastTarget;
 
+        public List<UIBorderedText> notificationTexts = [];
+        List<OverworldNotification> notifications = [];
+        public int NotifCount => notifications.Count;
+        List<UIBorderedText> notificationQueue = [];
+        Queue<OverworldNotification> startedNotificationQueue = [];
+        UIBorderedText zoneName;
+        internal int showNameTimer;
+
         public OverworldUIState()
         {
+            zoneName = new UIBorderedText("");
+            zoneName.SetPosition(Renderer.ScreenMiddle);
+            zoneName.SetFont(Assets.CombatMenuFont);
+
+            Append(zoneName);
             //debugText = new("");
             //Append(debugText);
+
+            for (int i = 0; i < 6; i++) {
+                var newText = new UIBorderedText("Testing");
+                newText.SetPosition(16, Renderer.UIPreferedHeight - 64 - newText.font.MeasureString("Y").Y*6 + newText.font.MeasureString("Y").Y *i);
+                newText.opacity = 0.0f;
+                notificationTexts.Add(newText);
+                notificationQueue.Add(newText);
+                Append(notificationTexts[i]);
+            }
 
             interactText = new UIBorderedText("Press <ffff00/[E]> to Interact");
             interactText.SetPosition(Renderer.ScreenMiddle + new Vector2(0, 200)-(interactText.font.MeasureString("Press [E] to Interact") * 0.5f));
@@ -52,6 +74,12 @@ namespace Casull.Core.Overworld
             Append(blackBarBot);
         }
 
+        public void Notify(string text, Color color, int timeLeft)
+        {
+            if(GameStateManager.State == GameState.Overworld)
+                notifications.Add(new(text, color, timeLeft));
+        }
+
         public void SetBlackBars(bool value)
         {
             blackBarTop.suspended = blackBarBot.suspended = !value;
@@ -59,6 +87,45 @@ namespace Casull.Core.Overworld
 
         public override void Update()
         {
+            if (!string.IsNullOrWhiteSpace(Main.instance.ActiveWorld.zoneName)) {
+                zoneName.text = Main.instance.ActiveWorld.zoneName;
+                zoneName.SetPosition(Renderer.ScreenMiddle - zoneName.size * 0.5f);
+            }
+
+            if(showNameTimer > 0) {
+                if (zoneName.opacity < 1.0f)
+                    zoneName.opacity += 0.05f;
+
+                showNameTimer--;
+            }
+            else if(zoneName.opacity >0) {
+                zoneName.opacity -= 0.05f;
+            }
+
+            if (notifications.Count > 0) {
+                var notif = notifications[0];
+                if (notificationQueue.Count() > 0 && !notif.started) {
+                    var text = notificationQueue[0];
+                    text.text = notif.message;
+                    text.color = notif.color;
+                    text.opacity = 1.0f;
+                    notif.started = true;
+                    notif.index = notificationTexts.IndexOf(text);
+                    startedNotificationQueue.Enqueue(notif);
+                    notifications.RemoveAt(0);
+                    notificationQueue.RemoveAt(0);
+                }
+            }
+
+            if (startedNotificationQueue.Count > 0 && --startedNotificationQueue.Peek().timeLeft <= 0) {
+                var started =
+                startedNotificationQueue.Dequeue();
+                notificationQueue.Add(notificationTexts[started.index]);
+                notificationTexts[started.index].opacity = 0.0f;
+            }
+
+            //UIManager.Debug($"{notifications.Count}; {notificationQueue.Count};");
+
             if (interactText.opacity != interactTextOpacityTarget) {
                 interactText.opacity += 0.1f * Math.Sign((interactTextOpacityTarget - interactText.opacity));
 
@@ -306,7 +373,7 @@ namespace Casull.Core.Overworld
                                 partyMemberMenu.onSelectOption = (sender) => {
                                     partyMemberMenu.focused = false;
                                     var unit = GlobalPlayer.ActiveParty[partyMemberMenu.currentSelectedOption];
-                                    string[] attackNames = unit.abilities.Select(x => x.Name).ToArray();
+                                    string[] attackNames = unit.abilities.Select(x => x.name).ToArray();
                                     int[] unusable = unit.abilities.Where(x => !x.canUseOutOfCombat).Select(x => unit.abilities.IndexOf(x)).ToArray();
 
                                     var attacks = new UIScrollableMenu(4, attackNames) {
@@ -512,7 +579,7 @@ namespace Casull.Core.Overworld
                                 UIPicture[] elementalIcons = new UIPicture[7];
                                 for (int i = 0; i < 7; i++) {
                                     var affinityElementPic = new UIPicture("AffinityTypeFramed", [new(0, 0, 32, 32)]);
-                                    affinityElementPic.SetPosition(380 + i * 32 + 4 * i - 32, yyy + 32);
+                                    affinityElementPic.SetPosition(380 + i * 32 + 4 * i - 32, yyy + 64);
                                     affinityElementPic.scale = new Vector2(1);
                                     memberPanel.Append(affinityElementPic);
                                     affinityTypes[i] = affinityElementPic;
@@ -521,7 +588,7 @@ namespace Casull.Core.Overworld
                                 for (int i = 0; i < 7; i++) {
                                     var loadedIcons = "ElementsIconsFramed";
                                     var affinityElementPic = new UIPicture(loadedIcons, [new(0, 32 * i, 32, 32)]);
-                                    affinityElementPic.SetPosition(380 + i * 32 + 4 * i - 32, yyy + 64);
+                                    affinityElementPic.SetPosition(380 + i * 32 + 4 * i - 32, yyy + 32);
                                     affinityElementPic.scale = new Vector2(1);
                                     memberPanel.Append(affinityElementPic);
                                     elementalIcons[i] = affinityElementPic;
@@ -533,7 +600,7 @@ namespace Casull.Core.Overworld
 
                                     string nextSkillText = "Next Skill: -";
                                     if (selectedMember.learnableAbilities.Count > 0)
-                                        nextSkillText = $"Next Skill: {selectedMember.learnableAbilities[0].abilityToLearn.Name} at LVL {selectedMember.learnableAbilities[0].requiredLevel}";
+                                        nextSkillText = $"Next Skill: {selectedMember.learnableAbilities[0].abilityToLearn.name} at LVL {selectedMember.learnableAbilities[0].requiredLevel}";
                                     nextSkill.text = nextSkillText;
 
                                     portrait.SetValues(selectedMember.Stats.HP, selectedMember.Stats.SP, selectedMember.Stats.MaxHP, selectedMember.Stats.MaxSP);

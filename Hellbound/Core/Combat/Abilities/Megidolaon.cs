@@ -14,7 +14,7 @@ namespace Casull.Core.Combat.Abilities
 
         protected override void UseAbility(Unit caster, Battle battle, List<Unit> targets)
         {
-            battle.lastAction = $"{caster.name} used {Name}!";
+            battle.lastAction = $"{caster.name} used {name}!";
 
             Sequence sequence = CreateSequence(battle);
             sequence.Add(new MoveActorSequence(caster, new Vector2(160, 90)));

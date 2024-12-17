@@ -42,14 +42,14 @@ namespace Casull.Core.UI
             //RelaunchEditor();
         }
 
-        public static void RelaunchEditor()
+        public static void RelaunchEditor(string zoneName = "")
         {
             if (editorUI != null) {
                 editorUI.active = false;
                 editorUI.CheckSubscriptions();
             }
             UIStates.Remove(editorUI);
-            editorUI = new EditorUI();
+            editorUI = new EditorUI(zoneName);
             UIStates.Add(editorUI);
         }
 

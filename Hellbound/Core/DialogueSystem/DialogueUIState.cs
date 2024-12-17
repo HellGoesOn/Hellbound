@@ -79,6 +79,15 @@ namespace Casull.Core.DialogueSystem
                 dialoguePanel.fillColor = page.fillColor;
                 dialoguePanel.outlineColor = page.borderColor;
 
+                if (Dialogue.auto)
+                    actionsText.text = $"[Q] Cancel AUTO. Next In {dialogues[0].CurrentPage.TimeLeft}..";
+                else {
+                    if (dialogues[0].CurrentPage.finishedScrolling)
+                        actionsText.text = "[E] Next";
+                    else
+                        actionsText.text = "[E] Fast Forward  - [Q] AUTO";
+                }
+
                 speakerPanel.Visible = !string.IsNullOrWhiteSpace(speakerText.text);
 
                 portrait.portrait = page.portraits;

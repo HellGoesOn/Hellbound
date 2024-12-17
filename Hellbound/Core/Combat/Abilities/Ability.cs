@@ -5,7 +5,7 @@ namespace Casull.Core.Combat.Abilities
 {
     public class Ability : ICanTarget
     {
-        public string Name;
+        public string name;
         private string description;
         public bool aoe;
         public bool canUseOutOfCombat;
@@ -20,7 +20,7 @@ namespace Casull.Core.Combat.Abilities
         public Ability(string name, string description)
         {
             aoe = false;
-            Name = name;
+            this.name = name;
             Description = description;
             canTarget = ValidTargets.Active;
         }
@@ -41,7 +41,7 @@ namespace Casull.Core.Combat.Abilities
             if (battle != null) {
                 UIManager.combatUI.showUsedAbilityTime = 90;
                 UIManager.combatUI.usedAbilityPanel.Visible = true;
-                UIManager.combatUI.usedAbilityText.text = Name;
+                UIManager.combatUI.usedAbilityText.text = name;
                 battle.lastUsedAbility = this;
             }
             caster.Stats.HP -= hpCost;
@@ -87,24 +87,29 @@ namespace Casull.Core.Combat.Abilities
             { 
             get {
 
-                string[] hexValues = {
-                    "9c9792",
-                    "e3841e",
-                    "5cfffa",
-                    "f0da35",
-                    "18b50d"
-                };
-
-                var liarLiarPantsOnFire = description;
-                for (int i = 0; i < hexValues.Length; i++) {
-                    var name = Enum.GetName(typeof(ElementalType), i);
-                    liarLiarPantsOnFire = liarLiarPantsOnFire.Replace(name, $"<{hexValues[i]}/{name}>", StringComparison.OrdinalIgnoreCase);
-                }
-
-                return liarLiarPantsOnFire;
+                return MarkdownElements(description);
             }
             set => description = value; }
 
         public bool AoE() => aoe;
+
+        public static string MarkdownElements(string input)
+        {
+            string[] hexValues = {
+                    "9c9792",
+                    "e3841e",
+                    "5cfffa",
+                    "f0da35",
+                    "32CD32"
+                };
+
+            var liarLiarPantsOnFire = input;
+            for (int i = 0; i < hexValues.Length; i++) {
+                var name = Enum.GetName(typeof(ElementalType), i);
+                liarLiarPantsOnFire = liarLiarPantsOnFire.Replace(name, $"<{hexValues[i]}/{name}>", StringComparison.OrdinalIgnoreCase);
+            }
+
+            return liarLiarPantsOnFire;
+        }
     }
 }

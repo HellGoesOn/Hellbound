@@ -16,6 +16,7 @@ namespace Casull.Core.Combat.Abilities.Phys
             aoe = false;
             canTarget = ValidTargets.Enemy;
             elementalType = ElementalType.Phys;
+            baseDamage = 47;
         }
 
         int timer;
@@ -84,7 +85,7 @@ namespace Casull.Core.Combat.Abilities.Phys
 
             seq.AddAnimation(ak);
             seq.Delay(120);
-            seq.DoDamage(caster, targets[0], 1947, elementalType, accuracy);
+            seq.DoDamage(caster, targets[0], baseDamage, elementalType, accuracy);
 
         }
     }

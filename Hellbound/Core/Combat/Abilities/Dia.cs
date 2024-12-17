@@ -11,6 +11,7 @@ namespace Casull.Core.Combat.Abilities
             elementalType = ElementalType.Healing;
             spCost = 3;
             canUseOutOfCombat = true;
+            baseDamage = 30;
         }
 
         protected override void UseAbility(Unit caster, Battle battle, List<Unit> targets)
@@ -19,7 +20,7 @@ namespace Casull.Core.Combat.Abilities
             Sequence sequence = CreateSequence(battle);
             sequence.Add(new SetActorAnimation(caster, "Cast"));
             sequence.Add(new DelaySequence(60));
-            sequence.Add(new HealTargetSqequence(targets[0], 30));
+            sequence.Add(new HealTargetSqequence(targets[0], baseDamage));
             sequence.Add(new DelaySequence(60));
         }
     }

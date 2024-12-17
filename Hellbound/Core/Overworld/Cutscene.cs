@@ -72,7 +72,7 @@ namespace Casull.Core.Overworld
         }
     }
 
-    public struct SpawnEntityFromPrefab : ICutsceneAction
+    public class SpawnEntityFromPrefab : ICutsceneAction
     {
         public SpawnEntityFromPrefab(Context context, string prefab, Vector2 position, out Entity entity) 
         {

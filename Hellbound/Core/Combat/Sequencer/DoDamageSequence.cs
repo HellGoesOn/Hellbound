@@ -57,7 +57,10 @@ namespace Casull.Core.Combat.Sequencer
             var offset = -target.size * 0.25f + new Vector2(xx, yy);
 
             float shakeAmount = 0.16f;
-            damageNumber = new(DamageType.Normal, damageTaken.ToString(), (target.position + offset));
+
+            int hiddenFinalDamage =(int)(damageTaken * target.damageReceivedMultiplier);
+
+            damageNumber = new(DamageType.Normal, hiddenFinalDamage.ToString(), (target.position + offset));
 
             dealtDamage = true;
             if (damageTaken == 0) // nulled
@@ -73,6 +76,7 @@ namespace Casull.Core.Combat.Sequencer
                 if (!battle.unitsHitLastRound.Contains(target) && !target.HasStatus<GuardingEffect>()) {
                     battle.weaknessHitLastRound = true;
                 }
+
                 shakeAmount = 0.32f;
 
                 damageNumber.DamageType = DamageType.Weak;
@@ -111,7 +115,7 @@ namespace Casull.Core.Combat.Sequencer
             }
 
             if (dealtDamage) {
-                target.Stats.HP = Math.Max(0, target.Stats.HP - damageTaken);
+                target.Stats.HP = Math.Max(0, target.Stats.HP - hiddenFinalDamage);
                 if (target.HasStatus<GuardingEffect>())
                     target.RemoveAllEffects<GuardingEffect>();
             }

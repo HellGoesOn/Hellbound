@@ -21,13 +21,14 @@ namespace Casull.Core.Combat
             bird.sprite = "Chimken";
             bird.name = "Eagle";
             bird.Stats.MaxHP = 32;
+            bird.Stats.speed = 7.5f;
             bird.ai = new SequentialAI();
             bird.abilities.AddRange([new Garu() {
                 spCost = 0,
                 baseDamage = 8
             }, new BasicAttack()
             {
-                Name = "Peck",
+                name = "Perch",
                 baseDamage = 8
             }]);
             bird.resistances[ElementalType.Fire] = -0.5f;
@@ -57,6 +58,8 @@ namespace Casull.Core.Combat
             bird.animations.Add("Idle", birdAnim);
             bird.animations.Add("BasicAttack", birdBasicAttack);
 
+            bird.Drops(50, new ChocolateBar());
+
             Unit protag = DefineUnit("Doorkun");
             protag.name = "Doorkun";
             protag.sprite = "Dumbass";
@@ -69,7 +72,12 @@ namespace Casull.Core.Combat
             protag.statsGrowth = new CombatStats(0.5f, 1.5f, 10, 7, 0.15f);
             protag.Stats.speed = 6.5f;
 
-            protag.Learns(2, new Sukukaja());
+            protag.Learns(2, new Disturb() {
+                name = "War Cry",
+            });
+            protag.Learns(4, new Agi());
+            protag.Learns(6, new Maragi());
+            protag.Learns(20, new Singularity());
 
             GlobalPlayer.ProtagAnimations(protag);
 
@@ -88,7 +96,7 @@ namespace Casull.Core.Combat
             slime.resistances[ElementalType.Phys] = 0.20f;
             slime.resistances[ElementalType.Fire] = -0.5f;
             var ooze = new BasicAttack() {
-                Name = "Ooze",
+                name = "Ooze",
                 baseDamage = 6
             };
             slime.abilities.Add(ooze);
@@ -115,7 +123,7 @@ namespace Casull.Core.Combat
             dog.portraitCombat = "DogPortrait_Combat";
             dog.ai = new BasicAI();
             dog.abilities.Add(new BasicAttack() {
-                Name = "Bite",
+                name = "Bite",
                 baseDamage = 10
             });
             dog.abilities.Add(new Garu());

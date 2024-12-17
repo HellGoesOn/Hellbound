@@ -158,34 +158,34 @@ namespace Casull.Core.Combat
             sunFlower.abilities.Add(new SolarFlare() {
                 spCost = 0,
                 accuracy = 100,
-                Name = "Solar Flare"
+                name = "Solar Flare"
             });
 
             sunFlower.abilities.Add(new Sukukaja() {
                 spCost = 0,
-                Name = "Bob & Weave"
+                name = "Bob & Weave"
             });
 
             sunFlower.abilities.Add(new Garu() {
-                Name = "Wind Gust",
+                name = "Wind Gust",
                 baseDamage = 25,
                 accuracy = 75
             });
 
             sunFlower.abilities.Add(new SunflowerKick() {
-                Name = "Sunflower Kick",
+                name = "Sunflower Kick",
                 baseDamage = 30,
                 accuracy = 50
             });
 
             sunFlower.abilities.Add(new SunflowerKick() {
-                Name = "Sunflower Punch",
+                name = "Sunflower Punch",
                 baseDamage = 30,
                 accuracy = 50
             });
 
             sunFlower.abilities.Add(new Garu() {
-                Name = "Wind Gust",
+                name = "Wind Gust",
                 baseDamage = 25,
                 accuracy = 75
             });

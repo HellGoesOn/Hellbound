@@ -14,6 +14,8 @@ namespace Casull.Core.Overworld
     {
         public bool paused;
 
+        public string zoneName;
+
         public Context context;
 
         public Systems systems;
@@ -47,6 +49,9 @@ namespace Casull.Core.Overworld
             GetCamera().centre = new Vector2(tileMap.width, tileMap.height) * DisplayTileLayer.TILE_SIZE * 0.5f;
 
             systems.AddSystem(new ReadPlayerInputSystem(context));
+            systems.AddSystem(new SpawnerSystem(context));
+            systems.AddSystem(new AppearSystem(context));
+            systems.AddSystem(new WanderSystem(context));
             systems.AddSystem(new MoveSystem(context));
             systems.AddSystem(new TileCollisionSystem(context));
             systems.AddSystem(new DDDSystem(context));
@@ -63,7 +68,7 @@ namespace Casull.Core.Overworld
             systems.AddSystem(new NewAnimationSystem(context));
             systems.AddSystem(new ClearCollisionMarkerSystem(context));
 
-#if true
+#if DEBUG
 
             systems.AddSystem(new DrawTransformBoxSystem(context));
             systems.AddSystem(new DrawBoxSystem(context));
@@ -117,6 +122,7 @@ namespace Casull.Core.Overworld
             }
 
             StringBuilder sb = new();
+            sb.AppendLine($"{zoneName}");
             sb.AppendLine($"[{context.GetAllEntities().Length}]");
             sb.Append("[ ");
             for (int i = 0; i < tileMap.height; i++) {
@@ -159,11 +165,16 @@ namespace Casull.Core.Overworld
         {
             string finalPath = Environment.CurrentDirectory + path + $"\\{name}.scn";
 
-            string text = File.ReadAllText(finalPath);
+            string allText = File.ReadAllText(finalPath);
+
+            string[] nameAndRest = allText.Split(Environment.NewLine, 2);
+
+            string text = nameAndRest[1];
             string entityCT = Regex.Match(text, @"\[.*\]").Value;
             int entityCount = int.Parse(Regex.Replace(entityCT, @"[\[\]]", ""));
 
             World world = new(entityCount);
+            world.zoneName = nameAndRest[0];
             string tileText = Regex.Match(text[entityCT.Length..], @$"(.*)Elevation{Environment.NewLine}", RegexOptions.Singleline).Groups[1].Value;
 
             if (string.IsNullOrEmpty(tileText)) {
@@ -216,6 +227,8 @@ namespace Casull.Core.Overworld
                 Entity.DeserializeAll(entityDefinitions, world.context);
 
             Main.currentZone = name;
+
+            UIManager.overworldUI.showNameTimer = 120;
 
             return world;
         }

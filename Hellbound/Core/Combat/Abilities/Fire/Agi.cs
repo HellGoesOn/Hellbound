@@ -18,7 +18,7 @@ namespace Casull.Core.Combat.Abilities.Fire
 
         protected override void UseAbility(Unit caster, Battle battle, List<Unit> targets)
         {
-            battle.lastAction = $"{caster.name} used {Name}!";
+            battle.lastAction = $"{caster.name} used {name}!";
 
             int markiplier = targets[0].BattleStation.X < caster.BattleStation.X ? -1 : 1;
 

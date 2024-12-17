@@ -15,7 +15,7 @@ namespace Casull.Core.Combat.Abilities
 
         protected override void UseAbility(Unit caster, Battle battle, List<Unit> targets)
         {
-            battle.lastAction = $"{caster.name} used {Name}!";
+            battle.lastAction = $"{caster.name} used {name}!";
 
             var anim = new SpriteAnimation("TestAnimation",
                 [

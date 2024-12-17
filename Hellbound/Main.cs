@@ -17,6 +17,10 @@ using Treeline.Core.Graphics;
 
 namespace Casull
 {
+    /// <summary>
+    /// If you are seeing this code, something is very fucking wrong with you.
+    /// And with me too, you are welcome here.
+    /// </summary>
     public class Main : Game
     {
         internal SpriteBatch spriteBatch;
@@ -42,7 +46,7 @@ namespace Casull
                 activeWorld = value;
 #if DEBUG
                 if(activeWorld != null)
-                UIManager.RelaunchEditor();
+                UIManager.RelaunchEditor(activeWorld.zoneName);
 #endif
             }
         }
@@ -75,7 +79,6 @@ namespace Casull
             gdm.PreferredBackBufferWidth = GameOptions.ScreenWidth;
             gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
             gdm.ApplyChanges();
-            GameStateManager.State = GameState.Overworld;
             SoundEngine.StartMusic("ChangingSeasons", true);
 
             //var dict = new Dictionary<string, Animation>
@@ -110,6 +113,7 @@ namespace Casull
                 Thread.CurrentThread.CurrentCulture = oldCulture;
             }
             GameStateManager.SetState(GameState.MainMenu, new BlackFadeInFadeOut(Renderer.SaveFrame()));
+            GlobalPlayer.Init();
         }
 
         protected override void LoadContent()
@@ -124,7 +128,6 @@ namespace Casull
             activeWorld = new World();
             UIManager.Init();
             UnitDefinitions.DefineUnits();
-            GlobalPlayer.Init();
             ParticleManager.Initialize();
             World.InitTriggers();
 
@@ -351,47 +354,6 @@ namespace Casull
                 transition.Draw(spriteBatch);
             }
             spriteBatch.End();
-
-
-            //if (GetGameState() is World world)
-            //{
-            //    //if (world.tileMap.needsUpdate)
-            //    //    world.tileMap.BakeMap();
-
-            //    if(!world.tileMap.didBakeTexture)
-            //    {
-            //        world.tileMap.Draw(spriteBatch);
-            //    }
-            //}
-            //GraphicsDevice.SetRenderTarget(null);
-
-            //GraphicsDevice.Clear(Color.Black);
-            //base.Draw(gameTime);
-
-            //IGameState state = GetGameState();
-            //if (state != null)
-            //{
-            //    state.Draw(spriteBatch);
-            //    Renderer.RenderLayers(spriteBatch, Renderer.WorldTarget);
-            //    Renderer.StartSpriteBatch(spriteBatch);
-            //    ParticleManager.Draw(spriteBatch);
-            //    spriteBatch.End();
-            //}
-            //GraphicsDevice.SetRenderTarget(Renderer.UITarget);
-            //GraphicsDevice.Clear(Color.Transparent);
-            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
-            //UIManager.Draw(spriteBatch);
-            //spriteBatch.End();
-
-            //GraphicsDevice.SetRenderTarget(Renderer.MainTarget);
-            //spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
-            //spriteBatch.Draw(Renderer.WorldTarget, new Rectangle(0, 0, Renderer.UIPreferedWidth, Renderer.UIPreferedHeight), Color.White);
-            //spriteBatch.Draw(Renderer.UITarget, new Rectangle(0, 0, Renderer.UIPreferedWidth, Renderer.UIPreferedHeight), Color.White);
-            //spriteBatch.End();
-            //GraphicsDevice.SetRenderTarget(null);
-            //spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
-            //spriteBatch.Draw(Renderer.MainTarget, new Rectangle(0, 0, gdm.PreferredBackBufferWidth, gdm.PreferredBackBufferHeight), Color.White);
-
         }
 
         public IGameState GetGameState()

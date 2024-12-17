@@ -117,6 +117,9 @@ namespace Casull.Core.UI.Elements
 
         public static Entity Load(string path, string name)
         {
+            if (!File.Exists(Environment.CurrentDirectory + path + name + ".fab"))
+                return null;
+
             return Entity.Deserialize(File.ReadAllText(Environment.CurrentDirectory + path + name + ".fab"));
         }
     }

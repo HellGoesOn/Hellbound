@@ -55,6 +55,20 @@ namespace Casull.Render
             }
         }
 
+        public readonly string GetRaw()
+        {
+            string input = string.Join("\n", _lines.Select(x => string.Join("", x.pairs.Select(x => x.text))));
+
+            // Regular expression to match the pattern <FF00FF/raw>
+            string pattern = @"<FF00FF/(.*?)>";
+
+            // Replace the matched pattern with just the content inside
+            string result = Regex.Replace(input, pattern, "$1");
+
+            return result;
+
+        }
+
         public void Draw(IMarkdownTextDrawer drawer, int totalLength, Vector2 position, SpriteFont font, float rotation = 0f, Vector2? origin = null, Color? color = null, Vector2? scale = null, object[] additionalArgs = null)
         {
             float y = 0;

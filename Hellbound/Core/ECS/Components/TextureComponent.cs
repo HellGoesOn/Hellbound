@@ -9,6 +9,7 @@ namespace Casull.Core.ECS.Components
         public Vector2 scale;
         public Color color;
         public bool solidColor;
+        internal float opacity;
 
         public TextureComponent(string texture, Vector2? origin = null, Vector2? scale = null)
         {

@@ -37,6 +37,8 @@ namespace Casull.Core.Combat
         public List<StatusEffect> statusEffects;
         public Dictionary<string, SpriteAnimation> animations = new();
 
+        public float damageReceivedMultiplier = 1f;
+
         public float opacity;
 
         public Unit()
@@ -281,7 +283,7 @@ namespace Casull.Core.Combat
                 Ability finalAbility = (Ability)Activator.CreateInstance(ab.abilityToLearn.GetType());
 
                 foreach (var field in fields) {
-                    field.SetValue(finalAbility, field.GetValue(finalAbility));
+                    field.SetValue(finalAbility, field.GetValue(ab.abilityToLearn));
                 }
                 copy.learnableAbilities.Add(new(ab.requiredLevel, finalAbility));
             }

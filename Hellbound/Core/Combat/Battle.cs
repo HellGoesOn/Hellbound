@@ -430,7 +430,7 @@ namespace Casull.Core.Combat
                 playerMenu.focused = false;
                 switch (playerMenu.CurrentOption) {
                     case "Attack":
-                        string[] attackNames = ActingUnit.abilities.Select(x => x.Name).ToArray();
+                        string[] attackNames = ActingUnit.abilities.Select(x => x.name).ToArray();
                         int[] unusable = ActingUnit.abilities.Where(x => !x.CanCast(ActingUnit)).Select(x => ActingUnit.abilities.IndexOf(x)).ToArray();
 
                         var attacks = new UIScrollableMenu(8, attackNames) {

@@ -41,7 +41,7 @@ namespace Casull.Core.UI
                 oldText = text;
                 brokenText = text.Splice(lineBreak);
                 myText = brokenText;
-                size = font.MeasureString(brokenText);
+                size = font.MeasureString(myText.GetRaw());
                 myTextDrawer.borderColor = borderColor;
             }
             myTextDrawer.borderColor = borderColor;
@@ -54,7 +54,7 @@ namespace Casull.Core.UI
                 firstSplit = true;
                 oldText = text;
                 myText = brokenText = text.Splice(lineBreak);
-                size = font.MeasureString(brokenText);
+                size = font.MeasureString(myText.GetRaw());
             }
 
             if (firstSplit) {

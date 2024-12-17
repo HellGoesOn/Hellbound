@@ -42,7 +42,7 @@ namespace Casull.Core.UI.CombatUI
             { ["Item"] },
             { ["Attack", "Item"] },
             { ["Guard"] },
-            { ["Attack", "Guard"] }
+            { ["Item"] }
         };
 
         public CombatUIState()

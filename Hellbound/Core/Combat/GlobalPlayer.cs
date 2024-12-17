@@ -4,6 +4,7 @@ using Casull.Core.Combat.Abilities.Phys;
 using Casull.Core.Combat.Abilities.Wind;
 using Casull.Core.Combat.Items;
 using Casull.Core.Combat.Items.Consumables;
+using Casull.Core.UI;
 using Microsoft.Xna.Framework;
 using Treeline.Core.Graphics;
 
@@ -37,6 +38,7 @@ namespace Casull.Core.Combat
             //ActiveParty.Add(sidekick);
 
             AddItem(new ChocolateBar() { count = 3});
+            AddItem(new AdrenalineShot() { count = 3});
         }
 
         public static void AddPartyMember(Unit newUnit)
@@ -65,6 +67,8 @@ namespace Casull.Core.Combat
             }
 
             newItem.OnObtain();
+
+            UIManager.overworldUI.Notify($"Found <FFFF00/{newItem.name}> x {newItem.count}", Color.White, 120);
         }
 
         public static void ResetToPrebattle()
@@ -197,6 +201,7 @@ namespace Casull.Core.Combat
             };
             mc.animations.Add("Idle", idle);
             mc.animations.Add("Cast", flipOff);
+            mc.animations.Add("BasicAttack", flipOff);
             mc.animations.Add("Victory", victoryPose);
             mc.animations.Add("Special", special);
         }

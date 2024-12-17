@@ -14,6 +14,10 @@ namespace Casull.Core.DialogueSystem
         public string text;
         public string title;
 
+        int autoDelay;
+
+        public int TimeLeft => autoDelay / 60;
+
         public Color textColor;
         public Color speakerColor;
         public Color borderColor;
@@ -29,6 +33,7 @@ namespace Casull.Core.DialogueSystem
 
         public DialoguePage()
         {
+            autoDelay = 60;
             textScale = Vector2.One;
             textColor = Color.White;
             speakerColor = Color.White;
@@ -69,7 +74,12 @@ namespace Casull.Core.DialogueSystem
                 elapsedTime = 0;
             }
 
-            if (finishedScrolling && Input.PressedKey(Keys.E)) {
+            if (Dialogue.auto && finishedScrolling)
+                autoDelay--;
+            else
+                autoDelay = 200;
+
+            if ((finishedScrolling && Input.PressedKey(Keys.E)) || (Dialogue.auto && autoDelay <= 0) || (Dialogue.auto && Input.HeldKey(Keys.Space))) {
                 if (responses.Count > 0) {
                     responses[currentResponse].OnUseResponse(dialogue);
                 }

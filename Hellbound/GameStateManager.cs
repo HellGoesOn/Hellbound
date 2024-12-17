@@ -5,7 +5,7 @@ namespace Casull
 {
     public static class GameStateManager
     {
-        public static GameState State { get; set; } = GameState.Combat;
+        public static GameState State { get; set; } = GameState.MainMenu;
 
         private static GameState _nextState;
 
