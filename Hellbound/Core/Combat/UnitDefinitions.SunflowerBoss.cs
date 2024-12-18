@@ -183,7 +183,7 @@ namespace Casull.Core.Combat
 
             sunFlower.abilities.Add(new Garu() {
                 name = "Wind Gust",
-                baseDamage = 25,
+                baseDamage = 30,
             });
 
             sunFlower.Drops(100, new SunflowerHead(), 1, 1);

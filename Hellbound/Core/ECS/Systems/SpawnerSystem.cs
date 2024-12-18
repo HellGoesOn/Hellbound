@@ -57,6 +57,7 @@ namespace Casull.Core.ECS
                             }
 
                             if(units.Count <= 1 || !units.Any(x => x != "Dud")) {
+                                units.Clear();
                                 units.Add(UnitDefinitions.Get("Dud").internalName);
                                 var options = spawner.unitNames.Where(x => x != "Dud").ToArray();
                                 units.Add(options[Main.rand.Next(options)]);

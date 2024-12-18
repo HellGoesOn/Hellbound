@@ -227,6 +227,7 @@ namespace Casull.Core.Overworld
                     cutscene.Add(new SpawnEntityFromPrefab(Main.instance.ActiveWorld.context, "Slime", new Vector2(18 * 32, 14 * 32 - 10), out var e));
                     cutscene.Add(new FireAction(() => {
                         e.GetComponent<TextureComponent>().scale = new Vector2(-1, 1);
+                        e.GetComponent<Encounter>().enemies = ["Dud", "Slime"];
                     }));
                     cutscene.SetFollowing(e, 0.05f);
                     cutscene.Add(new SetComponent(e, new Velocity(-0.5f, 0)));
