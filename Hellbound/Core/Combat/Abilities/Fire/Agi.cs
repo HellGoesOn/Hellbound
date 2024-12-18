@@ -1,7 +1,7 @@
 ﻿using Casull.Core.Combat.Sequencer;
 using Casull.Core.Combat.Status.Debuffs;
 using Microsoft.Xna.Framework;
-using Treeline.Core.Graphics;
+using Casull.Core.Graphics;
 
 namespace Casull.Core.Combat.Abilities.Fire
 {

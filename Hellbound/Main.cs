@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Globalization;
-using Treeline.Core.Graphics;
+using Casull.Core.Graphics;
 
 namespace Casull
 {
@@ -30,7 +30,7 @@ namespace Casull
         internal static Random rand;
         internal bool spiritsAngered;
         internal static int angerCounter;
-        internal static string currentZone = "";
+        internal static string currentZone = "Forest3";
         internal static Vector2 lastTransitionPosition;
 
         public Battle battle;

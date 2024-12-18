@@ -6,13 +6,13 @@ namespace Casull.Core.Combat.Abilities
 {
     public class Disturb : Ability
     {
-        public Disturb() : base("Disturb", "High chance of Fear to 1 foe")
+        public Disturb() : base("Disturb", "Chance of Fear to 1 foe")
         {
             spCost = 3;
             aoe = false;
             canTarget = ValidTargets.Enemy;
             elementalType = ElementalType.DoT;
-            accuracy = 80;
+            accuracy = 40;
         }
 
         protected override void UseAbility(Unit caster, Battle battle, List<Unit> targets)
@@ -30,7 +30,7 @@ namespace Casull.Core.Combat.Abilities
                 sequence.Add(new DelaySequence(90));
                 foreach (Unit unit in targets) {
                     sequence.Delay(10);
-                    sequence.DoDamage(caster, unit, 99999, ElementalType.Almighty);
+                    sequence.DoDamage(caster, unit, 99999, ElementalType.Almighty, 600);
                 }
             }
             else {

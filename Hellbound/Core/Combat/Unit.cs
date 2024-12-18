@@ -14,6 +14,7 @@ namespace Casull.Core.Combat
         public float shake;
         public float rotation;
         public string name;
+        public string internalName;
         public string sprite;
         public string currentAnimation = "";
         public string defaultAnimation = "";
@@ -84,8 +85,8 @@ namespace Casull.Core.Combat
             _stats.HP = (int)(Stats.MaxHP * hpPercentage);
             _stats.SP = (int)(Stats.MaxSP * spPercentage);
             _stats.EXP -= Stats.toNextLevel;
-            _stats.toNextLevel = (int)(_stats.toNextLevel * 1.25f);
-            _stats.toNextLevel = Math.Clamp(_stats.toNextLevel, 0, 99999999);
+            _stats.toNextLevel = (uint)(_stats.toNextLevel * 1.25f);
+            _stats.toNextLevel = Math.Clamp(_stats.toNextLevel, 0, 999999999);
             //if (!silent)
             //    UIManager.combatUI.CreateLevelUp(name, oldStats, _stats);
             TryLevelUp(silent);
@@ -265,6 +266,7 @@ namespace Casull.Core.Combat
         {
             Unit copy = new();
             copy.name = name;
+            copy.internalName = internalName;
             copy.sprite = sprite;
             copy.portrait = portrait;
             copy.portraitCombat = portraitCombat;
@@ -315,6 +317,13 @@ namespace Casull.Core.Combat
             }
 
             return copy;
+        }
+
+        public void SetExp(uint value)
+        {
+            Stats.EXP += value;
+            Stats.totalEXP += value;
+            TryLevelUp(true);
         }
 
         public void Learns(int atLevel, Ability abilityToLearn)

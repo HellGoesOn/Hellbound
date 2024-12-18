@@ -286,7 +286,7 @@ namespace Casull.Core.Overworld
 
             var trigger = AddTrigger("unlockInventory");
 
-            trigger.condition = (sender) => UIManager.combatUI.tutorialProgress > 1;
+            trigger.condition = (sender) => UIManager.combatUI.tutorialProgress > 1 && !CheckFlag("unlockInventory");
 
             trigger.action = (sender) => {
 

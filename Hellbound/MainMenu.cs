@@ -1,4 +1,5 @@
 ﻿using Casull.Core;
+using Casull.Core.Combat;
 using Casull.Core.ECS;
 using Casull.Core.ECS.Components;
 using Casull.Core.Overworld;
@@ -19,6 +20,7 @@ namespace Casull
         float progress = -8f;
 
         internal bool started;
+        internal bool newGame;
         bool startFlag;
 
         int transitionDelay;
@@ -136,9 +138,25 @@ namespace Casull
                     SoundEngine.StartMusic("ChangingSeasons", true);
                     GameStateManager.SetState(GameState.Overworld, new BlackFadeInFadeOut(Renderer.SaveFrame()));
 
-                    Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", "Forest3");
+                    if (newGame && File.Exists(Environment.CurrentDirectory + "\\SaveData\\Save.sdt"))
+                        File.Delete(Environment.CurrentDirectory + "\\SaveData\\Save.sdt");
 
-                    Main.lastTransitionPosition = Main.instance.ActiveWorld.context.GetAllEntities().FirstOrDefault(x => x.GetComponent<Tags>().Has("Player")).GetComponent<Transform>().position;
+                    UIManager.combatUI.tutorialProgress = 0;
+                    Main.lastTransitionPosition = Vector2.Zero;
+                    Main.currentZone = "Forest3";
+                    World.flags.Clear();
+
+                    GlobalPlayer.Init();
+                    GlobalPlayer.LoadProgress();
+
+                    Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", Main.currentZone);
+
+                    if (Main.lastTransitionPosition == Vector2.Zero)
+                        Main.lastTransitionPosition = Main.instance.ActiveWorld.context.GetAllEntities().FirstOrDefault(x => x.GetComponent<Tags>().Has("Player")).GetComponent<Transform>().position;
+                    else {
+                        Main.instance.ActiveWorld.context.GetAllEntities().FirstOrDefault(x => x.GetComponent<Tags>().Has("Player")).GetComponent<Transform>().position = Main.lastTransitionPosition;
+                    }
+
                 }
             }
 
@@ -219,7 +237,10 @@ namespace Casull
 
             this.mainMenu = mainMenu;
 
-            menu = new UIScrollableMenu(3, ["Start", "Settings", "Quit"]);
+            if(File.Exists(Environment.CurrentDirectory + "\\SaveData\\Save.sdt"))
+                menu = new UIScrollableMenu(4, ["Continue", "New Game", "Settings", "Quit"]);
+            else
+                menu = new UIScrollableMenu(3, ["New Game", "Settings", "Quit"]);
             menu.SetPosition(new Vector2(0, Renderer.PreferedHeight * 0.5f - menu.targetSize.Y * 0.5f));
             menu.openSpeed = 1f;
             menu.panelColor = Color.Transparent;
@@ -251,7 +272,11 @@ namespace Casull
                     case "Quit":
                         Main.instance.Exit();
                         break;
-                    case "Start":
+                    case "New Game":
+                        mainMenu.newGame = true;
+                        mainMenu.started = true;
+                        break;
+                    case "Continue":
                         mainMenu.started = true;
                         break;
                     case "Settings":

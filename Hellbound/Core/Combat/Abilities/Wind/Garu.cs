@@ -1,13 +1,13 @@
 ﻿using Casull.Core.Combat.Sequencer;
 using Casull.Core.Combat.Status.Debuffs;
 using Microsoft.Xna.Framework;
-using Treeline.Core.Graphics;
+using Casull.Core.Graphics;
 
 namespace Casull.Core.Combat.Abilities.Wind
 {
     public class Garu : Ability
     {
-        public Garu() : base("Garu", "Light Wind damage to 1 foe.\nHigh chance of Burn")
+        public Garu() : base("Garu", "Light Wind damage to 1 foe.")
         {
             spCost = 3;
             aoe = false;

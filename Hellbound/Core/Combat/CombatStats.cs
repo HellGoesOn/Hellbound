@@ -12,9 +12,10 @@ namespace Casull.Core.Combat
         private int maxSP;
         public float strength;
         public float magic;
-        public int EXP;
-        public int toNextLevel;
-        public int value;
+        public uint EXP;
+        public uint totalEXP;
+        public uint toNextLevel;
+        public uint value;
         public int level;
         public float speed;
 
@@ -26,6 +27,7 @@ namespace Casull.Core.Combat
             accuracy = 1f;
             evasion = 0f;
             value = 20;
+            totalEXP = 0;
             EXP = 0;
             toNextLevel = 40;
             level = 1;
@@ -39,6 +41,7 @@ namespace Casull.Core.Combat
         public CombatStats(float attack, float magic, int maxHP, int maxSP, float speed)
         {
             evasion = 1f;
+            totalEXP = 0;
             EXP = 0;
             value = 20;
             toNextLevel = 40;
@@ -70,6 +73,7 @@ namespace Casull.Core.Combat
                 HP = this.HP,
                 SP = this.SP,
                 EXP = this.EXP,
+                totalEXP = this.totalEXP,
                 strength = this.strength,
                 magic = this.magic,
                 speed = this.speed,

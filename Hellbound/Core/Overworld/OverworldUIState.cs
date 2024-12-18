@@ -746,6 +746,8 @@ namespace Casull.Core.Overworld
 
                                 break;
                             case "Quit":
+                                GlobalPlayer.SaveProgress();
+
                                 optionMenuBox.focused = false;
 
                                 string[] options = ["No", "Yes"];

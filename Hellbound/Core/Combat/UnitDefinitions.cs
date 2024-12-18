@@ -143,9 +143,11 @@ namespace Casull.Core.Combat
             DefineSunFlowerBoss();
         }
 
-        private static Unit DefineUnit(string name)
+        private static Unit DefineUnit(string name, string internalName = null)
         {
             Unit unit = new();
+            internalName ??= name;
+            unit.internalName = internalName;
             _definitions.Add(name, unit);
             return _definitions[name];
         }

@@ -126,6 +126,8 @@ Entity_5
 		Transform{{X:160 Y:440.25}; 0; 0}
 
 		TripWire{"forceRun"}
+		
+		DiesIfFlagRaised{"ranTutorial"}
 
 	} ;
 Entity_6

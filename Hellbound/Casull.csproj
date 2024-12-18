@@ -7,6 +7,7 @@
     <Nullable>disable</Nullable>
     <Platforms>AnyCPU;x64</Platforms>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <ApplicationIcon>Casull.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -74,6 +75,10 @@
     <None Remove="Assets\Textures\WhatDaDogDoin2.png" />
     <None Remove="Assets\thunderfuryl.png" />
     <None Remove="Content\Prefabs\Base.fab" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Casull.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FNA\FNA.Core.csproj" />

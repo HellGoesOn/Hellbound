@@ -1,7 +1,7 @@
 ﻿using Casull.Core.ECS.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Treeline.Core.Graphics;
+using Casull.Core.Graphics;
 
 namespace Casull.Core.ECS
 {

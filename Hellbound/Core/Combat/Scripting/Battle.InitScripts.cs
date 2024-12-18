@@ -68,7 +68,7 @@ namespace Casull.Core.Combat
                         borderColor = Color.Transparent
                     };
                     var page6 = new DialoguePage {
-                        text = "( Right now, your character is filled with rage and will only be able to attack, but later you will unlock <FFFF00/other options> )",
+                        text = "( If you selected the wrong option, you can always go back using <ffff00/[Q]>. Though right now, your character is filled with rage and will only be able to attack, but later you will unlock <FFFF00/other options> )",
                         textColor = Color.LimeGreen,
                         fillColor = Color.Black * 0.5f,
                         borderColor = Color.Transparent
@@ -198,7 +198,7 @@ namespace Casull.Core.Combat
                     borderColor = Color.Transparent
                 };
                 var page2 = new DialoguePage {
-                    text = Ability.MarkdownElements($"( There are several main types of <FFFFFF/Elements>: Phys, Fire, Ice, Elec & Wind )"),
+                    text = Ability.MarkdownElements($"( There are several <FFFFFF/Elements>, those being: Phys, Fire, Ice, Elec & Wind )"),
                     textColor = Color.LimeGreen,
                     fillColor = Color.Black * 0.5f,
                     borderColor = Color.Transparent

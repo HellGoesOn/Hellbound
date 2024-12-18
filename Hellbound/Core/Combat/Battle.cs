@@ -914,7 +914,7 @@ namespace Casull.Core.Combat
                 // end Battle;
                 battleEnded = true;
                 state = BattleState.Victory;
-                int expValue = 0;
+                uint expValue = 0;
 
                 List<Item> drops = [];
 
@@ -949,6 +949,7 @@ namespace Casull.Core.Combat
                 bool anyLevelUps = false;
                 foreach (Unit unit in GlobalPlayer.ActiveParty) {
                     unit.Stats.EXP += expValue;
+                    unit.Stats.totalEXP += expValue;
                     unit.ClearEffects();
 
 

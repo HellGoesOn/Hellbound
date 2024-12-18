@@ -4,9 +4,16 @@ using Casull.Core.Combat.Abilities.Phys;
 using Casull.Core.Combat.Abilities.Wind;
 using Casull.Core.Combat.Items;
 using Casull.Core.Combat.Items.Consumables;
+using Casull.Core.Overworld;
 using Casull.Core.UI;
 using Microsoft.Xna.Framework;
-using Treeline.Core.Graphics;
+using System.Text;
+using System.Text.RegularExpressions;
+using Casull.Extensions;
+using Casull.Core.Graphics;
+using System.Globalization;
+using System.Reflection;
+using Cyotek.Drawing.BitmapFont;
 
 namespace Casull.Core.Combat
 {
@@ -17,7 +24,7 @@ namespace Casull.Core.Combat
 
         public static List<Unit> ActiveParty { get => party; set => party = value; }
 
-        public static List<CombatStats> preBattleStats = [];
+        public readonly static List<CombatStats> preBattleStats = [];
 
         public static List<Item> Inventory => _items;
 
@@ -25,11 +32,13 @@ namespace Casull.Core.Combat
 
         public static void Init()
         {
+            ActiveParty.Clear();
+            Inventory.Clear();
+            preBattleStats.Clear();
+
             Unit protag = Copy("Doorkun");
 
-            protag.animations.Clear();
-
-            ProtagAnimations(protag);
+            //ProtagAnimations(protag);
 
             protag.resistances[ElementalType.DoT] = -0.5f;
 
@@ -94,7 +103,7 @@ namespace Casull.Core.Combat
         }
 
         // to do: create json file, pull from there instead
-        public static void ProtagAnimations(Unit mc)
+        public static void ProtagAnimations(Unit f)
         {
             SpriteAnimation idle = new("Dumbass_Idle",
                 [
@@ -164,11 +173,11 @@ namespace Casull.Core.Combat
                     Color[] clrs = { Color.Blue, Color.Cyan, Color.Turquoise, Color.LightBlue };
 
                     for (int i = 0; i < 3; i++) {
-                        int xx = Main.rand.Next((int)(mc.size.X * 0.5f));
-                        int yy = Main.rand.Next((int)(mc.size.Y));
+                        int xx = Main.rand.Next((int)(f.size.X * 0.5f));
+                        int yy = Main.rand.Next((int)(f.size.Y));
                         float velX = Main.rand.Next(60, 120) * 0.001f * (Main.rand.Next(2) == 0 ? -1 : 1);
                         float velY = -0.2f * (Main.rand.Next(20, 60) * 0.05f);
-                        var particle = ParticleManager.NewParticleAdditive(new Vector3(mc.position + new Vector2(-mc.size.X * 0.25f + xx, mc.size.Y * 0.5f), 0), new Vector3(velX, 0, velY), 60);
+                        var particle = ParticleManager.NewParticleAdditive(new Vector3(f.position + new Vector2(-f.size.X * 0.25f + xx, f.size.Y * 0.5f), 0), new Vector3(velX, 0, velY), 60);
 
                         particle.color = clrs[Main.rand.Next(clrs.Length)];
                         particle.endColor = Color.Black;
@@ -180,11 +189,11 @@ namespace Casull.Core.Combat
                     if (_.currentFrame == 13) {
                         _.currentFrame = 14;
                         for (int i = 0; i < 45; i++) {
-                            int xx = Main.rand.Next((int)(mc.size.X * 0.5f));
-                            int yy = Main.rand.Next((int)(mc.size.Y));
+                            int xx = Main.rand.Next((int)(f.size.X * 0.5f));
+                            int yy = Main.rand.Next((int)(f.size.Y));
                             float velX = Main.rand.Next(55, 135) * 0.01f;
                             float velY = -0.2f * (Main.rand.Next(0, 24) * 0.05f) * (Main.rand.Next(2) == 0 ? -1 : 1);
-                            var particle = ParticleManager.NewParticleAdditive(new Vector3(mc.position + new Vector2(-mc.size.X * 0.15f, -mc.size.Y * 0.35f), 0), new Vector3(velX, velY, 0), 60);
+                            var particle = ParticleManager.NewParticleAdditive(new Vector3(f.position + new Vector2(-f.size.X * 0.15f, -f.size.Y * 0.35f), 0), new Vector3(velX, velY, 0), 60);
                             particle.color = clrs[Main.rand.Next(clrs.Length)];
                             particle.endColor = Color.Black;
                             particle.degradeSpeed = 0.01f;
@@ -199,11 +208,112 @@ namespace Casull.Core.Combat
                     GameOptions.MusicVolume = GameOptions.OldMusicVolume;
                 }
             };
-            mc.animations.Add("Idle", idle);
-            mc.animations.Add("Cast", flipOff);
-            mc.animations.Add("BasicAttack", flipOff);
-            mc.animations.Add("Victory", victoryPose);
-            mc.animations.Add("Special", special);
+            f.animations.Add("Idle", idle);
+            f.animations.Add("Cast", flipOff);
+            f.animations.Add("BasicAttack", flipOff);
+            f.animations.Add("Victory", victoryPose);
+            f.animations.Add("Special", special);
+        }
+
+        public static void SaveProgress()
+        {
+            var oldCult = Thread.CurrentThread.CurrentUICulture;
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine($"World: {{[{UIManager.combatUI.tutorialProgress}][{Main.currentZone}][{Main.lastTransitionPosition}]}}");
+
+            sb.AppendLine("Flags: {");
+
+            foreach(string flag in World.flags) {
+                sb.AppendLine($"{flag}");
+            }
+            sb.AppendLine("}");
+
+            sb.AppendLine("Party: {");
+            foreach(Unit unit in ActiveParty) {
+                sb.AppendLine($"[{unit.internalName}][{unit.name}][{unit.Stats.totalEXP}][{unit.Stats.HP}][{unit.Stats.SP}]");
+            }
+            sb.AppendLine("}");
+
+            sb.AppendLine("Inventory: {");
+            foreach(Item item in Inventory) {
+                sb.AppendLine($"[{item.GetType().Name}][{item.count}]");
+            }
+            sb.AppendLine("}");
+
+            if (!Directory.Exists(Environment.CurrentDirectory + "\\SaveData")) {
+                Directory.CreateDirectory(Environment.CurrentDirectory + "\\SaveData");
+            }
+
+            File.WriteAllText(Environment.CurrentDirectory + "\\SaveData\\Save.sdt", sb.ToString());
+
+            Thread.CurrentThread.CurrentCulture = oldCult;
+        }
+
+        public static void LoadProgress()
+        {
+            var oldCult = Thread.CurrentThread.CurrentUICulture;
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+            if (!File.Exists(Environment.CurrentDirectory + "\\SaveData\\Save.sdt")) {
+                return;
+            }
+
+            string text = File.ReadAllText(Environment.CurrentDirectory + "\\SaveData\\Save.sdt");
+
+            var entries = text.Split("}" + Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+            if (entries.Length < 4)
+                return;
+
+            string worldValues = entries[0];
+            var worldMatches = Regex.Matches(worldValues, @"\[(.+?)\]");
+
+            UIManager.combatUI.tutorialProgress = int.Parse(worldMatches[0].Groups[1].Value);
+            Main.lastTransitionPosition = new Vector2().FromString(worldMatches[2].Groups[1].Value);
+            Main.currentZone = worldMatches[1].Groups[1].Value;
+
+            World.flags.Clear();
+
+            List<string> flags = [.. entries[1].Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)];
+            flags.RemoveAt(0);
+
+            foreach (var flag in flags) {
+                World.RaiseFlag(flag);
+            }
+
+            ActiveParty.Clear();
+
+            string[] characters = entries[2].Substring(8+Environment.NewLine.Length).Split(Environment.NewLine);
+
+            foreach(string character in characters) {
+                var matches = Regex.Matches(character, @"\[(.+?)\]");
+                Unit unit = UnitDefinitions.Get(matches[0].Groups[1].Value);
+                unit.name = matches[1].Groups[1].Value.Replace("\"", "");
+
+                unit.SetExp(uint.Parse(matches[2].Groups[1].Value));
+                unit.Stats.HP = int.Parse(matches[3].Groups[1].Value);
+                unit.Stats.SP = int.Parse(matches[4].Groups[1].Value);
+                unit.ai = null;
+                ActiveParty.Add(unit);
+            }
+
+            Inventory.Clear();
+            string[] items = entries[3].Substring(12 + Environment.NewLine.Length).Split(Environment.NewLine);
+
+            foreach (var item in items) {
+                var matches = Regex.Matches(item, @"\[(.+?)\]");
+                var itemTypeName = matches[0].Groups[1].Value;
+                var itemType = Assembly.GetExecutingAssembly().GetTypes().FirstOrDefault(t => t.Name.Contains(itemTypeName));
+                var madeItem = Activator.CreateInstance(itemType);
+                madeItem.GetType().GetField("count").SetValue(madeItem, int.Parse(matches[1].Groups[1].Value));
+
+                Inventory.Add((Item)madeItem);
+            }
+
+
+            DefaultBattleStations(ActiveParty);
+            Thread.CurrentThread.CurrentCulture = oldCult;
         }
     }
 }

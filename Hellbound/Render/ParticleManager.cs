@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Treeline.Core.Graphics
+namespace Casull.Core.Graphics
 {
     public static class ParticleManager
     {
