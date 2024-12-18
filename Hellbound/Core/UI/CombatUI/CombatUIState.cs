@@ -1,4 +1,6 @@
 ﻿using Casull.Core.Combat;
+using Casull.Core.Combat.Abilities;
+using Casull.Core.Combat.Items;
 using Casull.Core.UI.Elements;
 using Casull.Render;
 using Microsoft.Xna.Framework;
@@ -145,8 +147,11 @@ namespace Casull.Core.UI.CombatUI
                 newPortrait.spBar.Rotation = -0.25f;
                 newPortrait.hpText.Rotation = -0.25f;
                 newPortrait.spText.Rotation = -0.25f;
+                newPortrait.predictedHpBar.Rotation = -0.25f;
+                newPortrait.predictedSpBar.Rotation = -0.25f;
                 newPortrait.hpValueText.SetPosition(80, 50);
                 newPortrait.spValueText.SetPosition(80, 100);
+
 
                 Append(newPortrait);
                 portraits.Add(newPortrait);
@@ -282,6 +287,15 @@ namespace Casull.Core.UI.CombatUI
 
                 portraits[i].penisEnlargmentPills = activeBattle.ActingUnit == unit && unit.portraitCombat == portraits[i].portrait;
                 portraits[i].SetValues(unit.Stats.HP, unit.Stats.SP, unit.Stats.MaxHP, unit.Stats.MaxSP);
+
+                portraits[i].SetPredictedValues(unit.Stats.HP, unit.Stats.SP, unit.Stats.MaxHP, unit.Stats.MaxSP);
+                if (activeBattle.TargetingWith is Item item && item.canTarget == ValidTargets.Ally && activeBattle.TryGetTargets(item).Contains(unit)) {
+
+                    portraits[i].SetPredictedValues(Math.Clamp( unit.Stats.HP + item.damage, 0, unit.Stats.MaxHP), Math.Clamp(unit.Stats.SP + item.spDamage, 0, unit.Stats.MaxSP), unit.Stats.MaxHP, unit.Stats.MaxSP);
+                }
+                else if(activeBattle.isPickingTarget && activeBattle.TargetingWith is Ability ability && ability.elementalType == ElementalType.Healing && activeBattle.TryGetTargets(ability).Contains(unit)) {
+                    portraits[i].SetPredictedValues(Math.Clamp(unit.Stats.HP + ability.baseDamage, 0, unit.Stats.MaxHP), unit.Stats.SP, unit.Stats.MaxHP, unit.Stats.MaxSP);
+                }
             }
 
             //if (activeBattle.ActingUnit != null)

@@ -2,7 +2,7 @@ Entity_1
 	{
 		CollisionBox{16; 10; {X:8 Y:-4}}
 
-		CreateBattleOnContact{"TestBG"; [Slime]; []}
+		Encounter{"TestBG"; [Slime]; []}
 
 		TextureComponent{"Slime3"; {X:16 Y:16}; {X:1 Y:1}}
 

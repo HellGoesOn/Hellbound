@@ -59,7 +59,7 @@ namespace Casull.Core.Overworld
             systems.AddSystem(new InteractionSystem(context));
             systems.AddSystem(new TripWireSystem(context));
             systems.AddSystem(new LoadingZoneSystem(context));
-            systems.AddSystem(new CreateBattleOnContactSystem(context));
+            systems.AddSystem(new EncounterSystem(context));
             systems.AddSystem(new ParticleEmissionSystem(context));
             systems.AddSystem(new FollowerSystem(context));
             systems.AddSystem(new MoveCameraSystem(context));

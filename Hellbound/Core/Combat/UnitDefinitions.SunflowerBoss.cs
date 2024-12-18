@@ -157,7 +157,7 @@ namespace Casull.Core.Combat
 
             sunFlower.abilities.Add(new SolarFlare() {
                 spCost = 0,
-                accuracy = 100,
+                accuracy = 600,
                 name = "Solar Flare"
             });
 
@@ -169,25 +169,21 @@ namespace Casull.Core.Combat
             sunFlower.abilities.Add(new Garu() {
                 name = "Wind Gust",
                 baseDamage = 25,
-                accuracy = 75
             });
 
             sunFlower.abilities.Add(new SunflowerKick() {
                 name = "Sunflower Kick",
                 baseDamage = 30,
-                accuracy = 50
             });
 
             sunFlower.abilities.Add(new SunflowerKick() {
                 name = "Sunflower Punch",
                 baseDamage = 30,
-                accuracy = 50
             });
 
             sunFlower.abilities.Add(new Garu() {
                 name = "Wind Gust",
                 baseDamage = 25,
-                accuracy = 75
             });
 
             sunFlower.Drops(100, new SunflowerHead(), 1, 1);

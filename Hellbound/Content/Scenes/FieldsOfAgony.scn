@@ -189,7 +189,7 @@ Entity_11
 	{
 		CollisionBox{128; 128; {X:64 Y:64}; 0}
 
-		CreateBattleOnContact{"TestBG2"; [Dud, Sunflower]; []}
+		Encounter{"TestBG2"; [Dud, Sunflower]; []}
 
 		DiesIfFlagRaised{"SunflowerIsDead"}
 

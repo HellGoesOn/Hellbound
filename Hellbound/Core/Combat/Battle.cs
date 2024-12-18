@@ -721,6 +721,7 @@ namespace Casull.Core.Combat
                         var allySelect = new UIScrollableMenu(4, [.. allyNames]) {
                             openSpeed = 0.25f,
                             onLoseParent = (sender) => {
+                                TargetingWith = null;
                                 InventoryMenu.focused = true;
                                 var oldCount = InventoryMenu.options.Count;
                                 InventoryMenu.options = GlobalPlayer.Inventory.Select(item => $"{item.count} x {item.name}").ToList();
@@ -739,6 +740,8 @@ namespace Casull.Core.Combat
                         selectText.SetPosition(20, -14);
 
                         allySelect.onUpdate = (sender) => {
+                            TargetingWith = item;
+                            selectedTarget = allySelect.currentSelectedOption;
                             if (Input.PressedKey([Keys.Escape, Keys.Q]) && (sender as UIScrollableMenu).focused)
                                 allySelect.closed = true;
                         };

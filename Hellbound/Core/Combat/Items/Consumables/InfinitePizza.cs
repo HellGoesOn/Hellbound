@@ -7,12 +7,13 @@
             icon = "Pizza";
             frames = [new FrameData(0, 0, 32, 32)];
             iconScale *= 4;
+            damage = 1;
         }
 
         protected override void OnUse(Unit caster, Battle battle, List<Unit> targets)
         {
             SoundEngine.PlaySound("NomNomNom", 0.75f);
-            caster.Stats.HP = Math.Clamp(caster.Stats.HP + 1, 0, caster.Stats.MaxHP);
+            caster.Stats.HP = Math.Clamp(caster.Stats.HP + damage, 0, caster.Stats.MaxHP);
         }
     }
 }

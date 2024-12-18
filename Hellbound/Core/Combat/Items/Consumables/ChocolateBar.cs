@@ -15,6 +15,7 @@ namespace Casull.Core.Combat.Items.Consumables
             frames = [new FrameData(0, 0, 32, 32)];
             consumable = true;
             iconScale *= 3;
+            damage = 40;
         }
 
         protected override void OnUse(Unit caster, Battle battle, List<Unit> targets)
@@ -50,7 +51,7 @@ namespace Casull.Core.Combat.Items.Consumables
                 caster.Stats.HP = 0;
             }
             else {
-                new Dia() { baseDamage = 50, spCost = 0 }.Use(caster, battle, targets, true);
+                new Dia() { baseDamage = damage, spCost = 0 }.Use(caster, battle, targets, true);
             }
         }
     }

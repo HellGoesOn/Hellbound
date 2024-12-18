@@ -10,8 +10,9 @@ namespace Casull.Core.UI
         public UIBorderedText(string text, int lineBreak = -1)
         {
             this.lineBreak = lineBreak;
-            oldText = brokenText = this.text = text.Splice(lineBreak);
-            size = font.MeasureString(brokenText);
+            myText = oldText = brokenText = this.text = text.Splice(lineBreak);
+            size = font.MeasureString(myText.GetRaw());
+            myTextDrawer.borderColor = borderColor;
         }
 
         protected bool firstSplit;

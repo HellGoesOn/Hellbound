@@ -38,6 +38,9 @@ namespace Casull
 
         public MainMenu mainMenu;
 
+        internal static int saveSlot = 0;
+        internal static string newSlotName = "";
+
         public List<Sequence> outOfBoundsSequences = [];
 
         public World ActiveWorld {

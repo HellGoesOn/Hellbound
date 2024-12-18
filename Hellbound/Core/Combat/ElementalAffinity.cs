@@ -6,7 +6,7 @@
         /// Positive value -> resist
         /// Negative value -> weak
         /// </summary>
-        private readonly float[] values = [0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f];
+        private readonly float[] values = [0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f];
 
         public float this[ElementalType type] {
             get => values[(int)type];
@@ -35,7 +35,11 @@
                 [ElementalType.Elec] = this[ElementalType.Elec],
                 [ElementalType.Wind] = this[ElementalType.Wind],
                 [ElementalType.Almighty] = this[ElementalType.Almighty],
-                [ElementalType.DoT] = this[ElementalType.DoT]
+                [ElementalType.DoT] = this[ElementalType.DoT],
+                [ElementalType.Support] = this[ElementalType.Support],
+                [ElementalType.Healing] = this[ElementalType.Healing],
+                [ElementalType.None] = this[ElementalType.None],
+
 
             };
         }

@@ -109,7 +109,7 @@ namespace Casull.Core.Combat.Abilities
                 liarLiarPantsOnFire = liarLiarPantsOnFire.Replace(name, $"<{hexValues[i]}/{name}>", StringComparison.OrdinalIgnoreCase);
             }
 
-            return liarLiarPantsOnFire;
+            return liarLiarPantsOnFire.Replace("HP", "<20b2aa/HP>").Replace("SP", "<ff69b4/SP>");
         }
     }
 }

@@ -37,6 +37,7 @@ namespace Casull.Core.Combat
             preBattleStats.Clear();
 
             Unit protag = Copy("Doorkun");
+            protag.name = Main.newSlotName;
 
             //ProtagAnimations(protag);
 
@@ -84,10 +85,10 @@ namespace Casull.Core.Combat
         {
             for(int i = 0; i < ActiveParty.Count; i++) {
                 var unit = ActiveParty[i];
-                unit.Stats.HP = preBattleStats[i].HP;
                 unit.Stats.MaxHP = preBattleStats[i].MaxHP;
-                unit.Stats.SP = preBattleStats[i].SP;
+                unit.Stats.HP = preBattleStats[i].HP;
                 unit.Stats.MaxSP = preBattleStats[i].MaxSP;
+                unit.Stats.SP = preBattleStats[i].SP;
                 unit.Stats.EXP = preBattleStats[i].EXP;
                 unit.Stats.toNextLevel = preBattleStats[i].toNextLevel;
                 unit.Stats.level = preBattleStats[i].level;
@@ -246,20 +247,20 @@ namespace Casull.Core.Combat
                 Directory.CreateDirectory(Environment.CurrentDirectory + "\\SaveData");
             }
 
-            File.WriteAllText(Environment.CurrentDirectory + "\\SaveData\\Save.sdt", sb.ToString());
+            File.WriteAllText(Environment.CurrentDirectory + $"\\SaveData\\Save{Main.saveSlot}.sdt", sb.ToString());
 
             Thread.CurrentThread.CurrentCulture = oldCult;
         }
 
-        public static void LoadProgress()
+        public static void LoadProgress(int slot)
         {
             var oldCult = Thread.CurrentThread.CurrentUICulture;
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-            if (!File.Exists(Environment.CurrentDirectory + "\\SaveData\\Save.sdt")) {
+            if (!File.Exists(Environment.CurrentDirectory + $"\\SaveData\\Save{slot}.sdt")) {
                 return;
             }
 
-            string text = File.ReadAllText(Environment.CurrentDirectory + "\\SaveData\\Save.sdt");
+            string text = File.ReadAllText(Environment.CurrentDirectory + $"\\SaveData\\Save{slot}.sdt");
 
             var entries = text.Split("}" + Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 

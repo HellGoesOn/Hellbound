@@ -35,8 +35,8 @@ namespace Casull.Core.UI.Elements
 
         public override void OnDraw(SpriteBatch spriteBatch)
         {
-            Renderer.DrawRect(spriteBatch, GetPosition() - new Vector2(bgSize * 0.5f), new Vector2(size.X, size.Y) + new Vector2(bgSize), bgColor, 0, Rotation);
-            Renderer.DrawRect(spriteBatch, GetPosition(), new Vector2(CalcValue(), size.Y), fillColor, 0, Rotation);
+            Renderer.DrawRect(spriteBatch, GetPosition() - new Vector2(bgSize * 0.5f), (new Vector2(size.X, size.Y) + new Vector2(bgSize)) * scale, bgColor, 0, Rotation);
+            Renderer.DrawRect(spriteBatch, GetPosition(), (new Vector2(CalcValue(), size.Y)) * scale, fillColor, 0, Rotation);
         }
 
         public float CalcValue()

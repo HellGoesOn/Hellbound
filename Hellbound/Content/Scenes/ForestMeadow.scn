@@ -1143,7 +1143,7 @@ Entity_96
 	} ;
 Entity_97
 	{
-		SpawnerComponent{["Slime", "Bird"]; 5; 180; 640}
+		SpawnerComponent{["Slime", "Bird"]; ["Slime", "Bird", "Dud"]; 5; 180; 640}
 		
 		Transform{{X:445 Y:343}; 0; 0}
 

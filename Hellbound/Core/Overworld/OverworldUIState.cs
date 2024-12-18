@@ -1,4 +1,6 @@
 ﻿using Casull.Core.Combat;
+using Casull.Core.Combat.Abilities;
+using Casull.Core.Combat.Items;
 using Casull.Core.UI;
 using Casull.Core.UI.Elements;
 using Casull.Render;
@@ -85,6 +87,11 @@ namespace Casull.Core.Overworld
             blackBarTop.suspended = blackBarBot.suspended = !value;
         }
 
+        ICanTarget targetingWith;
+
+        bool pickingTarget;
+        int targetId;
+
         public override void Update()
         {
             if (!string.IsNullOrWhiteSpace(Main.instance.ActiveWorld.zoneName)) {
@@ -154,7 +161,16 @@ namespace Casull.Core.Overworld
                 bool angry = Main.instance.spiritsAngered;
 
                 if (angry)
-                    mainOptions = ["Continue"];
+                    mainOptions = ["Continue"]; 
+                
+                List<UICombatPortrait> port = [];
+                for (int i = 0; i < GlobalPlayer.ActiveParty.Count; i++) {
+                    var unit = GlobalPlayer.ActiveParty[i];
+                    UICombatPortrait comPortrait = new UICombatPortrait(unit.portraitCombat, unit.Stats.MaxHP, unit.Stats.MaxSP);
+                    comPortrait.SetPosition(16, 96 + 128 * i);
+
+                    port.Add(comPortrait);
+                }
 
                 optionMenu = new UIScrollableMenu(angry ? 1 : mainOptions.Length, mainOptions) {
                     drawArrows = false,
@@ -162,7 +178,7 @@ namespace Casull.Core.Overworld
                     onSelectOption = (sender)
                     => {
                         var optionMenuBox = (UIScrollableMenu)sender;
-
+                        
                         switch (optionMenuBox.CurrentOption) {
                             case "Continue":
                                 optionMenuBox.closed = true;
@@ -192,6 +208,9 @@ namespace Casull.Core.Overworld
                                 descriptionPanel.Append(description);
                                 descriptionPanel.Append(uiPicture);
                                 description.SetPosition(16, 160);
+
+                                descriptionPanel.onUpdate += (sender) => {
+                                };
 
                                 InventoryMenu.onUpdate = (sender) => {
                                     if (Input.PressedKey([Keys.Escape, Keys.Q]) && (sender as UIScrollableMenu).focused) {
@@ -251,6 +270,7 @@ namespace Casull.Core.Overworld
                                                 var allySelect = new UIScrollableMenu(4, [.. allyNames]) {
                                                     openSpeed = 0.25f,
                                                     onLoseParent = (sender) => {
+                                                        targetingWith = null;
                                                         lastTarget = (sender as UIScrollableMenu).currentSelectedOption;
                                                         InventoryMenu.focused = true;
                                                         var oldCount = InventoryMenu.options.Count;
@@ -270,6 +290,9 @@ namespace Casull.Core.Overworld
                                                 selectText.SetPosition(20, -14);
 
                                                 allySelect.onUpdate = (sender) => {
+                                                    targetingWith = item;
+                                                    targetId = allySelect.currentSelectedOption;
+
                                                     if (Input.PressedKey([Keys.Escape, Keys.Q]) && (sender as UIScrollableMenu).focused)
                                                         allySelect.closed = true;
                                                 };
@@ -391,6 +414,7 @@ namespace Casull.Core.Overworld
                                         var allySelect = new UIScrollableMenu(4, [.. allyNames]) {
                                             openSpeed = 0.25f,
                                             onLoseParent = (sender) => {
+                                                targetingWith = null;
                                                 lastTarget = (sender as UIScrollableMenu).currentSelectedOption;
                                                 attacks.focused = true;
                                             }
@@ -403,6 +427,9 @@ namespace Casull.Core.Overworld
                                         selectText.SetPosition(20, -14);
 
                                         allySelect.onUpdate = (sender) => {
+                                            targetId = allySelect.currentSelectedOption;
+                                            targetingWith = GlobalPlayer.ActiveParty[partyMemberMenu.currentSelectedOption].abilities[attacks.currentSelectedOption];
+                                            targetId = allySelect.currentSelectedOption;
                                             if (Input.PressedKey([Keys.Escape, Keys.Q]) && (sender as UIScrollableMenu).focused)
                                                 allySelect.closed = true;
                                         };
@@ -813,6 +840,10 @@ namespace Casull.Core.Overworld
                     optionMenu = null;
                     blackBarTop.suspended = true;
                     blackBarBot.suspended = true;
+
+                    foreach (var p in port) {
+                        Disown(p);
+                    }
                 };
 
                 optionMenu.onUpdate = (sender) => {
@@ -820,12 +851,29 @@ namespace Casull.Core.Overworld
                         navigation.isClosed = true;
                         optionMenu.closed = true;
                     }
+
+                    for (int i = 0; i < port.Count; i++) {
+                        Unit u = GlobalPlayer.ActiveParty[i];
+                        port[i].SetValues(u.Stats.HP, u.Stats.SP, u.Stats.MaxHP, u.Stats.MaxSP);
+                        port[i].SetPredictedValues(u.Stats.HP, u.Stats.SP, u.Stats.MaxHP, u.Stats.MaxSP);
+                        port[i].lerpSpeed = 4f;
+                        if (targetingWith != null && targetId == i) {
+                            if(targetingWith is Item item)
+                                port[i].SetPredictedValues(Math.Clamp(u.Stats.HP + item.damage, 0, u.Stats.MaxHP), Math.Clamp(u.Stats.SP + item.spDamage, 0, u.Stats.MaxSP), u.Stats.MaxHP, u.Stats.MaxSP);
+                            if (targetingWith is Ability ability)
+                                port[i].SetPredictedValues(Math.Clamp(u.Stats.HP + ability.baseDamage, 0, u.Stats.MaxHP), u.Stats.SP, u.Stats.MaxHP, u.Stats.MaxSP);
+                        }
+                    }
                 };
 
                 optionMenu.SetPosition(Renderer.UIPreferedWidth * 0.5f - optionMenu.targetSize.X * 0.5f, Renderer.UIPreferedHeight * 0.5f - optionMenu.targetSize.Y * 0.5f);
                 Append(darkening);
                 Append(navigation);
                 Append(optionMenu);
+
+                foreach (var p in port) {
+                    Append(p);
+                }
             }
         }
     }

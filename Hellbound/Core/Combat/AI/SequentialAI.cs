@@ -12,9 +12,14 @@ namespace Casull.Core.Combat.AI
 
                 var getTargets = battle.units.Where(GetSelector(abilityToUse, whoAmI)).ToList();
 
-                if (!abilityToUse.aoe)
-                    getTargets = [getTargets[battle.rand.Next(getTargets.Count)]]; // pick random target if used skill isn't AoE
+                if (!abilityToUse.aoe) {
 
+                    if (getTargets.Any(x => x.resistances[abilityToUse.elementalType] < 0.0f)) {
+                        getTargets.RemoveAll(x => x.resistances[abilityToUse.elementalType] >= 0.0f);
+                    }
+
+                    getTargets = [getTargets[battle.rand.Next(getTargets.Count)]]; // pick random target if used skill isn't AoE
+                }
                 abilityToUse.Use(whoAmI, battle, getTargets);
 
                 if (++currentAbility >= whoAmI.abilities.Count) {

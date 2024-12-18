@@ -6,9 +6,12 @@ using Casull.Core.Overworld;
 using Casull.Core.UI;
 using Casull.Core.UI.Elements;
 using Casull.Render;
+using Cyotek.Drawing.BitmapFont;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Casull
 {
@@ -138,8 +141,6 @@ namespace Casull
                     SoundEngine.StartMusic("ChangingSeasons", true);
                     GameStateManager.SetState(GameState.Overworld, new BlackFadeInFadeOut(Renderer.SaveFrame()));
 
-                    if (newGame && File.Exists(Environment.CurrentDirectory + "\\SaveData\\Save.sdt"))
-                        File.Delete(Environment.CurrentDirectory + "\\SaveData\\Save.sdt");
 
                     UIManager.combatUI.tutorialProgress = 0;
                     Main.lastTransitionPosition = Vector2.Zero;
@@ -147,7 +148,7 @@ namespace Casull
                     World.flags.Clear();
 
                     GlobalPlayer.Init();
-                    GlobalPlayer.LoadProgress();
+                    GlobalPlayer.LoadProgress(Main.saveSlot);
 
                     Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", Main.currentZone);
 
@@ -234,19 +235,34 @@ namespace Casull
                 Append(logoLetters[i]);
             }
 
-
+            
             this.mainMenu = mainMenu;
 
-            if(File.Exists(Environment.CurrentDirectory + "\\SaveData\\Save.sdt"))
-                menu = new UIScrollableMenu(4, ["Continue", "New Game", "Settings", "Quit"]);
-            else
-                menu = new UIScrollableMenu(3, ["New Game", "Settings", "Quit"]);
+            menu = new UIScrollableMenu(4, ["Continue", "New Game", "Settings", "Quit"]);
             menu.SetPosition(new Vector2(0, Renderer.PreferedHeight * 0.5f - menu.targetSize.Y * 0.5f));
             menu.openSpeed = 1f;
             menu.panelColor = Color.Transparent;
             menu.borderColor = Color.Transparent;
             menu.opacity = -2.0f;
-            menu.drawArrows = false;
+            menu.drawArrows = false; 
+            
+            string[] slots = ["Slot 1", "Slot 2", "Slot 3"];
+
+            for (int i = 0; i < 3; i++) {
+
+                if (!File.Exists(Environment.CurrentDirectory + $"\\SaveData\\Save{i}.sdt"))
+                    slots[i] += " - Empty";
+                else {
+                    string txt = File.ReadAllText(Environment.CurrentDirectory + $"\\SaveData\\Save{i}.sdt");
+
+                    var entries = txt.Split("}" + Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+                    string[] characters = entries[2].Substring(8 + Environment.NewLine.Length).Split(Environment.NewLine);
+                    var matches = Regex.Matches(characters[0], @"\[(.+?)\]");
+
+                    slots[i] += " - " + matches[1].Groups[1].Value.Replace("\"", "");
+                }
+            }
 
 
             var demo = new UIBorderedText("-Demo Version-");
@@ -273,11 +289,155 @@ namespace Casull
                         Main.instance.Exit();
                         break;
                     case "New Game":
-                        mainMenu.newGame = true;
-                        mainMenu.started = true;
+                        menu.focused = false;
+                        var selectSlotMenu = new UIScrollableMenu(3, slots);
+                        selectSlotMenu.SetPosition(Renderer.ScreenMiddle - selectSlotMenu.targetSize * 0.5f);
+                        selectSlotMenu.openSpeed = 0.25f;
+
+                        selectSlotMenu.onLoseParent = (sender) => {
+                            menu.focused = true;
+                        };
+
+                        selectSlotMenu.onUpdate = (sender) => {
+                            if (Input.PressedKey([Keys.Escape, Keys.Q]) && selectSlotMenu.focused)
+                                selectSlotMenu.closed = true;
+                        };
+                        selectSlotMenu.onSelectOption = (sender) => {
+                            selectSlotMenu.focused = false;
+                            selectSlotMenu.suspended = true;
+                            var animPanel = new UIAnimatedPanel(new Vector2(400, 200), UIAnimatedPanel.AnimationStyle.FourWay);
+                            animPanel.borderColor = Color.Transparent;
+                            animPanel.panelColor = Color.Black * 0.35f;
+                            animPanel.SetPosition(Renderer.ScreenMiddle - animPanel.targetSize * 0.5f);
+                            animPanel.openSpeed = 0.35f;
+
+
+                            var nameTextBox = new UITextBox();
+                            nameTextBox.maxCharacters = 20;
+                            nameTextBox.onTextSubmit = (sender) => {
+                                if (!string.IsNullOrWhiteSpace(nameTextBox.myText)) {
+                                    mainMenu.started = true;
+                                    if (File.Exists(Environment.CurrentDirectory + $"\\SaveData\\Save{selectSlotMenu.currentSelectedOption}.sdt"))
+                                        File.Delete(Environment.CurrentDirectory + $"\\SaveData\\Save{selectSlotMenu.currentSelectedOption}.sdt");
+                                    Main.saveSlot = selectSlotMenu.currentSelectedOption;
+                                    Main.newSlotName = (sender as UITextBox).myText;
+                                }
+                                else
+                                    nameTextBox.Click();
+                            };
+                            nameTextBox.boxBorderColor = Color.Transparent;
+                            nameTextBox.boxInnerColor = Color.Transparent;
+                            nameTextBox.size.X = 200;
+                            nameTextBox.myText = "";
+                            nameTextBox.SetPosition(animPanel.targetSize * 0.5f - nameTextBox.size *0.5f);
+                            animPanel.Append(nameTextBox);
+
+                            animPanel.onUpdate = (sender) => {
+                                if(!nameTextBox.IsEditing)
+                                    nameTextBox.Click();
+                                if (Input.PressedKey([Keys.Escape])) {
+                                    selectSlotMenu.focused = true;
+                                    selectSlotMenu.suspended = false;
+                                    animPanel.isClosed = true;
+                                }
+                            };
+
+                            var writeName = new UIBorderedText("What's your name?");
+                            writeName.SetPosition(animPanel.targetSize.X * 0.5f - writeName.size.X * 0.5f, 16);
+
+                            var controls = new UIBorderedText("[Enter] Submit | [ESC.] Cancel");
+                            controls.SetPosition(animPanel.targetSize.X * 0.5f - controls.size.X * 0.5f, animPanel.targetSize.Y - controls.size.Y - 6);
+
+                            animPanel.Append(writeName);
+                            animPanel.Append(controls);
+
+
+                            Append(animPanel);
+                            //Main.saveSlot = selectSlotMenu.currentSelectedOption;
+                            //mainMenu.started = true;
+
+                            //if (File.Exists(Environment.CurrentDirectory + $"\\SaveData\\Save{selectSlotMenu.currentSelectedOption}.sdt"))
+                            //    File.Delete(Environment.CurrentDirectory + $"\\SaveData\\Save{selectSlotMenu.currentSelectedOption}.sdt");
+                        };
+
+
+                        Append(selectSlotMenu);
                         break;
                     case "Continue":
-                        mainMenu.started = true;
+                        //mainMenu.started = true;
+                        menu.focused = false; 
+                        
+                        selectSlotMenu = new UIScrollableMenu(3, slots);
+                        selectSlotMenu.SetPosition(Renderer.ScreenMiddle - selectSlotMenu.targetSize * 0.5f);
+                        selectSlotMenu.openSpeed = 0.25f;
+
+                        selectSlotMenu.onSelectOption = (sender) => {
+                            if(!File.Exists(Environment.CurrentDirectory + $"\\SaveData\\Save{selectSlotMenu.currentSelectedOption}.sdt")) {
+                                selectSlotMenu.focused = false;
+                                selectSlotMenu.suspended = true;
+                                var animPanel = new UIAnimatedPanel(new Vector2(400, 200), UIAnimatedPanel.AnimationStyle.FourWay);
+                                animPanel.borderColor = Color.Transparent;
+                                animPanel.panelColor = Color.Black * 0.35f;
+                                animPanel.SetPosition(Renderer.ScreenMiddle - animPanel.targetSize * 0.5f);
+                                animPanel.openSpeed = 0.35f;
+
+
+                                var nameTextBox = new UITextBox();
+                                nameTextBox.maxCharacters = 20;
+                                nameTextBox.onTextSubmit = (sender) => {
+                                    if (!string.IsNullOrWhiteSpace(nameTextBox.myText)) {
+                                        mainMenu.started = true;
+                                        Main.saveSlot = selectSlotMenu.currentSelectedOption;
+                                        Main.newSlotName = (sender as UITextBox).myText;
+                                    }
+                                    else
+                                        nameTextBox.Click();
+                                };
+                                nameTextBox.boxBorderColor = Color.Transparent;
+                                nameTextBox.boxInnerColor = Color.Transparent;
+                                nameTextBox.size.X = 200;
+                                nameTextBox.myText = "";
+                                nameTextBox.SetPosition(animPanel.targetSize * 0.5f - nameTextBox.size * 0.5f);
+                                animPanel.Append(nameTextBox);
+
+                                animPanel.onUpdate = (sender) => {
+                                    if (!nameTextBox.IsEditing)
+                                        nameTextBox.Click();
+                                    if (Input.PressedKey([Keys.Escape])) {
+                                        selectSlotMenu.focused = true;
+                                        selectSlotMenu.suspended = false;
+                                        animPanel.isClosed = true;
+                                    }
+                                };
+
+                                var writeName = new UIBorderedText("What's your name?");
+                                writeName.SetPosition(animPanel.targetSize.X * 0.5f - writeName.size.X * 0.5f, 16);
+
+                                var controls = new UIBorderedText("[Enter] Submit | [ESC.] Cancel");
+                                controls.SetPosition(animPanel.targetSize.X * 0.5f - controls.size.X * 0.5f, animPanel.targetSize.Y - controls.size.Y - 6);
+
+                                animPanel.Append(writeName);
+                                animPanel.Append(controls);
+
+
+                                Append(animPanel);
+                            }
+                            else {
+                                Main.saveSlot = selectSlotMenu.currentSelectedOption;
+                                mainMenu.started = true;
+                            }
+                        };
+
+                        selectSlotMenu.onUpdate = (sender) => {
+                            if (Input.PressedKey([Keys.Escape, Keys.Q]) && selectSlotMenu.focused)
+                                selectSlotMenu.closed = true;
+                        };
+                        selectSlotMenu.onLoseParent = (sender) => {
+                            menu.focused = true;
+                        };
+
+                        Append(selectSlotMenu);
+
                         break;
                     case "Settings":
                         menu.focused = false;

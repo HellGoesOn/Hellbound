@@ -12,7 +12,10 @@ namespace Casull.Core.UI.Elements
         public UIBorderedText spValueText;
         public UIProgressBar hpBar;
         public UIProgressBar spBar;
+        public UIProgressBar predictedHpBar;
+        public UIProgressBar predictedSpBar;
         public string portrait;
+
         public bool penisEnlargmentPills;
 
         private int hpCurrentValue;
@@ -56,13 +59,25 @@ namespace Casull.Core.UI.Elements
 
             hpBar = new UIProgressBar(new Vector2(100, 8), maxHp);
             hpBar.fillColor = Color.LightSeaGreen;
+            hpBar.bgColor = Color.Transparent;
             spBar = new UIProgressBar(new Vector2(100, 8), maxSp);
             spBar.fillColor = Color.HotPink;
+            spBar.bgColor = Color.Transparent;
             hpBar.SetPosition(0, 100);
             spBar.SetPosition(0, 100 + spBar.size.Y * 2);
 
+
+            predictedHpBar = new UIProgressBar(new Vector2(100, 8), maxHp);
+            predictedHpBar.fillColor = Color.LightSeaGreen;
+            predictedSpBar = new UIProgressBar(new Vector2(100, 8), maxSp);
+            predictedSpBar.fillColor = Color.HotPink;
+            predictedHpBar.SetPosition(0, 100);
+            predictedSpBar.SetPosition(0, 100 + spBar.size.Y * 2);
+
             this.Append(picture);
             this.Append(eliminatedPicture);
+            this.Append(predictedSpBar);
+            this.Append(predictedHpBar);
             this.Append(hpBar);
             this.Append(spBar);
             this.Append(spText);
@@ -74,6 +89,9 @@ namespace Casull.Core.UI.Elements
         public override void OnUpdate()
         {
             base.OnUpdate();
+
+            predictedHpBar.fillColor = Color.Lerp(Color.Transparent, Color.LightSeaGreen, (float)Math.Abs(Math.Sin(Main.totalTime)));
+            predictedSpBar.fillColor = Color.Lerp(Color.Transparent, Color.HotPink, (float)Math.Abs(Math.Sin(Main.totalTime)));
 
             if (!penisEnlargmentPills) {
                 picture.scale = Vector2.Lerp(picture.scale, new Vector2(3), 0.12f);
@@ -99,6 +117,17 @@ namespace Casull.Core.UI.Elements
 
             hpValueText.text = hpCurrentValue.ToString();
             spValueText.text = spCurrentValue.ToString();
+        }
+
+        public void SetPredictedValues(int hp, int sp, int maxHp, int maxSp)
+        {
+            spTargetValue = sp;
+            hpTargetValue = hp;
+
+            predictedHpBar.value = hp;
+            predictedHpBar.maxValue = maxHp;
+            predictedSpBar.value = sp;
+            predictedSpBar.maxValue = maxSp;
         }
 
         public void SetValues(int hp, int sp, int maxHp, int maxSp)

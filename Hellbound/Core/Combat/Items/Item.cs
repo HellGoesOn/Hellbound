@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Casull.Core.Combat.Abilities;
+using Microsoft.Xna.Framework;
 
 namespace Casull.Core.Combat.Items
 {
@@ -9,6 +10,8 @@ namespace Casull.Core.Combat.Items
         public string icon = "";
         public int count;
         public int maxCount = 99;
+        public int damage;
+        public int spDamage;
         public float iconRotation;
         public bool consumable;
         public bool aoe;
@@ -26,22 +29,7 @@ namespace Casull.Core.Combat.Items
 
         public string Description {
             get {
-
-                string[] hexValues = {
-                    "9c9792",
-                    "e3841e",
-                    "5cfffa",
-                    "f0da35",
-                    "18b50d"
-                };
-
-                var liarLiarPantsOnFire = description;
-                for (int i = 0; i < hexValues.Length; i++) {
-                    var name = Enum.GetName(typeof(ElementalType), i);
-                    liarLiarPantsOnFire = liarLiarPantsOnFire.Replace(name, $"<{hexValues[i]}/{name}>", StringComparison.OrdinalIgnoreCase);
-                }
-
-                return liarLiarPantsOnFire;
+                return Ability.MarkdownElements(description);
             }
             set => description = value;
         }

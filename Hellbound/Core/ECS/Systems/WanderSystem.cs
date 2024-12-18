@@ -46,6 +46,7 @@ namespace Casull.Core.ECS
 
                     if (entity.HasComponent<TextureComponent>()) {
                         var tex = entity.GetComponent<TextureComponent>();
+                        if(Math.Abs(tex.scale.X) >= 1.0f)
                         if (wander.position.X < pos.X)
                             tex.scale.X = -1;
                         else

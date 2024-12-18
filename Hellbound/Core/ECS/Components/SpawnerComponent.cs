@@ -9,6 +9,7 @@ namespace Casull.Core.ECS.Components
     internal class SpawnerComponent : IComponent
     {
         public string[] prefabNames;
+        public string[] unitNames;
         public int max;
         internal int currentSpawned;
         public int untilNextSpawn;

@@ -208,7 +208,7 @@ Entity_12
 	{
 		CollisionBox{32; 128; {X:16 Y:64}; 0}
 
-		CreateBattleOnContact{"TestBG"; [Slime, Slime]; []}
+		Encounter{"TestBG"; [Slime, Slime]; []}
 
 		DiesIfFlagRaised{"unlockInventory"}
 

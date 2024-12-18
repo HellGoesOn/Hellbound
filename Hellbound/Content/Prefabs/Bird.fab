@@ -2,7 +2,7 @@ Entity_1
 	{
 		CollisionBox{24; 24; {X:12 Y:12}}
 
-		CreateBattleOnContact{"TestBG"; [Bird]; []}
+		Encounter{"TestBG"; [Bird]; []}
 		
 		Velocity{{0 0}}
 

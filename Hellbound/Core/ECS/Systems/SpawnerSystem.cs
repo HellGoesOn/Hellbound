@@ -1,4 +1,5 @@
-﻿using Casull.Core.ECS.Components;
+﻿using Casull.Core.Combat;
+using Casull.Core.ECS.Components;
 using Casull.Core.UI.Elements;
 using Casull.Extensions;
 using System;
@@ -43,6 +44,25 @@ namespace Casull.Core.ECS
                                 wanderSpeed = 0.01f + Main.rand.NextSingle(),
                                 leash = spawner.leashRange
                             });
+
+                            var encounter = e.GetComponent<Encounter>();
+
+                            int unitSpawned = Main.rand.Next(1, 6);
+
+                            List<string> units = [];
+
+                            for (int j = 0; j < unitSpawned; j++) {
+
+                                units.Add(spawner.unitNames[Main.rand.Next(spawner.unitNames)]);
+                            }
+
+                            if(units.Count <= 1 || !units.Any(x => x != "Dud")) {
+                                units.Add(UnitDefinitions.Get("Dud").internalName);
+                                var options = spawner.unitNames.Where(x => x != "Dud").ToArray();
+                                units.Add(options[Main.rand.Next(options)]);
+                            }
+
+                            encounter.enemies = [.. units];
 
                             e.OnDestroy += (ent) => { spawner.currentSpawned--; };
                         }

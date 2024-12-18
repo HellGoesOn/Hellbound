@@ -9,6 +9,7 @@
             iconScale *= 4;
             canTarget = ValidTargets.DownedAlly;
             consumable = true;
+            damage = 10;
         }
 
         protected override void OnUse(Unit caster, Battle battle, List<Unit> targets)

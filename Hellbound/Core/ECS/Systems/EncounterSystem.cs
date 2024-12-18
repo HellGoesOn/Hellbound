@@ -9,13 +9,13 @@ using Microsoft.Xna.Framework;
 
 namespace Casull.Core.ECS
 {
-    public class CreateBattleOnContactSystem : IExecute
+    public class EncounterSystem : IExecute
     {
         readonly Group<Entity> _group;
 
-        public CreateBattleOnContactSystem(Context context)
+        public EncounterSystem(Context context)
         {
-            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(CollisionBox), typeof(CreateBattleOnContact)));
+            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(CollisionBox), typeof(Encounter)));
         }
 
         public void Execute(Context context)
@@ -33,7 +33,7 @@ namespace Casull.Core.ECS
                     if (Main.instance.GetGameState() is not World)
                         continue;
 
-                    CreateBattleOnContact component = entity.GetComponent<CreateBattleOnContact>();
+                    Encounter component = entity.GetComponent<Encounter>();
                     string[] enemyDefintions = component.enemies;
                     string[] trialDefinitions = component.trialCharacters;
 
