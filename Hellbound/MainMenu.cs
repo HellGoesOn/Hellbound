@@ -321,6 +321,8 @@ namespace Casull
                                         File.Delete(Environment.CurrentDirectory + $"\\SaveData\\Save{selectSlotMenu.currentSelectedOption}.sdt");
                                     Main.saveSlot = selectSlotMenu.currentSelectedOption;
                                     Main.newSlotName = (sender as UITextBox).myText;
+                                    animPanel.isClosed = true;
+                                    selectSlotMenu.closed = true;
                                 }
                                 else
                                     nameTextBox.Click();
@@ -389,6 +391,8 @@ namespace Casull
                                         mainMenu.started = true;
                                         Main.saveSlot = selectSlotMenu.currentSelectedOption;
                                         Main.newSlotName = (sender as UITextBox).myText;
+                                        animPanel.isClosed = true;
+                                        selectSlotMenu.closed = true;
                                     }
                                     else
                                         nameTextBox.Click();
@@ -425,6 +429,7 @@ namespace Casull
                             else {
                                 Main.saveSlot = selectSlotMenu.currentSelectedOption;
                                 mainMenu.started = true;
+                                selectSlotMenu.closed = true;
                             }
                         };
 

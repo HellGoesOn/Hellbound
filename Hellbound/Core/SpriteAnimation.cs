@@ -22,6 +22,7 @@ namespace Casull.Core
         public Vector2 scale;
         public Color color;
         public FrameData[] frameData;
+        public Vector2? origin = null;
 
         public AnimationEventHandler onAnimationPlay;
         public AnimationEventHandler onAnimationEnd;
@@ -69,7 +70,7 @@ namespace Casull.Core
             Texture2D tex = Assets.GetTexture(texture);
             Vector2 origin = new Vector2(frameData[currentFrame].width, frameData[0].height) * 0.5f;
 
-            Renderer.Draw(tex, position, frameData[currentFrame].AsRect, color * opacity, rotation, origin, frameData[currentFrame].scale * scale, SpriteEffects.None, depth, asSolid);
+            Renderer.Draw(tex, position, frameData[currentFrame].AsRect, color * opacity, rotation, this.origin == null ? origin : this.origin.Value, frameData[currentFrame].scale * scale, SpriteEffects.None, depth, asSolid);
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 position, Color color, float rotation, Vector2 scale = default, float? depth = null, bool asSolid = false)
@@ -82,7 +83,7 @@ namespace Casull.Core
             Texture2D tex = Assets.GetTexture(texture);
             Vector2 origin = new Vector2(frameData[currentFrame].width, frameData[0].height) * 0.5f;
 
-            Renderer.Draw(tex, position, frameData[currentFrame].AsRect, color * opacity, rotation, origin, frameData[currentFrame].scale * scale, SpriteEffects.None, (float)depth, asSolid);
+            Renderer.Draw(tex, position, frameData[currentFrame].AsRect, color * opacity, rotation, this.origin == null ? origin : this.origin.Value, frameData[currentFrame].scale * scale, SpriteEffects.None, (float)depth, asSolid);
         }
 
         public SpriteAnimation GetCopy()

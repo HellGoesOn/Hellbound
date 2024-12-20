@@ -13,7 +13,6 @@ using Casull.Extensions;
 using Casull.Core.Graphics;
 using System.Globalization;
 using System.Reflection;
-using Cyotek.Drawing.BitmapFont;
 
 namespace Casull.Core.Combat
 {
@@ -48,7 +47,7 @@ namespace Casull.Core.Combat
             //ActiveParty.Add(sidekick);
 
             AddItem(new ChocolateBar() { count = 3});
-            AddItem(new AdrenalineShot() { count = 3});
+            AddItem(new AdrenalineShot() { count = 3 });
         }
 
         public static void AddPartyMember(Unit newUnit)
@@ -203,10 +202,6 @@ namespace Casull.Core.Combat
                             particle.scale = Vector2.One * Main.rand.Next(1, 3);
                         }
                     }
-                    GameOptions.MusicVolume *= 0.95f;
-                },
-                onAnimationEnd = (_, _) => {
-                    GameOptions.MusicVolume = GameOptions.OldMusicVolume;
                 }
             };
             f.animations.Add("Idle", idle);

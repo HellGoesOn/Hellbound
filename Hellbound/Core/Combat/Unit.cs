@@ -89,7 +89,8 @@ namespace Casull.Core.Combat
             _stats.toNextLevel = Math.Clamp(_stats.toNextLevel, 0, 999999999);
             //if (!silent)
             //    UIManager.combatUI.CreateLevelUp(name, oldStats, _stats);
-            TryLevelUp(silent);
+            if(silent)
+                TryLevelUp(silent);
 
             TryLearnLevelUpAbilites();
 
@@ -113,6 +114,7 @@ namespace Casull.Core.Combat
             if(level > Stats.level)
             for(int i = Stats.level; i < level; i++) {
                     Stats.EXP = Stats.toNextLevel;
+                    Stats.totalEXP += Stats.toNextLevel;
                     TryLevelUp(true);
             }
 

@@ -104,7 +104,7 @@ namespace Casull.Core.Combat
             youShotFirst.action = (_) => {
                 var dialogue = Dialogue.Create();
                 var page = new DialoguePage {
-                    text = "( It will now be <FF0000/Enemy> turn. Turn order is based on <FFFF00/Speed> stat of the characters. Be careful & plan your moves accordingly! )",
+                    text = "( It will now be the <FF0000/Enemy> turn. Turn order is based on the <FFFF00/Speed> stat of the characters. Be careful & plan your moves accordingly! )",
                     textColor = Color.LimeGreen,
                     fillColor = Color.Black * 0.5f,
                     borderColor = Color.Transparent

@@ -7,6 +7,7 @@ namespace Casull.Core.UI.Elements
     public class UIProgressBar : UIElement
     {
         private float currentValue;
+        public float CurrentValueVisual => currentValue;
         public float CurrentValue => currentValue;
         public float value;
         public float maxValue;
@@ -30,6 +31,11 @@ namespace Casull.Core.UI.Elements
                 if (Math.Abs(value - currentValue) <= 0.1f)
                     currentValue = value;
             }
+        }
+
+        public void HardSetValue(float value)
+        {
+            this.value = currentValue = value;
         }
 
 

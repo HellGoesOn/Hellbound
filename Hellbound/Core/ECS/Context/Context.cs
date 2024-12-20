@@ -125,6 +125,8 @@ namespace Casull.Core.ECS
 
         public Entity CopyFrom(Entity entity)
         {
+            if(entity == null) return null;
+
             Entity e = Create();
             IComponent[] components = entity.GetAllComponents();
 

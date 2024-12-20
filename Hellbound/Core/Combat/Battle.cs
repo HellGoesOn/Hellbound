@@ -304,7 +304,7 @@ namespace Casull.Core.Combat
             if (!showedVictory) {
                 var victoryDeclaration = new UIAnimatedPanel(new Vector2(400, 40), UIAnimatedPanel.AnimationStyle.Horizontal);
                 victoryDeclaration.id = "victory";
-                victoryDeclaration.SetPosition(Renderer.UIPreferedWidth * 0.5f - 200, 80);
+                victoryDeclaration.SetPosition(Renderer.UIPreferedWidth * 0.5f - 200, 40);
                 victoryDeclaration.openSpeed = 0.25f;
                 var victoryText = new UIBorderedText("VICTORY!");
                 victoryText.color = Color.Gold;
@@ -326,6 +326,7 @@ namespace Casull.Core.Combat
 
             if (Input.PressedKey([Keys.E, Keys.Enter]) && UIManager.combatUI.levelUpElements.Count <= 0) {
                 UIManager.combatUI.Disown("victory");
+                UIManager.combatUI.Children.Where(x => x.id == "expchange").ToList().ForEach(x => UIManager.combatUI.Disown(x));
                 GameStateManager.SetState(GameState.Overworld, new SliceTransition(Renderer.SaveFrame()));
                 OnBattleEnd?.Invoke();
                 Main.instance.battle = null;
@@ -949,23 +950,17 @@ namespace Casull.Core.Combat
                     GlobalPlayer.AddItem(item);
                 }
 
-                bool anyLevelUps = false;
+                float offset = 0;
                 foreach (Unit unit in GlobalPlayer.ActiveParty) {
+                    UIExpChange expChange = new(unit, unit.Stats.EXP, expValue);
+                    expChange.SetPosition(64, 64 + offset);
+                    UIManager.combatUI.Append(expChange);
+
+                    offset += expChange.size.Y + 4;
+
                     unit.Stats.EXP += expValue;
                     unit.Stats.totalEXP += expValue;
                     unit.ClearEffects();
-
-
-                    bool leveledUp = unit.TryLevelUp();
-
-                    if (!anyLevelUps)
-                        anyLevelUps = leveledUp;
-                }
-
-                if (anyLevelUps) {
-                    Sequence delayLevelUps = CreateSequence();
-                    delayLevelUps.Delay(180);
-                    delayLevelUps.CustomAction(() => { UIManager.combatUI.showLevelUps = true; });
                 }
 
                 return;
