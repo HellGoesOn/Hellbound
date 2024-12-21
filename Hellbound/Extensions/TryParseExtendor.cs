@@ -56,7 +56,7 @@ namespace Casull.Extensions
                 || !int.TryParse(values[1], out int G)
                 || !int.TryParse(values[2], out int B)
                 || !int.TryParse(values[3], out int A)) {
-                color = default(Color);
+                color = Color.White;
                 return false;
             }
             color = new(R, G, B, A);
@@ -70,7 +70,7 @@ namespace Casull.Extensions
                 || !int.TryParse(values[1], out int G)
                 || !int.TryParse(values[2], out int B)
                 || !int.TryParse(values[3], out int A)) {
-                return default;
+                return Color.White;
             }
 
             return new Color(R, G, B, A);

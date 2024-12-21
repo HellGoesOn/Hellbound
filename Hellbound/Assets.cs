@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Casull.Render;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
@@ -20,6 +21,7 @@ namespace Casull
         public static Effect MainEffect;
 
         public const float MF_TOLERANCE = 200;
+        public const float WATER_TOLERANCE = 240;
 
         public static void Load(Main main)
         {
@@ -53,6 +55,13 @@ namespace Casull
             var pixel = new Texture2D(main.GraphicsDevice, 1, 1);
             pixel.SetData(new Color[1] { Color.White });
             Textures.Add("Pixel", pixel);
+            MainEffect.Parameters["imageSize1"].SetValue(132);
+            MainEffect.Parameters["imageSize2"].SetValue(32);
+
+            MainEffect.Parameters["waterTolerance"].SetValue(WATER_TOLERANCE / 255.0f);
+            MainEffect.Parameters["waterClr"].SetValue(Renderer.WaterColor.ToVector3());
+
+            MainEffect.GraphicsDevice.Textures[1] = GetTexture("WaterTest");
 
             var fontName = "alphbeta";
 

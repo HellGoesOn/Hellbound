@@ -13,7 +13,6 @@ namespace Casull.Core.Overworld
     {
         public static void InitTriggers()
         {
-
             Trigger recruitDog = new("recruitDog") {
                 action = (world) => {
                     var d = Dialogue.Create();

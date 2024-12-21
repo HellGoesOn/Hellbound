@@ -370,11 +370,12 @@ namespace Casull.Core.ECS
                         arr.SetValue(element, elementIndex);
                     }
                 }
+
                 field.SetValue(instance, Convert.ChangeType(arr, field.FieldType));
             }
-            else if (field.FieldType == typeof(Color)) {
-                field.SetValue(instance, Color.White);
-            }
+            //else if (field.FieldType == typeof(Color)) {
+            //    field.SetValue(instance, Color.White);
+            //}
             else {
                 string noQuotes = BetweenSwirlyBracketsRegex().Replace(value, "");
                 dynamic element = field.FieldType == typeof(string) ? string.Empty : RuntimeHelpers.GetUninitializedObject(field.FieldType);
@@ -386,6 +387,9 @@ namespace Casull.Core.ECS
                     var parser = FindTryParser(field.FieldType);
                     InvokeTryParser(parser, out element, noQuotes, field.FieldType);
                 }
+
+                if (field.FieldType == typeof(Color) && element.A == 0 && element.R == 0 && element.G == 0 && element.B == 0)
+                    element = Color.White;
 
                 field.SetValue(instance, element);
             }

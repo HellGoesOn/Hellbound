@@ -28,6 +28,7 @@
     <None Remove="Assets\Audio\Music\ChangingSeasons.ogg" />
     <None Remove="Assets\Audio\Music\School Days.ogg" />
     <None Remove="Assets\Audio\Music\Victory.ogg" />
+    <None Remove="Assets\Audio\Nightmare.ogg" />
     <None Remove="Assets\Audio\Sounds\AKShot.wav" />
     <None Remove="Assets\Audio\Sounds\Begin.wav" />
     <None Remove="Assets\Audio\Sounds\CutIn.wav" />
@@ -57,6 +58,7 @@
     <None Remove="Assets\Textures\Elements2.png" />
     <None Remove="Assets\Textures\FlipOff.png" />
     <None Remove="Assets\Textures\MainCharacter\EndLife.png" />
+    <None Remove="Assets\Textures\Miner.png" />
     <None Remove="Assets\Textures\Peas.png" />
     <None Remove="Assets\Textures\Slime.png" />
     <None Remove="Assets\Textures\Slime2.png" />

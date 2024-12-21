@@ -108,6 +108,22 @@ namespace Casull.Core.Overworld
         }
     }
 
+    public class FireActionFor(Action action, int timer) : ICutsceneAction
+    {
+        Action action = action;
+        int timer = timer;
+
+        public bool Update(List<Entity> actors)
+        {
+            if (--timer > 0) {
+                action();
+                return false;
+            }
+            action = null;
+            return true;
+        }
+    }
+
     public class StartDialogue(Dialogue dialogue) : ICutsceneAction
     {
         bool addedDialogue;

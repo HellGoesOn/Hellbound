@@ -19,24 +19,32 @@ namespace Casull.Core.Overworld
         public static void Init()
         {
             DefineTile("Stone", 100, "Stone", offset: Vector2.Zero);
-            DefineTile("Grass", 5, "GrassBase", "GrassTile", Vector2.Zero);
-            DefineTile("Path", 6, "GrassBase", "Path2", Vector2.Zero);
-            DefineTile("Road", 2, "GrassBase", "RoadTile", Vector2.Zero);
-            DefineTile("DarkGrass", 1, "GrassBase", "DarkGrass", Vector2.Zero);
-            DefineTile("Cliff", 0, "GrassBase", "CliffTest", new Vector2(0, -16), 1);
-            DefineTile("StoneWall", 2, "Stone", "StoneWall", new Vector2(0, -16), 1);
+            DefineTile("Grass", 5, "VoidBase", "GrassTile", Vector2.Zero);
+            DefineTile("Path", 6, "VoidBase", "Path2", Vector2.Zero);
+            DefineTile("Road", 2, "VoidBase", "RoadTile", Vector2.Zero);
+            DefineTile("DarkGrass", 1, "VoidBase", "DarkGrass", Vector2.Zero);
+            DefineTile("Cliff", 0, "VoidBase", "CliffTest", new Vector2(0, -16), 1);
+            DefineTile("StoneWall", 2, "VoidBase", "StoneWall", new Vector2(0, -16), 1);
+            DefineTile("Void", 100, "VoidBase");
+            DefineTile("Pond", 0, "VoidBase", "PondTile", param: ShaderParam.Water);
         }
 
-        public static void DefineTile(string name, int weight, string baseTexture, string tileTexture = "NULLA TERRA", Vector2 offset = default, int elevation = 0)
+        public static TileDefinition DefineTile(string name, int weight, string baseTexture, string tileTexture = "NULLA TERRA", Vector2 offset = default, int elevation = 0, ShaderParam param = ShaderParam.None)
         {
-            if(tileTexture != "NULLA TERRA")
-                TileDefinitions.Add(name, new(TileDefinitions.Count, weight, baseTexture, tileTexture, offset) {
+            if (tileTexture != "NULLA TERRA") {
+                TileDefinition newTile = new(TileDefinitions.Count, weight, baseTexture, tileTexture, offset, param: param) {
                     elevation = elevation
-                });
-            else
-                TileDefinitions.Add(name, new(TileDefinitions.Count, weight, baseTexture, offset) {
+                };
+                TileDefinitions.Add(name, newTile);
+                return newTile;
+            }
+            else {
+                TileDefinition newTile = new(TileDefinitions.Count, weight, baseTexture, offset, param: param) {
                     elevation = elevation
-                });
+                };
+                TileDefinitions.Add(name, newTile);
+                return newTile;
+            }
 
         }
 
@@ -106,8 +114,6 @@ namespace Casull.Core.Overworld
                     if (showGrid) {
                         Renderer.Draw(Assets.GetTexture("Frame2"), new Vector2(j * DisplayTileLayer.TILE_SIZE, i * DisplayTileLayer.TILE_SIZE), null, Color.White, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1000f);
                         Renderer.Draw(Assets.GetTexture("TileElevation"), new Vector2(j * DisplayTileLayer.TILE_SIZE, i * DisplayTileLayer.TILE_SIZE) + new Vector2(8), new Rectangle(0, 16 * GetTileElevation(j, i), 16, 16), Color.White, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 1000f);
-
-
                     }
                 }
             }
@@ -128,17 +134,19 @@ namespace Casull.Core.Overworld
         public readonly string sheetName;
         public int elevation;
         public Vector2 drawOffset;
+        public ShaderParam param = ShaderParam.None;
 
-        public TileDefinition(int id, int weight, string textureName, Vector2 drawOffset)
+        public TileDefinition(int id, int weight, string textureName, Vector2 drawOffset, ShaderParam param = ShaderParam.None)
         {
             this.id = id;
             this.weight = weight;
             this.sheetName = this.textureName = textureName;
             this.elevation = 0;
             this.drawOffset = drawOffset;
+            this.param = param;
         }
 
-        public TileDefinition(int id, int weight, string textureName, string sheetName, Vector2 drawOffset)
+        public TileDefinition(int id, int weight, string textureName, string sheetName, Vector2 drawOffset, ShaderParam param = ShaderParam.None)
         {
             this.id = id;
             this.weight = weight;
@@ -146,6 +154,7 @@ namespace Casull.Core.Overworld
             this.textureName = textureName;
             this.elevation = 0;
             this.drawOffset = drawOffset;
+            this.param = param;
         }
     }
 
@@ -165,6 +174,11 @@ namespace Casull.Core.Overworld
         private Vector2[,] _displayedTiles;
         public int[,] elevationMap;
 
+        public Color clr = Color.White;
+        public Action<DisplayTileLayer> onDraw;
+        public ShaderParam shaderParam = ShaderParam.None;
+
+
         public DisplayTileLayer(TileDefinition tileId, int width, int height)
         {
             myTile = tileId;
@@ -179,6 +193,8 @@ namespace Casull.Core.Overworld
 
         public void Draw()
         {
+            onDraw?.Invoke(this);
+
             for (int i = 0; i < height + 1; i++) {
                 for (int j = 0; j < width + 1; j++) {
                     int x = (int)MathF.Floor(_displayedTiles[j, i].X);
@@ -186,7 +202,7 @@ namespace Casull.Core.Overworld
                     float depth = i * TILE_SIZE + (elevationMap[j, i] * TILE_SIZE + 12 * elevationMap[j, i]) + myTile.weight * 0.0001f + myTile.drawOffset.Y;
                     Rectangle rect = new(x * TILE_SIZE + 1 * x, y * TILE_SIZE + 1 * y, TILE_SIZE, TILE_SIZE);
                     Vector2 pos = (new Vector2(j, i) * TILE_SIZE - (new Vector2(TILE_SIZE) * 0.5f) + myTile.drawOffset).ToInt();
-                    Renderer.Draw(tileSheet, pos, rect, Color.White, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, depth);
+                    Renderer.Draw(tileSheet, pos, rect, clr, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, depth, myTile.param);
                 }
             }
         }

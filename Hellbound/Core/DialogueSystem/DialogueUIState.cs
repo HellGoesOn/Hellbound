@@ -26,7 +26,7 @@ namespace Casull.Core.DialogueSystem
             darkeningPanel = new UIPanel() {
                 size = new Vector2(Renderer.UIPreferedWidth, Renderer.UIPreferedHeight),
                 fillColor = Color.Black * 0.25f,
-                outlineColor = Color.Black * 0.25f
+                outlineColor = Color.Transparent
             };
             Append(darkeningPanel);
             Append(portrait);
@@ -78,6 +78,9 @@ namespace Casull.Core.DialogueSystem
                 dialogueText.lineBreak = (int)(80 / page.textScale.X);
                 dialoguePanel.fillColor = page.fillColor;
                 dialoguePanel.outlineColor = page.borderColor;
+
+                speakerPanel.fillColor = page.speakerFillColor;
+                speakerPanel.outlineColor = page.speakerBorderColor;
 
                 if (Dialogue.auto)
                     actionsText.text = $"[Q] Cancel AUTO. Next In {dialogues[0].CurrentPage.TimeLeft}..";

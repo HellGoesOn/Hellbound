@@ -23,7 +23,7 @@ namespace Casull.Core.Combat
             bird.Stats.MaxHP = 32;
             bird.Stats.speed = 7.5f;
             bird.ai = new SequentialAI();
-            bird.abilities.AddRange([new AK47(), new Garu() {
+            bird.abilities.AddRange([new Garu() {
                 spCost = 0,
                 baseDamage = 8
             }, new BasicAttack()

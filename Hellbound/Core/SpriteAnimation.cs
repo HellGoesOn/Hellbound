@@ -70,7 +70,7 @@ namespace Casull.Core
             Texture2D tex = Assets.GetTexture(texture);
             Vector2 origin = new Vector2(frameData[currentFrame].width, frameData[0].height) * 0.5f;
 
-            Renderer.Draw(tex, position, frameData[currentFrame].AsRect, color * opacity, rotation, this.origin == null ? origin : this.origin.Value, frameData[currentFrame].scale * scale, SpriteEffects.None, depth, asSolid);
+            Renderer.Draw(tex, position, frameData[currentFrame].AsRect, color * opacity, rotation, this.origin == null ? origin : this.origin.Value, frameData[currentFrame].scale * scale, SpriteEffects.None, depth, asSolid ? Extensions.ShaderParam.FullBright : Extensions.ShaderParam.None);
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 position, Color color, float rotation, Vector2 scale = default, float? depth = null, bool asSolid = false)
@@ -83,7 +83,7 @@ namespace Casull.Core
             Texture2D tex = Assets.GetTexture(texture);
             Vector2 origin = new Vector2(frameData[currentFrame].width, frameData[0].height) * 0.5f;
 
-            Renderer.Draw(tex, position, frameData[currentFrame].AsRect, color * opacity, rotation, this.origin == null ? origin : this.origin.Value, frameData[currentFrame].scale * scale, SpriteEffects.None, (float)depth, asSolid);
+            Renderer.Draw(tex, position, frameData[currentFrame].AsRect, color * opacity, rotation, this.origin == null ? origin : this.origin.Value, frameData[currentFrame].scale * scale, SpriteEffects.None, (float)depth, asSolid ? Extensions.ShaderParam.FullBright : Extensions.ShaderParam.None);
         }
 
         public SpriteAnimation GetCopy()

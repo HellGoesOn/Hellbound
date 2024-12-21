@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Casull.Extensions;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Casull.Render
@@ -14,9 +15,9 @@ namespace Casull.Render
         public readonly float rotation;
         public readonly SpriteEffects spriteEffects;
         public readonly float depth;
-        public readonly bool solid;
+        public readonly ShaderParam param;
 
-        public DrawData(Texture2D texture, Vector2 position, Rectangle? source, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects spriteEffects, float depth, bool solid = false)
+        public DrawData(Texture2D texture, Vector2 position, Rectangle? source, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects spriteEffects, float depth, ShaderParam param = ShaderParam.None)
         {
             this.source = source;
             this.texture = texture;
@@ -27,7 +28,7 @@ namespace Casull.Render
             this.spriteEffects = spriteEffects;
             this.depth = depth;
             this.origin = origin;
-            this.solid = solid;
+            this.param = param;
         }
 
         public int CompareTo(object obj)

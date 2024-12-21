@@ -1,5 +1,6 @@
 ﻿using Casull.Core.ECS.Components;
 using Casull.Core.Overworld;
+using Casull.Extensions;
 using Casull.Render;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -26,7 +27,7 @@ namespace Casull.Core.ECS
 
                 float depth = 1f + transform.position.Y + DisplayTileLayer.TILE_SIZE + 8 + transform.layer * DisplayTileLayer.TILE_SIZE + 12 * transform.layer;
                 //float depth = transform.layer + transform.position.Y;
-                Renderer.Draw(Assets.GetTexture(tex.textureName), transform.position, null, tex.color, 0f, tex.origin, tex.scale, SpriteEffects.None, depth, tex.solidColor);
+                Renderer.Draw(Assets.GetTexture(tex.textureName), transform.position, null, tex.color, 0f, tex.origin, tex.scale, SpriteEffects.None, depth, tex.solidColor ? ShaderParam.FullBright : ShaderParam.None);
             }
         }
     }

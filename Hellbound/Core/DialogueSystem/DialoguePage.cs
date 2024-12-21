@@ -22,6 +22,8 @@ namespace Casull.Core.DialogueSystem
         public Color speakerColor;
         public Color borderColor;
         public Color fillColor;
+        public Color speakerBorderColor;
+        public Color speakerFillColor;
         public List<Response> responses = [];
         public List<Portrait> portraits = [];
         public ResponseDelegate onPageEnd;
@@ -37,8 +39,8 @@ namespace Casull.Core.DialogueSystem
             textScale = Vector2.One;
             textColor = Color.White;
             speakerColor = Color.White;
-            borderColor = Color.White;
-            fillColor = Color.DarkBlue;
+            speakerBorderColor = borderColor = Color.White;
+            speakerFillColor = fillColor = Color.DarkBlue;
             text = "";
             title = "";
             timePerLetter = 0;

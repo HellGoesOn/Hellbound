@@ -150,12 +150,27 @@ namespace Casull
                     GlobalPlayer.Init();
                     GlobalPlayer.LoadProgress(Main.saveSlot);
 
-                    Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", Main.currentZone);
+                    if (newGame) {
+                        World.triggers.Clear();
+                        World.cutscenes.Clear();
+                        World.InitTriggers();
+                        World.InitNightmare();
+                        Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", "Nightmare");
+                    }
+                    else
+                        Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", Main.currentZone);
 
-                    if (Main.lastTransitionPosition == Vector2.Zero)
-                        Main.lastTransitionPosition = Main.instance.ActiveWorld.context.GetAllEntities().FirstOrDefault(x => x.GetComponent<Tags>().Has("Player")).GetComponent<Transform>().position;
+                    if (Main.lastTransitionPosition == Vector2.Zero && !newGame) {
+                        var plr = Main.instance.ActiveWorld.context.GetAllEntities().FirstOrDefault(x => x != null && x.GetComponent<Tags>().Has("Player"));
+                        if(plr != null) {
+                            Main.lastTransitionPosition = plr.GetComponent<Transform>().position;
+                        }
+                    }
                     else {
-                        Main.instance.ActiveWorld.context.GetAllEntities().FirstOrDefault(x => x.GetComponent<Tags>().Has("Player")).GetComponent<Transform>().position = Main.lastTransitionPosition;
+                        var plr = Main.instance.ActiveWorld.context.GetAllEntities().FirstOrDefault(x => x!= null && x.GetComponent<Tags>().Has("Player"));
+
+                        if (plr != null)
+                            plr.GetComponent<Transform>().position = Main.lastTransitionPosition;
                     }
 
                 }
@@ -317,6 +332,7 @@ namespace Casull
                             nameTextBox.onTextSubmit = (sender) => {
                                 if (!string.IsNullOrWhiteSpace(nameTextBox.myText)) {
                                     mainMenu.started = true;
+                                    mainMenu.newGame = true;
                                     if (File.Exists(Environment.CurrentDirectory + $"\\SaveData\\Save{selectSlotMenu.currentSelectedOption}.sdt"))
                                         File.Delete(Environment.CurrentDirectory + $"\\SaveData\\Save{selectSlotMenu.currentSelectedOption}.sdt");
                                     Main.saveSlot = selectSlotMenu.currentSelectedOption;
@@ -389,6 +405,7 @@ namespace Casull
                                 nameTextBox.onTextSubmit = (sender) => {
                                     if (!string.IsNullOrWhiteSpace(nameTextBox.myText)) {
                                         mainMenu.started = true;
+                                        mainMenu.newGame = true;
                                         Main.saveSlot = selectSlotMenu.currentSelectedOption;
                                         Main.newSlotName = (sender as UITextBox).myText;
                                         animPanel.isClosed = true;

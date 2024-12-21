@@ -63,7 +63,7 @@ namespace Casull.Core.ECS
                 Rectangle rect = new(frame.x, frame.y, frame.width, frame.height);
 
                 float depth = 1f + Math.Abs(transform.position.Y) + DisplayTileLayer.TILE_SIZE + 8 + transform.layer * DisplayTileLayer.TILE_SIZE + 12 * transform.layer;
-                Renderer.Draw(texture, transform.position, rect, textureComponent.color, 0f, textureComponent.origin, textureComponent.scale, SpriteEffects.None, depth, textureComponent.solidColor);
+                Renderer.Draw(texture, transform.position, rect, textureComponent.color, 0f, textureComponent.origin, textureComponent.scale, SpriteEffects.None, depth, textureComponent.solidColor ? ShaderParam.FullBright : ShaderParam.None);
             }
         }
     }

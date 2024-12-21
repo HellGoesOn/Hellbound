@@ -112,22 +112,33 @@ namespace Casull.Render
 
         private static List<DrawData> _drawData = [];
 
-        public static void Draw(Texture2D texture, Vector2 position, Rectangle? source, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects spriteEffects, float depth, bool solid = false)
+        public static void Draw(Texture2D texture, Vector2 position, Rectangle? source, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects spriteEffects, float depth, ShaderParam param = ShaderParam.None)
         {
-            DrawData dd = new(texture, position, source, color, rotation, origin, scale, spriteEffects, depth, solid);
+            DrawData dd = new(texture, position, source, color, rotation, origin, scale, spriteEffects, depth, param);
 
             _drawData.Add(dd);
         }
 
         public static void DoRender(SpriteBatch sb)
         {
+            Assets.MainEffect.Parameters["waterTimeX"].SetValue((float)Math.Cos(Main.totalTime) * 0.0075f);
+            Assets.MainEffect.Parameters["waterTimeY"].SetValue((float)Math.Sin(Main.totalTime) * 0.0075f);
+
             _drawData.Sort(SortDrawData);
             StartSpriteBatch(sb, state: SamplerState.PointWrap, sortMode: SpriteSortMode.Deferred);
             for (int i = 0; i < _drawData.Count; i++) {
                 DrawData dd = _drawData[i];
 
+                foreach (var pass in Assets.MainEffect.CurrentTechnique.Passes)
+                    pass.Apply();
+
                 //UIManager.Debug($"{dd.texture.Name} :{dd.color.A} : {dd.color.ShaderFix(dd.solid).A}");
-                sb.Draw(dd.texture, dd.position, dd.source, dd.color.ShaderFix(dd.solid), dd.rotation, dd.origin, dd.scale, dd.spriteEffects, 0);
+
+                if(dd.param == ShaderParam.Water) {
+                    bool shit = true;
+                }
+
+                sb.Draw(dd.texture, dd.position, dd.source, dd.color.ShaderFix(dd.param), dd.rotation, dd.origin, dd.scale, dd.spriteEffects, 0);
             }
             sb.End();
 
@@ -140,6 +151,8 @@ namespace Casull.Render
         }
 
         public static Vector2 ScreenMiddle => new Vector2(UIPreferedWidth, UIPreferedHeight) * 0.5f;
+
+        public static Color WaterColor => new Color(131, 244, 255);
     }
 
     public delegate void DrawLayerEvent(SpriteBatch spriteBatch);

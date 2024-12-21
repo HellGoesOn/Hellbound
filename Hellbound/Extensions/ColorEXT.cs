@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 
 namespace Casull.Extensions
 {
@@ -20,7 +21,6 @@ namespace Casull.Extensions
             return c.ShaderFix(ShaderParam.None);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Color ShaderFix(this Color c, ShaderParam param)
         {
             float divisionComponent = (c.A / 255.0f);
@@ -33,6 +33,9 @@ namespace Casull.Extensions
             if (param == ShaderParam.FullBright)
                 finalAlpha = 255;
 
+            if (param == ShaderParam.Water)
+                finalAlpha = (byte)Assets.WATER_TOLERANCE;
+
             return new Color(c.R, c.G, c.B, finalAlpha);
         }
     }
@@ -40,6 +43,7 @@ namespace Casull.Extensions
     public enum ShaderParam
     {
         None,
-        FullBright
+        FullBright,
+        Water
     }
 }
