@@ -18,6 +18,13 @@ namespace Casull.Core.ECS
                 var box = e.GetComponent<CollisionBox>();
 
                 box.CollidedWith.Clear();
+
+                if (e.HasComponent<InteractionBox>()) {
+
+                    var ibox = e.GetComponent<InteractionBox>();
+
+                    ibox.CollidedWith.Clear();
+                }
             }
         }
     }

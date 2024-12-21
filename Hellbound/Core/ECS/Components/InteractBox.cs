@@ -2,14 +2,12 @@
 
 namespace Casull.Core.ECS.Components
 {
-    public class CollisionBox : IComponent
+    public class InteractionBox : IComponent
     {
         public int width;
         public int height;
         public Vector2 origin;
         public float radius;
-        public bool solid;
-        public bool ignoreTiles;
         List<int> collidedWith;
 
         internal List<int> CollidedWith {
@@ -21,7 +19,7 @@ namespace Casull.Core.ECS.Components
             }
         }
 
-        public CollisionBox(int width, int height, Vector2? origin = null)
+        public InteractionBox(int width, int height, Vector2? origin = null)
         {
             collidedWith = new List<int>();
             this.width = width;
@@ -29,6 +27,4 @@ namespace Casull.Core.ECS.Components
             this.origin = origin ?? new Vector2(width, height) * 0.5f;
         }
     }
-
-    public delegate void OnCollision(Entity me, Entity other);
 }

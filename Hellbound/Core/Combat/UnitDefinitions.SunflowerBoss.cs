@@ -187,6 +187,7 @@ namespace Casull.Core.Combat
             });
 
             sunFlower.Drops(100, new SunflowerHead(), 1, 1);
+            sunFlower.Drops(100, new Betsy(), 1, 1);
 
             sunFlower.ai = new SequentialAI();
         }

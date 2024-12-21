@@ -47,9 +47,6 @@ namespace Casull.Core.ECS
                             if (id.newPosition != default) {
                                 trans.position = id.newPosition;
                                 tex.scale.X = Math.Sign(id.direction.X);
-
-                                if (tex.scale.X <= 0)
-                                    tex.scale.X = 1;
                             }
 
                             Main.instance.ActiveWorld.GetCamera().centre = trans.position;

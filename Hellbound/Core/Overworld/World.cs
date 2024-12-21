@@ -48,14 +48,17 @@ namespace Casull.Core.Overworld
             tileMap = new TileMap(width, height);
             GetCamera().centre = new Vector2(tileMap.width, tileMap.height) * DisplayTileLayer.TILE_SIZE * 0.5f;
 
+            systems.AddSystem(new KillBasedOnFlagSystem(context));
             systems.AddSystem(new ReadPlayerInputSystem(context));
             systems.AddSystem(new SpawnerSystem(context));
             systems.AddSystem(new AppearSystem(context));
             systems.AddSystem(new WanderSystem(context));
             systems.AddSystem(new MoveSystem(context));
             systems.AddSystem(new TileCollisionSystem(context));
+            systems.AddSystem(new SolidEntityCollision(context));
             systems.AddSystem(new DDDSystem(context));
             systems.AddSystem(new ShitCollisionSystem(context));
+            systems.AddSystem(new SCSForInteraction(context));
             systems.AddSystem(new InteractionSystem(context));
             systems.AddSystem(new TripWireSystem(context));
             systems.AddSystem(new LoadingZoneSystem(context));
@@ -64,7 +67,6 @@ namespace Casull.Core.Overworld
             systems.AddSystem(new FollowerSystem(context));
             systems.AddSystem(new MoveCameraSystem(context));
             systems.AddSystem(new DrawSystem(context));
-            systems.AddSystem(new KillBasedOnFlagSystem(context));
             systems.AddSystem(new NewAnimationSystem(context));
             systems.AddSystem(new ClearCollisionMarkerSystem(context));
 

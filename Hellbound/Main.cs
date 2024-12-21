@@ -132,7 +132,6 @@ namespace Casull
             UIManager.Init();
             UnitDefinitions.DefineUnits();
             ParticleManager.Initialize();
-            World.InitTriggers();
 
             //    Dialogue dialogue = Dialogue.Create();
             //    UIManager.dialogueUI.dialoguePanel.SetPosition(new Vector2(32, Renderer.UIPreferedHeight * 0.5f));

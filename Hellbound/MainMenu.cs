@@ -150,10 +150,10 @@ namespace Casull
                     GlobalPlayer.Init();
                     GlobalPlayer.LoadProgress(Main.saveSlot);
 
+                    World.InitTriggers();
                     if (newGame) {
                         World.triggers.Clear();
                         World.cutscenes.Clear();
-                        World.InitTriggers();
                         World.InitNightmare();
                         Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", "Nightmare");
                     }

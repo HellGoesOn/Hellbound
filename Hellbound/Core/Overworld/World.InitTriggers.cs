@@ -13,6 +13,7 @@ namespace Casull.Core.Overworld
     {
         public static void InitTriggers()
         {
+            InitForestTriggers();
             Trigger recruitDog = new("recruitDog") {
                 action = (world) => {
                     var d = Dialogue.Create();
@@ -44,7 +45,7 @@ namespace Casull.Core.Overworld
                             text = "Touche. Alright I am in",
                             title = "Wolfie",
                             onPageEnd = (dial) => {
-                                var e = Main.instance.ActiveWorld.context.GetAllEntities().First(x=>x.enabled && x.HasComponent<TextureComponent>() && x.GetComponent<TextureComponent>().textureName == "WhatDaDogDoin2");
+                                var e = Main.instance.ActiveWorld.context.GetAllEntities().First(x=>x != null && x.enabled && x.HasComponent<TextureComponent>() && x.GetComponent<TextureComponent>().textureName == "WhatDaDogDoin2");
                                 if (e != null)
                                     Main.instance.ActiveWorld.context.Destroy(e);
                                 GlobalPlayer.AddPartyMember(UnitDefinitions.Get("Dog"));

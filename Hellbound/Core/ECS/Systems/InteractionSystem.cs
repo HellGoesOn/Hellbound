@@ -17,7 +17,7 @@ namespace Casull.Core.ECS
 
         public InteractionSystem(Context context)
         {
-            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(PlayerMarker), typeof(CollisionBox)));
+            _group = context.GetGroup(Matcher<Entity>.AllOf(typeof(PlayerMarker), typeof(InteractionBox)));
         }
 
         public void Execute(Context context)
@@ -28,7 +28,7 @@ namespace Casull.Core.ECS
             for (int i = 0; i < entities.Count; i++) {
                 var entity = entities[i];
 
-                var myBox = entity.GetComponent<CollisionBox>();
+                var myBox = entity.GetComponent<InteractionBox>();
 
                 for (int j = 0; j < myBox.CollidedWith.Count; j++) {
 
