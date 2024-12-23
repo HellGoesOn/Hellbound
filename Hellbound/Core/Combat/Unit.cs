@@ -16,7 +16,7 @@ namespace Casull.Core.Combat
         public string name;
         public string internalName;
         public string sprite;
-        public string currentAnimation = "";
+        private string currentAnimation = "";
         public string defaultAnimation = "";
         public string portrait = "";
         public string portraitCombat = "";
@@ -51,7 +51,7 @@ namespace Casull.Core.Combat
             baseStats = new CombatStats();
             _stats = new CombatStats();
             statsGrowth = new CombatStats(1, 1, 15, 5, 0.5f);
-            currentAnimation = defaultAnimation = "Idle";
+            CurrentAnimation = defaultAnimation = "Idle";
             resistances = new ElementalResistances();
             depth = 0.01f;
             sprite = "Slime3";
@@ -147,20 +147,20 @@ namespace Casull.Core.Combat
                     shake = 0;
             }
 
-            if (animations.TryGetValue(currentAnimation, out var anim)) {
+            if (animations.TryGetValue(CurrentAnimation, out var anim)) {
                 anim.position = position;
                 anim.depth = depth;
                 anim.opacity = opacity;
                 anim.rotation = rotation;
                 anim.Update(this);
 
-                if (anim.finished && currentAnimation != "Dead") {
+                if (anim.finished && CurrentAnimation != "Dead") {
                     anim.Reset();
-                    currentAnimation = string.IsNullOrWhiteSpace(anim.nextAnimation) ? currentAnimation : anim.nextAnimation;
+                    CurrentAnimation = string.IsNullOrWhiteSpace(anim.nextAnimation) ? CurrentAnimation : anim.nextAnimation;
                 }
             }
             else {
-                currentAnimation = defaultAnimation;
+                CurrentAnimation = defaultAnimation;
             }
 
             foreach (Ability ability in abilities) {
@@ -174,6 +174,16 @@ namespace Casull.Core.Combat
             get => battleStation;
             set {
                 position = battleStation = value;
+            }
+        }
+
+        public string CurrentAnimation 
+            { 
+            get => currentAnimation; 
+            set {
+                currentAnimation = defaultAnimation;
+                if (animations.ContainsKey(value))
+                currentAnimation = value;
             }
         }
 
@@ -278,7 +288,7 @@ namespace Casull.Core.Combat
             copy._stats = _stats.GetCopy();
             copy.statsGrowth = statsGrowth.GetCopy();
             copy.resistances = resistances.GetCopy();
-            copy.currentAnimation = currentAnimation;
+            copy.CurrentAnimation = CurrentAnimation;
             copy.defaultAnimation = defaultAnimation;
             copy.origin = origin;
 

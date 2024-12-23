@@ -20,7 +20,7 @@ namespace Casull.Core.Combat.Abilities
             Sequence sequence = CreateSequence(battle);
             sequence.Add(new MoveActorSequence(caster, targets[0].position - new Vector2(32 * markiplier, 0)));
             sequence.Add(new SetActorAnimation(caster, "BasicAttack"));
-            sequence.Add(new DelaySequence(20));
+            sequence.Add(new DelaySequence(30));
             sequence.Add(new PlaySoundSequence("GunShot"));
             sequence.Add(new DoDamageSequence(caster, targets[0], baseDamage, elementalType, accuracy));
             sequence.Add(new DelaySequence(20));

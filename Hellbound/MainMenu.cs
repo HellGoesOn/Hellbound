@@ -145,6 +145,8 @@ namespace Casull
                     UIManager.combatUI.tutorialProgress = 0;
                     Main.lastTransitionPosition = Vector2.Zero;
                     Main.currentZone = "Forest3";
+                    World.triggers.Clear();
+                    World.cutscenes.Clear();
                     World.flags.Clear();
 
                     GlobalPlayer.Init();
@@ -152,8 +154,6 @@ namespace Casull
 
                     World.InitTriggers();
                     if (newGame) {
-                        World.triggers.Clear();
-                        World.cutscenes.Clear();
                         World.InitNightmare();
                         Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes\\", "Nightmare");
                     }

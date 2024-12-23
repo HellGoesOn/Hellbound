@@ -27,7 +27,7 @@ namespace Casull.Core.Combat.Status
         public override void UpdateVisuals(SpriteBatch spriteBatch, Unit unit, Battle battle)
         {
             var offset = new Vector2((float)Math.Sin(Main.totalTime), (float)Math.Cos(Main.totalTime));
-            if (unit.animations.TryGetValue(unit.currentAnimation, out var anim)) {
+            if (unit.animations.TryGetValue(unit.CurrentAnimation, out var anim)) {
                 anim.Draw(spriteBatch, unit.GetPosition() + offset * 2, Color.Blue * 0.15f, unit.rotation, unit.scale, unit.depth - 0.01f);
                 anim.Draw(spriteBatch, unit.GetPosition() - offset * 2, Color.Blue * 0.15f, unit.rotation, unit.scale, unit.depth - 0.01f);
 

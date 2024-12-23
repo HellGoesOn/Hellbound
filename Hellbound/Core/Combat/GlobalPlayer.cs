@@ -100,24 +100,128 @@ namespace Casull.Core.Combat
         public static void Update()
         {
             _items.RemoveAll(x => x.count <= 0);
+
+            foreach(var unit in ActiveParty) {
+                if (unit.Stats.HP > 0 && unit.CurrentAnimation == "Dead")
+                    unit.CurrentAnimation = "Idle";
+            }
         }
 
         // to do: create json file, pull from there instead
         public static void ProtagAnimations(Unit f)
         {
-            SpriteAnimation idle = new("Dumbass_Idle",
+            SpriteAnimation idle = new("MC_CombatIdle",
                 [
                 new FrameData(0, 0, 32, 32),
                 new FrameData(0, 32, 32, 32),
-                new FrameData(0, 64, 32, 32)
                 ]
                 );
             idle.looping = true;
             idle.timePerFrame = 20;
+
+            SpriteAnimation dead = new("MC_Death",
+                [
+                new FrameData(0, 0, 32, 32),
+                new FrameData(0, 32, 32, 32),
+                new FrameData(0, 32, 32, 32),
+                new FrameData(0, 32, 32, 32),
+                new FrameData(0, 32, 32, 32),
+                new FrameData(0, 32, 32, 32),
+                new FrameData(0, 32, 32, 32),
+                new FrameData(0, 32, 32, 32),
+                new FrameData(0, 32, 32, 32),
+                new FrameData(0, 32, 32, 32),
+                new FrameData(0, 32, 32, 32),
+                new FrameData(0, 32, 32, 32),
+                new FrameData(0, 32, 32, 32),
+                ]
+                );
+            dead.looping = false;
+            dead.timePerFrame = 20;
+            dead.nextAnimation = "Dead";
+
             SpriteAnimation victoryPose = new("VictoryPose", [
                 new FrameData(0, 0, 32, 32),
                 new FrameData(0, 32, 32, 32),
                 ]);
+
+            SpriteAnimation physAttack = new("MC_BasicAttack",
+                [new(0, 0, 32, 32),
+                new(0, 0, 32, 32),
+                new(0, 0, 32, 32),
+                new(0, 32, 32, 32),
+            new(0, 64, 32, 32),
+            new(0, 64, 32, 32),
+            new(0, 64, 32, 32),
+            new(0, 64, 32, 32),
+            new(0, 64, 32, 32),
+            new(0, 96, 32, 32),
+            new(0, 128, 32, 32),
+            new(0, 160, 32, 32),
+            new(0, 160, 32, 32),
+            new(0, 160, 32, 32),
+            new(0, 160, 32, 32),
+            new(0, 160, 32, 32),
+            ]) {
+                timePerFrame = 3,
+                nextAnimation = "Idle"
+            };
+
+            SpriteAnimation recoil = new("MC_Recoil",
+                [
+                new(0,0,32,32),
+                new(0,32,32,32),
+                new(0,32,32,32),
+                new(0,64,32,32),
+                new(0,64,32,32),
+                new(0,64,32,32),
+                new(0,64,32,32),
+                new(0,64,32,32),
+                ]
+                ) {
+                timePerFrame = 4,
+                nextAnimation = "Idle"
+            };
+
+            SpriteAnimation combatVictory = new("MC_CombatVictory",
+                [new(0, 0, 32, 32),
+                new(0, 0, 32, 32),
+                new(0, 0, 32, 32),
+                new(0, 0, 32, 32),
+                new(0, 32, 32, 32),
+            new(0, 64, 32, 32),
+            new(0, 64, 32, 32),
+            new(0, 64, 32, 32),
+            new(0, 96, 32, 32),
+            new(0, 96, 32, 32),
+            new(0, 128, 32, 32),
+            new(0, 160, 32, 32),
+            new(0, 128, 32, 32),
+            new(0, 160, 32, 32),
+            new(0, 128, 32, 32),
+            new(0, 160, 32, 32),
+            new(0, 128, 32, 32),
+            new(0, 160, 32, 32),
+            new(0, 128, 32, 32),
+            new(0, 160, 32, 32),
+            new(0, 128, 32, 32),
+            new(0, 160, 32, 32),
+            new(0, 128, 32, 32),
+            new(0, 160, 32, 32),
+            new(0, 128, 32, 32),
+            new(0, 160, 32, 32),
+            new(0, 128, 32, 32),
+            new(0, 160, 32, 32),
+            ]) {
+                timePerFrame = 3,
+                nextAnimation = "Victory",
+                looping = true,
+                onAnimationPlay = (sender, unit) => {
+                    if (sender.currentFrame >= 26) {
+                        sender.currentFrame = 6;
+                        }
+                }
+            };
             //victoryPose.onAnimationPlay += (_) =>
             //{
             //    _.scale = new Vector2((float)Math.Sin(Main.totalTime * 2), 1f);
@@ -206,9 +310,11 @@ namespace Casull.Core.Combat
             };
             f.animations.Add("Idle", idle);
             f.animations.Add("Cast", flipOff);
-            f.animations.Add("BasicAttack", flipOff);
-            f.animations.Add("Victory", victoryPose);
+            f.animations.Add("BasicAttack", physAttack);
+            f.animations.Add("Victory", combatVictory);
             f.animations.Add("Special", special);
+            f.animations.Add("Recoil", recoil);
+            f.animations.Add("Dead", dead);
         }
 
         public static void SaveProgress()

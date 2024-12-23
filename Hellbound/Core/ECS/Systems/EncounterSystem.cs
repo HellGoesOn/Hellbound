@@ -68,7 +68,7 @@ namespace Casull.Core.ECS
                         context.Destroy(entity.id);
                         SoundEngine.StartMusic("ChangingSeasons", true);
                         foreach (Unit unit in GlobalPlayer.ActiveParty) {
-                            unit.currentAnimation = unit.defaultAnimation;
+                            unit.CurrentAnimation = unit.defaultAnimation;
                         }
                     };
 

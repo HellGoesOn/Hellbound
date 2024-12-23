@@ -217,7 +217,7 @@ Entity_13
 	{
 		CollisionBox{500; 20; {X:250 Y:10}; 0}
 
-		LoadingZone{"ForestMeadow"; {X:451 Y:20}; {X:0 Y:1}}
+		LoadingZone{"ForestMeadow"; {X:451 Y:20}; {X:1 Y:1}}
 
 		Tags{[]}
 

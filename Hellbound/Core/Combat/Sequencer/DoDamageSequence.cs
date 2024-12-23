@@ -116,6 +116,7 @@ namespace Casull.Core.Combat.Sequencer
 
             if (dealtDamage) {
                 target.Stats.HP = Math.Max(0, target.Stats.HP - hiddenFinalDamage);
+                target.CurrentAnimation = "Recoil";
                 if (target.HasStatus<GuardingEffect>())
                     target.RemoveAllEffects<GuardingEffect>();
             }

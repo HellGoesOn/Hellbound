@@ -133,6 +133,8 @@ namespace Casull
 
         public static bool HeldKey(Keys key) => Keyboard.GetState().IsKeyDown(key) && IsWindowActive;
 
+        public static bool HeldKey(Keys[] key) => key.Any(HeldKey) && IsWindowActive;
+
         public static bool ReleasedKey(Keys key) => Keyboard.GetState().IsKeyUp(key) && _oldKBState.IsKeyDown(key) && IsWindowActive;
 
         public static bool LMBClicked => Mouse.GetState().LeftButton == ButtonState.Pressed && _oldMBState.LeftButton == ButtonState.Released && IsWindowActive;

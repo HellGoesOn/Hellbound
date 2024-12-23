@@ -12,9 +12,9 @@
 
         public void Update(List<Unit> actors, Battle battle)
         {
-            actor.animations.TryGetValue(actor.currentAnimation, out var anim);
+            actor.animations.TryGetValue(actor.CurrentAnimation, out var anim);
             anim?.Reset();
-            actor.currentAnimation = animationName;
+            actor.CurrentAnimation = animationName;
         }
     }
 }

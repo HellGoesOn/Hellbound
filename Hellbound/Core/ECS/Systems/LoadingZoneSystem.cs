@@ -1,4 +1,5 @@
-﻿using Casull.Core.ECS.Components;
+﻿using Casull.Core.Combat;
+using Casull.Core.ECS.Components;
 using Casull.Core.Overworld;
 using Casull.Render;
 using Microsoft.Xna.Framework;
@@ -46,12 +47,14 @@ namespace Casull.Core.ECS
                             var tex = player.GetComponent<TextureComponent>();
                             if (id.newPosition != default) {
                                 trans.position = id.newPosition;
+                                if(id.direction.X != 0)
                                 tex.scale.X = Math.Sign(id.direction.X);
                             }
 
                             Main.instance.ActiveWorld.GetCamera().centre = trans.position;
                             Main.lastTransitionPosition = trans.position;
                         }
+                        GlobalPlayer.SaveProgress();
                         break;
 
                     }

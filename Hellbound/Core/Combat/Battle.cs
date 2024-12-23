@@ -362,13 +362,13 @@ namespace Casull.Core.Combat
                 Color clr = Color.White;
                 Vector2 position = unit.position + new Vector2(unit.shake * Main.rand.Next(2) % 2 == 0 ? 1 : -1, 0f);
 
-                if (unit.Downed && unit.currentAnimation != "Dead") {
+                if (unit.Downed && unit.CurrentAnimation != "Dead") {
                     unit.animations.TryGetValue("Dead", out var deadass);
                     deadass?.Reset();
-                    unit.currentAnimation = "Dead";
+                    unit.CurrentAnimation = "Dead";
                 }
 
-                if (unit.animations.TryGetValue(unit.currentAnimation, out var anim)) {
+                if (unit.animations.TryGetValue(unit.CurrentAnimation, out var anim)) {
                     anim.position = position+unit.origin;
                     anim.Draw(spriteBatch, unit.scale * anim.scale);
 
@@ -837,7 +837,7 @@ namespace Casull.Core.Combat
         public void BeginAction()
         {
             if (ActingUnit.Downed) {
-                ActingUnit.currentAnimation = "Death";
+                //ActingUnit.CurrentAnimation = "Death";
                 State = BattleState.VictoryCheck;
                 return;
             }
@@ -954,7 +954,18 @@ namespace Casull.Core.Combat
                 foreach (Unit unit in GlobalPlayer.ActiveParty) {
                     UIExpChange expChange = new(unit, unit.Stats.EXP, expValue);
                     expChange.SetPosition(64, 64 + offset);
+                    expChange.active = false;
                     UIManager.combatUI.Append(expChange);
+                    Sequence seq = new(this) {
+                        active = true
+                    };
+
+                    seq.Delay(120);
+                    seq.CustomAction(() => {
+                        expChange.active = true;
+                    });
+
+                    this.sequences.Add(seq);
 
                     offset += expChange.size.Y + 4;
 

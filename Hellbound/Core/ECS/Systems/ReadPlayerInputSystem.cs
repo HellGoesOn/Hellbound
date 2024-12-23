@@ -28,7 +28,8 @@ namespace Casull.Core.ECS
                 Velocity vel = entity.GetComponent<Velocity>();
 
                 var marker = entity.GetComponent<PlayerMarker>();
-                
+
+                var cAnim = "Idle";
 
                 if (entity.HasComponent<NewAnimationComponent>()) {
                     var anim = entity.GetComponent<NewAnimationComponent>();
@@ -36,7 +37,7 @@ namespace Casull.Core.ECS
                     if (vel.value.Length() > 0)
                         anim.currentAnimation = "Run";
                     else
-                        anim.currentAnimation = "Idle";
+                        anim.currentAnimation = cAnim;
                 }
 
                 if (vel.X != 0) {
@@ -62,6 +63,15 @@ namespace Casull.Core.ECS
                 if (Input.HeldKey(Keys.D)) dir.X += speed;
 
                 vel.value = dir.SafeNormalize() * speed;
+
+                if (entity.HasComponent<NewAnimationComponent>()) {
+                    var anim = entity.GetComponent<NewAnimationComponent>();
+
+                    if (Input.HeldKey([Keys.A, Keys.D, Keys.W, Keys.S]))
+                        cAnim = "Run";
+
+                    anim.currentAnimation = cAnim;
+                }
             }
         }
     }

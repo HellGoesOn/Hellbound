@@ -22,7 +22,7 @@ namespace Casull.Core.Overworld
             var diag = new Dialogue();
 
             var page1 = new DialoguePage() {
-                text = "Every night without a fail..",
+                text = "For years, I've slept dreamless nights. My mind <ffff00/was> sound.",
                 title = $"{GlobalPlayer.ActiveParty[0].name}",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,
@@ -32,7 +32,16 @@ namespace Casull.Core.Overworld
             };
 
             var page2 = new DialoguePage() {
-                text = ".. I see the same godforsaken dream..",
+                text = "..until very recently.",
+                title = $"{GlobalPlayer.ActiveParty[0].name}",
+                borderColor = Color.Transparent,
+                fillColor = Color.Black * 0.35f,
+                textColor = Color.Cyan,
+                speakerFillColor = Color.Transparent,
+                speakerBorderColor = Color.Transparent
+            };
+            var page3 = new DialoguePage() {
+                text = "A <ff0000/nightmare> has begun haunting me.",
                 title = $"{GlobalPlayer.ActiveParty[0].name}",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,
@@ -41,7 +50,7 @@ namespace Casull.Core.Overworld
                 speakerBorderColor = Color.Transparent
             };
 
-            diag.pages.AddRange([page1, page2]);
+            diag.pages.AddRange([page1, page2, page3]);
             nightmare.Add(new FireAction(() => {
                 nightmare.InternalSetFollowing(Main.instance.ActiveWorld.context.GetById(0), 1f);
             }));
@@ -61,7 +70,7 @@ namespace Casull.Core.Overworld
             var describe = new Dialogue();
 
             var describePage1 = new DialoguePage() {
-                text = "..a tall shadowy figure with an unsettling aura..",
+                text = "A tall shadowy figure with no discernible features. Not any that I was able to remember upon waking.",
                 title = $"{GlobalPlayer.ActiveParty[0].name}",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,
@@ -71,7 +80,7 @@ namespace Casull.Core.Overworld
             };
 
             var describePage2 = new DialoguePage() {
-                text = "..taunting my very existance..",
+                text = "It.. glares at me. Its intents unclear, but a sense of <ff0000/danger> overruns my mind. And then, it speaks.",
                 title = $"{GlobalPlayer.ActiveParty[0].name}",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,
@@ -98,7 +107,7 @@ namespace Casull.Core.Overworld
             };
 
             var diag2Page2 = new DialoguePage() {
-                text = "..do you really believe that you control your <FF0000/destiny>?..",
+                text = "..I..",
                 title = $"???",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,
@@ -108,7 +117,7 @@ namespace Casull.Core.Overworld
             };
 
             var diag2Page3 = new DialoguePage() {
-                text = "..if you truly are that naive..",
+                text = "..see..",
                 title = $"???",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,
@@ -118,17 +127,7 @@ namespace Casull.Core.Overworld
             };
 
             var diag2Page4 = new DialoguePage() {
-                text = "..come find me..",
-                title = $"???",
-                borderColor = Color.Transparent,
-                fillColor = Color.Black * 0.35f,
-                speakerColor = Color.Crimson,
-                speakerFillColor = Color.Transparent,
-                speakerBorderColor = Color.Transparent
-            };
-
-            var diag2Page5 = new DialoguePage() {
-                text = "..we'll see what that puny excuse of '<ffff00/free will>' of your can really achieve..",
+                text = "..<ff0000/you>..",
                 title = $"???",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,
@@ -136,14 +135,12 @@ namespace Casull.Core.Overworld
                 speakerFillColor = Color.Transparent,
                 speakerBorderColor = Color.Transparent,
                 onPageBegin = (sender) => {
-                    Main.instance.ActiveWorld.context.GetById(0).GetComponent<NewAnimationComponent>().frames = [new(0, 0, 48, 48, 0)];
-                },
-                onPageEnd = (sender) => {
-                    Main.instance.ActiveWorld.context.GetById(0).GetComponent<NewAnimationComponent>().frames = [new(0, 48, 48, 48, 0)];
+
+                    Main.instance.ActiveWorld.context.GetAllEntities().FirstOrDefault(x => x != null && x.GetComponent<Tags>().Has("Shadow")).GetComponent<NewAnimationComponent>().frames = [new(0, 48, 48, 48, 30)];
                 }
             };
 
-            diag2.pages.AddRange([diag2Page1, diag2Page2, diag2Page3, diag2Page4, diag2Page5]);
+            diag2.pages.AddRange([diag2Page1, diag2Page2, diag2Page3, diag2Page4]);
 
             nightmare.Add(new StartDialogue(diag2)); 
             nightmare.Add(new FireActionFor(() => {
@@ -155,7 +152,7 @@ namespace Casull.Core.Overworld
             var diag3 = new Dialogue();
 
             var diag3Page = new DialoguePage() {
-                text = "..the details after that are a total blur..",
+                text = "Its eyes glow. Mouth doesn't quite 'open'. Instead, it 'rips' & distorts. Rest of its body twitches and changes shape.",
                 title = $"{GlobalPlayer.ActiveParty[0].name}",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,
@@ -165,7 +162,7 @@ namespace Casull.Core.Overworld
             };
 
             var diag3Page0 = new DialoguePage() {
-                text = "..but whatever happens to me next is most certainly <ff0000/death>..",
+                text = ".. and then I wake up.",
                 title = $"{GlobalPlayer.ActiveParty[0].name}",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,
@@ -175,7 +172,7 @@ namespace Casull.Core.Overworld
             };
 
             var diag3Page1 = new DialoguePage() {
-                text = "If I want those nightmares to end, I'll have to find that <FF0000/bastard>!!..",
+                text = "I tried drugs, therapy, every sort of treatment I could think of. Nothing worked. I stopped believing in it being caused by my mind.",
                 title = $"{GlobalPlayer.ActiveParty[0].name}",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,
@@ -185,7 +182,7 @@ namespace Casull.Core.Overworld
             };
 
             var diag3Page2 = new DialoguePage() {
-                text = "..I've looked through every single database that I could to find any information about <FF0000/him>..",
+                text = "Rather, I believe it to be <ffff00/supernatural>.",
                 title = $"{GlobalPlayer.ActiveParty[0].name}",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,
@@ -195,7 +192,7 @@ namespace Casull.Core.Overworld
             };
 
             var diag3Page3 = new DialoguePage() {
-                text = "..and after years of torture, I have finally found a promising lead..",
+                text = "I've since found obscure forums & similar cases of 'insomnia' from the past during search for any other treatment. Most of it was just internet junk.",
                 title = $"{GlobalPlayer.ActiveParty[0].name}",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,
@@ -205,7 +202,27 @@ namespace Casull.Core.Overworld
             };
 
             var diag3Page4 = new DialoguePage() {
-                text = "..there is just one problem though..",
+                text = "But in a sudden turn of events, just a few weeks since I began my research, I've found a <ffff00/promising clue>",
+                title = $"{GlobalPlayer.ActiveParty[0].name}",
+                borderColor = Color.Transparent,
+                fillColor = Color.Black * 0.35f,
+                textColor = Color.Cyan,
+                speakerFillColor = Color.Transparent,
+                speakerBorderColor = Color.Transparent
+            };
+            
+            var diag3Page5 = new DialoguePage() {
+                text = "Multiple similar cases have been reported in last 5 years in an obscure town. Local clinic's patients reporting having exactly the same nigthmare.",
+                title = $"{GlobalPlayer.ActiveParty[0].name}",
+                borderColor = Color.Transparent,
+                fillColor = Color.Black * 0.35f,
+                textColor = Color.Cyan,
+                speakerFillColor = Color.Transparent,
+                speakerBorderColor = Color.Transparent
+            };
+            
+            var diag3Page6 = new DialoguePage() {
+                text = "So called '<ffff00/Volchiy>'. A town otherwise so unremarkable that most maps fail to acknowledge its very existence.",
                 title = $"{GlobalPlayer.ActiveParty[0].name}",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,
@@ -214,7 +231,28 @@ namespace Casull.Core.Overworld
                 speakerBorderColor = Color.Transparent
             };
 
-            diag3.pages.AddRange([diag3Page, diag3Page0, diag3Page1, diag3Page2, diag3Page3, diag3Page4]);
+            var diag3Page7 = new DialoguePage() {
+                text = "I was fortunate enough to pin point its approximate location. I've since set off to find it. ",
+                title = $"{GlobalPlayer.ActiveParty[0].name}",
+                borderColor = Color.Transparent,
+                fillColor = Color.Black * 0.35f,
+                textColor = Color.Cyan,
+                speakerFillColor = Color.Transparent,
+                speakerBorderColor = Color.Transparent
+            };
+
+            var diag3Page8 = new DialoguePage() {
+                text = "Its entirely surrounded by a <ffff00/monster infested Forest>. Its the only known entrance to the town. There is an issue however..",
+                title = $"{GlobalPlayer.ActiveParty[0].name}",
+                borderColor = Color.Transparent,
+                fillColor = Color.Black * 0.35f,
+                textColor = Color.Cyan,
+                speakerFillColor = Color.Transparent,
+                speakerBorderColor = Color.Transparent
+            };
+
+
+            diag3.pages.AddRange([diag3Page, diag3Page0, diag3Page1, diag3Page2, diag3Page3, diag3Page4, diag3Page5, diag3Page6, diag3Page7, diag3Page8]);
 
             nightmare.Add(new StartDialogue(diag3));
 

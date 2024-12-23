@@ -44,13 +44,14 @@ namespace Casull.Core.Combat.Sequencer
                     target.ExtendEffect(effect);
                 }
                 else {
-
-
                     if (canStack)
                         target.AddEffect(effect);
                     else
                         target.AddReplaceEffect(effect);
                 }
+
+                if(effect.debuff)
+                    target.CurrentAnimation = "Recoil";
                 DamageNumber damageNumber = new(DamageType.Normal, $"+{effect.name}", (target.position - new Vector2(0, 12)));
                 battle.damageNumbers.Add(damageNumber);
             }
