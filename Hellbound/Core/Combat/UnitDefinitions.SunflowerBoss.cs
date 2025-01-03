@@ -149,41 +149,41 @@ namespace Casull.Core.Combat
             sunFlower.defaultAnimation = "Idle";
             sunFlower.size = new Vector2(48, 48);
 
-            sunFlower.Stats.MaxHP = 2500;
-            sunFlower.Stats.MaxSP = 150;
+            sunFlower.Stats.MaxHP = 2000;
+            sunFlower.Stats.MaxSP = 18;
             sunFlower.Stats.value = 500;
             sunFlower.Stats.speed = 15;
             sunFlower.origin.Y = -12;
 
             sunFlower.abilities.Add(new SolarFlare() {
-                spCost = 0,
+                spCost = 3,
                 accuracy = 600,
                 name = "Solar Flare"
             });
 
             sunFlower.abilities.Add(new Sukukaja() {
-                spCost = 0,
+                spCost = 3,
                 name = "Bob & Weave"
             });
 
             sunFlower.abilities.Add(new Garu() {
                 name = "Wind Gust",
-                baseDamage = 25,
+                baseDamage = 16,
             });
 
             sunFlower.abilities.Add(new SunflowerKick() {
                 name = "Sunflower Kick",
-                baseDamage = 30,
+                baseDamage = 24,
             });
 
             sunFlower.abilities.Add(new SunflowerKick() {
                 name = "Sunflower Punch",
-                baseDamage = 30,
+                baseDamage = 24,
             });
 
             sunFlower.abilities.Add(new Garu() {
                 name = "Wind Gust",
-                baseDamage = 30,
+                baseDamage = 16,
             });
 
             sunFlower.Drops(100, new SunflowerHead(), 1, 1);

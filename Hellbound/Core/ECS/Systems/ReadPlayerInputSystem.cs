@@ -63,15 +63,6 @@ namespace Casull.Core.ECS
                 if (Input.HeldKey(Keys.D)) dir.X += speed;
 
                 vel.value = dir.SafeNormalize() * speed;
-
-                if (entity.HasComponent<NewAnimationComponent>()) {
-                    var anim = entity.GetComponent<NewAnimationComponent>();
-
-                    if (Input.HeldKey([Keys.A, Keys.D, Keys.W, Keys.S]))
-                        cAnim = "Run";
-
-                    anim.currentAnimation = cAnim;
-                }
             }
         }
     }

@@ -1,18 +1,14 @@
-﻿using Casull.Core.Combat.Abilities;
-using Casull.Core.Combat.Abilities.Fire;
-using Casull.Core.Combat.Abilities.Phys;
-using Casull.Core.Combat.Abilities.Wind;
-using Casull.Core.Combat.Items;
+﻿using Casull.Core.Combat.Items;
 using Casull.Core.Combat.Items.Consumables;
+using Casull.Core.Graphics;
 using Casull.Core.Overworld;
 using Casull.Core.UI;
-using Microsoft.Xna.Framework;
-using System.Text;
-using System.Text.RegularExpressions;
 using Casull.Extensions;
-using Casull.Core.Graphics;
+using Microsoft.Xna.Framework;
 using System.Globalization;
 using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Casull.Core.Combat
 {
@@ -110,7 +106,7 @@ namespace Casull.Core.Combat
         // to do: create json file, pull from there instead
         public static void ProtagAnimations(Unit f)
         {
-            SpriteAnimation idle = new("MC_CombatIdle",
+            SpriteAnimation idle = new("MC_CombatIdle2",
                 [
                 new FrameData(0, 0, 32, 32),
                 new FrameData(0, 32, 32, 32),
@@ -145,7 +141,7 @@ namespace Casull.Core.Combat
                 new FrameData(0, 32, 32, 32),
                 ]);
 
-            SpriteAnimation physAttack = new("MC_BasicAttack",
+            SpriteAnimation physAttack = new("MC_BasicAttack2",
                 [new(0, 0, 32, 32),
                 new(0, 0, 32, 32),
                 new(0, 0, 32, 32),
@@ -167,7 +163,7 @@ namespace Casull.Core.Combat
                 nextAnimation = "Idle"
             };
 
-            SpriteAnimation recoil = new("MC_Recoil",
+            SpriteAnimation recoil = new("MC_Recoil2",
                 [
                 new(0,0,32,32),
                 new(0,32,32,32),
@@ -183,7 +179,7 @@ namespace Casull.Core.Combat
                 nextAnimation = "Idle"
             };
 
-            SpriteAnimation combatVictory = new("MC_CombatVictory",
+            SpriteAnimation combatVictory = new("MC_CombatVictory2",
                 [new(0, 0, 32, 32),
                 new(0, 0, 32, 32),
                 new(0, 0, 32, 32),

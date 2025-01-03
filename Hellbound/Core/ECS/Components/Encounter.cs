@@ -5,6 +5,7 @@
         public string bgName;
         public string[] enemies;
         public string[] trialCharacters;
+        public string soundtrack;
 
         public Encounter(string bgName, string[] enemies, string[] trialCharacters)
         {

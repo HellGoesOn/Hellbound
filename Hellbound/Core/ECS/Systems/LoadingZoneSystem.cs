@@ -40,7 +40,7 @@ namespace Casull.Core.ECS
                         Main.instance.transitions.Add(new BlackFadeInFadeOut(Renderer.SaveFrame(true)));
                         Main.instance.ActiveWorld = World.LoadFromFile("\\Content\\Scenes", id.nextZone);
 
-                        var player = Main.instance.ActiveWorld.context.GetAllEntities().FirstOrDefault(x => x.HasComponent<PlayerMarker>());
+                        var player = Main.instance.ActiveWorld.context.GetAllEntities().FirstOrDefault(x => x!= null && x.HasComponent<PlayerMarker>());
 
                         if (player != null) {
                             var trans = player.GetComponent<Transform>();
@@ -53,8 +53,8 @@ namespace Casull.Core.ECS
 
                             Main.instance.ActiveWorld.GetCamera().centre = trans.position;
                             Main.lastTransitionPosition = trans.position;
+                            GlobalPlayer.SaveProgress();
                         }
-                        GlobalPlayer.SaveProgress();
                         break;
 
                     }

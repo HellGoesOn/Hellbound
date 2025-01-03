@@ -1,9 +1,7 @@
 ﻿using Casull.Core.Combat.Sequencer;
 using Casull.Core.Combat.Status.Debuffs;
 using Casull.Core.Graphics;
-using Casull.Render;
 using Microsoft.Xna.Framework;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Casull.Core.Combat.Abilities
 {
@@ -24,9 +22,17 @@ namespace Casull.Core.Combat.Abilities
             once = false;
             if (targets[0].name == "Peas" && name == "Disturb") {
 
+                var whiteBeam = new SpriteAnimation("Beam", [new(0, 0, 48, 600), new(0, 0, 48, 600), new(0, 0, 48, 600), new(0, 0, 48, 600), new(0, 0, 48, 600), new(0, 0, 48, 600)]);
+                whiteBeam.scale.X = 0f;
+                whiteBeam.scale.Y = 0f;
+                whiteBeam.timePerFrame = 90;
+                whiteBeam.depth = targets[0].depth - 0.00001f;
+                whiteBeam.position = targets[0].position;
+                whiteBeam.origin = new Vector2(24, 600-16);
+
                 var orpheus = new SpriteAnimation("Orpheus", [new(0, 0, 48, 48), new(0, 0, 48, 48), new(0, 0, 48, 48), new(0, 0, 48, 48), new(0, 0, 48, 48), new(0, 0, 48, 48)]);
                 orpheus.scale.X = 0f;
-                orpheus.timePerFrame = 60;
+                orpheus.timePerFrame = 90;
                 orpheus.depth = 0.9f;
                 orpheus.position = caster.position;
                 orpheus.onAnimationPlay += (sender, unit) => {
@@ -37,29 +43,56 @@ namespace Casull.Core.Combat.Abilities
                     }
                     orpheus.position.Y += (float)Math.Sin(Main.totalTime) * 0.2f;
 
-                    if (orpheus.scale.X < 1.0f && orpheus.currentFrame < 4)
+                    if (orpheus.scale.X < 1.0f && orpheus.currentFrame < 4) {
                         orpheus.scale.X += 0.1f;
-                    else if(orpheus.scale.X > 0.1f && orpheus.currentFrame >= 4)
+                    }
+                    else if (orpheus.scale.X > 0.1f && orpheus.currentFrame >= 4) {
                         orpheus.scale.X -= 0.1f;
+                    }
 
-
+                    targets[0].shake = 0.32f;
+                    targets[0].color = Color.Lerp(targets[0].color, Color.Black, 0.072f);
 
                     Color[] clrs = { Color.Blue, Color.Cyan, Color.Turquoise, Color.LightBlue };
 
-                    if(orpheus.currentFrame < 4)
-                    for (int i = 0; i < 3; i++) {
-                        int xx = Main.rand.Next((int)(orpheus.frameData[0].width * 0.5f));
-                        int yy = Main.rand.Next((int)(orpheus.frameData[0].height));
-                        float velX = Main.rand.Next(60, 120) * 0.001f * (Main.rand.Next(2) == 0 ? -1 : 1);
-                        float velY = -0.2f * (Main.rand.Next(20, 60) * 0.05f);
-                        var particle = ParticleManager.NewParticleAdditive(new Vector3(orpheus.position + new Vector2(-orpheus.frameData[0].width * 0.25f + xx, orpheus.frameData[0].height * 0.5f), 0), new Vector3(velX, 0, velY), 60);
+                    if (orpheus.currentFrame < 4) {
+                        for (int i = 0; i < 3; i++) {
+                            int xx = Main.rand.Next((int)(orpheus.frameData[0].width * 0.5f * orpheus.scale.X));
+                            int yy = Main.rand.Next((int)(orpheus.frameData[0].height));
+                            float velX = Main.rand.Next(60, 120) * 0.001f * (Main.rand.Next(2) == 0 ? -1 : 1);
+                            float velY = -0.2f * (Main.rand.Next(20, 60) * 0.05f);
+                            var particle = ParticleManager.NewParticleAdditive(new Vector3(orpheus.position + new Vector2(-orpheus.frameData[0].width * 0.25f + xx, orpheus.frameData[0].height * 0.5f), 0), new Vector3(velX, 0, velY), 60);
 
-                        particle.color = clrs[Main.rand.Next(clrs.Length)];
-                        particle.endColor = Color.Black;
-                        particle.degradeSpeed = 0.01f;
-                        particle.dissapateSpeed = 0.01f;
-                        particle.scale = Vector2.One * Main.rand.Next(1, 3);
+                            particle.color = clrs[Main.rand.Next(clrs.Length)];
+                            particle.endColor = Color.Black;
+                            particle.degradeSpeed = 0.01f;
+                            particle.dissapateSpeed = 0.01f;
+                            particle.scale = Vector2.One * Main.rand.Next(1, 3);
+                        }
                     }
+
+                    //whiteBeam.color = Color.Cyan * (0.8f + (float)Math.Abs(Math.Sin(Main.totalTime) *0.05f));
+                    if (whiteBeam.currentFrame >= 3)
+                        whiteBeam.scale.X = orpheus.scale.X;
+                    else
+                        whiteBeam.scale.X = whiteBeam.scale.Y = orpheus.scale.X;
+
+                    if(whiteBeam.scale.X > 0.1f)
+                        foreach (var target in targets) {
+                            for (int i = 0; i < 10; i++) {
+                                var position = new Vector3(target.position + new Vector2(0, 16), 0);
+                                var xx = Main.rand.Next(-24, (25));
+                                var xxx = Main.rand.Next(-10, 11) * 0.01f;
+                                var zz = Main.rand.NextSingle() * -Main.rand.Next(150, 350) * 0.01f;
+                                var velocity = new Vector3(0, 0, zz);
+                                var part = ParticleManager.NewParticleAdditive(position + new Vector3(xx, 0, 0), velocity, 300, 0.00f, false);
+                                if (part != null) {
+                                    part.diesToGravity = false;
+                                    part.color = Color.Lerp(Color.White, Color.Cyan, Main.rand.NextSingle());
+                                    part.scale = Vector2.One * Main.rand.Next(1, 4);
+                                }
+                            }
+                        }
 
                 };
                 orpheus.origin = new Vector2(24);
@@ -69,9 +102,9 @@ namespace Casull.Core.Combat.Abilities
                 sequence.Add(new MoveActorSequence(caster, new Vector2(160, 90)));
                 sequence.Add(new SetActorAnimation(caster, "Special"));
                 sequence.Add(new DelaySequence(60));
-                sequence.Add(new PlaySoundSequence("CutIn", 1));
-                sequence.Add(new PlaySoundSequence("Exodia", 1));
-                sequence.Add(new PlaySoundSequence("FinalFlash", 1));
+                sequence.Add(new PlaySoundSequence("CutIn", 1, 0));
+                sequence.Add(new PlaySoundSequence("Exodia", 0.5f, 0));
+                sequence.Add(new PlaySoundSequence("FinalFlash", 0.5f, 0));
                 var cutInBG = new SpriteAnimation("Pixel", [new(0, 0, 320, 32), new(0, 0, 320, 32), new(0, 0, 320, 32)]); 
                 cutInBG.scale = new Vector2(1.5f);
                 cutInBG.depth = 0.9f;
@@ -113,6 +146,7 @@ namespace Casull.Core.Combat.Abilities
                 sequence.AddAnimation(cutInBG2);
                 sequence.AddAnimation(cutInBG);
                 sequence.AddAnimation(cutIn);
+                sequence.AddAnimation(whiteBeam);
 
                 sequence.Add(new DelaySequence(60));
                 sequence.AddAnimation(orpheus);
@@ -122,7 +156,7 @@ namespace Casull.Core.Combat.Abilities
                 }));
                 foreach (Unit unit in targets) {
                     sequence.Delay(10);
-                    sequence.DoDamage(caster, unit, 99999, ElementalType.Almighty, 600);
+                    sequence.DoDamage(caster, unit, 99999, ElementalType.DoT, 600);
                 }
             }
             else {

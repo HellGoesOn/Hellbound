@@ -72,6 +72,13 @@ namespace Casull.Core.ECS
                         }
                     };
 
+                    if(!string.IsNullOrWhiteSpace(component.soundtrack)) {
+                        SoundEngine.StartMusic(component.soundtrack, true);
+                    }
+                    else {
+                        SoundEngine.StartMusic("BossMusic", true);
+                    }
+
                     Script triedToHitThePeas = new() {
                         condition = (b) => {
                             Unit unit = b.unitsHitLastRound.FirstOrDefault(x => x.name == "Peas");

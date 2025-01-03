@@ -93,17 +93,21 @@ namespace Casull
             }
         }
 
-        public static SoundEffectInstance PlaySound(string name, float volume = -1f)
+        public static SoundEffectInstance PlaySound(string name, float volume = -1f, float pitch = -1)
         {
             if (volume == -1f)
                 volume = GameOptions.GeneralVolume * hiddenVolume;
             else
                 volume = GameOptions.GeneralVolume * volume * hiddenVolume;
 
+            if (pitch == -1f)
+                pitch = Main.rand.NextSingle() * 0.25f;
+
             var fx = Assets.GetSound(name)?.CreateInstance();
 
             if (fx != null) {
                 fx.Volume = volume;
+                fx.Pitch =  pitch;
                 fx.Play();
                 return fx;
             }

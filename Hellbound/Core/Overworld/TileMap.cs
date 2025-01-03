@@ -27,6 +27,7 @@ namespace Casull.Core.Overworld
             DefineTile("StoneWall", 2, "VoidBase", "StoneWall", new Vector2(0, -16), 1);
             DefineTile("Void", 100, "VoidBase");
             DefineTile("Pond", 0, "VoidBase", "PondTile", param: ShaderParam.Water);
+            DefineTile("FloorBoards", 0, "FloorBoards");
         }
 
         public static TileDefinition DefineTile(string name, int weight, string baseTexture, string tileTexture = "NULLA TERRA", Vector2 offset = default, int elevation = 0, ShaderParam param = ShaderParam.None)

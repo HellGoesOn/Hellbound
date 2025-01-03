@@ -88,7 +88,6 @@ namespace Casull.Core.Combat
 
         public static Battle Create(List<Unit> enemies, List<Unit> trialCharacters = null)
         {
-            SoundEngine.StartMusic("BossMusic", true);
             SoundEngine.PlaySound("Begin", 0.5f);
 
             Battle battle = new() {
@@ -359,7 +358,7 @@ namespace Casull.Core.Combat
             }
 
             foreach (Unit unit in units) {
-                Color clr = Color.White;
+                Color clr = unit.color;
                 Vector2 position = unit.position + new Vector2(unit.shake * Main.rand.Next(2) % 2 == 0 ? 1 : -1, 0f);
 
                 if (unit.Downed && unit.CurrentAnimation != "Dead") {
@@ -952,23 +951,27 @@ namespace Casull.Core.Combat
 
                 float offset = 0;
                 foreach (Unit unit in GlobalPlayer.ActiveParty) {
-                    UIExpChange expChange = new(unit, unit.Stats.EXP, expValue);
-                    expChange.SetPosition(64, 64 + offset);
-                    expChange.active = false;
-                    UIManager.combatUI.Append(expChange);
-                    Sequence seq = new(this) {
-                        active = true
-                    };
 
-                    seq.Delay(120);
-                    seq.CustomAction(() => {
-                        expChange.active = true;
-                    });
+                    if (units.Contains(unit)) {
 
-                    this.sequences.Add(seq);
+                        UIExpChange expChange = new(unit, unit.Stats.EXP, expValue);
+                        expChange.SetPosition(64, 64 + offset);
+                        expChange.active = false;
+                        UIManager.combatUI.Append(expChange);
+                        Sequence seq = new(this) {
+                            active = true
+                        };
 
-                    offset += expChange.size.Y + 4;
+                        seq.Delay(120);
+                        seq.CustomAction(() => {
+                            expChange.active = true;
+                        });
 
+                        this.sequences.Add(seq);
+
+
+                        offset += expChange.size.Y + 4;
+                    }
                     unit.Stats.EXP += expValue;
                     unit.Stats.totalEXP += expValue;
                     unit.ClearEffects();

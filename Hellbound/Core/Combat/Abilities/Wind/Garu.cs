@@ -1,7 +1,6 @@
 ﻿using Casull.Core.Combat.Sequencer;
-using Casull.Core.Combat.Status.Debuffs;
-using Microsoft.Xna.Framework;
 using Casull.Core.Graphics;
+using Microsoft.Xna.Framework;
 
 namespace Casull.Core.Combat.Abilities.Wind
 {

@@ -6,6 +6,7 @@ using Casull.Core.Combat.Sequencer;
 using Casull.Core.DialogueSystem;
 using Casull.Core.ECS;
 using Casull.Core.ECS.Components;
+using Casull.Core.Graphics;
 using Casull.Core.Overworld;
 using Casull.Core.UI;
 using Casull.Render;
@@ -13,7 +14,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Globalization;
-using Casull.Core.Graphics;
 
 namespace Casull
 {

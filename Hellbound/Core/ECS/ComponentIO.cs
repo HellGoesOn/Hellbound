@@ -217,8 +217,14 @@ namespace Casull.Core.ECS
 
             for (int i = 0; i < fields.Length; i++) {
                 var field = fields[i];
-                if (valuesSeparatedPerField.Length <= i)
-                    TextToFieldValue(field, instance, Activator.CreateInstance(field.FieldType).ToString());
+                if (valuesSeparatedPerField.Length <= i) {
+                    dynamic value = null;
+                    if (field.FieldType == typeof(string))
+                        value = string.Empty;
+                    else
+                        value = Activator.CreateInstance(field.FieldType).ToString();
+                    TextToFieldValue(field, instance, value);
+                }
                 else
                     TextToFieldValue(field, instance, valuesSeparatedPerField[i]);
             }

@@ -23,7 +23,7 @@ namespace Casull.Core.Overworld
 
             var page1 = new DialoguePage() {
                 text = "For years, I've slept dreamless nights. My mind <ffff00/was> sound.",
-                title = $"{GlobalPlayer.ActiveParty[0].name}",
+                title = $"???",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,
                 textColor = Color.Cyan,

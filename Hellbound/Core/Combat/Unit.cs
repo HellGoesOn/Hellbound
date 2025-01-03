@@ -26,6 +26,7 @@ namespace Casull.Core.Combat
         public Vector2 size = new(32);
         public Vector2 scale = new(1);
         public Vector2 origin;
+        public Color color;
         public BasicAI ai = null;
         private CombatStats _stats;
         public CombatStats Stats { get => _stats; }
@@ -44,13 +45,14 @@ namespace Casull.Core.Combat
 
         public Unit()
         {
+            color = Color.White;
             loot = [];
             abilities = [];
             learnableAbilities = [];
             statusEffects = [];
             baseStats = new CombatStats();
             _stats = new CombatStats();
-            statsGrowth = new CombatStats(1, 1, 15, 5, 0.5f);
+            statsGrowth = new CombatStats(1, 1, 40, 7, 0.5f);
             CurrentAnimation = defaultAnimation = "Idle";
             resistances = new ElementalResistances();
             depth = 0.01f;

@@ -68,8 +68,8 @@ namespace Casull.Core.Combat
             protag.resistances[ElementalType.Elec] = 0.5f;
             protag.resistances[ElementalType.Wind] = -0.5f;
 
-            protag.abilities.Add(new BasicAttack());
-            protag.statsGrowth = new CombatStats(0.5f, 1.5f, 10, 7, 0.15f);
+            protag.abilities.Add(new BasicAttack() { accuracy = 100});
+            protag.statsGrowth = new CombatStats(0.5f, 1.5f, 30, 7, 0.15f);
             protag.Stats.speed = 6.5f;
 
             protag.Learns(2, new Disturb() {
@@ -81,12 +81,25 @@ namespace Casull.Core.Combat
 
             GlobalPlayer.ProtagAnimations(protag);
 
+            Unit doorkunPeas = DefineUnit("DoorkunPeas");
+            doorkunPeas.name = "True Self";
+            protag.sprite = "Dumbass";
+            protag.statsGrowth = new CombatStats(0.5f, 1.5f, 10, 7, 0.15f);
+            doorkunPeas.SetLevel(99);
+            doorkunPeas.abilities.Add(new BasicAttack() {
+                name = "Vengeance",
+                Description = "Massive Almighty Damage to 1 Foe",
+                elementalType = ElementalType.Almighty
+            });
+
+            GlobalPlayer.ProtagAnimations(doorkunPeas);
+
             Unit peas = DefineUnit("Peas");
             peas.sprite = "Peas";
             peas.name = "Peas";
             peas.ai = new BasicAI();
 
-            peas.resistances = new ElementalResistances(1f, 1f, 1f, 1f, 1f, 0f);
+            peas.resistances = new ElementalResistances(1f, 1f, 1f, 1f, 1f, 1f);
             peas.BattleStation = new Vector2(90, 90);
 
             Unit slime = DefineUnit("Slime");

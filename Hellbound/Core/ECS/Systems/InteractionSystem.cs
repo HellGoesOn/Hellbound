@@ -42,7 +42,7 @@ namespace Casull.Core.ECS
                     interactableNearby = true;
 
 
-                    if (Input.PressedKey(Keys.E)) {
+                    if (Input.PressedKey(Keys.E) && UIManager.dialogueUI.dialogues.Count <= 0) {
                         var commandToFire = interactable.GetComponent<Interactable>().onInteract;
 
                         var trigger = World.triggers.FirstOrDefault(x => x.id == commandToFire);

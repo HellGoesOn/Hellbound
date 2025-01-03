@@ -108,8 +108,14 @@ namespace Casull.Core.Editor
                     Input.OnMouseReleased -= ReleaseEntity;
                     prefabEntity = EntitySaver.Load(prefabPath.myText, prefabName.myText);
                     Input.OnMousePressed += CreatePrefab;
-                    loadPrefabText.text = $"Loaded {prefabName.myText} prefab. Left Click to place. Right Click to deactivate";
-                    loadPrefabText.color = Color.Lime;
+                    if (prefabEntity != null) {
+                        loadPrefabText.text = $"Loaded {prefabName.myText} prefab. Left Click to place. Right Click to deactivate";
+                        loadPrefabText.color = Color.Lime;
+                    }
+                    else {
+                        loadPrefabText.text = $"Entity prefab not found!";
+                        loadPrefabText.color = Color.Crimson;
+                    }
                 }
                 catch {
                     Input.OnMousePressed -= CreatePrefab;
@@ -445,7 +451,7 @@ namespace Casull.Core.Editor
 
         private void CreatePrefab(MouseButton button)
         {
-            if (UIManager.hoveredElement != null)
+            if (UIManager.hoveredElement != null || prefabEntity == null)
                 return;
 
             if (button == MouseButton.Left) {

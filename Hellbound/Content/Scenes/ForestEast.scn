@@ -128,3 +128,14 @@ Entity_3
 		Velocity{{X:0 Y:0}}
 
 	} ;
+Entity_4
+	{
+		CollisionBox{20; 320; {X:5 Y:160}; 0; False; False}
+
+		LoadingZone{"VolchiyOutskirts"; {X:0 Y:0}; {X:1 Y:0}}
+
+		Tags{[]}
+
+		Transform{{X:955.9997 Y:189.5}; 0; 0}
+
+	} ;

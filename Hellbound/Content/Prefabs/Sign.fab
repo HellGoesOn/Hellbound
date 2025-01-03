@@ -1,0 +1,17 @@
+Entity_11
+	{
+		Interactable{""}
+
+		InteractionBox{14; 10; {X:7 Y:-8}; 0}
+
+		NewAnimationComponent{"Sign"; "Bob"; [Bob=[(0 2)]]; [{0 0 32 32 120}, {0 32 32 32 5}, {0 64 32 32 5}]}
+
+		Tags{[]}
+
+		TextureComponent{""; {X:16 Y:16}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:536.25 Y:870}; 0; 0}
+
+		Velocity{{X:0 Y:0}}
+
+	} ;

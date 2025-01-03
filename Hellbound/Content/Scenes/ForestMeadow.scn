@@ -1003,6 +1003,8 @@ Entity_85
 
 		CollisionBox{16; 10; {X:8 Y:-4}; 0}
 
+		InteractionBox{16; 10; {X:8 Y:-4}; 0}
+		
 		NewAnimationComponent{"Dumbass"; "Idle"; [Idle=[(0 2)], Run=[(3 6)], Jump=[(6 7)]]; [{0 0 32 32 10}, {0 32 32 32 10}, {0 64 32 32 10}, {0 0 32 32 7}, {0 32 32 32 7}, {0 64 32 32 7}, {0 96 32 32 7}, {0 0 0 0 0}, {0 0 32 32 0}]}
 
 		PlayerMarker{}
