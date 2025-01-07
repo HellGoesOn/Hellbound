@@ -383,6 +383,16 @@ namespace Casull.Core.Overworld
 
                 StartCutscene(cutscene);
             };
+
+            var getBook = AddTrigger("getBook");
+
+            getBook.condition = (_) => false;
+
+            getBook.action = (_) => {
+                RaiseFlag("getBook");
+                GlobalPlayer.AddItem(new TomeOfWisdom());
+                SoundEngine.PlaySound("Pickup", -1, 0);
+            };
         }
     }
 }

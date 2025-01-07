@@ -11,6 +11,7 @@ namespace Casull.Core.Combat.Abilities
             aoe = false;
             canTarget = ValidTargets.Enemy;
             elementalType = ElementalType.Phys;
+            accuracy = 100;
         }
 
         protected override void UseAbility(Unit caster, Battle battle, List<Unit> targets)

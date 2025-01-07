@@ -111,3 +111,18 @@ Entity_2
 		Transform{{X:463.75 Y:957}; 0; 0}
 
 	} ;
+Entity_3
+	{
+		Interactable{"getBook"}
+
+		InteractionBox{60; 30; {X:30 Y:0}; 0}
+
+		Tags{[]}
+
+		TextureComponent{"Bookshelf"; {X:30 Y:30}; {X:1 Y:1}; {R:255 G:255 B:255 A:255}; False}
+
+		Transform{{X:434.25 Y:779.25}; 0; 0}
+
+		Velocity{{X:0 Y:0}}
+
+	} ;

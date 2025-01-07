@@ -1,10 +1,13 @@
-﻿namespace Casull.Core.Combat.Sequencer
+﻿using Microsoft.Xna.Framework.Audio;
+
+namespace Casull.Core.Combat.Sequencer
 {
     public class PlaySoundSequence : ISequenceAction
     {
         public string sound;
         public float volume;
         public float pitch;
+        public SoundEffectInstance snd;
 
         public PlaySoundSequence(string sound, float volume = -1, float pitch = -1)
         {
@@ -20,7 +23,7 @@
 
         public bool IsFinished()
         {
-            SoundEngine.PlaySound(sound, volume, pitch);
+            snd = SoundEngine.PlaySound(sound, volume, pitch);
             return true;
         }
     }

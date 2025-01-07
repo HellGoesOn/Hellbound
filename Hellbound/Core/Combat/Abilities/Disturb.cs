@@ -22,13 +22,14 @@ namespace Casull.Core.Combat.Abilities
             once = false;
             if (targets[0].name == "Peas" && name == "Disturb") {
 
+                var flash = new PlaySoundSequence("FinalFlash", 0.5f, 0);
                 var whiteBeam = new SpriteAnimation("Beam", [new(0, 0, 48, 600), new(0, 0, 48, 600), new(0, 0, 48, 600), new(0, 0, 48, 600), new(0, 0, 48, 600), new(0, 0, 48, 600)]);
                 whiteBeam.scale.X = 0f;
                 whiteBeam.scale.Y = 0f;
                 whiteBeam.timePerFrame = 90;
                 whiteBeam.depth = targets[0].depth - 0.00001f;
                 whiteBeam.position = targets[0].position;
-                whiteBeam.origin = new Vector2(24, 600-16);
+                whiteBeam.origin = new Vector2(24, 600 - 16);
 
                 var orpheus = new SpriteAnimation("Orpheus", [new(0, 0, 48, 48), new(0, 0, 48, 48), new(0, 0, 48, 48), new(0, 0, 48, 48), new(0, 0, 48, 48), new(0, 0, 48, 48)]);
                 orpheus.scale.X = 0f;
@@ -36,7 +37,7 @@ namespace Casull.Core.Combat.Abilities
                 orpheus.depth = 0.9f;
                 orpheus.position = caster.position;
                 orpheus.onAnimationPlay += (sender, unit) => {
-                    if(!once) {
+                    if (!once) {
                         once = true;
 
                         orpheus.position = caster.position - new Vector2(16) * caster.scale.X;
@@ -77,7 +78,7 @@ namespace Casull.Core.Combat.Abilities
                     else
                         whiteBeam.scale.X = whiteBeam.scale.Y = orpheus.scale.X;
 
-                    if(whiteBeam.scale.X > 0.1f)
+                    if (whiteBeam.scale.X > 0.1f)
                         foreach (var target in targets) {
                             for (int i = 0; i < 10; i++) {
                                 var position = new Vector3(target.position + new Vector2(0, 16), 0);
@@ -104,13 +105,13 @@ namespace Casull.Core.Combat.Abilities
                 sequence.Add(new DelaySequence(60));
                 sequence.Add(new PlaySoundSequence("CutIn", 1, 0));
                 sequence.Add(new PlaySoundSequence("Exodia", 0.5f, 0));
-                sequence.Add(new PlaySoundSequence("FinalFlash", 0.5f, 0));
-                var cutInBG = new SpriteAnimation("Pixel", [new(0, 0, 320, 32), new(0, 0, 320, 32), new(0, 0, 320, 32)]); 
+                sequence.Add(flash);
+                var cutInBG = new SpriteAnimation("Pixel", [new(0, 0, 320, 32), new(0, 0, 320, 32), new(0, 0, 320, 32)]);
                 cutInBG.scale = new Vector2(1.5f);
                 cutInBG.depth = 0.9f;
                 cutInBG.scale.Y = 0.0f;
                 cutInBG.timePerFrame = 60;
-                cutInBG.color = Color.Blue; 
+                cutInBG.color = Color.Blue;
                 var cutInBG2 = new SpriteAnimation("Pixel", [new(0, 0, 320, 34), new(0, 0, 320, 34), new(0, 0, 320, 34)]);
                 cutInBG2.scale = new Vector2(1.5f);
                 cutInBG2.depth = 0.9f;
@@ -151,13 +152,18 @@ namespace Casull.Core.Combat.Abilities
                 sequence.Add(new DelaySequence(60));
                 sequence.AddAnimation(orpheus);
                 sequence.Add(new DelaySequence(90));
-                sequence.Add(new OneActionSequence(() => {
-                    SoundEngine.SetTargetMusicVolume(1);
-                }));
                 foreach (Unit unit in targets) {
                     sequence.Delay(10);
                     sequence.DoDamage(caster, unit, 99999, ElementalType.DoT, 600);
                 }
+                sequence.Add(new ContiniousActionSequence(() => {
+                    flash.snd.Volume = MathHelper.Lerp(flash.snd.Volume, 0.0f, 0.0075f);
+                    if (flash.snd.Volume <= 0.005f)
+                        flash.snd.Stop();
+                }, 360));
+                sequence.Add(new OneActionSequence(() => {
+                    SoundEngine.SetTargetMusicVolume(1);
+                }));
             }
             else {
                 Sequence sequence = CreateSequence(battle);

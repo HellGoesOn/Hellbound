@@ -92,7 +92,7 @@ namespace Casull
             dog.GetComponent<TextureComponent>().color = Color.DarkSeaGreen;
             dog.GetComponent<TextureComponent>().solidColor = true;
             dog.AddComponent(new NewAnimationComponent("Dog", "Run", new Dictionary<string, Animation>()
-            { {"Run", new(0, 3) } }, [new (0, 0, 32, 32, 5), new(0, 32, 32, 32, 5), new(0, 64, 32, 32, 5), new(0, 96, 32, 32, 5)]));
+            { {"Run", new(0, 3) } }, [new(0, 0, 32, 32, 5), new(0, 32, 32, 32, 5), new(0, 64, 32, 32, 5), new(0, 96, 32, 32, 5)]));
 
             MainMenuUI mainMenuUI = new(this) {
                 id = "MainMenu"
@@ -133,7 +133,7 @@ namespace Casull
 #if DEBUG
                 if(transitionDelay >= 1) {
 #else
-                    if (transitionDelay >= 240) {
+                if (transitionDelay >= 240) {
 #endif
                     var state = UIManager.GetStateByName("MainMenu");
                     (state as MainMenuUI).mainMenu = null;
@@ -162,12 +162,12 @@ namespace Casull
 
                     if (Main.lastTransitionPosition == Vector2.Zero && !newGame) {
                         var plr = Main.instance.ActiveWorld.context.GetAllEntities().FirstOrDefault(x => x != null && x.GetComponent<Tags>().Has("Player"));
-                        if(plr != null) {
+                        if (plr != null) {
                             Main.lastTransitionPosition = plr.GetComponent<Transform>().position;
                         }
                     }
                     else {
-                        var plr = Main.instance.ActiveWorld.context.GetAllEntities().FirstOrDefault(x => x!= null && x.GetComponent<Tags>().Has("Player"));
+                        var plr = Main.instance.ActiveWorld.context.GetAllEntities().FirstOrDefault(x => x != null && x.GetComponent<Tags>().Has("Player"));
 
                         if (plr != null)
                             plr.GetComponent<Transform>().position = Main.lastTransitionPosition;
@@ -188,15 +188,15 @@ namespace Casull
                 positionY -= 0.5f;
             }
 
-            foreach(var doodad in dooDads) {
+            foreach (var doodad in dooDads) {
                 var tc = doodad.GetComponent<Transform>();
                 var tex = doodad.GetComponent<TextureComponent>();
                 var velocity = doodad.GetComponent<Velocity>();
 
-                if(positionY > 120) {
+                if (positionY > 120) {
                     tc.position.Y = positionY;
                 }
-                
+
                 if (tc.position.X < -360 && Main.rand.Next(50) == 0) {
                     tc.position.X = 400;
                     tc.position.Y = positionY + 1 + (float)Math.Sin(Main.totalTime);
@@ -250,7 +250,7 @@ namespace Casull
                 Append(logoLetters[i]);
             }
 
-            
+
             this.mainMenu = mainMenu;
 
             menu = new UIScrollableMenu(4, ["Continue", "New Game", "Settings", "Quit"]);
@@ -259,8 +259,8 @@ namespace Casull
             menu.panelColor = Color.Transparent;
             menu.borderColor = Color.Transparent;
             menu.opacity = -2.0f;
-            menu.drawArrows = false; 
-            
+            menu.drawArrows = false;
+
             string[] slots = ["Slot 1", "Slot 2", "Slot 3"];
 
             for (int i = 0; i < 3; i++) {
@@ -347,11 +347,11 @@ namespace Casull
                             nameTextBox.boxInnerColor = Color.Transparent;
                             nameTextBox.size.X = 200;
                             nameTextBox.myText = "";
-                            nameTextBox.SetPosition(animPanel.targetSize * 0.5f - nameTextBox.size *0.5f);
+                            nameTextBox.SetPosition(animPanel.targetSize * 0.5f - nameTextBox.size * 0.5f);
                             animPanel.Append(nameTextBox);
 
                             animPanel.onUpdate = (sender) => {
-                                if(!nameTextBox.IsEditing)
+                                if (!nameTextBox.IsEditing)
                                     nameTextBox.Click();
                                 if (Input.PressedKey([Keys.Escape])) {
                                     selectSlotMenu.focused = true;
@@ -383,14 +383,14 @@ namespace Casull
                         break;
                     case "Continue":
                         //mainMenu.started = true;
-                        menu.focused = false; 
-                        
+                        menu.focused = false;
+
                         selectSlotMenu = new UIScrollableMenu(3, slots);
                         selectSlotMenu.SetPosition(Renderer.ScreenMiddle - selectSlotMenu.targetSize * 0.5f);
                         selectSlotMenu.openSpeed = 0.25f;
 
                         selectSlotMenu.onSelectOption = (sender) => {
-                            if(!File.Exists(Environment.CurrentDirectory + $"\\SaveData\\Save{selectSlotMenu.currentSelectedOption}.sdt")) {
+                            if (!File.Exists(Environment.CurrentDirectory + $"\\SaveData\\Save{selectSlotMenu.currentSelectedOption}.sdt")) {
                                 selectSlotMenu.focused = false;
                                 selectSlotMenu.suspended = true;
                                 var animPanel = new UIAnimatedPanel(new Vector2(400, 200), UIAnimatedPanel.AnimationStyle.FourWay);

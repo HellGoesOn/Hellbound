@@ -136,7 +136,7 @@ namespace Casull.Core.Combat
 
             solarFlare.onAnimationPlay = (sender, unit) => {
                 if (sender.currentFrame == 4) {
-                    SoundEngine.PlaySound("SolarFlare");
+                    SoundEngine.PlaySound("SolarFlare", -1, 0);
                     sender.currentFrame++;
                 }
             };

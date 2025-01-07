@@ -22,8 +22,8 @@ namespace Casull.Core.Overworld
             var diag = new Dialogue();
 
             var page1 = new DialoguePage() {
-                text = "For years, I've slept dreamless nights. My mind <ffff00/was> sound.",
-                title = $"???",
+                text = "Dreams at night.. I wouldn't be able to recall the last one I had even if I spent the rest of my life doing just that. Some may consider it unfortunate. But I considered it to be a blessing in disguise.",
+                title = $"{GlobalPlayer.ActiveParty[0].name}",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,
                 textColor = Color.Cyan,
@@ -32,7 +32,7 @@ namespace Casull.Core.Overworld
             };
 
             var page2 = new DialoguePage() {
-                text = "..until very recently.",
+                text = "Sadly, all good things come to an end.",
                 title = $"{GlobalPlayer.ActiveParty[0].name}",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,
@@ -107,7 +107,7 @@ namespace Casull.Core.Overworld
             };
 
             var diag2Page2 = new DialoguePage() {
-                text = "..I..",
+                text = "..India..",
                 title = $"???",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,
@@ -117,7 +117,7 @@ namespace Casull.Core.Overworld
             };
 
             var diag2Page3 = new DialoguePage() {
-                text = "..see..",
+                text = "..Sierra..Echo..Echo..",
                 title = $"???",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,
@@ -127,7 +127,7 @@ namespace Casull.Core.Overworld
             };
 
             var diag2Page4 = new DialoguePage() {
-                text = "..<ff0000/you>..",
+                text = "..<ff0000/Yankee..Oscar..Uniform>..",
                 title = $"???",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,
@@ -172,7 +172,7 @@ namespace Casull.Core.Overworld
             };
 
             var diag3Page1 = new DialoguePage() {
-                text = "I tried drugs, therapy, every sort of treatment I could think of. Nothing worked. I stopped believing in it being caused by my mind.",
+                text = "I tried drugs, therapy, every sort of treatment I could think of. Nothing worked. None would believe me either. Can't blame them really.",
                 title = $"{GlobalPlayer.ActiveParty[0].name}",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,
@@ -182,7 +182,7 @@ namespace Casull.Core.Overworld
             };
 
             var diag3Page2 = new DialoguePage() {
-                text = "Rather, I believe it to be <ffff00/supernatural>.",
+                text = "As unfortunate as it would seem, I was left to find a way to get rid of this reoccurring nightmare all on my own.",
                 title = $"{GlobalPlayer.ActiveParty[0].name}",
                 borderColor = Color.Transparent,
                 fillColor = Color.Black * 0.35f,

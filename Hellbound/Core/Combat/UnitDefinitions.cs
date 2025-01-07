@@ -134,6 +134,7 @@ namespace Casull.Core.Combat
             dog.sprite = "WhatDaDogDoin2";
             dog.portrait = "DogPortrait2";
             dog.portraitCombat = "DogPortrait_Combat";
+            dog.statsGrowth = new CombatStats(0.75f, 1.5f, 15, 10, 0.2f);
             dog.ai = new BasicAI();
             dog.abilities.Add(new BasicAttack() {
                 name = "Bite",
