@@ -339,6 +339,9 @@ namespace Casull
                                     Main.newSlotName = (sender as UITextBox).myText;
                                     animPanel.isClosed = true;
                                     selectSlotMenu.closed = true;
+                                    menu.focused = false;
+                                    menu.active = false;
+
                                 }
                                 else
                                     nameTextBox.Click();
@@ -410,6 +413,8 @@ namespace Casull
                                         Main.newSlotName = (sender as UITextBox).myText;
                                         animPanel.isClosed = true;
                                         selectSlotMenu.closed = true;
+                                        menu.focused = false;
+                                        menu.active = false;
                                     }
                                     else
                                         nameTextBox.Click();
@@ -444,6 +449,8 @@ namespace Casull
                                 Append(animPanel);
                             }
                             else {
+                                menu.focused = false;
+                                menu.active = false;
                                 Main.saveSlot = selectSlotMenu.currentSelectedOption;
                                 mainMenu.started = true;
                                 selectSlotMenu.closed = true;
