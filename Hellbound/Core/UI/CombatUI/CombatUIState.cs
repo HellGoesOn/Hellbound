@@ -39,6 +39,8 @@ namespace Casull.Core.UI.CombatUI
         public List<UIProgressBar> enemyHPBars = [];
         public List<UIBorderedText> enemyHPTexts = [];
 
+        public UIBorderedText victoryText;
+
         public readonly List<string[]> tutorialCombatOptions = new(){
             { ["Attack"] },
             { ["Item"] },
@@ -129,6 +131,12 @@ namespace Casull.Core.UI.CombatUI
             //Append(debug);
             Append(usedAbilityPanel);
             //Append(teamStatus);
+
+            victoryText = new UIBorderedText("Press E to continue");
+            victoryText.opacity = 0.0f;
+            victoryText.SetPosition(Renderer.ScreenMiddle.X - victoryText.size.X * 0.5f, Renderer.ScreenMiddle.Y + 250);
+
+            Append(victoryText);
         }
 
         public void CreatePortraits(Battle battle)
@@ -180,6 +188,16 @@ namespace Casull.Core.UI.CombatUI
                 return;
             }
 
+            var battle = (state as Battle);
+
+            if (battle.State == BattleState.Victory)
+            {
+                victoryText.opacity = 1.0f;
+            }
+            else {
+                victoryText.opacity = 0.0f;
+            }
+
             if (levelUpElements.Count > 0 && showLevelUps) {
                 if (GetElementById("LevelUp") == null) {
                     Append(levelUpElements[0]);
@@ -199,7 +217,7 @@ namespace Casull.Core.UI.CombatUI
             string partyStatus = "";
             string partyHP = "";
             string partySP = "";
-            foreach (Unit unit in (state as Battle).playerParty) {
+            foreach (Unit unit in battle.playerParty) {
                 partyStatus += $"[ {unit.Stats.level} ]{(unit.name)}\n";
                 partyHP += $"HP: {unit.Stats.HP}/{unit.Stats.MaxHP}\n";
                 partySP += $"SP: {unit.Stats.SP}/{unit.Stats.MaxSP}\n";
