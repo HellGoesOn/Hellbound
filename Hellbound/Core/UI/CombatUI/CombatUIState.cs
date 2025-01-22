@@ -125,7 +125,7 @@ namespace Casull.Core.UI.CombatUI
 
             basePosition = new Vector2(-oneMorePanel.size.X * 2, Renderer.UIPreferedHeight * 0.5f - oneMorePanel.size.Y * 0.5f);
             oneMorePanel.SetPosition(basePosition);
-            oneMorePanel.Append(textElement);
+            oneMorePanel.Append(textElement); //
 
             Append(oneMorePanel);
             //Append(debug);
